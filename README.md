@@ -12,7 +12,7 @@ Thing to do are:
 
 * Cargo `wasm-pack`
 
-    cargo install wasm-pack
+      cargo install wasm-pack
 
 * NodeJS `npm`
 
