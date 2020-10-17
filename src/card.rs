@@ -98,10 +98,10 @@ impl Card {
     }
 
     fn footer(&self) -> Html {
-        match &self.props.title {
-            Some(t) => html! {
+        match &self.props.footer {
+            Some(f) => html! {
                 <div class="pf-c-card__footer">
-                    { t.clone() }
+                    { f.clone() }
                 </div>
             },
             None => html! {},
