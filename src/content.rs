@@ -1,5 +1,5 @@
+use yew::Properties;
 use yew::{html, Children, Component, ComponentLink, Html};
-use yew::{Classes, Properties};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

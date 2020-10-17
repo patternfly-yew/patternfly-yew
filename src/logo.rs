@@ -1,6 +1,5 @@
-use crate::{Icon, Variant};
+use yew::Properties;
 use yew::{html, Component, ComponentLink, Html};
-use yew::{Callback, Properties};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

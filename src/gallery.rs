@@ -1,4 +1,3 @@
-use yew::html::ChildrenRenderer;
 use yew::{html, html_nested, Children, Component, ComponentLink, Html};
 use yew::{Classes, Properties};
 
