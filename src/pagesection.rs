@@ -1,5 +1,4 @@
-use yew::html::ChildrenRenderer;
-use yew::{html, Component, ComponentLink, Html};
+use yew::{html, Children, Component, ComponentLink, Html};
 use yew::{Classes, Properties};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -29,11 +28,13 @@ impl PageSectionVariant {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub children: ChildrenRenderer<Html>,
+    pub children: Children,
     #[prop_or_default]
     pub variant: PageSectionVariant,
     #[prop_or_default]
     pub fill: bool,
+    #[prop_or_default]
+    pub limit_width: bool,
 }
 
 #[derive(Clone, PartialEq)]
@@ -50,12 +51,6 @@ impl Component for PageSection {
     }
 
     fn update(&mut self, _msg: Self::Message) -> bool {
-        /*
-        match msg {
-            _ => {}
-        }
-         */
-
         true
     }
 
@@ -71,7 +66,7 @@ impl Component for PageSection {
     fn view(&self) -> Html {
         html! {
             <section class=self.collect_classes()>
-            { for self.props.children.iter() }
+                { self.children() }
             </section>
         }
     }
@@ -86,6 +81,29 @@ impl PageSection {
             classes.push("pf-m-fill");
         }
 
+        if self.props.limit_width {
+            classes.push("pf-m-limit-width");
+        }
+
         classes
+    }
+
+    fn children(&self) -> Html {
+        let c = html! {
+            <>
+            { for self.props.children.iter() }
+            </>
+        };
+
+        match self.props.limit_width {
+            true => {
+                html! {
+                    <div class="pf-c-page__main-body">
+                        { c }
+                    </div>
+                }
+            }
+            false => c,
+        }
     }
 }

@@ -1,12 +1,20 @@
 #![recursion_limit = "256"]
 mod button;
+mod card;
+mod content;
 mod form;
+mod gallery;
+mod logo;
 mod page;
 mod pagesection;
 mod pagesidebar;
 
 use button::*;
+use card::*;
+use content::*;
 use form::*;
+use gallery::*;
+use logo::*;
 use page::*;
 use pagesection::*;
 use pagesidebar::*;
@@ -112,18 +120,42 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
-        let sidebar = html_nested! {
+        let _sidebar = html_nested! {
             <PageSidebar>
             </PageSidebar>
         };
-        let header_tools = html! { {"Foo"} };
+        let _header_tools = html! { {"Foo"} };
+
+        let _logo = html_nested! {
+            <Logo src="https://www.patternfly.org/assets/images/PF-Masthead-Logo.svg" alt="Patternfly Logo" />
+        };
 
         html! {
-            <Page sidebar=sidebar tools=header_tools>
-                <PageSection variant=PageSectionVariant::Light>
-                    <div>{"Foo"}</div>
+            <Page
+                logo={html_nested!{
+                    <Logo src="https://www.patternfly.org/assets/images/PF-Masthead-Logo.svg" alt="Patternfly Logo" />
+                }}>
+                <PageSection variant=PageSectionVariant::Light limit_width=true>
+                    <Content>
+                        <h1>{"Bookings"}</h1>
+                    </Content>
                 </PageSection>
-                <PageSection fill=true>
+                <PageSection>
+                    <Gallery gutter=true>
+                        <Card
+                            selectable=true
+                            selected=true
+                            title={html_nested!{<>
+                                {"Title"}
+                            </>}}
+                            >
+
+                            <div>{"Bar"}</div>
+
+                        </Card>
+                    </Gallery>
+                </PageSection>
+                <PageSection>
                     <Form>
                         <Button label="Add One" icon=Some(Icon::PlusCircleIcon) variant=Variant::Link onclick=self.link.callback(|_| Msg::AddOne)/>
                         <p>{ self.value }</p>

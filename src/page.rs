@@ -1,3 +1,4 @@
+use crate::logo::Logo;
 use crate::pagesection::PageSection;
 use crate::pagesidebar::PageSidebar;
 use yew::virtual_dom::VChild;
@@ -11,6 +12,8 @@ pub struct Props {
     pub sidebar: Option<VChild<PageSidebar>>,
     #[prop_or_default]
     pub tools: Html,
+    #[prop_or_default]
+    pub logo: Option<VChild<Logo>>,
 }
 
 pub struct Page {
@@ -53,13 +56,17 @@ impl Component for Page {
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
                         { self.sidebar_button() }
-                        <a href="#" class="pf-c-page__header-brand-link">{"Logo"}</a>
+                        <a href="#" class="pf-c-page__header-brand-link">{
+                            self.props.sidebar.clone().map(Html::from).unwrap_or_default()
+                        }</a>
                     </div>
                     <div class="pf-c-page__header-tools"> { self.props.tools.clone() }</div>
                 </header>
-                { self.sidebar() }
+
+                { self.props.sidebar.clone().map(Html::from).unwrap_or_default() }
+
                 <main class="pf-c-page__main" tabindex="-1">
-                { for self.props.children.iter().map(|child|child) }
+                    { for self.props.children.iter() }
                 </main>
             </div>
         }
@@ -76,13 +83,6 @@ impl Page {
                     <i class="fas fa-bars" aria-hidden="true"/>
                 </button>
             </div>},
-            None => html! {},
-        }
-    }
-
-    fn sidebar(&self) -> Html {
-        match &self.props.sidebar {
-            Some(sidebar) => Html::from(sidebar.clone()),
             None => html! {},
         }
     }
