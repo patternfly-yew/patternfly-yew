@@ -57,7 +57,7 @@ impl Component for Page {
                     <div class="pf-c-page__header-brand">
                         { self.sidebar_button() }
                         <a href="#" class="pf-c-page__header-brand-link">{
-                            self.props.sidebar.clone().map(Html::from).unwrap_or_default()
+                            self.props.logo.clone().map(Html::from).unwrap_or_default()
                         }</a>
                     </div>
                     <div class="pf-c-page__header-tools"> { self.props.tools.clone() }</div>
