@@ -1,11 +1,12 @@
 # Patternfly starter for Yew
 
-This isn't more than a PoC right now.
+This is little more than a PoC right now.
 
 Thing to do are:
 
-* [ ] Modularize (lib and starter project)
+* [X] Modularize (lib and starter project) -> [ctron/patternfly-yew-quickstart](https://github.com/ctron/patternfly-yew-quickstart)
 * [ ] Add much more components
+* [X] Add `yew-router` support
 * [ ] Provide documentation
 
 ## Pre-requisites
