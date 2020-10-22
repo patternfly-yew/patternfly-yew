@@ -1,4 +1,4 @@
-# Patternfly starter for Yew
+# Patternfly components for Yew
 
 This is little more than a PoC right now.
 
@@ -11,4 +11,7 @@ Thing to do are:
 
 ## Example project
 
-Take a look at: https://github.com/ctron/patternfly-yew-quickstart
+Take a look at:
+
+  * https://ctron.github.io/patternfly-yew-quickstart
+  * https://github.com/ctron/patternfly-yew-quickstart
