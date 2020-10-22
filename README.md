@@ -9,14 +9,6 @@ Thing to do are:
 * [X] Add `yew-router` support
 * [ ] Provide documentation
 
-## Pre-requisites
+## Example project
 
-* Cargo `wasm-pack`
-
-      cargo install wasm-pack
-
-* NodeJS `npm`
-
-## Run local developer setup
-
-    npm run start:dev
+Take a look at: https://github.com/ctron/patternfly-yew-quickstart
