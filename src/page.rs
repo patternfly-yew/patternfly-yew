@@ -1,13 +1,13 @@
 use crate::logo::Logo;
-use crate::pagesection::PageSection;
 use crate::pagesidebar::PageSidebar;
+
 use yew::virtual_dom::VChild;
-use yew::{html, Component, ComponentLink, Html};
-use yew::{ChildrenWithProps, Properties};
+use yew::Properties;
+use yew::{html, Children, Component, ComponentLink, Html};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub children: ChildrenWithProps<PageSection>,
+    pub children: Children,
     #[prop_or_default]
     pub sidebar: Option<VChild<PageSidebar>>,
     #[prop_or_default]
