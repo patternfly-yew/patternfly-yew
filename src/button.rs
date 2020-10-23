@@ -7,6 +7,7 @@ pub struct Props {
     #[prop_or_default]
     pub id: String,
     pub label: String,
+    #[prop_or_default]
     pub onclick: Callback<yew::MouseEvent>,
     #[prop_or_default]
     pub variant: Variant,
@@ -27,12 +28,6 @@ impl Component for Button {
     }
 
     fn update(&mut self, _msg: Self::Message) -> bool {
-        /*
-        match msg {
-            _ => {}
-        }
-         */
-
         true
     }
 

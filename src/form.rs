@@ -1,11 +1,8 @@
-use yew::html::ChildrenRenderer;
-use yew::Properties;
-use yew::{html, Component, ComponentLink, Html};
+use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub children: ChildrenRenderer<Html>,
-    // pub weak_link: WeakComponentLink<Page>,
+    pub children: Children,
 }
 
 pub struct Form {
@@ -17,17 +14,10 @@ impl Component for Form {
     type Properties = Props;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        // props.weak_link.borrow_mut().replace(Some(link));
         Self { props }
     }
 
     fn update(&mut self, _msg: Self::Message) -> bool {
-        /*
-        match msg {
-            _ => {}
-        }
-         */
-
         true
     }
 
@@ -47,6 +37,68 @@ impl Component for Form {
                         child
                 }) }
             </form>
+        }
+    }
+}
+
+// form group
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct FormGroupProps {
+    pub children: Children,
+    pub label: String,
+    #[prop_or_default]
+    pub required: bool,
+}
+
+pub struct FormGroup {
+    props: FormGroupProps,
+}
+
+impl Component for FormGroup {
+    type Message = ();
+    type Properties = FormGroupProps;
+
+    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+        Self { props }
+    }
+
+    fn update(&mut self, _msg: Self::Message) -> bool {
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> bool {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn view(&self) -> Html {
+        let classes = Classes::from("pf-c-form__group");
+
+        html! {
+            <div class=classes>
+                <div class="pf-c-form__group-label">
+                    <div class="pf-c-form__label">
+                        <span class="pf-c-form__label-text">{&self.props.label}</span>
+
+                        {if self.props.required {
+                            html!{
+                                <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
+                            }
+                        } else {
+                            html!{}
+                        }}
+
+                    </div>
+                </div>
+                <div class="pf-c-form__group-control">
+                    { for self.props.children.iter() }
+                </div>
+            </div>
         }
     }
 }

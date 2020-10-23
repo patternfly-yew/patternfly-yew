@@ -1,4 +1,5 @@
 #![recursion_limit = "256"]
+mod badge;
 mod button;
 mod card;
 mod content;
@@ -11,6 +12,7 @@ mod pagesection;
 mod pagesidebar;
 mod utils;
 
+pub use badge::*;
 pub use button::*;
 pub use card::*;
 pub use content::*;
