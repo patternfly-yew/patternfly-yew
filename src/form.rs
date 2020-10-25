@@ -49,6 +49,8 @@ pub struct FormGroupProps {
     pub label: String,
     #[prop_or_default]
     pub required: bool,
+    #[prop_or_default]
+    pub helper_text: String,
 }
 
 pub struct FormGroup {
@@ -97,6 +99,9 @@ impl Component for FormGroup {
                 </div>
                 <div class="pf-c-form__group-control">
                     { for self.props.children.iter() }
+                    { if !self.props.helper_text.is_empty() {html!{
+                        <p class="pf-c-form__helper-text" aria-live="polite">{ &self.props.helper_text }</p>
+                    }} else {html!{}}}
                 </div>
             </div>
         }
