@@ -144,6 +144,8 @@ pub struct TextInputProps {
     #[prop_or_default]
     pub name: String,
     #[prop_or_default]
+    pub value: String,
+    #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
     pub disabled: bool,
@@ -208,6 +210,7 @@ impl Component for TextInput {
                 disabled=self.props.disabled
                 readonly=self.props.readonly
                 aria_invalid=aria_invalid
+                value=self.props.value
                 />
         }
     }
