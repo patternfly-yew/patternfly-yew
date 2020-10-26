@@ -107,3 +107,108 @@ impl Component for FormGroup {
         }
     }
 }
+
+// form control
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum InputState {
+    Default,
+    Success,
+    Warning,
+    Error,
+}
+
+impl Default for InputState {
+    fn default() -> Self {
+        Self::Default
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum TextInputIcon {
+    None,
+    Calendar,
+    Clock,
+    Search,
+    Custom,
+}
+
+impl Default for TextInputIcon {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct TextInputProps {
+    #[prop_or_default]
+    pub name: String,
+    #[prop_or_default]
+    pub required: bool,
+    #[prop_or_default]
+    pub disabled: bool,
+    #[prop_or_default]
+    pub readonly: bool,
+    #[prop_or_default]
+    pub state: InputState,
+    #[prop_or_default]
+    pub icon: TextInputIcon,
+}
+
+pub struct TextInput {
+    props: TextInputProps,
+}
+
+impl Component for TextInput {
+    type Message = ();
+    type Properties = TextInputProps;
+
+    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+        Self { props }
+    }
+
+    fn update(&mut self, _msg: Self::Message) -> bool {
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> bool {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn view(&self) -> Html {
+        let mut classes = Classes::from("pf-c-form-control");
+
+        classes = match self.props.icon {
+            TextInputIcon::None => classes,
+            TextInputIcon::Search => classes.extend("pf-m-search"),
+            TextInputIcon::Calendar => classes.extend(vec!["pf-m-icon", "pf-m-calendar"]),
+            TextInputIcon::Clock => classes.extend(vec!["pf-m-icon", "pf-m-clock"]),
+            TextInputIcon::Custom => classes.extend(vec!["pf-m-icon"]),
+        };
+
+        let mut aria_invalid = false;
+        match self.props.state {
+            InputState::Default => {}
+            InputState::Success => classes.push("pf-m-success"),
+            InputState::Warning => classes.push("pf-m-warning"),
+            InputState::Error => aria_invalid = true,
+        };
+
+        html! {
+            <input
+                class=classes
+                type="text"
+                name=self.props.name
+                required=self.props.required
+                disabled=self.props.disabled
+                readonly=self.props.readonly
+                aria_invalid=aria_invalid
+                />
+        }
+    }
+}

@@ -2,6 +2,7 @@
 mod badge;
 mod button;
 mod card;
+mod clipboard;
 mod content;
 mod form;
 mod gallery;
@@ -15,6 +16,7 @@ mod utils;
 pub use badge::*;
 pub use button::*;
 pub use card::*;
+pub use clipboard::*;
 pub use content::*;
 pub use form::*;
 pub use gallery::*;
