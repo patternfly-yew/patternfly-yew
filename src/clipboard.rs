@@ -1,12 +1,12 @@
+use std::time::Duration;
+use wasm_bindgen::prelude::*;
 use yew::prelude::*;
+use yew::services::{Task, TimeoutService};
 
 use crate::button::*;
 use crate::form::*;
 use crate::icon::*;
 use crate::*;
-use std::time::Duration;
-use stdweb::js;
-use yew::services::{Task, TimeoutService};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -91,18 +91,19 @@ impl Clipboard {
         let s = self.props.value.clone();
 
         let cb: Callback<()> = self.link.callback(|_| Msg::Copied);
-        let on_copied = move || cb.emit(());
 
-        js! { @(no_return)
-            var on_copied = @{on_copied};
-            window.navigator.clipboard.writeText(@{s}).then(function(){
-                try {
-                    on_copied();
-                }
-                finally {
-                    on_copied.drop();
-                }
-            });
-        };
+        wasm_bindgen_futures::spawn_local(async move {
+            match copy_to_clipboard(s).await {
+                Ok(_) => cb.emit(()),
+                Err(_) => {}
+            };
+        });
     }
+}
+
+#[wasm_bindgen(inline_js="export function copy_to_clipboard(value) {return window.navigator.clipboard.writeText(value);}")]
+#[rustfmt::skip] // required to keep the "async" keyword
+extern "C" { 
+    #[wasm_bindgen(catch)]
+    async fn copy_to_clipboard(value: String) -> Result<(), JsValue>;
 }
