@@ -4,6 +4,8 @@ use wasm_bindgen::{JsCast, JsValue};
 
 use yew::prelude::*;
 
+const LOG_TARGET: &'static str = "tooltip";
+
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Orientation {
     Left,
@@ -132,7 +134,7 @@ impl Tooltip {
         let update = self.link.callback(|msg| msg);
 
         let apply = Closure::wrap(Box::new(move |this: &JsValue| {
-            web_sys::console::debug_2(&JsValue::from("apply: "), this);
+            // web_sys::console::debug_2(&JsValue::from("apply: "), this);
             let msg = Self::from_popper(this).unwrap();
             // log::info!("Msg: {:?}", msg);
             update.emit(msg);
@@ -192,7 +194,7 @@ impl Tooltip {
             let destroy_fn = destroy_fn.dyn_ref::<js_sys::Function>();
             if let Some(f) = destroy_fn {
                 let r = f.call0(&popper);
-                // log::info!("Destroyed: {:?}", r);
+                log::debug!(target: LOG_TARGET, "Destroyed: {:?}", r);
                 r?;
             }
         }
@@ -205,7 +207,7 @@ impl Tooltip {
             let update_fn = update_fn.dyn_ref::<js_sys::Function>();
             if let Some(f) = update_fn {
                 let r = f.call0(&popper);
-                log::info!("Updated: {:?}", r);
+                log::debug!(target: LOG_TARGET, "Updated: {:?}", r);
                 r?;
             }
         }
@@ -226,7 +228,8 @@ impl Tooltip {
             _ => Orientation::Bottom,
         };
 
-        log::info!(
+        log::debug!(
+            target: LOG_TARGET,
             "Orientation - original: {:?}, outcome: {:?}",
             placement.as_string(),
             orientation

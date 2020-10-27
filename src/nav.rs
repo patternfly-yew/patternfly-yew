@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+const LOG_TARGET: &'static str = "naw";
+
 use std::fmt::Debug;
 #[cfg(feature = "router")]
 use yew_router::{
@@ -254,6 +256,7 @@ where
         match msg {
             NavRouterMsg::RouteChange(ref route) => {
                 log::debug!(
+                    target: LOG_TARGET,
                     "Route change: {:?} {} {}",
                     self.props.to,
                     route.is_some(),
