@@ -12,6 +12,7 @@ mod nav;
 mod page;
 mod pagesection;
 mod pagesidebar;
+mod table;
 mod tooltip;
 mod utils;
 
@@ -28,6 +29,7 @@ pub use nav::*;
 pub use page::*;
 pub use pagesection::*;
 pub use pagesidebar::*;
+pub use table::*;
 pub use tooltip::*;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

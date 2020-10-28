@@ -1,5 +1,4 @@
-use yew::{html, Children, Component, ComponentLink, Html};
-use yew::{Classes, Properties};
+use yew::prelude::*;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PageSectionVariant {
