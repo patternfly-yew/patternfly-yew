@@ -1,5 +1,4 @@
-use yew::{html, html_nested, Children, Component, ComponentLink, Html};
-use yew::{Classes, Properties};
+use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -21,11 +20,11 @@ impl Component for Gallery {
         Self { props }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
             self.props = props;
             true
@@ -41,7 +40,7 @@ impl Component for Gallery {
             classes.push("pf-m-gutter");
         }
 
-        html! {
+        return html! {
             <div class=("pf-l-gallery",classes)>
             { for self.props.children.iter().map(|child|{
                 html_nested!{
@@ -51,6 +50,6 @@ impl Component for Gallery {
                 }
             }) }
             </div>
-        }
+        };
     }
 }
