@@ -11,9 +11,6 @@ pub struct PopoverProps {
     /// The target, rendered by the component, to which the popover will be aligned to.
     #[prop_or_default]
     pub target: Html,
-    /// Flag if the popover is visible or not.
-    #[prop_or_default]
-    pub active: bool,
 
     /// The header content of the popover.
     #[prop_or_default]
@@ -33,6 +30,7 @@ pub struct Popover {
     props: PopoverProps,
     link: ComponentLink<Self>,
     node: NodeRef,
+    active: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -50,18 +48,19 @@ impl Component for Popover {
             props,
             link,
             node: NodeRef::default(),
+            active: false,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             PopoverMsg::Toggle => {
-                self.props.active = !self.props.active;
+                self.active = !self.active;
                 true
             }
             PopoverMsg::Close => {
-                if self.props.active {
-                    self.props.active = false;
+                if self.active {
+                    self.active = false;
                     true
                 } else {
                     false
@@ -91,7 +90,7 @@ impl Component for Popover {
         return html! {
             <>
                 <Popper<Popover>
-                    active=self.props.active
+                    active=self.active
                     content=self.props.clone()
                     onclose=onclose
                     >
