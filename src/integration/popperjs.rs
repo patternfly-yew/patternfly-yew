@@ -62,7 +62,7 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
 
     let popper = js_sys::Object::from(popper);
 
-    let styles: String = js_sys::Object::entries(&popper)
+    let mut styles: String = js_sys::Object::entries(&popper)
         .to_vec()
         .iter()
         .map(|field| js_sys::Array::from(&field))
@@ -77,6 +77,8 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
         .map(|(key, value)| format!("{}: {};", key, value))
         .collect::<Vec<String>>()
         .join(" ");
+
+    styles.push_str("z-index: 1000;");
 
     Ok(State {
         orientation,
