@@ -3,6 +3,7 @@ use yew::virtual_dom::VNode;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Icon {
+    // Font Awesome
     AngleDown,
     AngleLeft,
     AngleRight,
@@ -11,6 +12,11 @@ pub enum Icon {
     Copy,
 
     PlusCircleIcon,
+
+    Times,
+
+    // Patternfly
+    Help,
 }
 
 impl Icon {
@@ -24,11 +30,20 @@ impl Icon {
             Icon::Copy => fa("fa-copy"),
 
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
+            Icon::Times => fa("fa-times"),
+
+            Icon::Help => pf("pf-icon-help"),
         }
     }
 }
 fn fa(name: &str) -> Html {
     let mut classes = Classes::from("fas");
+    classes.push(name);
+    return html! {<i class=classes aria-hidden="true"></i>};
+}
+
+fn pf(name: &str) -> Html {
+    let mut classes = Classes::from("pficon");
     classes.push(name);
     return html! {<i class=classes aria-hidden="true"></i>};
 }

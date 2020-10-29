@@ -8,12 +8,16 @@ mod flex;
 mod form;
 mod gallery;
 mod icon;
+mod integration;
 mod logo;
 mod nav;
 mod page;
 mod pagesection;
 mod pagesidebar;
+mod popover;
+mod popper;
 mod table;
+mod title;
 mod tooltip;
 mod utils;
 
@@ -31,38 +35,9 @@ pub use nav::*;
 pub use page::*;
 pub use pagesection::*;
 pub use pagesidebar::*;
+pub use popover::*;
+pub use popper::*;
 pub use table::*;
+pub use title::*;
 pub use tooltip::*;
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Variant {
-    None,
-    Primary,
-    Secondary,
-    Tertiary,
-    Warning,
-    Danger,
-    Link,
-    Control,
-}
-
-impl Variant {
-    pub fn as_classes(&self) -> Vec<&str> {
-        match self {
-            Variant::None => vec![],
-            Variant::Primary => vec!["pf-m-primary"],
-            Variant::Secondary => vec!["pf-m-secondary"],
-            Variant::Tertiary => vec!["pf-m-tertiary"],
-            Variant::Warning => vec!["pf-m-warning"],
-            Variant::Danger => vec!["pf-m-danger"],
-            Variant::Link => vec!["pf-m-link"],
-            Variant::Control => vec!["pf-m-control"],
-        }
-    }
-}
-
-impl Default for Variant {
-    fn default() -> Self {
-        Variant::None
-    }
-}
+pub use utils::*;

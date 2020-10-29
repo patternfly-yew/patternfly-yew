@@ -1,5 +1,46 @@
-use crate::{Icon, Variant};
+use crate::Icon;
 use yew::prelude::*;
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Variant {
+    None,
+    Primary,
+    Secondary,
+    Tertiary,
+    Warning,
+    Danger,
+    Link,
+    Control,
+    Plain,
+}
+
+impl Variant {
+    pub fn as_classes(&self) -> Vec<&str> {
+        match self {
+            Variant::None => vec![],
+            Variant::Primary => vec!["pf-m-primary"],
+            Variant::Secondary => vec!["pf-m-secondary"],
+            Variant::Tertiary => vec!["pf-m-tertiary"],
+            Variant::Warning => vec!["pf-m-warning"],
+            Variant::Danger => vec!["pf-m-danger"],
+            Variant::Link => vec!["pf-m-link"],
+            Variant::Control => vec!["pf-m-control"],
+            Variant::Plain => vec!["pf-m-plain"],
+        }
+    }
+}
+
+impl Default for Variant {
+    fn default() -> Self {
+        Variant::None
+    }
+}
+
+#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+pub enum Align {
+    Start,
+    End,
+}
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -13,6 +54,11 @@ pub struct Props {
     pub variant: Variant,
     #[prop_or_default]
     pub icon: Option<Icon>,
+    #[prop_or_default]
+    pub align: Option<Align>,
+
+    #[prop_or_default]
+    pub aria_label: Option<String>,
 }
 
 pub struct Button {
@@ -42,9 +88,10 @@ impl Component for Button {
 
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-button");
+
         classes = classes.extend(self.props.variant.as_classes());
 
-        html! {
+        return html! {
             <button
                 id=&self.props.id
                 class=classes
@@ -55,16 +102,24 @@ impl Component for Button {
                 { self.props.label.clone() }
 
             </button>
-        }
+        };
     }
 }
 
 impl Button {
     pub fn icon(&self) -> Html {
+        let mut classes = Classes::from("pf-c-button__icon");
+
+        match self.props.align {
+            Some(Align::Start) => classes.push("pf-m-start"),
+            Some(Align::End) => classes.push("pf-m-end"),
+            None => {}
+        }
+
         match self.props.icon {
             Some(i) => html! {
-                <span class="pf-c-button__icon pf-m-start">
-                    { i.as_html() }
+                <span class=classes>
+                    { i }
                 </span>
             },
             None => html! {},
