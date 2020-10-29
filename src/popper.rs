@@ -70,7 +70,6 @@ where
                 let mut changed = false;
                 if self.state != state {
                     self.state = state;
-                    log::info!("Changed");
                     changed = true;
                 }
                 changed
@@ -83,8 +82,6 @@ where
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        log::debug!("Change: {:?}", props);
-
         if self.props.active != props.active {
             if props.active {
                 self.show().unwrap();
