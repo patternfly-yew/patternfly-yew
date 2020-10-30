@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.0.6"
+version = "0.0.7"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2018"
 license = "Apache-2.0"
