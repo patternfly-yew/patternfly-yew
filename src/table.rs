@@ -1,5 +1,4 @@
 use crate::icon::Icon;
-use core::iter;
 use std::fmt::Debug;
 use yew::prelude::*;
 use yew::virtual_dom::vnode::VNode::VComp;
@@ -23,9 +22,9 @@ impl Default for TableMode {
 }
 
 #[derive(Debug, PartialEq, Clone, Properties)]
-pub struct TableProps<T>
+pub struct TableProps<M>
 where
-    T: Clone + Debug + PartialEq + TableRenderer + 'static,
+    M: TableModel + 'static,
 {
     #[prop_or_default]
     pub caption: Option<String>,
@@ -36,17 +35,16 @@ where
     #[prop_or_default]
     pub full_width_details: bool,
     #[prop_or_default]
-    pub entries: Vec<T>,
+    pub entries: M,
 }
 
 #[derive(Clone, Debug)]
-pub struct Table<T>
+pub struct Table<M>
 where
-    T: Clone + Debug + PartialEq + TableRenderer + 'static,
+    M: TableModel + 'static,
 {
-    props: TableProps<T>,
+    props: TableProps<M>,
     link: ComponentLink<Self>,
-    expanded: Vec<bool>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
@@ -92,21 +90,16 @@ pub enum Msg {
     Expand(usize),
 }
 
-impl<T> Component for Table<T>
+impl<M> Component for Table<M>
 where
-    T: Clone + Debug + PartialEq + TableRenderer + 'static,
+    M: TableModel + 'static,
 {
     type Message = Msg;
-    type Properties = TableProps<T>;
+    type Properties = TableProps<M>;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let mut result = Self {
-            props,
-            link,
-            expanded: Vec::new(),
-        };
+        let mut result = Self { props, link };
         result.sync_expandable();
-        result.sync_expanded_state();
         result
     }
 
@@ -125,7 +118,6 @@ where
             self.props = props;
 
             self.sync_expandable();
-            self.sync_expanded_state();
 
             true
         } else {
@@ -173,26 +165,15 @@ where
     }
 }
 
-impl<T> Table<T>
+impl<M> Table<M>
 where
-    T: Clone + Debug + PartialEq + TableRenderer + 'static,
+    M: TableModel,
 {
     fn sync_expandable(&mut self) {
         // sync down expandable state
         let expandable = self.is_expandable();
         if let Some(ref mut header) = self.props.header {
             header.props.expandable = expandable;
-        }
-    }
-
-    fn sync_expanded_state(&mut self) {
-        let diff = self.props.entries.len() as isize - self.expanded.len() as isize;
-        log::debug!(target: LOG_TARGET, "Diff: {}", diff);
-        if diff < 0 {
-            self.expanded.truncate(self.props.entries.len());
-        } else if diff > 0 {
-            self.expanded
-                .extend(iter::repeat(false).take(diff as usize));
         }
     }
 
@@ -213,19 +194,12 @@ where
     }
 
     fn render_entries(&self) -> Vec<Html> {
-        let mut result: Vec<Html> = Vec::with_capacity(self.props.entries.len());
-
         let expandable = self.is_expandable();
-        let mut idx = 0;
 
-        for entry in &self.props.entries {
-            result.push(match expandable {
-                true => self.render_expandable_entry(idx, entry),
-                false => self.render_normal_entry(idx, entry),
-            });
-
-            idx += 1;
-        }
+        let result = self.props.entries.map(|entry| match expandable {
+            true => self.render_expandable_entry(&entry),
+            false => self.render_normal_entry(&entry),
+        });
 
         if expandable {
             result
@@ -238,16 +212,17 @@ where
         }
     }
 
-    fn render_normal_entry(&self, _: usize, entry: &T) -> Html {
+    fn render_normal_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
         html! {
             <tr role="row">
-                { self.render_row(&entry)}
+                { self.render_row(&entry.value)}
             </tr>
         }
     }
 
-    fn render_expandable_entry(&self, idx: usize, entry: &T) -> Html {
-        let expanded = self.is_expanded(idx);
+    fn render_expandable_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
+        let expanded = entry.expanded;
+        let idx = entry.index;
 
         let onclick = match expanded {
             true => self.link.callback(move |_: MouseEvent| Msg::Collapse(idx)),
@@ -280,6 +255,7 @@ where
         let mut cells: Vec<Html> = Vec::with_capacity(cols);
 
         if !entry
+            .value
             .is_full_width_details()
             .unwrap_or(self.props.full_width_details)
         {
@@ -287,7 +263,7 @@ where
             cols -= 1;
         }
 
-        for cell in entry.render_details() {
+        for cell in entry.value.render_details() {
             cells.push(html! {
                 <td role="cell" colspan={cell.cols}>
                     <div class="pf-c-table__expandable-row-content">
@@ -322,7 +298,7 @@ where
                         </button>
                     </td>
 
-                    { self.render_row(&entry) }
+                    { self.render_row(&entry.value) }
                 </tr>
 
                 <tr class=("pf-c-table__expandable-row",expanded_class.clone()) role="row">
@@ -332,21 +308,11 @@ where
         };
     }
 
-    fn is_expanded(&self, idx: usize) -> bool {
-        self.expanded.get(idx).map(|is| *is).unwrap_or(false)
-    }
-
     fn set_expanded(&mut self, idx: usize, state: bool) -> ShouldRender {
-        let current = self.is_expanded(idx);
-        if current != state {
-            self.expanded[idx] = state;
-            true
-        } else {
-            false
-        }
+        self.props.entries.set_expanded(idx, state)
     }
 
-    fn render_row(&self, entry: &T) -> Vec<Html> {
+    fn render_row(&self, entry: &M::Item) -> Vec<Html> {
         let len = self
             .props
             .header
@@ -381,6 +347,142 @@ where
             TableMode::Expandable | TableMode::CompactExpandable => true,
             _ => false,
         }
+    }
+}
+
+// table model
+
+pub trait TableModel: Debug + Default + PartialEq + Clone {
+    type Item: TableRenderer;
+
+    /// Get the number of items
+    fn len(&self) -> usize;
+    /// Test if the entry is expanded
+    fn is_expanded(&self, index: usize) -> bool;
+    /// Set the expanded state of the entry
+    fn set_expanded(&mut self, index: usize, state: bool) -> ShouldRender;
+    fn map<F, R>(&self, f: F) -> Vec<R>
+    where
+        F: Fn(&TableModelEntry<Self::Item>) -> R;
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct TableModelEntry<T> {
+    pub value: T,
+    expanded: bool,
+    index: usize,
+}
+
+impl<T> TableModelEntry<T> {
+    pub fn new(value: T) -> Self {
+        Self {
+            value,
+            expanded: false,
+            index: 0,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq,
+{
+    entries: Vec<TableModelEntry<T>>,
+}
+
+impl<T> Default for SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq,
+{
+    fn default() -> Self {
+        Self { entries: vec![] }
+    }
+}
+
+impl<T> From<Vec<T>> for SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq,
+{
+    fn from(entries: Vec<T>) -> Self {
+        let mut result = Vec::with_capacity(entries.len());
+
+        let mut index = 0;
+        for e in entries {
+            result.push(TableModelEntry {
+                value: e,
+                index,
+                expanded: false,
+            });
+            index += 1;
+        }
+
+        Self { entries: result }
+    }
+}
+
+impl<T> TableModel for Vec<TableModelEntry<T>>
+where
+    T: TableRenderer + Clone + Debug + PartialEq + 'static,
+{
+    type Item = T;
+
+    fn len(&self) -> usize {
+        self.len()
+    }
+
+    fn is_expanded(&self, index: usize) -> bool {
+        self.get(index).map(|e| e.expanded).unwrap_or(false)
+    }
+
+    fn set_expanded(&mut self, index: usize, state: bool) -> bool {
+        if let Some(entry) = self.get_mut(index) {
+            if entry.expanded != state {
+                entry.expanded = state;
+                true
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+    fn map<F, R>(&self, f: F) -> Vec<R>
+    where
+        F: Fn(&TableModelEntry<T>) -> R,
+    {
+        let mut result = Vec::new();
+        for entry in self {
+            result.push(f(entry));
+        }
+        result
+    }
+}
+
+impl<T> TableModel for SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq + 'static,
+{
+    type Item = T;
+
+    fn len(&self) -> usize {
+        self.entries.len()
+    }
+
+    fn is_expanded(&self, index: usize) -> bool {
+        self.entries.is_expanded(index)
+    }
+
+    fn set_expanded(&mut self, index: usize, state: bool) -> bool {
+        self.entries.set_expanded(index, state)
+    }
+
+    fn map<F, R>(&self, f: F) -> Vec<R>
+    where
+        F: Fn(&TableModelEntry<T>) -> R,
+    {
+        self.entries.map(f)
     }
 }
 
