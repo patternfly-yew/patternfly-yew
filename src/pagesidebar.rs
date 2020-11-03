@@ -21,17 +21,11 @@ impl Component for PageSidebar {
         Self { props }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        /*
-        match msg {
-            _ => {}
-        }
-         */
-
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
             self.props = props;
             true
