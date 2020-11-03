@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::Size;
+
 #[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
 pub enum Level {
     H1,
@@ -13,29 +15,6 @@ pub enum Level {
 impl Default for Level {
     fn default() -> Self {
         Level::H1
-    }
-}
-
-#[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
-pub enum Size {
-    Medium,
-    Large,
-    XLarge,
-    XXLarge,
-    XXXLarge,
-    XXXXLarge,
-}
-
-impl Size {
-    pub fn as_class(&self) -> &str {
-        match self {
-            Size::Medium => "pf-m-md",
-            Size::Large => "pf-m-lg",
-            Size::XLarge => "pf-m-xl",
-            Size::XXLarge => "pf-m-2xl",
-            Size::XXXLarge => "pf-m-3xl",
-            Size::XXXXLarge => "pf-m-4xl",
-        }
     }
 }
 
