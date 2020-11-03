@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 mod badge;
+mod bullseye;
 mod button;
 mod card;
 mod clipboard;
@@ -23,6 +24,7 @@ mod tooltip;
 mod utils;
 
 pub use badge::*;
+pub use bullseye::*;
 pub use button::*;
 pub use card::*;
 pub use clipboard::*;
