@@ -291,7 +291,7 @@ impl Component for FlexItem {
 
         return html! {
             <div class=classes>
-            { for self.props.children.iter() }
+                { for self.props.children.iter() }
             </div>
         };
     }

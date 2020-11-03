@@ -16,6 +16,7 @@ pub struct Props {
     pub readonly: bool,
 }
 
+#[derive(Clone, Debug)]
 pub enum Msg {
     Copy,
     Copied,

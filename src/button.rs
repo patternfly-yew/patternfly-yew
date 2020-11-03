@@ -96,7 +96,7 @@ impl Component for Button {
                 id=&self.props.id
                 class=classes
                 type="button"
-                onclick=self.props.onclick.clone()>
+                onclick=&self.props.onclick>
 
                 { self.icon() }
                 { self.props.label.clone() }
