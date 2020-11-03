@@ -24,6 +24,9 @@ web-sys = "0.3"
 
 log = "0.4"
 
+strum = "0.19"
+strum_macros = "0.19"
+
 [features]
 default = ["router"]
 router = ["yew-router"]
