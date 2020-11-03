@@ -10,6 +10,7 @@ pub enum Icon {
     AngleUp,
 
     Copy,
+    Cubes,
 
     InfoCircle,
 
@@ -23,32 +24,41 @@ pub enum Icon {
 
 impl Icon {
     pub fn as_html(&self) -> Html {
-        match self {
+        self.with_classes(Classes::new())
+    }
+
+    pub fn with_classes(&self, classes: Classes) -> Html {
+        let icon_classes = match self {
             Icon::AngleDown => fa("fa-angle-down"),
             Icon::AngleLeft => fa("fa-angle-left"),
             Icon::AngleRight => fa("fa-angle-right"),
             Icon::AngleUp => fa("fa-angle-up"),
 
             Icon::Copy => fa("fa-copy"),
+            Icon::Cubes => fa("fa-cubes"),
             Icon::InfoCircle => fa("fa-info-circle"),
 
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
             Icon::Times => fa("fa-times"),
 
             Icon::Help => pf("pf-icon-help"),
+        };
+
+        html! {
+            <i class=(icon_classes, classes) aria-hidden="true"></i>
         }
     }
 }
-fn fa(name: &str) -> Html {
+fn fa(name: &str) -> Classes {
     let mut classes = Classes::from("fas");
     classes.push(name);
-    return html! {<i class=classes aria-hidden="true"></i>};
+    classes
 }
 
-fn pf(name: &str) -> Html {
+fn pf(name: &str) -> Classes {
     let mut classes = Classes::from("pficon");
     classes.push(name);
-    return html! {<i class=classes aria-hidden="true"></i>};
+    classes
 }
 
 impl From<Icon> for VNode {
