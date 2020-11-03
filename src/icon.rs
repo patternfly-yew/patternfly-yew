@@ -11,6 +11,8 @@ pub enum Icon {
 
     Copy,
 
+    InfoCircle,
+
     PlusCircleIcon,
 
     Times,
@@ -28,6 +30,7 @@ impl Icon {
             Icon::AngleUp => fa("fa-angle-up"),
 
             Icon::Copy => fa("fa-copy"),
+            Icon::InfoCircle => fa("fa-info-circle"),
 
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
             Icon::Times => fa("fa-times"),
