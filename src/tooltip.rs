@@ -11,14 +11,13 @@ use crate::integration::popperjs;
 pub struct TooltipProps {
     pub children: Children,
     pub text: String,
-    #[prop_or_default]
-    pub active: bool,
 }
 
 pub struct Tooltip {
     props: TooltipProps,
     link: ComponentLink<Self>,
     node: NodeRef,
+    active: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -36,6 +35,7 @@ impl Component for Tooltip {
             props,
             link,
             node: NodeRef::default(),
+            active: false,
         }
     }
 
@@ -44,11 +44,11 @@ impl Component for Tooltip {
 
         match msg {
             TooltipMsg::Enter => {
-                self.props.active = true;
+                self.active = true;
                 true
             }
             TooltipMsg::Leave => {
-                self.props.active = false;
+                self.active = false;
                 true
             }
         }
@@ -69,7 +69,7 @@ impl Component for Tooltip {
 
         return html! {
             <>
-                <Popper<Tooltip> active=self.props.active content=self.props.clone()>
+                <Popper<Tooltip> active=self.active content=self.props.clone()>
                     <span onmouseenter=enter.clone() onmouseleave=leave.clone() ref=self.node.clone()>
                         { for self.props.children.iter() }
                     </span>
