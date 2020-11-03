@@ -20,6 +20,7 @@ pub enum Icon {
 
     // Patternfly
     Help,
+    Pending,
 }
 
 impl Icon {
@@ -42,6 +43,7 @@ impl Icon {
             Icon::Times => fa("fa-times"),
 
             Icon::Help => pf("pf-icon-help"),
+            Icon::Pending => pf("pf-icon-pending"),
         };
 
         html! {
