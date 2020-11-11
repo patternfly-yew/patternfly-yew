@@ -9,8 +9,14 @@ pub enum Icon {
     AngleRight,
     AngleUp,
 
+    Bell,
+
+    CheckCircle,
     Copy,
     Cubes,
+
+    ExclamationCircle,
+    ExclamationTriangle,
 
     InfoCircle,
 
@@ -35,8 +41,15 @@ impl Icon {
             Icon::AngleRight => fa("fa-angle-right"),
             Icon::AngleUp => fa("fa-angle-up"),
 
+            Icon::Bell => fa("fa-bell"),
+
+            Icon::CheckCircle => fa("fa-check-circle"),
             Icon::Copy => fa("fa-copy"),
             Icon::Cubes => fa("fa-cubes"),
+
+            Icon::ExclamationCircle => fa("fa-exclamation-circle"),
+            Icon::ExclamationTriangle => fa("fa-exclamation-triangle"),
+
             Icon::InfoCircle => fa("fa-info-circle"),
 
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
