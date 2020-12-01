@@ -4,7 +4,7 @@ use yew::prelude::*;
 #[derive(Debug, PartialEq, Eq, Clone, Properties)]
 pub struct TableColumnProps {
     #[prop_or_default]
-    pub label: String,
+    pub label: Option<String>,
 }
 
 #[derive(Clone, Debug)]
@@ -34,8 +34,13 @@ impl Component for TableColumn {
     }
 
     fn view(&self) -> Html {
-        return html! {
-            <th role="columnheader">{ &self.props.label }</th>
-        };
+        match &self.props.label {
+            None => html! {},
+            Some(label) => {
+                html! {
+                    <th role="columnheader">{ &label }</th>
+                }
+            }
+        }
     }
 }

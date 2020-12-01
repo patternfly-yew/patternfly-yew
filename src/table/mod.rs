@@ -339,7 +339,7 @@ where
             let cell = entry.render(ColumnIndex { index });
             let label = col.props.label;
             cells.push(html! {
-                <td role="cell" data-label=label>
+                <td role="cell" data-label=label.unwrap_or_default()>
                     {cell}
                 </td>
             });
