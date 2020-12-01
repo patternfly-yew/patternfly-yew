@@ -20,6 +20,7 @@ mod pagesection;
 mod pagesidebar;
 mod popover;
 mod popper;
+mod root;
 mod table;
 mod title;
 mod tooltip;
