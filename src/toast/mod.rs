@@ -1,58 +1,3 @@
-//! Toasts are small alerts that get shown on the top right corner of the page.
-//!
-//! A toast can be triggered by every component. The toast fill get sent to an agent, the Toaster.
-//! The toaster will delegate displaying the toast to an instance of a ToastViewer component.
-//!
-//! In order for Toasts being displayed your application must have exactly one ToastViewer **before**
-//! creating the first Toast.
-//!
-//! For example:
-//! ```
-//! # use yew::prelude::*;
-//! # use patternfly_yew::*;
-//! pub struct App{
-//!   link: ComponentLink<Self>
-//! };
-//! pub enum Msg {
-//!   Toast(Toast),
-//! }
-//! # impl Component for App {
-//! type Message = Msg;
-//! # type Properties = ();
-//! # fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-//! #   unimplemented!()
-//! # }
-//!
-//! fn update(&mut self, msg: Self::Message) -> bool {
-//!   match msg {
-//!     Msg::Toast(toast) => {
-//!       ToastDispatcher::new().toast(toast);
-//!       false
-//!     }
-//!   }
-//! }
-//!
-//! # fn change(&mut self,_props: Self::Properties) -> bool {
-//! #   unimplemented!()
-//! # }
-//!
-//! fn view(&self) -> Html {
-//!  html!{
-//!     <>
-//!       <ToastViewer/>
-//!       <div>
-//!         <button onclick=self.link.callback(|_|{
-//!             Msg::Toast("Toast Title".into())
-//!         })>
-//!           { "Click me" }  
-//!         </button>
-//!       </div>
-//!     </>
-//!   }
-//! }
-//! # }
-//! ```
-
 use crate::{Action, Alert, AlertGroup, Type};
 
 use chrono::{DateTime, Utc};
@@ -64,16 +9,73 @@ use yew::services::timeout::*;
 use yew::worker::*;
 use yew::{agent::Dispatcher, utils::window, virtual_dom::VChild};
 
-/// Definition of a toast.
+/// Toasts are small alerts that get shown on the top right corner of the page.
+///
+/// A toast can be triggered by every component. The toast fill get sent to an agent, the Toaster.
+/// The toaster will delegate displaying the toast to an instance of a ToastViewer component.
+///
+/// In order for Toasts to be displayed your application must have exactly one [ToastViewer](`ToastViewer`) **before**
+/// creating the first Toast.
+///
+/// For example:
+/// ```
+/// # use yew::prelude::*;
+/// # use patternfly_yew::*;
+/// pub struct App{
+///   link: ComponentLink<Self>
+/// };
+/// pub enum Msg {
+///   Toast(Toast),
+/// }
+/// # impl Component for App {
+/// type Message = Msg;
+/// # type Properties = ();
+/// # fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+/// #   unimplemented!()
+/// # }
+///
+/// fn update(&mut self, msg: Self::Message) -> bool {
+///   match msg {
+///     Msg::Toast(toast) => {
+///       ToastDispatcher::new().toast(toast);
+///       false
+///     }
+///   }
+/// }
+///
+/// # fn change(&mut self,_props: Self::Properties) -> bool {
+/// #   unimplemented!()
+/// # }
+///
+/// fn view(&self) -> Html {
+///  html!{
+///     <>
+///       <ToastViewer/>
+///       <div>
+///         <button onclick=self.link.callback(|_|{
+///             Msg::Toast("Toast Title".into())
+///         })>
+///           { "Click me" }  
+///         </button>
+///       </div>
+///     </>
+///   }
+/// }
+/// # }
+/// ```
 #[derive(Clone, Debug, Default)]
 pub struct Toast {
     pub title: String,
     pub r#type: Type,
+    /// The timeout when the toast will be removed automatically.
+    ///
+    /// If no timeout is set, the toast will get a close button.
     pub timeout: Option<Duration>,
     pub body: Html,
     pub actions: Vec<Action>,
 }
 
+/// Allows to convert a string into a toast by using the string as title.
 impl<S: ToString> From<S> for Toast {
     fn from(message: S) -> Self {
         Toast {
@@ -86,11 +88,13 @@ impl<S: ToString> From<S> for Toast {
     }
 }
 
+#[doc(hidden)]
 #[derive(Debug)]
 pub enum ToasterRequest {
     Toast(Toast),
 }
 
+#[doc(hidden)]
 pub enum ToastAction {
     ShowToast(Toast),
 }
@@ -157,6 +161,7 @@ impl Toaster {
     }
 }
 
+/// Client to the toast agent which can be used to request toasts.
 pub struct ToastDispatcher(Dispatcher<Toaster>);
 
 impl ToastDispatcher {
@@ -164,6 +169,7 @@ impl ToastDispatcher {
         ToastDispatcher(Toaster::dispatcher())
     }
 
+    /// Request a toast from the toast agent.
     pub fn toast(&mut self, toast: Toast) {
         self.0.send(ToasterRequest::Toast(toast))
     }
@@ -175,6 +181,10 @@ impl Default for ToastDispatcher {
     }
 }
 
+/// A client for implementing a toast viewer.
+///
+/// This is used by the (ToastViewer)[`ToastViewer`]. It is only needed if you want to implement
+/// your own toast viewer.
 pub struct ToastBridge(Box<dyn Bridge<Toaster>>);
 
 impl ToastBridge {
@@ -194,6 +204,9 @@ pub struct ToastEntry {
 }
 
 /// A component to view toast alerts.
+///
+/// Exactly one instance is required in your page in order to actually show the toasts. The instance
+/// must be on the body level of the HTML document.
 pub struct ToastViewer {
     props: Props,
     link: ComponentLink<Self>,
