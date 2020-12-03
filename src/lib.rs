@@ -20,9 +20,9 @@ mod pagesection;
 mod pagesidebar;
 mod popover;
 mod popper;
-mod root;
 mod table;
 mod title;
+mod toast;
 mod tooltip;
 mod utils;
 
@@ -48,5 +48,6 @@ pub use popover::*;
 pub use popper::*;
 pub use table::*;
 pub use title::*;
+pub use toast::*;
 pub use tooltip::*;
 pub use utils::*;

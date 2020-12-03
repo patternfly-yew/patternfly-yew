@@ -1,24 +1,6 @@
 use yew::prelude::*;
 
-use crate::{Button, Icon, Size, Title, Variant};
-
-#[derive(Clone, PartialEq, Default, Debug)]
-pub struct Action {
-    pub label: String,
-    pub callback: Callback<()>,
-}
-
-impl Action {
-    pub fn new<S>(label: S, callback: Callback<()>) -> Self
-    where
-        S: ToString,
-    {
-        Self {
-            label: label.to_string(),
-            callback,
-        }
-    }
-}
+use crate::{Action, Button, Icon, Size, Title, Variant};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

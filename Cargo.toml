@@ -22,6 +22,8 @@ yew-router = { version = "0.14", optional = true }
 js-sys = "0.3"
 web-sys = "0.3"
 
+chrono = { version = "0.4", features = ["wasmbind"] }
+
 log = "0.4"
 
 strum = "0.19"

@@ -1,4 +1,4 @@
-use crate::{Button, Icon, Variant};
+use crate::{Action, Button, Icon, Variant};
 
 use yew::prelude::*;
 
@@ -52,6 +52,8 @@ impl Type {
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
+    pub id: String,
+    #[prop_or_default]
     pub r#type: Type,
     pub title: String,
     #[prop_or_default]
@@ -60,6 +62,8 @@ pub struct Props {
     pub inline: bool,
     #[prop_or_default]
     pub truncate: bool,
+    #[prop_or_default]
+    pub actions: Vec<Action>,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
 }
@@ -104,8 +108,22 @@ impl Component for Alert {
 
         let t = self.props.r#type;
 
+        let actions = if self.props.actions.is_empty() {
+            html! {}
+        } else {
+            html! {
+                <div class="pf-c-alert__action-group">
+                    {for self.props.actions.iter().map(|action|{
+                        html!{
+                            <Button variant=Variant::InlineLink label=&action.label onclick=action.callback.reform(|_|())/>
+                        }
+                    })}
+                </div>
+            }
+        };
+
         return html! {
-            <div class=classes aria_label=t.aria_label()>
+            <div id=self.props.id class=classes aria_label=t.aria_label()>
                 <div class="pf-c-alert__icon">{ t.icon() }</div>
                 <div class="pf-c-alert__title">
                     <strong>
@@ -117,7 +135,9 @@ impl Component for Alert {
                 {
                     if let Some(onclose) = self.props.onclose.as_ref() {
                         html!{
-                            <Button variant=Variant::Plain icon=Icon::Times onclick=onclose.clone().reform(|_|())/>
+                            <div class="pf-c-alert__action">
+                                <Button variant=Variant::Plain icon=Icon::Times onclick=onclose.clone().reform(|_|())/>
+                            </div>
                         }
                     } else {
                         html!{}
@@ -136,6 +156,7 @@ impl Component for Alert {
                     }
                 }
 
+                { actions }
 
             </div>
         };
@@ -148,6 +169,8 @@ impl Component for Alert {
 pub struct GroupProps {
     #[prop_or_default]
     pub children: ChildrenWithProps<Alert>,
+    #[prop_or_default]
+    pub toast: bool,
 }
 
 pub struct AlertGroup {
@@ -176,10 +199,16 @@ impl Component for AlertGroup {
     }
 
     fn view(&self) -> Html {
+        let mut classes = Classes::from("pf-c-alert-group");
+
+        if self.props.toast {
+            classes.push("pf-m-toast");
+        }
+
         return html! {
-            <ul class="pf-c-alert-group">
+            <ul class=classes>
                 { for self.props.children.iter().map(|child|html_nested!{
-                    <li>
+                    <li class="pf-c-alert-group__item">
                         { child }
                     </li>
                 })}

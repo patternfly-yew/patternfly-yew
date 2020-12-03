@@ -10,6 +10,7 @@ pub enum Variant {
     Warning,
     Danger,
     Link,
+    InlineLink,
     Control,
     Plain,
 }
@@ -24,6 +25,7 @@ impl Variant {
             Variant::Warning => vec!["pf-m-warning"],
             Variant::Danger => vec!["pf-m-danger"],
             Variant::Link => vec!["pf-m-link"],
+            Variant::InlineLink => vec!["pf-m-link", "pf-m-inline"],
             Variant::Control => vec!["pf-m-control"],
             Variant::Plain => vec!["pf-m-plain"],
         }
