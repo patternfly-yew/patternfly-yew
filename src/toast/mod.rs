@@ -9,14 +9,17 @@
 //! For example:
 //! ```
 //! # use yew::prelude::*;
-//! pub struct App;
+//! # use patternfly_yew::*;
+//! pub struct App{
+//!   link: ComponentLink<Self>
+//! };
 //! pub enum Msg {
 //!   Toast(Toast),
 //! }
 //! # impl Component for App {
 //! type Message = Msg;
 //! # type Properties = ();
-//! # fn create(props: Self::Properties,link: ComponentLink<Self>) -> Self {
+//! # fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
 //! #   unimplemented!()
 //! # }
 //!
@@ -40,7 +43,9 @@
 //!       <div>
 //!         <button onclick=self.link.callback(|_|{
 //!             Msg::Toast("Toast Title".into())
-//!         })
+//!         })>
+//!           { "Click me" }  
+//!         </button>
 //!       </div>
 //!     </>
 //!   }
@@ -82,7 +87,7 @@ impl<S: ToString> From<S> for Toast {
 }
 
 #[derive(Debug)]
-pub enum Request {
+pub enum ToasterRequest {
     Toast(Toast),
 }
 
@@ -103,7 +108,7 @@ pub struct Toaster {
 impl Agent for Toaster {
     type Reach = Context<Self>;
     type Message = ();
-    type Input = Request;
+    type Input = ToasterRequest;
     type Output = ToastAction;
 
     fn create(link: AgentLink<Self>) -> Self {
@@ -123,7 +128,7 @@ impl Agent for Toaster {
 
     fn handle_input(&mut self, msg: Self::Input, _: HandlerId) {
         match msg {
-            Request::Toast(msg) => {
+            ToasterRequest::Toast(msg) => {
                 self.show_toast(msg);
             }
         }
@@ -160,7 +165,7 @@ impl ToastDispatcher {
     }
 
     pub fn toast(&mut self, toast: Toast) {
-        self.0.send(Request::Toast(toast))
+        self.0.send(ToasterRequest::Toast(toast))
     }
 }
 
