@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 mod alert;
+mod background;
 mod badge;
 mod bullseye;
 mod button;
@@ -13,6 +14,7 @@ mod gallery;
 mod icon;
 mod integration;
 mod label;
+mod login_page;
 mod logo;
 mod nav;
 mod page;
@@ -27,6 +29,7 @@ mod tooltip;
 mod utils;
 
 pub use alert::*;
+pub use background::*;
 pub use badge::*;
 pub use bullseye::*;
 pub use button::*;
@@ -39,6 +42,7 @@ pub use form::*;
 pub use gallery::*;
 pub use icon::*;
 pub use label::*;
+pub use login_page::*;
 pub use logo::*;
 pub use nav::*;
 pub use page::*;
