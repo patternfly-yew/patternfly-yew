@@ -11,7 +11,7 @@ pub struct Props {
     #[prop_or_default]
     pub sidebar: Option<VChild<PageSidebar>>,
     #[prop_or_default]
-    pub tools: Html,
+    pub tools: Children,
     #[prop_or_default]
     pub logo: Option<VChild<Logo>>,
 }
@@ -60,7 +60,7 @@ impl Component for Page {
                             self.props.logo.clone().map(Html::from).unwrap_or_default()
                         }</a>
                     </div>
-                    <div class="pf-c-page__header-tools"> { self.props.tools.clone() }</div>
+                    <div class="pf-c-page__header-tools"> { for self.props.tools.iter() }</div>
                 </header>
 
                 { self.props.sidebar.clone().map(Html::from).unwrap_or_default() }
