@@ -17,6 +17,7 @@ pub enum Icon {
 
     ExclamationCircle,
     ExclamationTriangle,
+    ExternalLinkAltIcon,
 
     InfoCircle,
 
@@ -49,6 +50,7 @@ impl Icon {
 
             Icon::ExclamationCircle => fa("fa-exclamation-circle"),
             Icon::ExclamationTriangle => fa("fa-exclamation-triangle"),
+            Icon::ExternalLinkAltIcon => fa("fa-external-link-alt"),
 
             Icon::InfoCircle => fa("fa-info-circle"),
 
