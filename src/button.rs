@@ -44,6 +44,12 @@ pub enum Align {
     End,
 }
 
+impl Default for Align {
+    fn default() -> Self {
+        Align::Start
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
@@ -57,7 +63,7 @@ pub struct Props {
     #[prop_or_default]
     pub icon: Option<Icon>,
     #[prop_or_default]
-    pub align: Option<Align>,
+    pub align: Align,
 
     #[prop_or_default]
     pub aria_label: Option<String>,
@@ -100,8 +106,7 @@ impl Component for Button {
                 type="button"
                 onclick=&self.props.onclick>
 
-                { self.icon() }
-                { self.props.label.clone() }
+                { self.label() }
 
             </button>
         };
@@ -109,13 +114,12 @@ impl Component for Button {
 }
 
 impl Button {
-    pub fn icon(&self) -> Html {
+    fn icon(&self) -> Html {
         let mut classes = Classes::from("pf-c-button__icon");
 
         match self.props.align {
-            Some(Align::Start) => classes.push("pf-m-start"),
-            Some(Align::End) => classes.push("pf-m-end"),
-            None => {}
+            Align::Start => classes.push("pf-m-start"),
+            Align::End => classes.push("pf-m-end"),
         }
 
         match self.props.icon {
@@ -125,6 +129,14 @@ impl Button {
                 </span>
             },
             None => html! {},
+        }
+    }
+
+    fn label(&self) -> Vec<Html> {
+        let label = self.props.label.clone().into();
+        match self.props.align {
+            Align::Start => vec![self.icon(), label],
+            Align::End => vec![label, self.icon()],
         }
     }
 }
