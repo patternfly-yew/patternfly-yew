@@ -18,7 +18,7 @@ impl Default for Level {
     }
 }
 
-#[derive(Clone, PartialEq, Properties)]
+#[derive(Clone, Debug, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
     pub children: Children,
