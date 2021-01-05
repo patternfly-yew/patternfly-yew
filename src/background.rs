@@ -29,7 +29,7 @@ impl Component for Background {
     }
 
     fn view(&self) -> Html {
-        // FIXME: something is still wrong here, the filter doesn't get applied.
+        // FIXME: something is still wrong here, the filter gets applied, but seems to have no effect
         html! {
             <div class="pf-c-background-image">
                 <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
