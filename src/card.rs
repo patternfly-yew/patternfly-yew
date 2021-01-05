@@ -17,6 +17,8 @@ pub struct Props {
     pub selectable: bool,
     #[prop_or_default]
     pub selected: bool,
+    #[prop_or_default]
+    pub onclick: Callback<yew::MouseEvent>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -69,7 +71,10 @@ impl Component for Card {
         }
 
         html! {
-            <div class=classes>
+            <div
+                class=classes
+                onclick=&self.props.onclick
+                >
                 { self.title() }
                 { for self.props.children.iter().map(|child|{
                     html_nested!{
