@@ -1,7 +1,10 @@
+use crate::Button;
 use yew::prelude::*;
+use yew::virtual_dom::VChild;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
+    #[prop_or_default]
     pub children: Children,
 }
 
@@ -155,6 +158,8 @@ pub struct TextInputProps {
     pub state: InputState,
     #[prop_or_default]
     pub icon: TextInputIcon,
+    #[prop_or("text".into())]
+    pub r#type: String,
 }
 
 pub struct TextInput {
@@ -169,11 +174,11 @@ impl Component for TextInput {
         Self { props }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
             self.props = props;
             true
@@ -204,7 +209,7 @@ impl Component for TextInput {
         html! {
             <input
                 class=classes
-                type="text"
+                type=self.props.r#type
                 name=self.props.name
                 required=self.props.required
                 disabled=self.props.disabled
@@ -212,6 +217,43 @@ impl Component for TextInput {
                 aria_invalid=aria_invalid
                 value=self.props.value
                 />
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct ActionGroupProps {
+    children: ChildrenWithProps<Button>,
+}
+
+pub struct ActionGroup {
+    props: ActionGroupProps,
+}
+
+impl Component for ActionGroup {
+    type Message = ();
+    type Properties = ActionGroupProps;
+
+    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+        Self { props }
+    }
+
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn view(&self) -> Html {
+        html! {
+            { for self.props.children.iter() }
         }
     }
 }

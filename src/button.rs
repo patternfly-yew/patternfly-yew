@@ -67,6 +67,9 @@ pub struct Props {
 
     #[prop_or_default]
     pub aria_label: Option<String>,
+
+    #[prop_or("button".into())]
+    pub r#type: String,
 }
 
 pub struct Button {
@@ -103,7 +106,7 @@ impl Component for Button {
             <button
                 id=&self.props.id
                 class=classes
-                type="button"
+                type=self.props.r#type
                 onclick=&self.props.onclick>
 
                 { self.label() }
