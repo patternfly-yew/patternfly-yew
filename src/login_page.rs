@@ -1,5 +1,4 @@
 use crate::Title;
-use yew::html::ChildrenRenderer;
 use yew::virtual_dom::VChild;
 use yew::Properties;
 use yew::{html, Children, Component, ComponentLink, Html};

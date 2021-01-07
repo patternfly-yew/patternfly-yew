@@ -1,6 +1,5 @@
 use crate::Button;
 use yew::prelude::*;
-use yew::virtual_dom::VChild;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
