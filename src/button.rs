@@ -70,6 +70,12 @@ pub struct Props {
 
     #[prop_or("button".into())]
     pub r#type: String,
+
+    #[prop_or_default]
+    pub expanded: bool,
+
+    #[prop_or_default]
+    pub children: Children,
 }
 
 pub struct Button {
@@ -102,6 +108,10 @@ impl Component for Button {
 
         classes = classes.extend(self.props.variant.as_classes());
 
+        if self.props.expanded {
+            classes.push("pf-m-expanded");
+        }
+
         return html! {
             <button
                 id=&self.props.id
@@ -110,6 +120,7 @@ impl Component for Button {
                 onclick=&self.props.onclick>
 
                 { self.label() }
+                { for self.props.children.iter() }
 
             </button>
         };
