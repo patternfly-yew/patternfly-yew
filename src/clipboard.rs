@@ -77,7 +77,7 @@ impl Component for Clipboard {
         html! {
             <div class="pf-c-clipboard-copy">
                 <div class="pf-c-clipboard-copy__group">
-                    <TextInput value=&self.props.value/>
+                    <TextInput readonly=self.props.readonly value=&self.props.value/>
                     <Tooltip text=self.message>
                         <Button variant=Variant::Control icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
                     </Tooltip>
