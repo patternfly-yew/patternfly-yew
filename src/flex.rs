@@ -1,3 +1,4 @@
+use crate::{AsClasses, SpaceItems, Spacer};
 use std::fmt::Debug;
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
@@ -127,10 +128,6 @@ where
     }
 }
 
-trait AsClasses {
-    fn as_classes(&self) -> Classes;
-}
-
 impl<T> AsClasses for Vec<WithBreakpoint<T>>
 where
     T: Clone + Debug + PartialEq + ToString,
@@ -201,12 +198,28 @@ impl Into<Html> for FlexChildVariant {
     }
 }
 
+pub trait ToFlexItems {
+    fn into_flex_items(self) -> Vec<VChild<FlexItem>>;
+}
+
+impl ToFlexItems for Vec<Html> {
+    fn into_flex_items(self) -> Vec<VChild<FlexItem>> {
+        self.into_iter()
+            .map(|html| html_nested! {<FlexItem> { html }</FlexItem>})
+            .collect()
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct FlexProps {
     #[prop_or_default]
     pub children: ChildrenRenderer<FlexChildVariant>,
     #[prop_or_default]
     pub modifiers: Vec<WithBreakpoint<FlexModifier>>,
+    #[prop_or_default]
+    pub spacer: Vec<WithBreakpoint<Spacer>>,
+    #[prop_or_default]
+    pub space_items: Vec<WithBreakpoint<SpaceItems>>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -239,6 +252,8 @@ impl Component for Flex {
         let mut classes = Classes::from("pf-l-flex");
 
         classes = classes.extend(self.props.modifiers.as_classes());
+        classes = classes.extend(self.props.space_items.as_classes());
+        classes = classes.extend(self.props.spacer.as_classes());
 
         return html! {
             <div class=classes>
@@ -256,6 +271,8 @@ pub struct FlexItemProps {
     pub children: Children,
     #[prop_or_default]
     pub modifiers: Vec<WithBreakpoint<FlexModifier>>,
+    #[prop_or_default]
+    pub spacer: Vec<WithBreakpoint<Spacer>>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -288,6 +305,7 @@ impl Component for FlexItem {
         let mut classes = Classes::from("pf-l-flex__item");
 
         classes = classes.extend(self.props.modifiers.as_classes());
+        classes = classes.extend(self.props.spacer.as_classes());
 
         return html! {
             <div class=classes>

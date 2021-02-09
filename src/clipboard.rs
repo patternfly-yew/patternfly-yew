@@ -119,6 +119,7 @@ impl Component for Clipboard {
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
+            self.value = props.value.clone();
             self.props = props;
             true
         } else {
@@ -204,6 +205,10 @@ impl Clipboard {
 
     /// Sync the value between internal, text field or details.
     fn sync_value(&mut self) {
+        if self.props.readonly {
+            return;
+        }
+
         let value = if !self.expanded {
             let ele: Option<HtmlInputElement> = self.text_ref.cast::<HtmlInputElement>();
             ele.map(|ele| ele.value()).unwrap_or_else(|| "".into())
