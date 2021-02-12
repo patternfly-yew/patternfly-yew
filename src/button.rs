@@ -66,6 +66,9 @@ pub struct Props {
     pub align: Align,
 
     #[prop_or_default]
+    pub disabled: bool,
+
+    #[prop_or_default]
     pub aria_label: Option<String>,
 
     #[prop_or("button".into())]
@@ -116,6 +119,7 @@ impl Component for Button {
             <button
                 id=&self.props.id
                 class=classes
+                disabled=self.props.disabled
                 type=self.props.r#type
                 onclick=&self.props.onclick>
 
