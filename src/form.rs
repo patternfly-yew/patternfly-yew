@@ -233,7 +233,9 @@ impl Component for TextInput {
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
             self.props = props;
-            self.value = self.props.value.clone();
+            if self.props.readonly {
+                self.value = self.props.value.clone();
+            }
             true
         } else {
             false
@@ -271,7 +273,7 @@ impl Component for TextInput {
                 disabled=self.props.disabled
                 readonly=self.props.readonly
                 aria-invalid=aria_invalid
-                value=self.props.value
+                value=self.value
                 placeholder=self.props.placeholder
                 onchange=onchange
                 oninput=oninput
