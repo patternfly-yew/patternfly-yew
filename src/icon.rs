@@ -21,6 +21,8 @@ pub enum Icon {
 
     InfoCircle,
 
+    Pause,
+    Play,
     PlusCircleIcon,
 
     Times,
@@ -54,6 +56,8 @@ impl Icon {
 
             Icon::InfoCircle => fa("fa-info-circle"),
 
+            Icon::Pause => fa("fa-pause"),
+            Icon::Play => fa("fa-play"),
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
             Icon::Times => fa("fa-times"),
 
