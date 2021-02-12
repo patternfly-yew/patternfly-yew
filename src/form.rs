@@ -173,6 +173,8 @@ pub struct TextInputProps {
     pub icon: TextInputIcon,
     #[prop_or("text".into())]
     pub r#type: String,
+    #[prop_or_default]
+    pub placeholder: String,
 
     #[prop_or_default]
     pub onchange: Callback<String>,
@@ -270,6 +272,7 @@ impl Component for TextInput {
                 readonly=self.props.readonly
                 aria-invalid=aria_invalid
                 value=self.props.value
+                placeholder=self.props.placeholder
                 onchange=onchange
                 oninput=oninput
                 />
