@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 mod alert;
+mod avatar;
 mod background;
 mod badge;
 mod bullseye;
@@ -32,6 +33,7 @@ mod utils;
 mod validator;
 
 pub use alert::*;
+pub use avatar::*;
 pub use background::*;
 pub use badge::*;
 pub use bullseye::*;
