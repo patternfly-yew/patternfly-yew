@@ -10,10 +10,18 @@ pub trait TableModel: Debug + Default + PartialEq + Clone {
 
     /// Get the number of items
     fn len(&self) -> usize;
+
+    /// Test if the table model is empty
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Test if the entry is expanded
     fn is_expanded(&self, index: usize) -> bool;
+
     /// Set the expanded state of the entry
     fn set_expanded(&mut self, index: usize, state: bool) -> ShouldRender;
+
     fn map<F, R>(&self, f: F) -> Vec<R>
     where
         F: Fn(&TableModelEntry<Self::Item>) -> R;
