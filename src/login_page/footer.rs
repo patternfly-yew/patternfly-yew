@@ -1,4 +1,3 @@
-use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
