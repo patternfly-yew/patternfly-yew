@@ -1,7 +1,9 @@
+pub mod footer;
+
 use crate::Title;
+pub use footer::*;
+use yew::prelude::*;
 use yew::virtual_dom::VChild;
-use yew::Properties;
-use yew::{html, Children, Component, ComponentLink, Html};
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct Props {
@@ -49,9 +51,7 @@ impl Component for Login {
                             html!{}
                         }
                     }
-                    <main class="pf-c-login__main">
-                        { for self.props.children.iter() }
-                    </main>
+                    { for self.props.children.iter() }
                     {
                         if !self.props.footer.is_empty() {
                             html!{ <footer class="pf-c-login__footer">{for self.props.footer.iter()}</footer> }
@@ -185,46 +185,6 @@ impl Component for LoginMainBody {
             <div class="pf-c-login__main-body">
                 { for self.props.children.iter() }
             </div>
-        }
-    }
-}
-
-pub struct LoginMainFooter {
-    props: LoginMainFooterProps,
-}
-
-#[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainFooterProps {
-    #[prop_or_default]
-    pub children: Children,
-}
-
-impl Component for LoginMainFooter {
-    type Message = ();
-    type Properties = LoginMainFooterProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <footer>
-                { for self.props.children.iter() }
-            </footer>
         }
     }
 }

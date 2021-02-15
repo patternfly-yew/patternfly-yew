@@ -1,7 +1,9 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {}
+pub struct Props {
+    pub filter: String,
+}
 
 pub struct Background {
     props: Props,
@@ -29,9 +31,18 @@ impl Component for Background {
     }
 
     fn view(&self) -> Html {
+        let styles = if self.props.filter.is_empty() {
+            String::new()
+        } else {
+            format!(
+                "--pf-c-background-image--Filter: {};",
+                self.props.filter.clone()
+            )
+        };
+
         // FIXME: something is still wrong here, the filter gets applied, but seems to have no effect
         html! {
-            <div class="pf-c-background-image">
+            <div class="pf-c-background-image" style=styles>
                 <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
                     <filter id="image_overlay">
                         <feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"></feColorMatrix>
