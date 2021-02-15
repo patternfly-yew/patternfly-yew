@@ -55,6 +55,9 @@ pub struct Props {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
+    pub class: Option<String>,
+
+    #[prop_or_default]
     pub label: String,
     #[prop_or_default]
     pub onclick: Callback<yew::MouseEvent>,
@@ -107,7 +110,13 @@ impl Component for Button {
     }
 
     fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-button");
+        let mut classes = Classes::from(
+            self.props
+                .class
+                .as_ref()
+                .map(|s| s.as_str())
+                .unwrap_or_else(|| "pf-c-button"),
+        );
 
         classes = classes.extend(self.props.variant.as_classes());
 
@@ -117,7 +126,7 @@ impl Component for Button {
 
         return html! {
             <button
-                id=&self.props.id
+                id=self.props.id
                 class=classes
                 disabled=self.props.disabled
                 type=self.props.r#type

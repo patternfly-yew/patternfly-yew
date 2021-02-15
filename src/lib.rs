@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 mod alert;
+mod app_launcher;
 mod avatar;
 mod background;
 mod badge;
@@ -34,6 +35,7 @@ mod utils;
 mod validator;
 
 pub use alert::*;
+pub use app_launcher::*;
 pub use avatar::*;
 pub use background::*;
 pub use badge::*;

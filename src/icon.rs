@@ -26,6 +26,7 @@ pub enum Icon {
     PlusCircleIcon,
 
     Times,
+    Th,
 
     // Patternfly
     Help,
@@ -59,7 +60,9 @@ impl Icon {
             Icon::Pause => fa("fa-pause"),
             Icon::Play => fa("fa-play"),
             Icon::PlusCircleIcon => fa("fa-plus-circle"),
+
             Icon::Times => fa("fa-times"),
+            Icon::Th => fa("fa-th"),
 
             Icon::Help => pf("pf-icon-help"),
             Icon::Pending => pf("pf-icon-pending"),
