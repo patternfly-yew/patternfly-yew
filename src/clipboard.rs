@@ -50,11 +50,14 @@ impl Default for ClipboardVariant {
 pub enum Msg {
     Copy,
     Copied,
+    Failed(&'static str),
     Reset,
     ToggleExpand,
 }
 
 const DEFAULT_MESSAGE: &'static str = "Copy to clipboard";
+const FAILED_MESSAGE: &'static str = "Failed to copy";
+const OK_MESSAGE: &'static str = "Copied!";
 
 pub struct Clipboard {
     props: Props,
@@ -98,12 +101,10 @@ impl Component for Clipboard {
                 self.do_copy();
             }
             Msg::Copied => {
-                // log::info!("Copied");
-                self.message = "Copied!";
-                self.task = Some(Box::new(TimeoutService::spawn(
-                    Duration::from_secs(2),
-                    self.link.callback(|_| Msg::Reset),
-                )));
+                self.trigger_message(OK_MESSAGE);
+            }
+            Msg::Failed(msg) => {
+                self.trigger_message(msg);
             }
             Msg::Reset => {
                 self.message = DEFAULT_MESSAGE;
@@ -150,15 +151,25 @@ impl Component for Clipboard {
 }
 
 impl Clipboard {
+    fn trigger_message(&mut self, msg: &'static str) {
+        self.message = msg;
+        self.task.take();
+        self.task = Some(Box::new(TimeoutService::spawn(
+            Duration::from_secs(2),
+            self.link.callback(|_| Msg::Reset),
+        )));
+    }
+
     fn do_copy(&self) {
         let s = self.value.clone();
 
-        let cb: Callback<()> = self.link.callback(|_| Msg::Copied);
+        let ok: Callback<()> = self.link.callback(|_| Msg::Copied);
+        let err: Callback<&'static str> = self.link.callback(|s| Msg::Failed(s));
 
         wasm_bindgen_futures::spawn_local(async move {
             match copy_to_clipboard(s).await {
-                Ok(_) => cb.emit(()),
-                Err(_) => {}
+                Ok(_) => ok.emit(()),
+                Err(_) => err.emit(FAILED_MESSAGE),
             };
         });
     }
@@ -224,7 +235,16 @@ impl Clipboard {
     }
 }
 
-#[wasm_bindgen(inline_js="export function copy_to_clipboard(value) {return window.navigator.clipboard.writeText(value);}")]
+#[wasm_bindgen(inline_js=r#"
+export function copy_to_clipboard(value) {
+    try {
+        return window.navigator.clipboard.writeText(value);
+    } catch(e) {
+        console.log(e);
+        return Promise.reject(e)
+    }
+}
+"#)]
 #[rustfmt::skip] // required to keep the "async" keyword
 extern "C" { 
     #[wasm_bindgen(catch)]
