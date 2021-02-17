@@ -79,7 +79,12 @@ impl Page {
 
         match &self.props.sidebar {
             Some(_) => html! {<div class="pf-c-page__header-brand-toggle">
-                <button class="pf-c-button pf-m-plain" type="button" onclick=click_callback>
+                <button
+                    aria-expanded=self.props.sidebar.as_ref().map(|sidebar|sidebar.props.open).unwrap_or(false)
+                    class="pf-c-button pf-m-plain"
+                    type="button"
+                    onclick=click_callback
+                    >
                     <i class="fas fa-bars" aria-hidden="true"/>
                 </button>
             </div>},

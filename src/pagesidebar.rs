@@ -36,12 +36,14 @@ impl Component for PageSidebar {
 
     fn view(&self) -> Html {
         let collapsed = match self.props.open {
-            true => vec![],
+            true => vec!["pf-m-expanded"],
             false => vec!["pf-m-collapsed"],
         };
 
         html! {
-            <div class=("pf-c-page__sidebar",collapsed)>
+            <div
+                aria-hidden=!self.props.open
+                class=("pf-c-page__sidebar",collapsed)>
                 <div class="pf-c-page__sidebar-body">
                     { for self.props.children.iter() }
                 </div>
