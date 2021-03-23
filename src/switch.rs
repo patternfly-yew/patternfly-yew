@@ -25,7 +25,6 @@ pub struct Props {
 
 pub struct Switch {
     props: Props,
-    link: ComponentLink<Self>,
 
     id: String,
 }
@@ -34,9 +33,9 @@ impl Component for Switch {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
         let id = props.id.as_ref().cloned().unwrap_or_else(|| random_id());
-        Self { props, link, id }
+        Self { props, id }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
@@ -59,8 +58,6 @@ impl Component for Switch {
     }
 
     fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-badge");
-
         html! {
             <label class="pf-c-switch" for=self.id>
                 <input
