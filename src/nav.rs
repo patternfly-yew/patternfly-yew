@@ -1,3 +1,4 @@
+use crate::Icon;
 use yew::prelude::*;
 
 const LOG_TARGET: &'static str = "naw";
@@ -221,6 +222,7 @@ where
     SWITCH: Switch + Clone + PartialEq + Debug + 'static,
 {
     props: NavRouterItemProps<SWITCH>,
+    active: bool,
     _router: RouteAgentBridge,
 }
 
@@ -244,10 +246,12 @@ where
         let callback = link.callback(|route: yew_router::route::Route| {
             NavRouterMsg::RouteChange(Switch::switch(route))
         });
+        let active = props.active;
         let mut bridge = RouteAgentBridge::new(callback);
         bridge.send(GetCurrentRoute);
         Self {
             props,
+            active,
             _router: bridge,
         }
     }
@@ -266,7 +270,7 @@ where
                         .map(|s| s.to_string())
                         .unwrap_or_else(|| "<none>".into())
                 );
-                self.props.active = route
+                self.active = route
                     .as_ref()
                     .map(|sw| sw == &self.props.to)
                     .unwrap_or_default();
@@ -286,7 +290,7 @@ where
 
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-nav__link");
-        if self.props.active {
+        if self.active {
             classes.push("pf-m-current");
         }
 
@@ -297,5 +301,93 @@ where
                 </RouterAnchor<SWITCH>>
             </li>
         }
+    }
+}
+
+// nav group
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct NavExpandableProps {
+    #[prop_or_default]
+    pub children: Children,
+    #[prop_or_default]
+    pub title: String,
+    #[prop_or_default]
+    pub expanded: bool,
+}
+
+/// Expandable navigation group/section.
+pub struct NavExpandable {
+    props: NavExpandableProps,
+    link: ComponentLink<Self>,
+
+    expanded: bool,
+}
+
+#[derive(Clone, Debug)]
+pub enum MsgExpandable {
+    Clicked,
+}
+
+impl Component for NavExpandable {
+    type Message = MsgExpandable;
+    type Properties = NavExpandableProps;
+
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let expanded = props.expanded;
+        Self {
+            props,
+            link,
+            expanded,
+        }
+    }
+
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            MsgExpandable::Clicked => {
+                self.expanded = !self.expanded;
+            }
+        }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn view(&self) -> Html {
+        let mut classes = Classes::from("pf-c-nav__item pf-c-expandable");
+
+        if self.expanded {
+            classes.push("pf-m-expanded");
+        }
+
+        return html! {
+            <li class=classes>
+                <button
+                    class="pf-c-nav__link"
+                    aria-expanded=self.expanded
+                    onclick=self.link.callback(|_|MsgExpandable::Clicked)
+                    >
+                    { &self.props.title }
+                    <span class="pf-c-nav__toggle">
+                        <span class="pf-c-nav__toggle-icon">
+                            { Icon::AngleRight }
+                        </span>
+                    </span>
+                </button>
+
+                <section class="pf-c-nav__subnav" hidden=!self.expanded>
+                    <NavList>
+                        { for self.props.children.iter() }
+                    </NavList>
+                </section>
+            </li>
+        };
     }
 }
