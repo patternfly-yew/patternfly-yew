@@ -11,6 +11,7 @@ pub enum Icon {
 
     Bell,
 
+    Check,
     CheckCircle,
     Copy,
     Cubes,
@@ -47,6 +48,7 @@ impl Icon {
 
             Icon::Bell => fa("fa-bell"),
 
+            Icon::Check => fa("fa-check"),
             Icon::CheckCircle => fa("fa-check-circle"),
             Icon::Copy => fa("fa-copy"),
             Icon::Cubes => fa("fa-cubes"),

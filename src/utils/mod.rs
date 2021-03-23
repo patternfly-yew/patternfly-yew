@@ -11,3 +11,7 @@ pub use classes::*;
 pub use orientation::*;
 pub use size::*;
 pub use space::*;
+
+pub fn random_id() -> String {
+    uuid::Uuid::new_v4().to_string()
+}

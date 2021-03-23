@@ -29,6 +29,8 @@ log = "0.4"
 strum = "0.19"
 strum_macros = "0.19"
 
+uuid = { version = "0.8", features = ["v4", "wasm-bindgen"] }
+
 [features]
 default = ["router"]
 router = ["yew-router"]
