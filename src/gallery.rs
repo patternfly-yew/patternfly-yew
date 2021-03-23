@@ -41,7 +41,7 @@ impl Component for Gallery {
         }
 
         return html! {
-            <div class=("pf-l-gallery",classes)>
+            <div class=classes>
             { for self.props.children.iter().map(|child|{
                 html_nested!{
                     <div class="pf-l-gallery__item">
