@@ -3,7 +3,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
-    pub children: ChildrenWithProps<StackItem>,
+    pub children: Children,
     #[prop_or_default]
     pub gutter: bool,
 }
