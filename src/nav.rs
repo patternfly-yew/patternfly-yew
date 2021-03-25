@@ -1,9 +1,11 @@
 use crate::Icon;
+use std::fmt::Debug;
 use yew::prelude::*;
 
-const LOG_TARGET: &'static str = "naw";
+const LOG_TARGET: &'static str = "nav";
 
-use std::fmt::Debug;
+use std::collections::HashMap;
+
 #[cfg(feature = "router")]
 use yew_router::{
     agent::RouteRequest::GetCurrentRoute, components::RouterAnchor, prelude::RouteAgentBridge,
@@ -213,6 +215,9 @@ where
     pub to: SWITCH,
     #[prop_or_default]
     pub active: bool,
+
+    #[prop_or_default]
+    pub on_active: Callback<bool>,
 }
 
 /// A navigation item, using the Router.
@@ -226,6 +231,7 @@ where
     _router: RouteAgentBridge,
 }
 
+#[cfg(feature = "router")]
 #[derive(Clone)]
 pub enum NavRouterMsg<SWITCH>
 where
@@ -274,6 +280,8 @@ where
                     .as_ref()
                     .map(|sw| sw == &self.props.to)
                     .unwrap_or_default();
+
+                self.props.on_active.emit(self.active);
             }
         }
         true
@@ -290,17 +298,18 @@ where
 
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-nav__link");
+
         if self.active {
             classes.push("pf-m-current");
         }
 
-        html! {
+        return html! {
             <li class="pf-c-nav__item">
                 <RouterAnchor<SWITCH> route=self.props.to.clone() classes=classes.to_string()>
                     { for self.props.children.iter() }
                 </RouterAnchor<SWITCH>>
             </li>
-        }
+        };
     }
 }
 
@@ -321,12 +330,12 @@ pub struct NavExpandable {
     props: NavExpandableProps,
     link: ComponentLink<Self>,
 
-    expanded: bool,
+    expanded: Option<bool>,
 }
 
 #[derive(Clone, Debug)]
 pub enum MsgExpandable {
-    Clicked,
+    Toggle,
 }
 
 impl Component for NavExpandable {
@@ -334,7 +343,11 @@ impl Component for NavExpandable {
     type Properties = NavExpandableProps;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let expanded = props.expanded;
+        let expanded = match props.expanded {
+            true => Some(true),
+            false => None,
+        };
+
         Self {
             props,
             link,
@@ -344,8 +357,8 @@ impl Component for NavExpandable {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            MsgExpandable::Clicked => {
-                self.expanded = !self.expanded;
+            MsgExpandable::Toggle => {
+                self.expanded = Some(!self.is_expanded());
             }
         }
         true
@@ -354,6 +367,9 @@ impl Component for NavExpandable {
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
             self.props = props;
+            if self.props.expanded {
+                self.expanded = Some(true);
+            }
             true
         } else {
             false
@@ -363,7 +379,9 @@ impl Component for NavExpandable {
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-nav__item pf-c-expandable");
 
-        if self.expanded {
+        let expanded = self.is_expanded();
+
+        if expanded {
             classes.push("pf-m-expanded");
         }
 
@@ -371,8 +389,8 @@ impl Component for NavExpandable {
             <li class=classes>
                 <button
                     class="pf-c-nav__link"
-                    aria-expanded=self.expanded
-                    onclick=self.link.callback(|_|MsgExpandable::Clicked)
+                    aria-expanded=expanded
+                    onclick=self.link.callback(|_|MsgExpandable::Toggle)
                     >
                     { &self.props.title }
                     <span class="pf-c-nav__toggle">
@@ -382,12 +400,100 @@ impl Component for NavExpandable {
                     </span>
                 </button>
 
-                <section class="pf-c-nav__subnav" hidden=!self.expanded>
+                <section class="pf-c-nav__subnav" hidden=!expanded>
                     <NavList>
                         { for self.props.children.iter() }
                     </NavList>
                 </section>
             </li>
+        };
+    }
+}
+
+impl NavExpandable {
+    fn is_expanded(&self) -> bool {
+        self.expanded.unwrap_or(self.props.expanded)
+    }
+}
+
+// nav router group
+
+#[cfg(feature = "router")]
+#[derive(Clone, Properties)]
+pub struct NavRouterExpandableProps<SWITCH>
+where
+    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+{
+    #[prop_or_default]
+    pub children: ChildrenWithProps<NavRouterItem<SWITCH>>,
+    #[prop_or_default]
+    pub title: String,
+}
+
+/// A navigation item, using the Router.
+#[cfg(feature = "router")]
+pub struct NavRouterExpandable<SWITCH>
+where
+    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+{
+    props: NavRouterExpandableProps<SWITCH>,
+    link: ComponentLink<Self>,
+
+    state: HashMap<usize, bool>,
+    active: bool,
+}
+
+#[cfg(feature = "router")]
+#[derive(Clone)]
+pub enum NavRouterExpandableMsg {
+    ChildActive(usize, bool),
+}
+
+#[cfg(feature = "router")]
+impl<SWITCH> Component for NavRouterExpandable<SWITCH>
+where
+    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+{
+    type Message = NavRouterExpandableMsg;
+    type Properties = NavRouterExpandableProps<SWITCH>;
+
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self {
+            props,
+            link,
+            state: HashMap::new(),
+            active: false,
+        }
+    }
+
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Self::Message::ChildActive(idx, active) => {
+                self.state.insert(idx, active);
+                self.active = self.state.iter().any(|(_, v)| *v);
+            }
+        }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
+    fn view(&self) -> Html {
+        return html! {
+            <NavExpandable
+                title=&self.props.title
+                expanded=&self.active
+                >
+                { for self.props.children.iter().enumerate().map(|(i, mut c)|{
+                    c.props.on_active = self
+            .link
+            .callback(move |active| NavRouterExpandableMsg::ChildActive(i, active));
+                    c
+                }) }
+            </NavExpandable>
         };
     }
 }
