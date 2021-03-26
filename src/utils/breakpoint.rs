@@ -4,6 +4,8 @@
 
 use crate::AsClasses;
 use std::fmt::Debug;
+use std::ops::Deref;
+use yew::virtual_dom::Transformer;
 use yew::Classes;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -21,8 +23,42 @@ pub struct WithBreakpoint<T>
 where
     T: Clone + Debug + PartialEq,
 {
-    modifier: T,
-    on: Breakpoint,
+    pub modifier: T,
+    pub on: Breakpoint,
+}
+
+impl<T> WithBreakpoint<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    pub fn map<R, F>(&self, f: F) -> WithBreakpoint<R>
+    where
+        R: Clone + Debug + PartialEq,
+        F: Fn(&T) -> R,
+    {
+        WithBreakpoint {
+            on: self.on,
+            modifier: f(&self.modifier),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
+where
+    T: Clone + Debug + PartialEq;
+
+impl<T> WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    pub fn mapped<R, F>(&self, f: F) -> WithBreakpoints<R>
+    where
+        R: Clone + Debug + PartialEq,
+        F: Fn(&T) -> R,
+    {
+        WithBreakpoints(self.0.iter().map(|i| i.map(|m| f(m))).collect::<Vec<_>>())
+    }
 }
 
 impl ToString for Breakpoint {
@@ -101,10 +137,28 @@ where
     T: Clone + Debug + PartialEq + ToString,
 {
     fn as_classes(&self) -> Classes {
-        self.iter()
-            .map(|b| b.to_string())
-            .collect::<String>()
-            .into()
+        Classes::from(self.iter().map(|b| b.to_string()).collect::<Vec<_>>())
+    }
+}
+
+impl<T> From<WithBreakpoints<T>> for Classes
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn from(modifiers: WithBreakpoints<T>) -> Self {
+        let mods: Vec<_> = modifiers.0.into_iter().map(|b| b.to_string()).collect();
+        Classes::from(mods)
+    }
+}
+
+impl<T> Deref for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    type Target = Vec<WithBreakpoint<T>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
@@ -117,5 +171,59 @@ where
             on: Breakpoint::None,
             modifier,
         }
+    }
+}
+
+impl<T> From<WithBreakpoint<T>> for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn from(modifier: WithBreakpoint<T>) -> Self {
+        WithBreakpoints(vec![modifier])
+    }
+}
+
+impl<T> From<T> for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn from(modifier: T) -> Self {
+        WithBreakpoints(vec![modifier.into()])
+    }
+}
+
+impl<T> Transformer<(T,), WithBreakpoint<T>> for yew::virtual_dom::VComp
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn transform(from: (T,)) -> WithBreakpoint<T> {
+        from.0.into()
+    }
+}
+
+impl<T> Transformer<(T,), WithBreakpoints<T>> for yew::virtual_dom::VComp
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn transform(from: (T,)) -> WithBreakpoints<T> {
+        WithBreakpoints(vec![from.0.into()])
+    }
+}
+
+impl<T, const N: usize> Transformer<[T; N], WithBreakpoints<T>> for yew::virtual_dom::VComp
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn transform(from: [T; N]) -> WithBreakpoints<T> {
+        WithBreakpoints(from.iter().map(|i| i.clone().into()).collect::<Vec<_>>())
+    }
+}
+
+impl<T> Transformer<&[T], WithBreakpoints<T>> for yew::virtual_dom::VComp
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn transform(from: &[T]) -> WithBreakpoints<T> {
+        WithBreakpoints(from.iter().map(|i| i.clone().into()).collect::<Vec<_>>())
     }
 }
