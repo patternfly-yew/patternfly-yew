@@ -49,6 +49,7 @@ impl Component for Form {
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormGroupProps {
     pub children: Children,
+    #[prop_or_default]
     pub label: String,
     #[prop_or_default]
     pub required: bool,
@@ -87,19 +88,27 @@ impl Component for FormGroup {
         html! {
             <div class=classes>
                 <div class="pf-c-form__group-label">
-                    <div class="pf-c-form__label">
-                        <span class="pf-c-form__label-text">{&self.props.label}</span>
 
-                        {if self.props.required {
-                            html!{
-                                <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
-                            }
-                        } else {
-                            html!{}
-                        }}
+                    {if !self.props.label.is_empty() {
+                        html!{
+                            <div class="pf-c-form__label">
+                                <span class="pf-c-form__label-text">{&self.props.label}</span>
 
-                    </div>
+                                {if self.props.required {
+                                    html!{
+                                        <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
+                                    }
+                                } else {
+                                    html!{}
+                                }}
+
+                            </div>
+                        }
+                    } else {
+                        html!{}
+                    }}
                 </div>
+
                 <div class="pf-c-form__group-control">
                     { for self.props.children.iter() }
                     { if !self.props.helper_text.is_empty() {html!{
