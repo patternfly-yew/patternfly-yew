@@ -153,6 +153,8 @@ pub struct NavItemProps {
     pub children: Children,
     #[prop_or_default]
     pub to: String,
+    #[prop_or_default]
+    pub target: String,
 }
 
 /// A navigation item (link).
@@ -184,7 +186,11 @@ impl Component for NavItem {
     fn view(&self) -> Html {
         html! {
             <li class="pf-c-nav__item">
-                <a href=self.get_href() class="pf-c-nav__link">
+                <a
+                    href=self.get_href()
+                    class="pf-c-nav__link"
+                    target=self.props.target
+                >
                     { for self.props.children.iter() }
                 </a>
             </li>
