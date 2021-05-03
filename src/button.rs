@@ -56,6 +56,8 @@ pub struct Props {
     pub id: String,
     #[prop_or_default]
     pub class: Option<String>,
+    #[prop_or_default]
+    pub style: Option<String>,
 
     #[prop_or_default]
     pub label: String,
@@ -128,6 +130,7 @@ impl Component for Button {
             <button
                 id=self.props.id
                 class=classes
+                style=self.props.style.as_ref().cloned().unwrap_or_default()
                 disabled=self.props.disabled
                 type=self.props.r#type
                 onclick=&self.props.onclick>

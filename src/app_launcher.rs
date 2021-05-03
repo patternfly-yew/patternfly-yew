@@ -1,4 +1,4 @@
-use crate::{AsClasses, Button, Icon};
+use crate::{AsClasses, Button, Divider, Icon};
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 use yew::virtual_dom::{VChild, VComp};
@@ -143,7 +143,7 @@ impl AppLauncher {
 #[derive(Clone, PartialEq)]
 pub enum AppLauncherChild {
     Item(<AppLauncherItem as Component>::Properties),
-    Divider(<AppLauncherDivider as Component>::Properties),
+    Divider(<Divider as Component>::Properties),
 }
 
 impl From<AppLauncherItemProps> for AppLauncherChild {
@@ -152,9 +152,9 @@ impl From<AppLauncherItemProps> for AppLauncherChild {
     }
 }
 
-impl From<AppLauncherDividerProps> for AppLauncherChild {
-    fn from(props: AppLauncherDividerProps) -> Self {
-        AppLauncherChild::Divider(props)
+impl From<()> for AppLauncherChild {
+    fn from(_: ()) -> Self {
+        AppLauncherChild::Divider(())
     }
 }
 
@@ -182,7 +182,7 @@ impl Into<Html> for AppLauncherChildVariant {
                 VComp::new::<AppLauncherItem>(props, NodeRef::default(), None).into()
             }
             AppLauncherChild::Divider(props) => {
-                VComp::new::<AppLauncherDivider>(props, NodeRef::default(), None).into()
+                VComp::new::<Divider>(props, NodeRef::default(), None).into()
             }
         }
     }

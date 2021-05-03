@@ -11,11 +11,15 @@ pub enum Icon {
 
     Bell,
 
+    CaretDown,
+    CaretUp,
     Check,
     CheckCircle,
     Copy,
     Cubes,
 
+    EllipsisH,
+    EllipsisV,
     ExclamationCircle,
     ExclamationTriangle,
     ExternalLinkAltIcon,
@@ -48,11 +52,15 @@ impl Icon {
 
             Icon::Bell => fa("fa-bell"),
 
+            Icon::CaretDown => fa("fa-caret-down"),
+            Icon::CaretUp => fa("fa-caret-up"),
             Icon::Check => fa("fa-check"),
             Icon::CheckCircle => fa("fa-check-circle"),
             Icon::Copy => fa("fa-copy"),
             Icon::Cubes => fa("fa-cubes"),
 
+            Icon::EllipsisH => fa("fa-ellipsis-h"),
+            Icon::EllipsisV => fa("fa-ellipsis-v"),
             Icon::ExclamationCircle => fa("fa-exclamation-circle"),
             Icon::ExclamationTriangle => fa("fa-exclamation-triangle"),
             Icon::ExternalLinkAltIcon => fa("fa-external-link-alt"),
