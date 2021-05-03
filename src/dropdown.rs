@@ -267,6 +267,8 @@ pub struct DropdownItemProps {
     #[prop_or_default]
     pub href: String,
     #[prop_or_default]
+    pub target: String,
+    #[prop_or_default]
     pub onclick: Option<Callback<()>>,
 }
 
@@ -310,6 +312,7 @@ impl Component for DropdownItem {
             html! {
                 <a
                     class="pf-c-dropdown__menu-item"
+                    target=self.props.target.clone()
                     href=self.props.href.clone()>{ for self.props.children.iter() }</a>
             }
         };

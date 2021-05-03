@@ -198,6 +198,8 @@ pub struct AppLauncherItemProps {
     pub href: String,
     #[prop_or_default]
     pub onclick: Option<Callback<()>>,
+    #[prop_or_default]
+    pub external: bool,
 }
 
 #[derive(Clone, PartialEq)]
@@ -237,10 +239,33 @@ impl Component for AppLauncherItem {
                 </Button>
             }
         } else {
+            let mut classes = Classes::from("pf-c-app-launcher__menu-item");
+
+            let target = if self.props.external {
+                classes.push("pf-m-external");
+                "_blank"
+            } else {
+                ""
+            };
+
             html! {
                 <a
-                    class="pf-c-app-launcher__menu-item"
-                    href=self.props.href.clone()>{ for self.props.children.iter() }</a>
+                    class=classes
+                    target=target
+                    href=self.props.href.clone()>
+
+                { for self.props.children.iter() }
+
+                { if self.props.external {html!{
+                    <>
+                    <span class="pf-c-app-launcher__menu-item-external-icon">
+                        { Icon::ExternalLinkAlt }
+                    </span>
+                    <span class="pf-screen-reader">{"(opens new window)"}</span>
+                    </>
+                }} else {html!{}} }
+
+                </a>
             }
         };
 

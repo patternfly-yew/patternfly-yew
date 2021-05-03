@@ -22,7 +22,9 @@ pub enum Icon {
     EllipsisV,
     ExclamationCircle,
     ExclamationTriangle,
+    #[deprecated(since = "0.0.20", note = "Use Icon::ExternalLinkAlt instead")]
     ExternalLinkAltIcon,
+    ExternalLinkAlt,
 
     InfoCircle,
 
@@ -63,7 +65,9 @@ impl Icon {
             Icon::EllipsisV => fa("fa-ellipsis-v"),
             Icon::ExclamationCircle => fa("fa-exclamation-circle"),
             Icon::ExclamationTriangle => fa("fa-exclamation-triangle"),
+            #[allow(deprecated)]
             Icon::ExternalLinkAltIcon => fa("fa-external-link-alt"),
+            Icon::ExternalLinkAlt => fa("fa-external-link-alt"),
 
             Icon::InfoCircle => fa("fa-info-circle"),
 
