@@ -7,6 +7,7 @@ pub use header::*;
 pub use model::*;
 
 use crate::icon::Icon;
+use crate::AsClasses;
 use std::fmt::Debug;
 use yew::prelude::*;
 use yew::virtual_dom::vnode::VNode::VComp;
@@ -63,6 +64,14 @@ pub struct ColumnIndex {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SpanModifiers {
     Truncate,
+}
+
+impl AsClasses for SpanModifiers {
+    fn as_classes(&self) -> Classes {
+        match self {
+            Self::Truncate => Classes::from("pf-m-truncate"),
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -284,8 +293,10 @@ where
         }
 
         for cell in entry.value.render_details() {
+            let mut classes = Classes::new();
+            classes = classes.extend(cell.modifiers.as_classes());
             cells.push(html! {
-                <td role="cell" colspan={cell.cols}>
+                <td class=classes role="cell" colspan={cell.cols}>
                     <div class="pf-c-table__expandable-row-content">
                         { cell.content }
                     </div>

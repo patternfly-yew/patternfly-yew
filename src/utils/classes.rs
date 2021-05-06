@@ -9,3 +9,16 @@ impl AsClasses for dyn ToString {
         Classes::from(self.to_string())
     }
 }
+
+impl<T> AsClasses for Vec<T>
+where
+    T: AsClasses,
+{
+    fn as_classes(&self) -> Classes {
+        let mut result = Classes::new();
+        for i in self {
+            result = result.extend(i.as_classes());
+        }
+        result
+    }
+}
