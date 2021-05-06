@@ -60,10 +60,16 @@ pub struct ColumnIndex {
     pub index: usize,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SpanModifiers {
+    Truncate,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Span {
     pub cols: usize,
     pub content: Html,
+    pub modifiers: Vec<SpanModifiers>,
 }
 
 impl Span {
@@ -71,13 +77,19 @@ impl Span {
         Self {
             cols: 1,
             content: html,
+            modifiers: Vec::new(),
         }
     }
     pub fn max(html: Html) -> Self {
         Self {
             cols: usize::MAX,
             content: html,
+            modifiers: Vec::new(),
         }
+    }
+    pub fn truncate(mut self) -> Self {
+        self.modifiers.push(SpanModifiers::Truncate);
+        self
     }
 }
 
