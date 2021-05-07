@@ -1,43 +1,56 @@
+use crate::AsClasses;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Icon {
-    // Font Awesome
-    AngleDown,
-    AngleLeft,
-    AngleRight,
-    AngleUp,
+macro_rules! icons {
+    ($($n:ident => $e:expr),* $(,)?) => {
+        #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+        pub enum Icon {
+            $($n),*
+        }
 
-    Bell,
+        impl AsClasses for Icon {
+            fn as_classes(&self) -> Classes {
+                match self {
+                    $(Self::$n => $e),*
+                }
+            }
+        }
+    };
+}
 
-    CaretDown,
-    CaretUp,
-    Check,
-    CheckCircle,
-    Copy,
-    Cubes,
+icons! {
+    AngleDown => fa("fa-angle-down"),
+    AngleLeft => fa("fa-angle-left"),
+    AngleRight => fa("fa-angle-right"),
+    AngleUp => fa("fa-angle-up"),
 
-    EllipsisH,
-    EllipsisV,
-    ExclamationCircle,
-    ExclamationTriangle,
-    #[deprecated(since = "0.0.20", note = "Use Icon::ExternalLinkAlt instead")]
-    ExternalLinkAltIcon,
-    ExternalLinkAlt,
+    Bell => fa("fa-bell"),
 
-    InfoCircle,
+    CaretDown => fa("fa-caret-down"),
+    CaretUp => fa("fa-caret-up"),
+    Check => fa("fa-check"),
+    CheckCircle => fa("fa-check-circle"),
+    Copy => fa("fa-copy"),
+    Cubes => fa("fa-cubes"),
 
-    Pause,
-    Play,
-    PlusCircleIcon,
+    EllipsisH => fa("fa-ellipsis-h"),
+    EllipsisV => fa("fa-ellipsis-v"),
+    ExclamationCircle => fa("fa-exclamation-circle"),
+    ExclamationTriangle => fa("fa-exclamation-triangle"),
+    ExternalLinkAlt => fa("fa-external-link-alt"),
 
-    Times,
-    Th,
+    InfoCircle => fa("fa-info-circle"),
 
-    // Patternfly
-    Help,
-    Pending,
+    Pause => fa("fa-pause"),
+    Play => fa("fa-play"),
+    PlusCircleIcon => fa("fa-plus-circle"),
+
+    Times => fa("fa-times"),
+    Th => fa("fa-th"),
+
+    Help => pf("pf-icon-help"),
+    Pending => pf("pf-icon-pending")
 }
 
 impl Icon {
@@ -46,55 +59,24 @@ impl Icon {
     }
 
     pub fn with_classes(&self, classes: Classes) -> Html {
-        let icon_classes = match self {
-            Icon::AngleDown => fa("fa-angle-down"),
-            Icon::AngleLeft => fa("fa-angle-left"),
-            Icon::AngleRight => fa("fa-angle-right"),
-            Icon::AngleUp => fa("fa-angle-up"),
-
-            Icon::Bell => fa("fa-bell"),
-
-            Icon::CaretDown => fa("fa-caret-down"),
-            Icon::CaretUp => fa("fa-caret-up"),
-            Icon::Check => fa("fa-check"),
-            Icon::CheckCircle => fa("fa-check-circle"),
-            Icon::Copy => fa("fa-copy"),
-            Icon::Cubes => fa("fa-cubes"),
-
-            Icon::EllipsisH => fa("fa-ellipsis-h"),
-            Icon::EllipsisV => fa("fa-ellipsis-v"),
-            Icon::ExclamationCircle => fa("fa-exclamation-circle"),
-            Icon::ExclamationTriangle => fa("fa-exclamation-triangle"),
-            #[allow(deprecated)]
-            Icon::ExternalLinkAltIcon => fa("fa-external-link-alt"),
-            Icon::ExternalLinkAlt => fa("fa-external-link-alt"),
-
-            Icon::InfoCircle => fa("fa-info-circle"),
-
-            Icon::Pause => fa("fa-pause"),
-            Icon::Play => fa("fa-play"),
-            Icon::PlusCircleIcon => fa("fa-plus-circle"),
-
-            Icon::Times => fa("fa-times"),
-            Icon::Th => fa("fa-th"),
-
-            Icon::Help => pf("pf-icon-help"),
-            Icon::Pending => pf("pf-icon-pending"),
-        };
+        let icon_classes = self.as_classes();
 
         html! {
             <i class=(icon_classes, classes) aria-hidden="true"></i>
         }
     }
 }
+
 fn fa(name: &str) -> Classes {
-    let mut classes = Classes::from("fas");
+    let mut classes = Classes::new();
+    classes.push("fas");
     classes.push(name);
     classes
 }
 
 fn pf(name: &str) -> Classes {
-    let mut classes = Classes::from("pficon");
+    let mut classes = Classes::new();
+    classes.push("pficon");
     classes.push(name);
     classes
 }
