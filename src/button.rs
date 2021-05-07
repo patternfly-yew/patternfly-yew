@@ -1,5 +1,6 @@
 use crate::Icon;
 use yew::prelude::*;
+use yew::web_sys::HtmlElement;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Variant {
@@ -88,17 +89,34 @@ pub struct Props {
 
 pub struct Button {
     props: Props,
+    link: ComponentLink<Self>,
+    node_ref: NodeRef,
+}
+
+pub enum Msg {
+    Clicked(MouseEvent),
 }
 
 impl Component for Button {
-    type Message = ();
+    type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self {
+            props,
+            link,
+            node_ref: Default::default(),
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
+    fn update(&mut self, msg: Self::Message) -> bool {
+        match msg {
+            Msg::Clicked(evt) => {
+                self.props.onclick.emit(evt);
+                // blur the button after a click, otherwise it will continue appear hovered/pressed
+                self.blur();
+            }
+        }
         true
     }
 
@@ -128,12 +146,13 @@ impl Component for Button {
 
         return html! {
             <button
+                ref=self.node_ref.clone()
                 id=self.props.id
                 class=classes
                 style=self.props.style.as_ref().cloned().unwrap_or_default()
                 disabled=self.props.disabled
                 type=self.props.r#type
-                onclick=&self.props.onclick>
+                onclick=self.link.callback(Msg::Clicked)>
 
                 { self.label() }
                 { for self.props.children.iter() }
@@ -167,6 +186,13 @@ impl Button {
         match self.props.align {
             Align::Start => vec![self.icon(), label],
             Align::End => vec![label, self.icon()],
+        }
+    }
+
+    /// Blur (loose focus) on the button element
+    fn blur(&self) {
+        if let Some(node) = self.node_ref.cast::<HtmlElement>() {
+            node.blur().ok();
         }
     }
 }
