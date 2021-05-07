@@ -1,16 +1,11 @@
+#[cfg(feature = "router")]
+mod router;
+#[cfg(feature = "router")]
+pub use router::*;
+
 use crate::Icon;
 use std::fmt::Debug;
 use yew::prelude::*;
-
-const LOG_TARGET: &'static str = "nav";
-
-use std::collections::HashMap;
-
-#[cfg(feature = "router")]
-use yew_router::{
-    agent::RouteRequest::GetCurrentRoute, components::RouterAnchor, prelude::RouteAgentBridge,
-    Switch,
-};
 
 // nav
 
@@ -155,6 +150,8 @@ pub struct NavItemProps {
     pub to: String,
     #[prop_or_default]
     pub target: String,
+    #[prop_or_default]
+    pub external: bool,
 }
 
 /// A navigation item (link).
@@ -184,17 +181,25 @@ impl Component for NavItem {
     }
 
     fn view(&self) -> Html {
-        html! {
+        let mut target = self.props.target.as_str();
+        if target.is_empty() && self.props.external {
+            target = "_blank";
+        }
+
+        return html! {
             <li class="pf-c-nav__item">
                 <a
                     href=self.get_href()
                     class="pf-c-nav__link"
-                    target=self.props.target
+                    target=target
                 >
                     { for self.props.children.iter() }
+                    { if self.props.external {html!{
+                        <span class="pf-u-ml-sm pf-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
+                    }} else {html!{}}}
                 </a>
             </li>
-        }
+        };
     }
 }
 
@@ -205,117 +210,6 @@ impl NavItem {
         } else {
             self.props.to.clone()
         }
-    }
-}
-
-// nav router item
-
-#[cfg(feature = "router")]
-#[derive(Clone, PartialEq, Properties)]
-pub struct NavRouterItemProps<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    #[prop_or_default]
-    pub children: Children,
-    pub to: SWITCH,
-    #[prop_or_default]
-    pub active: bool,
-
-    #[prop_or_default]
-    pub on_active: Callback<bool>,
-}
-
-/// A navigation item, using the Router.
-#[cfg(feature = "router")]
-pub struct NavRouterItem<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    props: NavRouterItemProps<SWITCH>,
-    active: bool,
-    _router: RouteAgentBridge,
-}
-
-#[cfg(feature = "router")]
-#[derive(Clone)]
-pub enum NavRouterMsg<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    RouteChange(Option<SWITCH>),
-}
-
-#[cfg(feature = "router")]
-impl<SWITCH> Component for NavRouterItem<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    type Message = NavRouterMsg<SWITCH>;
-    type Properties = NavRouterItemProps<SWITCH>;
-
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(|route: yew_router::route::Route| {
-            NavRouterMsg::RouteChange(Switch::switch(route))
-        });
-        let active = props.active;
-        let mut bridge = RouteAgentBridge::new(callback);
-        bridge.send(GetCurrentRoute);
-        Self {
-            props,
-            active,
-            _router: bridge,
-        }
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            NavRouterMsg::RouteChange(ref route) => {
-                log::debug!(
-                    target: LOG_TARGET,
-                    "Route change: {:?} {} {}",
-                    self.props.to,
-                    route.is_some(),
-                    route
-                        .as_ref()
-                        .map(|s| s == &self.props.to)
-                        .map(|s| s.to_string())
-                        .unwrap_or_else(|| "<none>".into())
-                );
-                self.active = route
-                    .as_ref()
-                    .map(|sw| sw == &self.props.to)
-                    .unwrap_or_default();
-
-                self.props.on_active.emit(self.active);
-            }
-        }
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-nav__link");
-
-        if self.active {
-            classes.push("pf-m-current");
-        }
-
-        return html! {
-            <li class="pf-c-nav__item">
-                <RouterAnchor<SWITCH> route=self.props.to.clone() classes=classes.to_string()>
-                    { for self.props.children.iter() }
-                </RouterAnchor<SWITCH>>
-            </li>
-        };
     }
 }
 
@@ -419,87 +313,5 @@ impl Component for NavExpandable {
 impl NavExpandable {
     fn is_expanded(&self) -> bool {
         self.expanded.unwrap_or(self.props.expanded)
-    }
-}
-
-// nav router group
-
-#[cfg(feature = "router")]
-#[derive(Clone, Properties)]
-pub struct NavRouterExpandableProps<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    #[prop_or_default]
-    pub children: ChildrenWithProps<NavRouterItem<SWITCH>>,
-    #[prop_or_default]
-    pub title: String,
-}
-
-/// A navigation item, using the Router.
-#[cfg(feature = "router")]
-pub struct NavRouterExpandable<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    props: NavRouterExpandableProps<SWITCH>,
-    link: ComponentLink<Self>,
-
-    state: HashMap<usize, bool>,
-    active: bool,
-}
-
-#[cfg(feature = "router")]
-#[derive(Clone)]
-pub enum NavRouterExpandableMsg {
-    ChildActive(usize, bool),
-}
-
-#[cfg(feature = "router")]
-impl<SWITCH> Component for NavRouterExpandable<SWITCH>
-where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
-{
-    type Message = NavRouterExpandableMsg;
-    type Properties = NavRouterExpandableProps<SWITCH>;
-
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self {
-            props,
-            link,
-            state: HashMap::new(),
-            active: false,
-        }
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Self::Message::ChildActive(idx, active) => {
-                self.state.insert(idx, active);
-                self.active = self.state.iter().any(|(_, v)| *v);
-            }
-        }
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <NavExpandable
-                title=&self.props.title
-                expanded=&self.active
-                >
-                { for self.props.children.iter().enumerate().map(|(i, mut c)|{
-                    c.props.on_active = self
-            .link
-            .callback(move |active| NavRouterExpandableMsg::ChildActive(i, active));
-                    c
-                }) }
-            </NavExpandable>
-        };
     }
 }
