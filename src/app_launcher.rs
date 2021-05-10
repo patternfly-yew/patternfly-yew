@@ -17,6 +17,7 @@ pub struct Props {
 
 pub enum Msg {
     Toggle,
+    Close,
 }
 
 pub struct AppLauncher {
@@ -43,6 +44,7 @@ impl Component for AppLauncher {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
             }
+            Msg::Close => self.expanded = false,
         }
         true
     }
@@ -83,7 +85,11 @@ impl Component for AppLauncher {
                     { self.render_trigger() }
                 </Button>
                 <ul class=menu_classes hidden=!self.expanded>
-                    { for self.props.children.iter() }
+                    { for self.props.children.iter().map(|mut c|{
+                        // request a close callback from the item
+                        c.set_need_close(self.link.callback(|_|Msg::Close));
+                        c
+                    }) }
                 </ul>
             </nav>
         };
@@ -123,6 +129,18 @@ pub struct AppLauncherChildVariant {
     props: AppLauncherChild,
 }
 
+impl AppLauncherChildVariant {
+    /// Forward the need to get a close callback to the actual item
+    fn set_need_close(&mut self, callback: Callback<()>) {
+        match self.props {
+            AppLauncherChild::Item(ref mut props) => {
+                props.want_close = callback;
+            }
+            _ => {}
+        }
+    }
+}
+
 impl<CHILD> From<VChild<CHILD>> for AppLauncherChildVariant
 where
     CHILD: Component,
@@ -159,24 +177,41 @@ pub struct AppLauncherItemProps {
     #[prop_or_default]
     pub onclick: Option<Callback<()>>,
     #[prop_or_default]
+    pub(crate) want_close: Callback<()>,
+    #[prop_or_default]
     pub external: bool,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Copy, Clone)]
+pub enum AppLauncherItemMsg {
+    Clicked,
+}
+
+#[derive(Clone)]
 pub struct AppLauncherItem {
     props: AppLauncherItemProps,
+    link: ComponentLink<Self>,
 }
 
 impl Component for AppLauncherItem {
-    type Message = ();
+    type Message = AppLauncherItemMsg;
     type Properties = AppLauncherItemProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self { props, link }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            AppLauncherItemMsg::Clicked => {
+                if let Some(onclick) = &self.props.onclick {
+                    onclick.emit(());
+                }
+                // request close from our parent
+                self.props.want_close.emit(());
+            }
+        }
+        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -189,11 +224,11 @@ impl Component for AppLauncherItem {
     }
 
     fn view(&self) -> Html {
-        let action = if let Some(onclick) = &self.props.onclick {
+        let action = if self.props.onclick.is_some() {
             html! {
                 <Button
                     class="pf-c-app-launcher__menu-item"
-                    onclick=onclick.clone().reform(|_|{})
+                    onclick=self.link.callback(|_|Self::Message::Clicked)
                     >
                     { for self.props.children.iter() }
                 </Button>
