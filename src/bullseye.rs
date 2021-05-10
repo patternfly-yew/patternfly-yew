@@ -4,6 +4,12 @@ use yew::prelude::*;
 pub struct Props {
     #[prop_or_default]
     pub children: Children,
+    #[prop_or_default]
+    /// Allows to disable wrapping children in the "item" div.
+    ///
+    /// According to the PatternFly documentation, this shouldn't make a difference. In practice,
+    /// sometimes it does. Like when hosting a modal about dialog.
+    pub plain: bool,
 }
 
 /// Bullseye layout.
@@ -38,9 +44,15 @@ impl Component for Bullseye {
     fn view(&self) -> Html {
         html! {
             <div class="pf-l-bullseye">
-                <div class="pf-l-bullseye__item">
-                    { for self.props.children.iter() }
-                </div>
+                { for self.props.children.iter().map(|c|{
+                    if self.props.plain {
+                        // according to the PatternFly documentation wrapping element with the item
+                        // shouldn't make a difference. In practice, sometimes it does.
+                        c
+                    } else {html!{
+                        <div class="pf-l-bullseye__item">{c}</div>
+                    }}
+                }) }
             </div>
         }
     }

@@ -11,6 +11,8 @@ pub struct TableHeaderProps {
     pub children: ChildrenWithProps<TableColumn>,
     #[prop_or_default]
     pub(crate) expandable: bool,
+    #[prop_or_default]
+    pub hide_actions: bool,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -52,6 +54,10 @@ impl Component for TableHeader {
                     }}
 
                     { for self.props.children.iter() }
+
+                    { if self.props.hide_actions {html!{}} else {html!{
+                        <td></td>
+                    }}}
 
                 </tr>
 

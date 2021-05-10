@@ -1,49 +1,7 @@
-use crate::{AsClasses, Button, Divider, Icon};
+use crate::{Button, Divider, Icon, Position};
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 use yew::virtual_dom::{VChild, VComp};
-
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Position {
-    Left,
-    Right,
-}
-
-impl Default for Position {
-    fn default() -> Self {
-        Self::Left
-    }
-}
-
-impl AsClasses for Position {
-    fn as_classes(&self) -> Classes {
-        match self {
-            Self::Left => Classes::new(),
-            Self::Right => Classes::from(&["pf-m-right"][..]),
-        }
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Direction {
-    Down,
-    Up,
-}
-
-impl Default for Direction {
-    fn default() -> Self {
-        Self::Down
-    }
-}
-
-impl AsClasses for Direction {
-    fn as_classes(&self) -> Classes {
-        match self {
-            Self::Down => Classes::new(),
-            Self::Up => Classes::from(&["pf-m-up"][..]),
-        }
-    }
-}
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -55,8 +13,6 @@ pub struct Props {
     pub disabled: bool,
     #[prop_or_default]
     pub position: Position,
-    #[prop_or_default]
-    pub direction: Direction,
 }
 
 pub enum Msg {
@@ -102,9 +58,13 @@ impl Component for AppLauncher {
 
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-app-launcher");
+        let mut menu_classes = Classes::from("pf-c-app-launcher__menu");
 
-        classes = classes.extend(self.props.direction.as_classes());
-        classes = classes.extend(self.props.position.as_classes());
+        match self.props.position {
+            Position::Left => {}
+            Position::Right => menu_classes.push("pf-m-align-right"),
+            Position::Top => classes.push("pf-m-top"),
+        }
 
         if self.expanded {
             classes.push("pf-m-expanded");
@@ -122,7 +82,7 @@ impl Component for AppLauncher {
                     >
                     { self.render_trigger() }
                 </Button>
-                <ul class="pf-c-app-launcher__menu" hidden=!self.expanded>
+                <ul class=menu_classes hidden=!self.expanded>
                     { for self.props.children.iter() }
                 </ul>
             </nav>
@@ -272,41 +232,5 @@ impl Component for AppLauncherItem {
         return html! {
             <li>{action}</li>
         };
-    }
-}
-
-// Divider
-
-#[derive(Clone, PartialEq, Properties)]
-pub struct AppLauncherDividerProps {}
-
-#[derive(Clone, PartialEq)]
-pub struct AppLauncherDivider {
-    props: AppLauncherDividerProps,
-}
-
-impl Component for AppLauncherDivider {
-    type Message = ();
-    type Properties = AppLauncherDividerProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {<li class="pf-c-divider" role="separator"></li>};
     }
 }

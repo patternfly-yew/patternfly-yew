@@ -1,7 +1,9 @@
 #![recursion_limit = "256"]
+mod about;
 mod alert;
 mod app_launcher;
 mod avatar;
+mod backdrop;
 mod background;
 mod badge;
 mod bullseye;
@@ -39,9 +41,11 @@ mod tooltip;
 mod utils;
 mod validator;
 
+pub use about::*;
 pub use alert::*;
 pub use app_launcher::*;
 pub use avatar::*;
+pub use backdrop::*;
 pub use background::*;
 pub use badge::*;
 pub use bullseye::*;

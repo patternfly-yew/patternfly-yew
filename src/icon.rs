@@ -20,34 +20,38 @@ macro_rules! icons {
 }
 
 icons! {
-    AngleDown => fa("fa-angle-down"),
-    AngleLeft => fa("fa-angle-left"),
-    AngleRight => fa("fa-angle-right"),
-    AngleUp => fa("fa-angle-up"),
+    AngleDown => fas("fa-angle-down"),
+    AngleLeft => fas("fa-angle-left"),
+    AngleRight => fas("fa-angle-right"),
+    AngleUp => fas("fa-angle-up"),
 
-    Bell => fa("fa-bell"),
+    Bell => fas("fa-bell"),
 
-    CaretDown => fa("fa-caret-down"),
-    CaretUp => fa("fa-caret-up"),
-    Check => fa("fa-check"),
-    CheckCircle => fa("fa-check-circle"),
-    Copy => fa("fa-copy"),
-    Cubes => fa("fa-cubes"),
+    CaretDown => fas("fa-caret-down"),
+    CaretUp => fas("fa-caret-up"),
+    Check => fas("fa-check"),
+    CheckCircle => fas("fa-check-circle"),
+    Copy => fas("fa-copy"),
+    Cubes => fas("fa-cubes"),
 
-    EllipsisH => fa("fa-ellipsis-h"),
-    EllipsisV => fa("fa-ellipsis-v"),
-    ExclamationCircle => fa("fa-exclamation-circle"),
-    ExclamationTriangle => fa("fa-exclamation-triangle"),
-    ExternalLinkAlt => fa("fa-external-link-alt"),
+    EllipsisH => fas("fa-ellipsis-h"),
+    EllipsisV => fas("fa-ellipsis-v"),
+    ExclamationCircle => fas("fa-exclamation-circle"),
+    ExclamationTriangle => fas("fa-exclamation-triangle"),
+    ExternalLinkAlt => fas("fa-external-link-alt"),
 
-    InfoCircle => fa("fa-info-circle"),
+    InfoCircle => fas("fa-info-circle"),
 
-    Pause => fa("fa-pause"),
-    Play => fa("fa-play"),
-    PlusCircleIcon => fa("fa-plus-circle"),
+    OutlinedQuestionCircle => far("fa-question-circle"),
 
-    Times => fa("fa-times"),
-    Th => fa("fa-th"),
+    Pause => fas("fa-pause"),
+    Play => fas("fa-play"),
+    PlusCircleIcon => fas("fa-plus-circle"),
+
+    QuestionCircle => fas("fa-question-circle"),
+
+    Times => fas("fa-times"),
+    Th => fas("fa-th"),
 
     Help => pf("pf-icon-help"),
     Pending => pf("pf-icon-pending")
@@ -67,7 +71,14 @@ impl Icon {
     }
 }
 
-fn fa(name: &str) -> Classes {
+fn far(name: &str) -> Classes {
+    let mut classes = Classes::new();
+    classes.push("far");
+    classes.push(name);
+    classes
+}
+
+fn fas(name: &str) -> Classes {
     let mut classes = Classes::new();
     classes.push("fas");
     classes.push(name);

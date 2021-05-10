@@ -6,12 +6,10 @@ pub use column::*;
 pub use header::*;
 pub use model::*;
 
-use crate::icon::Icon;
-use crate::AsClasses;
+use crate::{icon::Icon, AsClasses, Dropdown, DropdownChildVariant, KebabToggle};
 use std::fmt::Debug;
 use yew::prelude::*;
-use yew::virtual_dom::vnode::VNode::VComp;
-use yew::virtual_dom::VChild;
+use yew::virtual_dom::{vnode::VNode::VComp, VChild};
 
 const LOG_TARGET: &'static str = "table";
 
@@ -109,6 +107,9 @@ pub trait TableRenderer {
         None
     }
     fn render_details(&self) -> Vec<Span> {
+        vec![]
+    }
+    fn actions(&self) -> Vec<DropdownChildVariant> {
         vec![]
     }
 }
@@ -242,11 +243,11 @@ where
     }
 
     fn render_normal_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
-        html! {
+        return html! {
             <tr role="row">
                 { self.render_row(&entry.value)}
             </tr>
-        }
+        };
     }
 
     fn render_expandable_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
@@ -368,6 +369,20 @@ where
             });
 
             index += 1;
+        }
+
+        let actions = entry.actions();
+        if !actions.is_empty() {
+            cells.push(html! {
+                <td class="pf-c-table__action">
+                    <Dropdown
+                        plain=true
+                        toggle={html!{<KebabToggle/>}}
+                        >
+                        { actions }
+                    </Dropdown>
+                </td>
+            });
         }
 
         cells

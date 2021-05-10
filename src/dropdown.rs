@@ -1,30 +1,7 @@
-use crate::{AsClasses, Avatar, Button, Divider, Icon, Variant};
+use crate::{Avatar, Button, Divider, Icon, Position, Variant};
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 use yew::virtual_dom::{VChild, VComp};
-
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Position {
-    Left,
-    Right,
-    Top,
-}
-
-impl Default for Position {
-    fn default() -> Self {
-        Self::Left
-    }
-}
-
-impl AsClasses for Position {
-    fn as_classes(&self) -> Classes {
-        match self {
-            Self::Left => Classes::new(),
-            Self::Right => Classes::from(&["pf-m-right"][..]),
-            Self::Top => Classes::from(&["pf-m-top"][..]),
-        }
-    }
-}
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -90,11 +67,16 @@ impl Component for Dropdown {
 
     fn view(&self) -> Html {
         let mut classes = Classes::from("pf-c-dropdown");
-
-        classes = classes.extend(self.props.position.as_classes());
-
         if self.expanded {
             classes.push("pf-m-expanded");
+        }
+
+        let mut menu_classes = Classes::from("pf-c-dropdown__menu");
+
+        match self.props.position {
+            Position::Left => {}
+            Position::Right => menu_classes.push("pf-m-align-right"),
+            Position::Top => classes.push("pf-m-top"),
         }
 
         let onclick = self.link.callback(|_| Msg::Toggle);
@@ -116,7 +98,7 @@ impl Component for Dropdown {
                     >
                     { self.props.toggle.clone() }
                 </Button>
-                <div class="pf-c-dropdown__menu" hidden=!self.expanded>
+                <div class=menu_classes hidden=!self.expanded>
                     <ul>
                     { for self.props.children.iter() }
                     </ul>
