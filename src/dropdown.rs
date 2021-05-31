@@ -31,8 +31,10 @@ pub struct Dropdown {
     expanded: bool,
 }
 
+#[derive(Clone, Copy, Debug)]
 pub enum Msg {
     Toggle,
+    Close,
 }
 
 impl Component for Dropdown {
@@ -52,6 +54,7 @@ impl Component for Dropdown {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
             }
+            Msg::Close => self.expanded = false,
         }
         true
     }
@@ -100,7 +103,11 @@ impl Component for Dropdown {
                 </Button>
                 <div class=menu_classes hidden=!self.expanded>
                     <ul>
-                    { for self.props.children.iter() }
+                    { for self.props.children.iter().map(|mut c|{
+                        // request a close callback from the item
+                        c.set_need_close(self.link.callback(|_|Msg::Close));
+                        c
+                    }) }
                     </ul>
                 </div>
             </div>
@@ -209,6 +216,21 @@ pub struct DropdownChildVariant {
     props: DropdownChild,
 }
 
+impl DropdownChildVariant {
+    /// Forward the need to get a close callback to the actual item
+    fn set_need_close(&mut self, callback: Callback<()>) {
+        match self.props {
+            DropdownChild::Item(ref mut props) => {
+                props.want_close = callback;
+            }
+            DropdownChild::Group(ref mut props) => {
+                props.want_close = callback;
+            }
+            _ => {}
+        }
+    }
+}
+
 impl<CHILD> From<VChild<CHILD>> for DropdownChildVariant
 where
     CHILD: Component,
@@ -252,22 +274,39 @@ pub struct DropdownItemProps {
     pub target: String,
     #[prop_or_default]
     pub onclick: Option<Callback<()>>,
+    #[prop_or_default]
+    pub(crate) want_close: Callback<()>,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Copy, Debug)]
+pub enum DropdownItemMsg {
+    Clicked,
+}
+
+#[derive(Clone)]
 pub struct DropdownItem {
     props: DropdownItemProps,
+    link: ComponentLink<Self>,
 }
 
 impl Component for DropdownItem {
-    type Message = ();
+    type Message = DropdownItemMsg;
     type Properties = DropdownItemProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self { props, link }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Self::Message::Clicked => {
+                if let Some(onclick) = &self.props.onclick {
+                    onclick.emit(());
+                }
+                // request close from our parent
+                self.props.want_close.emit(());
+            }
+        }
         true
     }
 
@@ -281,11 +320,11 @@ impl Component for DropdownItem {
     }
 
     fn view(&self) -> Html {
-        let action = if let Some(onclick) = &self.props.onclick {
+        let action = if self.props.onclick.is_some() {
             html! {
                 <Button
                     class="pf-c-dropdown__menu-item"
-                    onclick=onclick.clone().reform(|_|{})
+                    onclick=self.link.callback(|_|Self::Message::Clicked)
                     >
                     { for self.props.children.iter() }
                 </Button>
@@ -311,22 +350,33 @@ impl Component for DropdownItem {
 pub struct DropdownItemGroupProps {
     #[prop_or_default]
     pub children: ChildrenRenderer<DropdownChildVariant>,
+    #[prop_or_default]
+    pub(crate) want_close: Callback<()>,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone)]
 pub struct DropdownItemGroup {
     props: DropdownItemGroupProps,
+    link: ComponentLink<Self>,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum DropdownItemGroupMsg {
+    Close,
 }
 
 impl Component for DropdownItemGroup {
-    type Message = ();
+    type Message = DropdownItemGroupMsg;
     type Properties = DropdownItemGroupProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self { props, link }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Self::Message::Close => self.props.want_close.emit(()),
+        }
         true
     }
 
@@ -342,10 +392,11 @@ impl Component for DropdownItemGroup {
     fn view(&self) -> Html {
         return html! {
             <>
-            { for self.props.children.iter().map(|c|{
+            { for self.props.children.iter().map(|mut c|{
+                c.set_need_close(self.link.callback(|_|Self::Message::Close));
                 html!{
                     <section class="pf-c-dropdown__group">
-                        { c }
+                    { c }
                     </section>
                 }
             })}
