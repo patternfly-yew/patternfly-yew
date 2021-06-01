@@ -498,7 +498,11 @@ impl Component for ActionGroup {
 
     fn view(&self) -> Html {
         html! {
-            { for self.props.children.iter() }
+            <div class="pf-c-form__group pf-m-action">
+                <div class="pf-c-form__actions">
+                    { for self.props.children.iter() }
+                </div>
+            </div>
         }
     }
 }
