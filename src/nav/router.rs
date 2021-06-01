@@ -2,8 +2,6 @@ use super::*;
 use std::fmt::Debug;
 use yew::prelude::*;
 
-const LOG_TARGET: &'static str = "nav";
-
 use std::collections::HashMap;
 
 use yew::html::ChildrenRenderer;
@@ -76,17 +74,6 @@ where
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             NavRouterMsg::RouteChange(ref route) => {
-                log::debug!(
-                    target: LOG_TARGET,
-                    "Route change: {:?} {} {}",
-                    self.props.to,
-                    route.is_some(),
-                    route
-                        .as_ref()
-                        .map(|s| s == &self.props.to)
-                        .map(|s| s.to_string())
-                        .unwrap_or_else(|| "<none>".into())
-                );
                 self.active = route
                     .as_ref()
                     .map(|sw| sw == &self.props.to)
