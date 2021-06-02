@@ -1,5 +1,5 @@
 use crate::{Icon, InputGroup, TextInput, TextInputIcon};
-use yew::prelude::*;
+use yew::{prelude::*, web_sys::HtmlElement};
 
 #[derive(Properties, Debug, Clone, PartialEq)]
 pub struct Props {
@@ -23,6 +23,7 @@ pub struct ContextSelector {
     link: ComponentLink<Self>,
 
     expanded: bool,
+    menu_ref: NodeRef,
 }
 
 impl Component for ContextSelector {
@@ -34,6 +35,7 @@ impl Component for ContextSelector {
             props,
             link,
             expanded: false,
+            menu_ref: Default::default(),
         }
     }
 
@@ -70,7 +72,9 @@ impl Component for ContextSelector {
         }
 
         return html! {
-            <div class=classes>
+            <div
+                class=classes
+            >
                 <button
                     class="pf-c-context-selector__toggle"
                     aria-expanded=self.expanded
@@ -79,7 +83,11 @@ impl Component for ContextSelector {
                     <span class="pf-c-context-selector__toggle-text">{&self.props.selected}</span>
                     <span class="pf-c-context-selector__toggle-icon">{Icon::CaretDown}</span>
                 </button>
-                <div class="pf-c-context-selector__menu" hidden=!self.expanded>
+                <div class="pf-c-context-selector__menu"
+                    hidden=!self.expanded
+                    ref=self.menu_ref.clone()
+                    tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
+                >
                     <div class="pf-c-context-selector__menu-search">
                         <InputGroup>
                             <TextInput
@@ -97,6 +105,14 @@ impl Component for ContextSelector {
                 </div>
             </div>
         };
+    }
+
+    fn rendered(&mut self, _first_render: bool) {
+        if self.expanded {
+            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
+                ele.focus().ok();
+            }
+        }
     }
 }
 

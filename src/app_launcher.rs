@@ -1,7 +1,10 @@
 use crate::{Button, Divider, Icon, Position};
-use yew::html::ChildrenRenderer;
-use yew::prelude::*;
-use yew::virtual_dom::{VChild, VComp};
+use yew::{
+    html::ChildrenRenderer,
+    prelude::*,
+    virtual_dom::{VChild, VComp},
+    web_sys::HtmlElement,
+};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -25,6 +28,7 @@ pub struct AppLauncher {
     link: ComponentLink<Self>,
 
     expanded: bool,
+    menu_ref: NodeRef,
 }
 
 impl Component for AppLauncher {
@@ -36,6 +40,7 @@ impl Component for AppLauncher {
             expanded: false,
             props,
             link,
+            menu_ref: Default::default(),
         }
     }
 
@@ -84,7 +89,12 @@ impl Component for AppLauncher {
                     >
                     { self.render_trigger() }
                 </Button>
-                <ul class=menu_classes hidden=!self.expanded>
+                <ul
+                    class=menu_classes
+                    hidden=!self.expanded
+                    ref=self.menu_ref.clone()
+                    tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
+                >
                     { for self.props.children.iter().map(|mut c|{
                         // request a close callback from the item
                         c.set_need_close(self.link.callback(|_|Msg::Close));
@@ -93,6 +103,14 @@ impl Component for AppLauncher {
                 </ul>
             </nav>
         };
+    }
+
+    fn rendered(&mut self, _first_render: bool) {
+        if self.expanded {
+            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
+                ele.focus().ok();
+            }
+        }
     }
 }
 

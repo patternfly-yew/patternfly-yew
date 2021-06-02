@@ -1,7 +1,10 @@
 use crate::{Avatar, Button, Divider, Icon, Position, Variant};
-use yew::html::ChildrenRenderer;
-use yew::prelude::*;
-use yew::virtual_dom::{VChild, VComp};
+use yew::{
+    html::ChildrenRenderer,
+    prelude::*,
+    virtual_dom::{VChild, VComp},
+    web_sys::HtmlElement,
+};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -29,6 +32,7 @@ pub struct Dropdown {
     link: ComponentLink<Self>,
 
     expanded: bool,
+    menu_ref: NodeRef,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -46,6 +50,7 @@ impl Component for Dropdown {
             expanded: false,
             props,
             link,
+            menu_ref: Default::default(),
         }
     }
 
@@ -101,7 +106,12 @@ impl Component for Dropdown {
                     >
                     { self.props.toggle.clone() }
                 </Button>
-                <div class=menu_classes hidden=!self.expanded>
+                <div
+                    class=menu_classes
+                    hidden=!self.expanded
+                    ref=self.menu_ref.clone()
+                    tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
+                >
                     <ul>
                     { for self.props.children.iter().map(|mut c|{
                         // request a close callback from the item
@@ -112,6 +122,14 @@ impl Component for Dropdown {
                 </div>
             </div>
         };
+    }
+
+    fn rendered(&mut self, _first_render: bool) {
+        if self.expanded {
+            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
+                ele.focus().ok();
+            }
+        }
     }
 }
 
