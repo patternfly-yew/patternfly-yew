@@ -93,7 +93,7 @@ impl Component for AppLauncher {
                     class=menu_classes
                     hidden=!self.expanded
                     ref=self.menu_ref.clone()
-                    tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
+                    // FIXME: tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
                 >
                     { for self.props.children.iter().map(|mut c|{
                         // request a close callback from the item

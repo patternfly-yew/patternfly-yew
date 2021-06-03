@@ -86,7 +86,7 @@ impl Component for ContextSelector {
                 <div class="pf-c-context-selector__menu"
                     hidden=!self.expanded
                     ref=self.menu_ref.clone()
-                    tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
+                    // FIXME: tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
                 >
                     <div class="pf-c-context-selector__menu-search">
                         <InputGroup>
