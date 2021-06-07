@@ -1,5 +1,5 @@
-use crate::{Icon, InputGroup, TextInput, TextInputIcon};
-use yew::{prelude::*, web_sys::HtmlElement};
+use crate::{GlobalClose, Icon, InputGroup, TextInput, TextInputIcon};
+use yew::prelude::*;
 
 #[derive(Properties, Debug, Clone, PartialEq)]
 pub struct Props {
@@ -23,7 +23,7 @@ pub struct ContextSelector {
     link: ComponentLink<Self>,
 
     expanded: bool,
-    menu_ref: NodeRef,
+    global_close: GlobalClose,
 }
 
 impl Component for ContextSelector {
@@ -31,11 +31,12 @@ impl Component for ContextSelector {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let global_close = GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close));
         Self {
             props,
             link,
             expanded: false,
-            menu_ref: Default::default(),
+            global_close,
         }
     }
 
@@ -74,6 +75,7 @@ impl Component for ContextSelector {
         return html! {
             <div
                 class=classes
+                ref=self.global_close.clone()
             >
                 <button
                     class="pf-c-context-selector__toggle"
@@ -85,8 +87,6 @@ impl Component for ContextSelector {
                 </button>
                 <div class="pf-c-context-selector__menu"
                     hidden=!self.expanded
-                    ref=self.menu_ref.clone()
-                    // FIXME: tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
                 >
                     <div class="pf-c-context-selector__menu-search">
                         <InputGroup>
@@ -105,14 +105,6 @@ impl Component for ContextSelector {
                 </div>
             </div>
         };
-    }
-
-    fn rendered(&mut self, _first_render: bool) {
-        if self.expanded {
-            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
-                ele.focus().ok();
-            }
-        }
     }
 }
 

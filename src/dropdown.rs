@@ -1,9 +1,8 @@
-use crate::{Avatar, Button, Divider, Icon, Position, Variant};
+use crate::{Avatar, Button, Divider, GlobalClose, Icon, Position, Variant};
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
     virtual_dom::{VChild, VComp},
-    web_sys::HtmlElement,
 };
 
 #[derive(Clone, PartialEq, Properties)]
@@ -32,10 +31,10 @@ pub struct Dropdown {
     link: ComponentLink<Self>,
 
     expanded: bool,
-    menu_ref: NodeRef,
+    global_close: GlobalClose,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub enum Msg {
     Toggle,
     Close,
@@ -49,8 +48,8 @@ impl Component for Dropdown {
         Self {
             expanded: false,
             props,
+            global_close: GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close)),
             link,
-            menu_ref: Default::default(),
         }
     }
 
@@ -95,7 +94,8 @@ impl Component for Dropdown {
         };
 
         return html! {
-            <div class=classes>
+            <div class=classes
+                ref=self.global_close.clone()>
                 <Button
                     class="pf-c-dropdown__toggle"
                     style=self.props.toggle_style.clone()
@@ -109,8 +109,6 @@ impl Component for Dropdown {
                 <div
                     class=menu_classes
                     hidden=!self.expanded
-                    ref=self.menu_ref.clone()
-                    //FIXME: tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
                 >
                     <ul>
                     { for self.props.children.iter().map(|mut c|{
@@ -122,14 +120,6 @@ impl Component for Dropdown {
                 </div>
             </div>
         };
-    }
-
-    fn rendered(&mut self, _first_render: bool) {
-        if self.expanded {
-            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
-                ele.focus().ok();
-            }
-        }
     }
 }
 

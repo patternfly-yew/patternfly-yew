@@ -1,9 +1,8 @@
-use crate::{Button, Divider, Icon, Position};
+use crate::{Button, Divider, GlobalClose, Icon, Position};
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
     virtual_dom::{VChild, VComp},
-    web_sys::HtmlElement,
 };
 
 #[derive(Clone, PartialEq, Properties)]
@@ -28,7 +27,7 @@ pub struct AppLauncher {
     link: ComponentLink<Self>,
 
     expanded: bool,
-    menu_ref: NodeRef,
+    global_close: GlobalClose,
 }
 
 impl Component for AppLauncher {
@@ -36,11 +35,12 @@ impl Component for AppLauncher {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let global_close = GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close));
         Self {
             expanded: false,
             props,
             link,
-            menu_ref: Default::default(),
+            global_close,
         }
     }
 
@@ -80,7 +80,10 @@ impl Component for AppLauncher {
         let onclick = self.link.callback(|_| Msg::Toggle);
 
         return html! {
-            <nav class=classes>
+            <nav
+                class=classes
+                ref=self.global_close.clone()
+                >
                 <Button
                     class="pf-c-app-launcher__toggle"
                     r#type="button"
@@ -92,8 +95,6 @@ impl Component for AppLauncher {
                 <ul
                     class=menu_classes
                     hidden=!self.expanded
-                    ref=self.menu_ref.clone()
-                    // FIXME: tabindex="-1" onblur=self.link.callback(|_|Msg::Close)
                 >
                     { for self.props.children.iter().map(|mut c|{
                         // request a close callback from the item
@@ -103,14 +104,6 @@ impl Component for AppLauncher {
                 </ul>
             </nav>
         };
-    }
-
-    fn rendered(&mut self, _first_render: bool) {
-        if self.expanded {
-            if let Some(ele) = self.menu_ref.cast::<HtmlElement>() {
-                ele.focus().ok();
-            }
-        }
     }
 }
 
