@@ -13,19 +13,19 @@ pub enum State {
 }
 
 impl State {
-    fn make_style(name: &str, weight: usize) -> String {
-        format!("--pf-global--{}--color--{}", name, weight)
+    fn var(name: &str, weight: usize) -> String {
+        format!("--pf-global--{}-color--{}", name, weight)
     }
 
-    pub fn as_style(&self, weight: usize) -> String {
+    pub fn as_var(&self, weight: usize) -> Option<String> {
         match self {
-            Self::None => "".into(),
-            Self::Danger => Self::make_style("danger", weight),
-            Self::Default => Self::make_style("default", weight),
-            Self::Info => Self::make_style("info", weight),
-            Self::Success => Self::make_style("success", weight),
-            Self::Warning => Self::make_style("warning", weight),
-            Self::Disabled => Self::make_style("disabled", weight),
+            Self::None => None,
+            Self::Danger => Some(Self::var("danger", weight)),
+            Self::Default => Some(Self::var("default", weight)),
+            Self::Info => Some(Self::var("info", weight)),
+            Self::Success => Some(Self::var("success", weight)),
+            Self::Warning => Some(Self::var("warning", weight)),
+            Self::Disabled => Some(Self::var("disabled", weight)),
         }
     }
 }
@@ -89,12 +89,19 @@ impl Icon {
     }
 
     pub fn with_state(&self, state: State) -> Html {
-        let icon_classes = self.as_classes();
+        self.with_state_weight(state, 200)
+    }
 
-        let style = state.as_style(200);
+    pub fn with_state_weight(&self, state: State, weight: usize) -> Html {
+        let style = state
+            .as_var(weight)
+            .map(|v| format!("color: var({});", v))
+            .unwrap_or_default();
 
         html! {
-            <i class=icon_classes style=style aria-hidden="true"></i>
+            <span style=style>
+                { self.as_html() }
+            </span>
         }
     }
 
@@ -105,13 +112,6 @@ impl Icon {
             <i class=(icon_classes, classes) aria-hidden="true"></i>
         }
     }
-}
-
-fn far(name: &str) -> Classes {
-    let mut classes = Classes::new();
-    classes.push("far");
-    classes.push(name);
-    classes
 }
 
 fn fas(name: &str) -> Classes {
