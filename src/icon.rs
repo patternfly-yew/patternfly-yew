@@ -2,6 +2,34 @@ use crate::AsClasses;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
 
+pub enum State {
+    None,
+    Danger,
+    Default,
+    Info,
+    Success,
+    Warning,
+    Disabled,
+}
+
+impl State {
+    fn make_style(name: &str, weight: usize) -> String {
+        format!("--pf-global--{}--color--{}", name, weight)
+    }
+
+    pub fn as_style(&self, weight: usize) -> String {
+        match self {
+            Self::None => "".into(),
+            Self::Danger => make_style("danger", weight),
+            Self::Default => make_style("default", weight),
+            Self::Info => make_style("info", weight),
+            Self::Success => make_style("success", weight),
+            Self::Warning => make_style("warning", weight),
+            Self::Disabled => make_style("disabled", weight),
+        }
+    }
+}
+
 macro_rules! icons {
     ($($n:ident => $e:expr),* $(,)?) => {
         #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -42,8 +70,6 @@ icons! {
 
     InfoCircle => fas("fa-info-circle"),
 
-    OutlinedQuestionCircle => far("fa-question-circle"),
-
     Pause => fas("fa-pause"),
     Play => fas("fa-play"),
     PlusCircleIcon => fas("fa-plus-circle"),
@@ -60,6 +86,16 @@ icons! {
 impl Icon {
     pub fn as_html(&self) -> Html {
         self.with_classes(Classes::new())
+    }
+
+    pub fn with_state(&self, state: State) -> Html {
+        let icon_classes = self.as_classes();
+
+        let style = state.as_style(200);
+
+        html! {
+            <i class=icon_classes style=style aria-hidden="true"></i>
+        }
     }
 
     pub fn with_classes(&self, classes: Classes) -> Html {
