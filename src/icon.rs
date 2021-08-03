@@ -20,12 +20,12 @@ impl State {
     pub fn as_style(&self, weight: usize) -> String {
         match self {
             Self::None => "".into(),
-            Self::Danger => make_style("danger", weight),
-            Self::Default => make_style("default", weight),
-            Self::Info => make_style("info", weight),
-            Self::Success => make_style("success", weight),
-            Self::Warning => make_style("warning", weight),
-            Self::Disabled => make_style("disabled", weight),
+            Self::Danger => Self::make_style("danger", weight),
+            Self::Default => Self::make_style("default", weight),
+            Self::Info => Self::make_style("info", weight),
+            Self::Success => Self::make_style("success", weight),
+            Self::Warning => Self::make_style("warning", weight),
+            Self::Disabled => Self::make_style("disabled", weight),
         }
     }
 }
