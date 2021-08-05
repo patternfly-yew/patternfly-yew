@@ -1,3 +1,4 @@
+use crate::Icon;
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
@@ -19,22 +20,41 @@ pub struct Props {
     pub selected: bool,
     #[prop_or_default]
     pub onclick: Callback<yew::MouseEvent>,
+    #[prop_or_default]
+    pub expandable: bool,
+    #[prop_or_default]
+    pub large: bool,
 }
 
-#[derive(Clone, PartialEq)]
 pub struct Card {
     props: Props,
+    link: ComponentLink<Self>,
+    expanded: bool,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum Msg {
+    Toggle,
 }
 
 impl Component for Card {
-    type Message = ();
+    type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self {
+            props,
+            link,
+            expanded: false,
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
+    fn update(&mut self, msg: Self::Message) -> bool {
+        match msg {
+            Msg::Toggle => {
+                self.expanded = !self.expanded;
+            }
+        }
         true
     }
 
@@ -52,6 +72,14 @@ impl Component for Card {
 
         if self.props.compact {
             classes.push("pf-m-compact");
+        }
+
+        if self.props.expandable && self.expanded {
+            classes.push("pf-m-expanded");
+        }
+
+        if self.props.large {
+            classes.push("pf-m-m-display-lg");
         }
 
         if self.props.flat {
@@ -75,14 +103,14 @@ impl Component for Card {
                 class=classes
                 onclick=&self.props.onclick
                 >
-                { self.title() }
-                { for self.props.children.iter().map(|child|{
-                    html_nested!{
-                        <div class="pf-c-card__body">
-                            { child }
-                        </div>
+                { self.header() }
+                {
+                    if self.expanded || !self.props.expandable {
+                        self.body()
+                    } else {
+                        html!{}
                     }
-                }) }
+                }
                 { self.footer() }
             </div>
         }
@@ -90,6 +118,40 @@ impl Component for Card {
 }
 
 impl Card {
+    fn body(&self) -> Html {
+        html! {
+            {for self.props.children.iter().map(|child|{
+                html_nested!{
+                    <div class="pf-c-card__body">
+                        { child }
+                    </div>
+                }
+            })}
+        }
+    }
+
+    fn header(&self) -> Html {
+        if self.props.expandable {
+            html! {
+                <div class="pf-c-card__header">
+                    <div class="pf-c-card__header-toggle">
+                        <button
+                            class="pf-c-button pf-m-plain"
+                            type="button"
+                            aria-label="Details"
+                            onclick=self.link.callback(|_|Msg::Toggle)
+                            >
+                            <span class="pf-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
+                        </button>
+                    </div>
+                    { self.title() }
+                </div>
+            }
+        } else {
+            self.title()
+        }
+    }
+
     fn title(&self) -> Html {
         match &self.props.title {
             Some(t) => html! {
