@@ -79,7 +79,7 @@ impl Component for Card {
         }
 
         if self.props.large {
-            classes.push("pf-m-m-display-lg");
+            classes.push("pf-m-display-lg");
         }
 
         if self.props.flat {
