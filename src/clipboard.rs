@@ -24,6 +24,8 @@ pub struct Props {
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum ClipboardVariant {
     // default
+    Default,
+    // inline
     Inline,
     // expandable
     Expandable,
@@ -38,11 +40,14 @@ impl ClipboardVariant {
             _ => false,
         }
     }
+    pub fn is_inline(&self) -> bool {
+        matches!(self, Self::Inline)
+    }
 }
 
 impl Default for ClipboardVariant {
     fn default() -> Self {
-        Self::Inline
+        Self::Default
     }
 }
 
@@ -134,17 +139,48 @@ impl Component for Clipboard {
         if self.expanded {
             classes.push("pf-m-expanded");
         }
+        if self.props.variant.is_inline() {
+            classes.push("pf-m-inline");
+        }
 
         return html! {
             <div class=classes>
-                <div class="pf-c-clipboard-copy__group">
-                    { self.expander() }
-                    <TextInput ref=self.text_ref.clone() readonly={self.props.readonly | self.expanded} value=&self.value/>
-                    <Tooltip text=self.message>
-                        <Button variant=Variant::Control icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
-                    </Tooltip>
-                </div>
-                { self.expanded() }
+                { match self.props.variant {
+                    ClipboardVariant::Inline => {
+                        html!{
+                            <>
+                            {
+                                if self.props.code {
+                                    html!{<code class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>}
+                                } else {
+                                    html!{<span class="pf-c-clipboard-copy__text">{&self.value}</span>}
+                                }
+                            }
+                            <span class="pf-c-clipboard-copy__actions">
+                                <span class="pf-c-clipboard-copy__actions-item">
+                                    <Tooltip text=self.message>
+                                        <Button aria_label="Copy to clipboard" variant=Variant::Plain icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
+                                    </Tooltip>
+                                </span>
+                            </span>
+                            </>
+                        }
+                    },
+                    _ => {
+                        html!{
+                            <>
+                            <div class="pf-c-clipboard-copy__group">
+                                { self.expander() }
+                                <TextInput ref=self.text_ref.clone() readonly={self.props.readonly | self.expanded} value=&self.value/>
+                                <Tooltip text=self.message>
+                                    <Button aria_label="Copy to clipboard" variant=Variant::Control icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
+                                </Tooltip>
+                            </div>
+                            { self.expanded() }
+                            </>
+                        }
+                    }
+                }}
             </div>
         };
     }
@@ -216,7 +252,7 @@ impl Clipboard {
 
     /// Sync the value between internal, text field or details.
     fn sync_value(&mut self) {
-        if self.props.readonly {
+        if self.props.readonly || self.props.variant.is_inline() {
             return;
         }
 
