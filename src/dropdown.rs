@@ -8,6 +8,8 @@ use yew::{
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
+    pub id: String,
+    #[prop_or_default]
     pub position: Position,
     #[prop_or_default]
     pub icon: Option<Icon>,
@@ -103,6 +105,7 @@ impl Component for Dropdown {
                     r#type="button"
                     disabled=self.props.disabled
                     onclick=onclick
+                    id=&self.props.id
                     >
                     { self.props.toggle.clone() }
                 </Button>
