@@ -19,6 +19,10 @@ pub struct Props {
     pub code: bool,
     #[prop_or_default]
     pub variant: ClipboardVariant,
+    #[prop_or_default]
+    pub name: String,
+    #[prop_or_default]
+    pub id: String,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -151,9 +155,9 @@ impl Component for Clipboard {
                             <>
                             {
                                 if self.props.code {
-                                    html!{<code class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>}
+                                    html!{<code name=self.props.name id=self.props.id class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>}
                                 } else {
-                                    html!{<span class="pf-c-clipboard-copy__text">{&self.value}</span>}
+                                    html!{<span name=self.props.name id=self.props.id class="pf-c-clipboard-copy__text">{&self.value}</span>}
                                 }
                             }
                             <span class="pf-c-clipboard-copy__actions">
@@ -171,7 +175,7 @@ impl Component for Clipboard {
                             <>
                             <div class="pf-c-clipboard-copy__group">
                                 { self.expander() }
-                                <TextInput ref=self.text_ref.clone() readonly={self.props.readonly | self.expanded} value=&self.value/>
+                                <TextInput ref=self.text_ref.clone() readonly={self.props.readonly | self.expanded} value=&self.value name=&self.props.name id=&self.props.id/>
                                 <Tooltip text=self.message>
                                     <Button aria_label="Copy to clipboard" variant=Variant::Control icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
                                 </Tooltip>
