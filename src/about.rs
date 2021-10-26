@@ -16,6 +16,8 @@ pub struct Props {
     pub logo: String,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
+    #[prop_or_default]
+    pub hero_style: Option<String>,
 }
 
 pub enum Msg {
@@ -59,13 +61,13 @@ impl Component for About {
     }
 
     fn view(&self) -> Html {
-        let hero_style = if !self.props.logo.is_empty() {
-            format!(
+        let hero_style = match (self.props.hero_style.as_ref(), self.props.logo.is_empty()) {
+            (Some(hero_style), _) => hero_style.into(),
+            (None, false) => format!(
                 "--pf-c-about-modal-box__hero--sm--BackgroundImage:url({url});",
                 url = self.props.logo
-            )
-        } else {
-            "".into()
+            ),
+            (None, true) => "".into(),
         };
 
         return html! {
