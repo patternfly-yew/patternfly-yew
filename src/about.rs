@@ -1,4 +1,4 @@
-use crate::{BackdropDispatcher, Button, Icon};
+use crate::{BackdropDispatcher, Button, Icon, Variant};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
@@ -83,7 +83,12 @@ impl Component for About {
                 }} else {html!{}}}
 
                 <div class="pf-c-about-modal-box__close">
-                  <Button icon=Icon::Times onclick=self.link.callback(|_|Msg::Close)/>
+                  <Button
+                    variant=Variant::Plain
+                    aria_label="Close dialog"
+                    onclick=self.link.callback(|_|Msg::Close)>
+                    { Icon::Times }
+                  </Button>
                 </div>
 
                 <div class="pf-c-about-modal-box__header">
