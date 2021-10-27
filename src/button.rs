@@ -81,6 +81,9 @@ pub struct Props {
     pub r#type: String,
 
     #[prop_or_default]
+    pub role: Option<String>,
+
+    #[prop_or_default]
     pub expanded: bool,
 
     #[prop_or_default]
@@ -152,7 +155,9 @@ impl Component for Button {
                 style=self.props.style.as_ref().cloned().unwrap_or_default()
                 disabled=self.props.disabled
                 type=self.props.r#type
-                onclick=self.link.callback(Msg::Clicked)>
+                onclick=self.link.callback(Msg::Clicked)
+                role=self.props.role.clone().unwrap_or_default()
+            >
 
                 { self.label() }
                 { for self.props.children.iter() }
