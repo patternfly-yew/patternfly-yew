@@ -218,6 +218,10 @@ impl<T> SharedTableModel<T> {
         let mut entries = self.entries.write().unwrap();
         entries.pop()
     }
+
+    pub fn clear(&mut self) {
+        self.entries.write().unwrap().clear();
+    }
 }
 
 impl<T> Default for SharedTableModel<T> {
