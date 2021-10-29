@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use std::sync::{Arc, RwLock};
 use yew::prelude::*;
 
@@ -50,6 +50,26 @@ where
     T: TableRenderer + Clone + Debug + PartialEq,
 {
     entries: Vec<TableModelEntry<T>>,
+}
+
+impl<T> Deref for SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq,
+{
+    type Target = Vec<TableModelEntry<T>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.entries
+    }
+}
+
+impl<T> DerefMut for SimpleTableModel<T>
+where
+    T: TableRenderer + Clone + Debug + PartialEq,
+{
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.entries
+    }
 }
 
 impl<T> Default for SimpleTableModel<T>
