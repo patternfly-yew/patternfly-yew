@@ -70,6 +70,8 @@ icons! {
 
     InfoCircle => fas("fa-info-circle"),
 
+    MinusCircleIcon => fas("fa-minus-circle"),
+
     Pause => fas("fa-pause"),
     Play => fas("fa-play"),
     PlusCircleIcon => fas("fa-plus-circle"),
