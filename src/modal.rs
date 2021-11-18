@@ -10,7 +10,7 @@ pub struct Props {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub footer: Html,
+    pub footer: Option<Html>,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
 }
@@ -85,9 +85,15 @@ impl Component for Modal {
                        }}
                 }) }
 
-                <footer class="pf-c-modal-box__footer">
-                  { self.props.footer.clone() }
-                </footer>
+                { if let Some(footer) = &self.props.footer {
+                  {html!{
+                      <footer class="pf-c-modal-box__footer">
+                      { footer.clone() }
+                      </footer>
+                  }}
+                } else {
+                    html!{}
+                }}
             </div>
         };
     }
