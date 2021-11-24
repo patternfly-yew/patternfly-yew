@@ -38,6 +38,7 @@ impl Component for LoginMainFooterLink {
     fn view(&self) -> Html {
         return html! {
             <a
+                class="pf-c-login__main-footer-links-item-link"
                 href=self.props.href.clone()
                 target=&self.props.target
                 >
