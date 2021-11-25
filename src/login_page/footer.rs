@@ -1,3 +1,4 @@
+use crate::Tooltip;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -38,7 +39,7 @@ impl Component for LoginMainFooterLink {
     }
 
     fn view(&self) -> Html {
-        return html! {
+        let link = html! {
             <a
                 class="pf-c-login__main-footer-links-item-link"
                 href=self.props.href.clone()
@@ -48,6 +49,16 @@ impl Component for LoginMainFooterLink {
                 { for self.props.children.iter() }
             </a>
         };
+
+        if self.props.label.is_empty() {
+            link
+        } else {
+            return html! {
+                <Tooltip text=&self.props.label>
+                    {link}
+                </Tooltip>
+            };
+        }
     }
 }
 
