@@ -5,6 +5,8 @@ pub struct LoginMainFooterLinkProps {
     #[prop_or_default]
     pub href: String,
     #[prop_or_default]
+    pub label: String,
+    #[prop_or_default]
     pub target: String,
     #[prop_or_default]
     pub children: Children,
@@ -41,6 +43,7 @@ impl Component for LoginMainFooterLink {
                 class="pf-c-login__main-footer-links-item-link"
                 href=self.props.href.clone()
                 target=&self.props.target
+                aria_label=&self.props.label
                 >
                 { for self.props.children.iter() }
             </a>
