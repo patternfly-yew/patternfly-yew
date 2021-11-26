@@ -75,6 +75,9 @@ pub struct Props {
     pub disabled: bool,
 
     #[prop_or_default]
+    pub block: bool,
+
+    #[prop_or_default]
     pub aria_label: Option<String>,
 
     #[prop_or("button".into())]
@@ -145,6 +148,9 @@ impl Component for Button {
 
         if self.props.expanded {
             classes.push("pf-m-expanded");
+        }
+        if self.props.block {
+            classes.push("pf-m-block");
         }
 
         return html! {
