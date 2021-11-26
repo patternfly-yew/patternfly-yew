@@ -18,7 +18,26 @@ pub enum FlexModifier {
     Default,
     None,
     Column,
-    Justify,
+    Justify(Justify),
+    Align(Alignement)
+}
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum Justify {
+    Start,
+    End,
+    SpaceBetween,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum Alignement {
+    Right,
+    Left,
+    Start,
+    Center,
+    End,
+    Baseline,
+    Stretch
 }
 
 impl ToString for FlexModifier {
@@ -34,7 +53,20 @@ impl ToString for FlexModifier {
             FlexModifier::Default => "pf-m-default",
             FlexModifier::None => "pf-m-none",
             FlexModifier::Column => "pf-m-column",
-            FlexModifier::Justify => "pf-m-justify-content-space-between"
+            FlexModifier::Justify(layout) => match layout {
+                Justify::Start => "pf-m-justify-content-flex-start",
+                Justify::End => "pf-m-justify-content-flex-end",
+                Justify::SpaceBetween => "pf-m-justify-content-space-between",
+            },
+            FlexModifier::Align(alignement) => match alignement {
+                Alignement::Right => "pf-m-align-right",
+                Alignement::Left => "pf-m-align-left",
+                Alignement::Start => "pf-m-align-self-flex-start",
+                Alignement::Center => "pf-m-align-self-flex-center",
+                Alignement::End => "pf-m-align-self-flex-end",
+                Alignement::Baseline => "pf-m-align-self-flex-baseline",
+                Alignement::Stretch => "pf-m-align-self-flex-stretch",
+            }
         }
         .to_string()
     }
