@@ -18,6 +18,7 @@ pub enum FlexModifier {
     Default,
     None,
     Column,
+    Justify,
 }
 
 impl ToString for FlexModifier {
@@ -33,6 +34,7 @@ impl ToString for FlexModifier {
             FlexModifier::Default => "pf-m-default",
             FlexModifier::None => "pf-m-none",
             FlexModifier::Column => "pf-m-column",
+            FlexModifier::Justify => "pf-m-justify-content-space-between"
         }
         .to_string()
     }
