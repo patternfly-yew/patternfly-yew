@@ -1,4 +1,4 @@
-use crate::{AsClasses, ToolbarElementModifier, WithBreakpoint};
+use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
@@ -6,7 +6,7 @@ pub struct ToolbarGroupProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub modifiers: Vec<WithBreakpoint<ToolbarElementModifier>>,
+    pub modifiers: WithBreakpoints<ToolbarElementModifier>,
 }
 
 #[function_component(ToolbarGroup)]

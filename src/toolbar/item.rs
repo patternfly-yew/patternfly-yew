@@ -1,4 +1,4 @@
-use crate::{AsClasses, ToolbarElementModifier, WithBreakpoint};
+use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Eq, PartialEq, Debug)]
@@ -33,7 +33,7 @@ pub struct ToolbarItemProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub modifiers: Vec<WithBreakpoint<ToolbarElementModifier>>,
+    pub modifiers: WithBreakpoints<ToolbarElementModifier>,
     #[prop_or_default]
     pub r#type: ToolbarItemType,
 }
