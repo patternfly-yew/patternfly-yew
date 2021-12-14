@@ -1,7 +1,8 @@
 use std::ops::Deref;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use yew::{prelude::*, utils::window};
+use web_sys::window;
+use yew::prelude::*;
 
 const CLICK_TYPE: &str = "mousedown";
 
@@ -38,6 +39,7 @@ impl GlobalClose {
 
         if let Some(cb) = listener.dyn_ref() {
             window()
+                .unwrap()
                 .add_event_listener_with_callback(CLICK_TYPE, cb)
                 .ok();
         }
@@ -54,6 +56,7 @@ impl Drop for GlobalClose {
     fn drop(&mut self) {
         if let Some(cb) = self.listener.dyn_ref() {
             window()
+                .unwrap()
                 .remove_event_listener_with_callback(CLICK_TYPE, cb)
                 .ok();
         }

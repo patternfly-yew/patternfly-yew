@@ -1,6 +1,6 @@
 use crate::{Button, Validator};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew::web_sys::HtmlInputElement;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -8,39 +8,14 @@ pub struct Props {
     pub children: Children,
 }
 
-pub struct Form {
-    props: Props,
-}
-
-impl Component for Form {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <form novalidate=true class="pf-c-form">
-                { for self.props.children.iter().map(|child|{
-                        child
-                }) }
-            </form>
-        }
+#[function_component(Form)]
+pub fn form(props: &Props) -> Html {
+    html! {
+        <form novalidate=true class="pf-c-form">
+            { for props.children.iter().map(|child|{
+                    child
+            }) }
+        </form>
     }
 }
 
@@ -57,44 +32,29 @@ pub struct FormGroupProps {
     pub helper_text: String,
 }
 
-pub struct FormGroup {
-    props: FormGroupProps,
-}
+pub struct FormGroup {}
 
 impl Component for FormGroup {
     type Message = ();
     type Properties = FormGroupProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-form__group");
 
         html! {
-            <div class=classes>
+            <div class={classes}>
                 <div class="pf-c-form__group-label">
 
-                    {if !self.props.label.is_empty() {
+                    {if !ctx.props().label.is_empty() {
                         html!{
                             <div class="pf-c-form__label">
-                                <span class="pf-c-form__label-text">{&self.props.label}</span>
+                                <span class="pf-c-form__label-text">{&ctx.props().label}</span>
 
-                                {if self.props.required {
+                                {if ctx.props().required {
                                     html!{
                                         <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
                                     }
@@ -110,10 +70,10 @@ impl Component for FormGroup {
                 </div>
 
                 <div class="pf-c-form__group-control">
-                    { for self.props.children.iter() }
-                    { if !self.props.helper_text.is_empty() {html!{
-                        <p class="pf-c-form__helper-text" aria-live="polite">{ &self.props.helper_text }</p>
-                    }} else {html!{}}}
+                    { for ctx.props().children.iter() }
+                    if !ctx.props().helper_text.is_empty() {
+                        <p class="pf-c-form__helper-text" aria-live="polite">{ &ctx.props().helper_text }</p>
+                    }
                 </div>
             </div>
         }
@@ -197,8 +157,6 @@ pub struct TextInputProps {
 }
 
 pub struct TextInput {
-    props: TextInputProps,
-    link: ComponentLink<Self>,
     value: String,
     input_ref: NodeRef,
 }
@@ -212,83 +170,78 @@ impl Component for TextInput {
     type Message = TextInputMsg;
     type Properties = TextInputProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let value = props.value.clone();
+    fn create(ctx: &Context<Self>) -> Self {
+        let value = ctx.props().value.clone();
         Self {
-            props,
-            link,
             value,
             input_ref: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             TextInputMsg::Changed(data) => {
                 self.value = data.clone();
-                self.props.onchange.emit(data);
+                ctx.props().onchange.emit(data);
             }
             TextInputMsg::Input(data) => {
-                self.props.oninput.emit(data);
+                ctx.props().oninput.emit(data);
                 if let Some(value) = self.extract_value() {
                     self.value = value.clone();
-                    self.props.onchange.emit(value);
+                    ctx.props().onchange.emit(value);
                 }
                 // only re-render if we have a validator
-                return self.props.validator.is_custom();
+                return ctx.props().validator.is_custom();
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            if self.props.readonly {
-                self.value = self.props.value.clone();
-            }
-            true
-        } else {
-            false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if ctx.props().readonly {
+            self.value = ctx.props().value.clone();
         }
+        true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-form-control");
 
-        classes = match self.props.icon {
-            TextInputIcon::None => classes,
-            TextInputIcon::Search => classes.extend("pf-m-search"),
+        match ctx.props().icon {
+            TextInputIcon::None => {}
+            TextInputIcon::Search => classes.push("pf-m-search"),
             TextInputIcon::Calendar => classes.extend(vec!["pf-m-icon", "pf-m-calendar"]),
             TextInputIcon::Clock => classes.extend(vec!["pf-m-icon", "pf-m-clock"]),
             TextInputIcon::Custom => classes.extend(vec!["pf-m-icon"]),
         };
 
-        let (classes, aria_invalid) = self.input_state().convert(classes);
+        let (classes, aria_invalid) = self.input_state(ctx).convert(classes);
 
-        let onchange = self.link.batch_callback(|data| match data {
-            ChangeData::Value(data) => vec![TextInputMsg::Changed(data)],
-            _ => vec![],
+        let input_ref = self.input_ref.clone();
+        let onchange = ctx.link().batch_callback(move |_| {
+            input_ref
+                .cast::<HtmlInputElement>()
+                .map(|input| TextInputMsg::Changed(input.value()))
         });
-        let oninput = self
-            .link
-            .callback(|data: InputData| TextInputMsg::Input(data.value));
+        let oninput = ctx
+            .link()
+            .callback(|evt: InputEvent| TextInputMsg::Input(evt.data().unwrap_or_default()));
 
         html! {
             <input
-                ref=self.input_ref.clone()
-                class=classes
-                type=self.props.r#type
-                name=self.props.name
-                id=self.props.id
-                required=self.props.required
-                disabled=self.props.disabled
-                readonly=self.props.readonly
-                aria-invalid=aria_invalid
-                value=self.value
-                placeholder=self.props.placeholder
-                onchange=onchange
-                oninput=oninput
+                ref={self.input_ref.clone()}
+                class={classes}
+                type={ctx.props().r#type.clone()}
+                name={ctx.props().name.clone()}
+                id={ctx.props().id.clone()}
+                required={ctx.props().required}
+                disabled={ctx.props().disabled}
+                readonly={ctx.props().readonly}
+                aria-invalid={aria_invalid.to_string()}
+                value={self.value.clone()}
+                placeholder={ctx.props().placeholder.clone()}
+                onchange={onchange}
+                oninput={oninput}
                 />
         }
     }
@@ -306,10 +259,10 @@ impl TextInput {
     ///
     /// This may be the result of the validator, or if none was set, the provided input state
     /// from the properties.
-    fn input_state(&self) -> InputState {
-        match &self.props.validator {
+    fn input_state(&self, ctx: &Context<Self>) -> InputState {
+        match &ctx.props().validator {
             Validator::Custom(validator) => validator(&self.value),
-            _ => self.props.state,
+            _ => ctx.props().state,
         }
     }
 }
@@ -358,8 +311,6 @@ pub struct TextAreaProps {
 }
 
 pub struct TextArea {
-    props: TextAreaProps,
-    link: ComponentLink<Self>,
     value: String,
     input_ref: NodeRef,
 }
@@ -373,73 +324,64 @@ impl Component for TextArea {
     type Message = TextAreaMsg;
     type Properties = TextAreaProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let value = props.value.clone();
+    fn create(ctx: &Context<Self>) -> Self {
+        let value = ctx.props().value.clone();
         Self {
-            props,
-            link,
             value,
             input_ref: NodeRef::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             TextAreaMsg::Changed(data) => {
                 self.value = data.clone();
-                self.props.onchange.emit(data);
+                ctx.props().onchange.emit(data);
                 false
             }
             TextAreaMsg::Input(data) => {
-                self.props.oninput.emit(data);
+                ctx.props().oninput.emit(data);
                 if let Some(value) = self.extract_value() {
                     self.value = value.clone();
-                    self.props.onchange.emit(value);
+                    ctx.props().onchange.emit(value);
                 }
                 false
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-form-control");
-        let (mut classes, aria_invalid) = self.input_state().convert(classes);
+        let (mut classes, aria_invalid) = self.input_state(ctx).convert(classes);
 
-        match self.props.resize {
+        match ctx.props().resize {
             ResizeOrientation::Horizontal => classes.push("pf-m-resize-horizontal"),
             ResizeOrientation::Vertical => classes.push("pf-m-resize-vertical"),
             _ => {}
         }
 
-        let onchange = self.link.batch_callback(|data| match data {
-            ChangeData::Value(data) => vec![TextAreaMsg::Changed(data)],
-            _ => vec![],
+        let input_ref = self.input_ref.clone();
+        let onchange = ctx.link().batch_callback(move |_| {
+            input_ref
+                .cast::<HtmlInputElement>()
+                .map(|input| TextAreaMsg::Changed(input.value()))
         });
-        let oninput = self
-            .link
-            .callback(|data: InputData| TextAreaMsg::Input(data.value));
+        let oninput = ctx
+            .link()
+            .callback(|data: InputEvent| TextAreaMsg::Input(data.data().unwrap_or_default()));
 
         html! {
             <textarea
-                ref=self.input_ref.clone()
-                class=classes
-                name=self.props.name
-                required=self.props.required
-                disabled=self.props.disabled
-                readonly=self.props.readonly
-                aria-invalid=aria_invalid
-                value=self.props.value
-                onchange=onchange
-                oninput=oninput
+                ref={self.input_ref.clone()}
+                class={classes}
+                name={ctx.props().name.clone()}
+                required={ctx.props().required}
+                disabled={ctx.props().disabled}
+                readonly={ctx.props().readonly}
+                aria-invalid={aria_invalid.to_string()}
+                value={ctx.props().value.clone()}
+                onchange={onchange}
+                oninput={oninput}
                 />
         }
     }
@@ -457,10 +399,10 @@ impl TextArea {
     ///
     /// This may be the result of the validator, or if none was set, the provided input state
     /// from the properties.
-    fn input_state(&self) -> InputState {
-        match &self.props.validator {
+    fn input_state(&self, ctx: &Context<Self>) -> InputState {
+        match &ctx.props().validator {
             Validator::Custom(validator) => validator(&self.value),
-            _ => self.props.state,
+            _ => ctx.props().state,
         }
     }
 }
@@ -471,42 +413,17 @@ impl TextArea {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct ActionGroupProps {
-    children: ChildrenWithProps<Button>,
+    pub children: ChildrenWithProps<Button>,
 }
 
-pub struct ActionGroup {
-    props: ActionGroupProps,
-}
-
-impl Component for ActionGroup {
-    type Message = ();
-    type Properties = ActionGroupProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="pf-c-form__group pf-m-action">
-                <div class="pf-c-form__actions">
-                    { for self.props.children.iter() }
-                </div>
+#[function_component(ActionGroup)]
+pub fn action_group(props: &ActionGroupProps) -> Html {
+    html! {
+        <div class="pf-c-form__group pf-m-action">
+            <div class="pf-c-form__actions">
+                { for props.children.iter() }
             </div>
-        }
+        </div>
     }
 }
 
@@ -516,39 +433,14 @@ impl Component for ActionGroup {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct InputGroupProps {
-    children: Children,
+    pub children: Children,
 }
 
-pub struct InputGroup {
-    props: InputGroupProps,
-}
-
-impl Component for InputGroup {
-    type Message = ();
-    type Properties = InputGroupProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="pf-c-input-group">
-                { for self.props.children.iter() }
-            </div>
-        }
+#[function_component(InputGroup)]
+pub fn input_group(props: &InputGroupProps) -> Html {
+    html! {
+        <div class="pf-c-input-group">
+            { for props.children.iter() }
+        </div>
     }
 }

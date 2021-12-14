@@ -38,41 +38,16 @@ pub struct ToolbarItemProps {
     pub r#type: ToolbarItemType,
 }
 
-pub struct ToolbarItem {
-    props: ToolbarItemProps,
-}
+#[function_component(ToolbarItem)]
+pub fn toolbar_item(props: &ToolbarItemProps) -> Html {
+    let mut classes = Classes::from("pf-c-toolbar__item");
 
-impl Component for ToolbarItem {
-    type Message = ();
-    type Properties = ToolbarItemProps;
+    classes.extend(props.r#type.as_classes());
+    classes.extend(props.modifiers.as_classes());
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-toolbar__item");
-
-        classes = classes.extend(self.props.r#type.as_classes());
-        classes = classes.extend(self.props.modifiers.as_classes());
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
-    }
+    return html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
+    };
 }

@@ -37,64 +37,49 @@ pub struct Props {
 }
 
 #[derive(Clone, PartialEq)]
-pub struct PageSection {
-    props: Props,
-}
+pub struct PageSection {}
 
 impl Component for PageSection {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <section class=self.collect_classes()>
-                { self.children() }
+            <section class={self.collect_classes(ctx)}>
+                { self.children(ctx) }
             </section>
         }
     }
 }
 
 impl PageSection {
-    fn collect_classes(&self) -> Classes {
+    fn collect_classes(&self, ctx: &Context<Self>) -> Classes {
         let mut classes = Classes::from("pf-c-page__main-section");
-        classes = classes.extend(self.props.variant.as_class());
+        classes.extend(ctx.props().variant.as_class());
 
-        if self.props.fill {
+        if ctx.props().fill {
             classes.push("pf-m-fill");
         }
 
-        if self.props.limit_width {
+        if ctx.props().limit_width {
             classes.push("pf-m-limit-width");
         }
 
         classes
     }
 
-    fn children(&self) -> Html {
+    fn children(&self, ctx: &Context<Self>) -> Html {
         let c = html! {
             <>
-            { for self.props.children.iter() }
+            { for ctx.props().children.iter() }
             </>
         };
 
-        match self.props.limit_width {
+        match ctx.props().limit_width {
             true => {
                 html! {
                     <div class="pf-c-page__main-body">

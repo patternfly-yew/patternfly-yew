@@ -1,6 +1,6 @@
 use crate::Icon;
+use web_sys::HtmlElement;
 use yew::prelude::*;
-use yew::web_sys::HtmlElement;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Variant {
@@ -17,7 +17,7 @@ pub enum Variant {
 }
 
 impl Variant {
-    pub fn as_classes(&self) -> Vec<&str> {
+    pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
             Variant::None => vec![],
             Variant::Primary => vec!["pf-m-primary"],
@@ -94,8 +94,6 @@ pub struct Props {
 }
 
 pub struct Button {
-    props: Props,
-    link: ComponentLink<Self>,
     node_ref: NodeRef,
 }
 
@@ -107,18 +105,16 @@ impl Component for Button {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             node_ref: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Clicked(evt) => {
-                self.props.onclick.emit(evt);
+                ctx.props().onclick.emit(evt);
                 // blur the button after a click, otherwise it will continue appear hovered/pressed
                 self.blur();
             }
@@ -126,47 +122,37 @@ impl Component for Button {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let mut classes: Classes = ctx
+            .props()
+            .class
+            .as_ref()
+            .map(|s| s.into())
+            .unwrap_or_else(|| Classes::from("pf-c-button"));
 
-    fn view(&self) -> Html {
-        let mut classes = Classes::from(
-            self.props
-                .class
-                .as_ref()
-                .map(|s| s.as_str())
-                .unwrap_or_else(|| "pf-c-button"),
-        );
+        classes.extend(ctx.props().variant.as_classes());
 
-        classes = classes.extend(self.props.variant.as_classes());
-
-        if self.props.expanded {
+        if ctx.props().expanded {
             classes.push("pf-m-expanded");
         }
-        if self.props.block {
+        if ctx.props().block {
             classes.push("pf-m-block");
         }
 
         return html! {
             <button
-                ref=self.node_ref.clone()
-                id=self.props.id
-                class=classes
-                style=self.props.style.as_ref().cloned().unwrap_or_default()
-                disabled=self.props.disabled
-                type=self.props.r#type
-                onclick=self.link.callback(Msg::Clicked)
-                role=self.props.role.clone().unwrap_or_default()
+                ref={self.node_ref.clone()}
+                id={ctx.props().id.clone()}
+                class={classes}
+                style={ctx.props().style.as_ref().cloned().unwrap_or_default()}
+                disabled={ctx.props().disabled}
+                type={ctx.props().r#type.clone()}
+                onclick={ctx.link().callback(Msg::Clicked)}
+                role={ctx.props().role.clone().unwrap_or_default()}
             >
 
-                { self.label() }
-                { for self.props.children.iter() }
+                { self.label(ctx) }
+                { for ctx.props().children.iter() }
 
             </button>
         };
@@ -174,17 +160,17 @@ impl Component for Button {
 }
 
 impl Button {
-    fn icon(&self) -> Html {
+    fn icon(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-button__icon");
 
-        match self.props.align {
+        match ctx.props().align {
             Align::Start => classes.push("pf-m-start"),
             Align::End => classes.push("pf-m-end"),
         }
 
-        match self.props.icon {
+        match ctx.props().icon {
             Some(i) => html! {
-                <span class=classes>
+                <span class={classes}>
                     { i }
                 </span>
             },
@@ -192,11 +178,11 @@ impl Button {
         }
     }
 
-    fn label(&self) -> Vec<Html> {
-        let label = self.props.label.clone().into();
-        match self.props.align {
-            Align::Start => vec![self.icon(), label],
-            Align::End => vec![label, self.icon()],
+    fn label(&self, ctx: &Context<Self>) -> Vec<Html> {
+        let label = ctx.props().label.clone().into();
+        match ctx.props().align {
+            Align::Start => vec![self.icon(ctx), label],
+            Align::End => vec![label, self.icon(ctx)],
         }
     }
 

@@ -1,8 +1,9 @@
+use gloo_utils::document;
 use std::collections::HashSet;
 use wasm_bindgen::JsValue;
-use yew::agent::*;
+use web_sys::window;
 use yew::prelude::*;
-use yew::utils::window;
+use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, HandlerId};
 
 #[derive(Clone, Debug)]
 pub struct Backdrop {
@@ -33,7 +34,7 @@ pub struct Backdropper {
 }
 
 impl Agent for Backdropper {
-    type Reach = Context<Self>;
+    type Reach = yew_agent::Context<Self>;
     type Message = ();
     type Input = BackdropRequest;
     type Output = BackdropAction;
@@ -78,6 +79,7 @@ impl Backdropper {
             self.link.respond(*viewer, msg);
         } else {
             window()
+                .unwrap()
                 .alert_with_message(&format!(
                     "Dropped backdrop. No backdrop component registered."
                 ))
@@ -125,7 +127,6 @@ impl BackdropBridge {
 pub struct Props {}
 
 pub struct BackdropViewer {
-    props: Props,
     _bridge: BackdropBridge,
 
     content: Html,
@@ -141,20 +142,19 @@ impl Component for BackdropViewer {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let bridge = BackdropBridge::new(link.callback(|action| match action {
+    fn create(ctx: &Context<Self>) -> Self {
+        let bridge = BackdropBridge::new(ctx.link().callback(|action| match action {
             BackdropAction::Open(backdrop) => Msg::Open(backdrop),
             BackdropAction::Close => Msg::Close,
         }));
         Self {
-            props,
             _bridge: bridge,
             content: Default::default(),
             open: false,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Open(content) => {
                 self.content = content.content;
@@ -168,16 +168,7 @@ impl Component for BackdropViewer {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         if self.open {
             return html! {
                 <div class="pf-c-backdrop">
@@ -192,7 +183,7 @@ impl Component for BackdropViewer {
 
 impl BackdropViewer {
     fn open(&mut self) {
-        if let Some(body) = yew::utils::document().body() {
+        if let Some(body) = document().body() {
             let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
             body.class_list().add(&classes).ok();
         }
@@ -200,7 +191,7 @@ impl BackdropViewer {
     }
 
     fn close(&mut self) {
-        if let Some(body) = yew::utils::document().body() {
+        if let Some(body) = document().body() {
             let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
             body.class_list().remove(&classes).ok();
         }

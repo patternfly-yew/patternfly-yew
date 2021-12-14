@@ -9,52 +9,24 @@ pub struct Props {
     pub wrap: bool,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct Split {
-    props: Props,
-}
+#[function_component(Split)]
+pub fn split(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-l-split");
 
-impl Component for Split {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.gutter {
+        classes.push("pf-m-gutter");
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
+    if props.wrap {
+        classes.push("pf-m-wrap");
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-split");
-
-        if self.props.gutter {
-            classes.push("pf-m-gutter");
-        }
-
-        if self.props.wrap {
-            classes.push("pf-m-wrap");
-        }
-
-        return html! {
-            <div class=classes>
-            { for self.props.children.iter().map(|child|{
-                html_nested!{
-                    { child }
-                }
-            }) }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+        { for props.children.iter().map(|child|{
+            html!{ {child} }
+        }) }
+        </div>
     }
 }
 
@@ -66,42 +38,17 @@ pub struct SplitItemProps {
     pub fill: bool,
 }
 
-pub struct SplitItem {
-    props: SplitItemProps,
-}
+#[function_component(SplitItem)]
+pub fn split_item(props: &SplitItemProps) -> Html {
+    let mut classes = Classes::from("pf-l-split__item");
 
-impl Component for SplitItem {
-    type Message = ();
-    type Properties = SplitItemProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.fill {
+        classes.push("pf-m-fill");
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-split__item");
-
-        if self.props.fill {
-            classes.push("pf-m-fill");
-        }
-
-        return html! {
-            <div class=classes>
-                { self.props.children.clone() }
-            </div>
-        };
-    }
+    return html! {
+        <div class={classes}>
+            { props.children.clone() }
+        </div>
+    };
 }

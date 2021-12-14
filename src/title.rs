@@ -28,45 +28,20 @@ pub struct Props {
     pub size: Option<Size>,
 }
 
-pub struct Title {
-    props: Props,
-}
+#[function_component(Title)]
+pub fn title(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-c-title");
 
-impl Component for Title {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    if let Some(size) = props.size {
+        classes.push(size.as_class());
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-title");
-
-        if let Some(size) = self.props.size {
-            classes.push(size.as_class());
-        }
-
-        match self.props.level {
-            Level::H1 => html! {<h1 class=classes>{ for self.props.children.iter() }</h1>},
-            Level::H2 => html! {<h2 class=classes>{ for self.props.children.iter() }</h2>},
-            Level::H3 => html! {<h3 class=classes>{ for self.props.children.iter() }</h3>},
-            Level::H4 => html! {<h4 class=classes>{ for self.props.children.iter() }</h4>},
-            Level::H5 => html! {<h5 class=classes>{ for self.props.children.iter() }</h5>},
-            Level::H6 => html! {<h6 class=classes>{ for self.props.children.iter() }</h6>},
-        }
+    match props.level {
+        Level::H1 => html! {<h1 class={classes}>{ for props.children.iter() }</h1>},
+        Level::H2 => html! {<h2 class={classes}>{ for props.children.iter() }</h2>},
+        Level::H3 => html! {<h3 class={classes}>{ for props.children.iter() }</h3>},
+        Level::H4 => html! {<h4 class={classes}>{ for props.children.iter() }</h4>},
+        Level::H5 => html! {<h5 class={classes}>{ for props.children.iter() }</h5>},
+        Level::H6 => html! {<h6 class={classes}>{ for props.children.iter() }</h6>},
     }
 }

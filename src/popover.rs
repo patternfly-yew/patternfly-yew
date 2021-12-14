@@ -27,8 +27,6 @@ pub struct PopoverProps {
 }
 
 pub struct Popover {
-    props: PopoverProps,
-    link: ComponentLink<Self>,
     node: NodeRef,
     active: bool,
 }
@@ -43,16 +41,14 @@ impl Component for Popover {
     type Message = PopoverMsg;
     type Properties = PopoverProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             node: NodeRef::default(),
             active: false,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             PopoverMsg::Toggle => {
                 self.active = !self.active;
@@ -69,20 +65,11 @@ impl Component for Popover {
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let (onclick, onclose) = match self.props.toggle_by_onclick {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let (onclick, onclose) = match ctx.props().toggle_by_onclick {
             true => (
-                self.link.callback(|_| PopoverMsg::Toggle),
-                self.link.callback(|_| PopoverMsg::Close),
+                ctx.link().callback(|_| PopoverMsg::Toggle),
+                ctx.link().callback(|_| PopoverMsg::Close),
             ),
             false => Default::default(),
         };
@@ -90,12 +77,12 @@ impl Component for Popover {
         return html! {
             <>
                 <Popper<Popover>
-                    active=self.active
-                    content=self.props.clone()
-                    onclose=onclose
+                    active={self.active}
+                    content={ctx.props().clone()}
+                    onclose={onclose}
                     >
-                    <span onclick=onclick ref=self.node.clone()>
-                        { self.props.target.clone() }
+                    <span onclick={onclick} ref={self.node.clone()}>
+                        { ctx.props().target.clone() }
                     </span>
                 </Popper<Popover>>
             </>
@@ -110,10 +97,11 @@ impl PopperContent for Popover {
         r#ref: NodeRef,
         state: Option<popperjs::State>,
     ) -> Html {
-        let styles: &str = match &state {
+        let styles = match &state {
             Some(state) => &state.styles,
             None => "display: none;",
-        };
+        }
+        .to_string();
 
         let orientation = state
             .as_ref()
@@ -122,13 +110,13 @@ impl PopperContent for Popover {
 
         html! {
             <PopoverPopup
-                ref=r#ref
-                styles=styles
-                orientation=orientation
-                header=&props.header
-                footer=&props.footer
-                children=&props.children
-                onclose=onclose
+                ref={r#ref}
+                styles={styles}
+                orientation={orientation}
+                header={props.header.clone()}
+                footer={props.footer.clone()}
+                children={props.children.clone()}
+                onclose={onclose}
             />
         }
     }
@@ -156,10 +144,7 @@ pub struct PopoverPopupProps {
 }
 
 #[derive(Clone)]
-pub struct PopoverPopup {
-    props: PopoverPopupProps,
-    link: ComponentLink<Self>,
-}
+pub struct PopoverPopup {}
 
 #[derive(Copy, Debug, Clone)]
 pub enum PopoverPopupMsg {
@@ -170,67 +155,54 @@ impl Component for PopoverPopup {
     type Message = PopoverPopupMsg;
     type Properties = PopoverPopupProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             PopoverPopupMsg::Close => {
-                self.props.onclose.emit(());
+                ctx.props().onclose.emit(());
                 false
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-popover");
 
-        classes = classes.extend(self.props.orientation.as_classes());
+        classes.extend(ctx.props().orientation.as_classes());
 
-        let style = if self.props.hidden {
-            "display: none;"
+        let style = if ctx.props().hidden {
+            "display: none;".to_string()
         } else {
-            &self.props.styles
+            ctx.props().styles.to_string()
         };
 
-        let onclose = self.link.callback(|_| PopoverPopupMsg::Close);
+        let onclose = ctx.link().callback(|_| PopoverPopupMsg::Close);
 
         return html! {
-            <div style=style class=classes role="dialog" aria-model="true">
+            <div style={style} class={classes} role="dialog" aria-model="true">
                 <div class="pf-c-popover__arrow"></div>
                 <div class="pf-c-popover__content">
-                    { self.props.header.clone() }
+                    { ctx.props().header.clone() }
 
                     <Button
-                        variant=Variant::Plain
-                        icon=Icon::Times
+                        variant={Variant::Plain}
+                        icon={Icon::Times}
                         aria_label="Close"
-                        onclick=onclose
+                        onclick={onclose}
                     />
 
                     <div class="pf-c-popover__body">
-                        { for self.props.children.iter() }
+                        { for ctx.props().children.iter() }
                     </div>
 
-                    { if let Some(footer) = &self.props.footer {
-                        html!{
-                            <footer class="pf-c-popover__footer">
-                                { footer.clone() }
-                            </footer>
-                        }
-                    } else {
-                        html!{}
-                    }}
+                    if let Some(footer) = &ctx.props().footer {
+                        <footer class="pf-c-popover__footer">
+                            { footer.clone() }
+                        </footer>
+                    }
 
                 </div>
             </div>

@@ -16,37 +16,12 @@ pub struct NavProps {
 }
 
 /// A navigation component.
-pub struct Nav {
-    props: NavProps,
-}
-
-impl Component for Nav {
-    type Message = ();
-    type Properties = NavProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <nav class="pf-c-nav" aria-label="Global">
-                { for self.props.children.iter() }
-            </nav>
-        }
+#[function_component(Nav)]
+pub fn nav(props: &NavProps) -> Html {
+    html! {
+        <nav class="pf-c-nav" aria-label="Global">
+            { for props.children.iter() }
+        </nav>
     }
 }
 
@@ -58,37 +33,12 @@ pub struct NavListProps {
     pub children: Children,
 }
 
-pub struct NavList {
-    props: NavListProps,
-}
-
-impl Component for NavList {
-    type Message = ();
-    type Properties = NavListProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <ul class="pf-c-nav__list">
-                { for self.props.children.iter() }
-            </ul>
-        }
+#[function_component(NavList)]
+pub fn nav_list(props: &NavListProps) -> Html {
+    html! {
+        <ul class="pf-c-nav__list">
+            { for props.children.iter() }
+        </ul>
     }
 }
 
@@ -102,41 +52,15 @@ pub struct NavGroupProps {
     pub title: String,
 }
 
-/// Navigation group/section.
-pub struct NavGroup {
-    props: NavGroupProps,
-}
-
-impl Component for NavGroup {
-    type Message = ();
-    type Properties = NavGroupProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <section class="pf-c-nav__section">
-                <h2 class="pf-c-nav__section-title">{ self.props.title.clone() }</h2>
-                <NavList>
-                    { for self.props.children.iter() }
-                </NavList>
-            </section>
-        }
+#[function_component(NavGroup)]
+pub fn nav_group(props: &NavGroupProps) -> Html {
+    html! {
+        <section class="pf-c-nav__section">
+            <h2 class="pf-c-nav__section-title">{ props.title.clone() }</h2>
+            <NavList>
+                { for props.children.iter() }
+            </NavList>
+        </section>
     }
 }
 
@@ -154,66 +78,36 @@ pub struct NavItemProps {
     pub external: bool,
 }
 
-/// A navigation item (link).
-pub struct NavItem {
-    props: NavItemProps,
+#[function_component(NavItem)]
+pub fn nav_item(props: &NavItemProps) -> Html {
+    let mut target = props.target.to_string();
+    if target.is_empty() && props.external {
+        target = "_blank".to_string();
+    }
+
+    let href = if props.to.is_empty() {
+        "#".into()
+    } else {
+        props.to.clone()
+    };
+
+    return html! {
+        <li class="pf-c-nav__item">
+            <a
+                href={href}
+                class="pf-c-nav__link"
+                target={target}
+            >
+                { for props.children.iter() }
+                if props.external {
+                    <span class="pf-u-ml-sm pf-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
+                }
+            </a>
+        </li>
+    };
 }
 
-impl Component for NavItem {
-    type Message = ();
-    type Properties = NavItemProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut target = self.props.target.as_str();
-        if target.is_empty() && self.props.external {
-            target = "_blank";
-        }
-
-        return html! {
-            <li class="pf-c-nav__item">
-                <a
-                    href=self.get_href()
-                    class="pf-c-nav__link"
-                    target=target
-                >
-                    { for self.props.children.iter() }
-                    { if self.props.external {html!{
-                        <span class="pf-u-ml-sm pf-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
-                    }} else {html!{}}}
-                </a>
-            </li>
-        };
-    }
-}
-
-impl NavItem {
-    fn get_href(&self) -> String {
-        if self.props.to.is_empty() {
-            "#".into()
-        } else {
-            self.props.to.clone()
-        }
-    }
-}
-
-// nav group
+// nav expandable
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavExpandableProps {
@@ -227,9 +121,6 @@ pub struct NavExpandableProps {
 
 /// Expandable navigation group/section.
 pub struct NavExpandable {
-    props: NavExpandableProps,
-    link: ComponentLink<Self>,
-
     expanded: Option<bool>,
 }
 
@@ -242,57 +133,48 @@ impl Component for NavExpandable {
     type Message = MsgExpandable;
     type Properties = NavExpandableProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let expanded = match props.expanded {
+    fn create(ctx: &Context<Self>) -> Self {
+        let expanded = match ctx.props().expanded {
             true => Some(true),
             false => None,
         };
 
-        Self {
-            props,
-            link,
-            expanded,
-        }
+        Self { expanded }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             MsgExpandable::Toggle => {
-                self.expanded = Some(!self.is_expanded());
+                self.expanded = Some(!self.is_expanded(ctx));
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            if self.props.expanded {
-                self.expanded = Some(true);
-            }
-            true
-        } else {
-            false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if ctx.props().expanded {
+            self.expanded = Some(true);
         }
+        true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-nav__item pf-c-expandable");
 
-        let expanded = self.is_expanded();
+        let expanded = self.is_expanded(ctx);
 
         if expanded {
             classes.push("pf-m-expanded");
         }
 
         return html! {
-            <li class=classes>
+            <li class={classes}>
                 <button
                     class="pf-c-nav__link"
-                    aria-expanded=expanded
-                    onclick=self.link.callback(|_|MsgExpandable::Toggle)
+                    aria-expanded={expanded.to_string()}
+                    onclick={ctx.link().callback(|_|MsgExpandable::Toggle)}
                     >
-                    { &self.props.title }
+                    { &ctx.props().title }
                     <span class="pf-c-nav__toggle">
                         <span class="pf-c-nav__toggle-icon">
                             { Icon::AngleRight }
@@ -300,9 +182,9 @@ impl Component for NavExpandable {
                     </span>
                 </button>
 
-                <section class="pf-c-nav__subnav" hidden=!expanded>
+                <section class="pf-c-nav__subnav" hidden={!expanded}>
                     <NavList>
-                        { for self.props.children.iter() }
+                        { for ctx.props().children.iter() }
                     </NavList>
                 </section>
             </li>
@@ -311,7 +193,7 @@ impl Component for NavExpandable {
 }
 
 impl NavExpandable {
-    fn is_expanded(&self) -> bool {
-        self.expanded.unwrap_or(self.props.expanded)
+    fn is_expanded(&self, ctx: &Context<Self>) -> bool {
+        self.expanded.unwrap_or(ctx.props().expanded)
     }
 }

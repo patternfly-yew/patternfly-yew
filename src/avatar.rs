@@ -8,40 +8,13 @@ pub struct Props {
     pub alt: String,
 }
 
-pub struct Avatar {
-    props: Props,
-}
-
-impl Component for Avatar {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let classes = Classes::from("pf-c-avatar");
-
-        html! {
-            <img
-                class=classes
-                src=self.props.src
-                alt=self.props.alt
-                />
-        }
+#[function_component(Avatar)]
+pub fn avatar(props: &Props) -> Html {
+    html! {
+        <img
+            class="pf-c-avatar"
+            src={props.src.clone()}
+            alt={props.alt.clone()}
+            />
     }
 }

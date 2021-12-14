@@ -1,4 +1,4 @@
-use crate::{BackdropDispatcher};
+use crate::BackdropDispatcher;
 use yew::prelude::*;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -10,7 +10,7 @@ pub enum ModalVariant {
 }
 
 impl ModalVariant {
-    pub fn as_classes(&self) -> Vec<&str> {
+    pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
             ModalVariant::None => vec![],
             ModalVariant::Small => vec!["pf-m-sm"],
@@ -47,23 +47,20 @@ pub enum Msg {
 }
 
 #[derive(Clone)]
-pub struct Modal {
-    props: Props,
-    link: ComponentLink<Self>,
-}
+pub struct Modal {}
 
 impl Component for Modal {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Close => {
-                if let Some(onclose) = &self.props.onclose {
+                if let Some(onclose) = &ctx.props().onclose {
                     onclose.emit(());
                 } else {
                     BackdropDispatcher::default().close();
@@ -73,21 +70,12 @@ impl Component for Modal {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = self.props.variant.as_classes();
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let mut classes = ctx.props().variant.as_classes();
         classes.push("pf-c-modal-box");
 
         return html! {
-            <div class=classes
+            <div class={classes}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-title"
@@ -96,7 +84,7 @@ impl Component for Modal {
                     class="pf-c-button pf-m-plain"
                     type="button"
                     aria-label="Close dialog"
-                    onclick=self.link.callback(|_|Msg::Close)
+                    onclick={ctx.link().callback(|_|Msg::Close)}
                 >
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
@@ -105,28 +93,24 @@ impl Component for Modal {
                     <h1
                         class="pf-c-modal-box__title"
                         id="modal-title-modal-with-form"
-                    >{ &self.props.title }</h1>
+                    >{ &ctx.props().title }</h1>
                 </header>
 
                 <div class="pf-c-modal-box__body">
-                    <p>{ &self.props.description }</p>
+                    <p>{ &ctx.props().description }</p>
                 </div>
 
-                { for self.props.children.iter().map(|c|{
+                { for ctx.props().children.iter().map(|c|{
                    {html!{
                     <div class="pf-c-modal-box__body">{c}</div>
-                       }}
+                   }}
                 }) }
 
-                { if let Some(footer) = &self.props.footer {
-                  {html!{
-                      <footer class="pf-c-modal-box__footer">
+                if let Some(footer) = &ctx.props().footer {
+                  <footer class="pf-c-modal-box__footer">
                       { footer.clone() }
-                      </footer>
-                  }}
-                } else {
-                    html!{}
-                }}
+                  </footer>
+                }
             </div>
         };
     }

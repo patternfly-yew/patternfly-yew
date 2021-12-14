@@ -1,4 +1,5 @@
 use crate::{Button, Divider, GlobalClose, Icon, Position};
+use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
@@ -23,9 +24,6 @@ pub enum Msg {
 }
 
 pub struct AppLauncher {
-    props: Props,
-    link: ComponentLink<Self>,
-
     expanded: bool,
     global_close: GlobalClose,
 }
@@ -34,17 +32,16 @@ impl Component for AppLauncher {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let global_close = GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close));
+    fn create(ctx: &Context<Self>) -> Self {
+        let global_close =
+            GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close));
         Self {
             expanded: false,
-            props,
-            link,
             global_close,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
@@ -54,20 +51,11 @@ impl Component for AppLauncher {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-app-launcher");
         let mut menu_classes = Classes::from("pf-c-app-launcher__menu");
 
-        match self.props.position {
+        match ctx.props().position {
             Position::Left => {}
             Position::Right => menu_classes.push("pf-m-align-right"),
             Position::Top => classes.push("pf-m-top"),
@@ -77,28 +65,28 @@ impl Component for AppLauncher {
             classes.push("pf-m-expanded");
         }
 
-        let onclick = self.link.callback(|_| Msg::Toggle);
+        let onclick = ctx.link().callback(|_| Msg::Toggle);
 
         return html! {
             <nav
-                class=classes
-                ref=self.global_close.clone()
+                class={classes}
+                ref={self.global_close.clone()}
                 >
                 <Button
                     class="pf-c-app-launcher__toggle"
                     r#type="button"
-                    disabled=self.props.disabled
-                    onclick=onclick
+                    disabled={ctx.props().disabled}
+                    onclick={onclick}
                     >
-                    { self.render_trigger() }
+                    { self.render_trigger(&ctx.props()) }
                 </Button>
                 <ul
-                    class=menu_classes
-                    hidden=!self.expanded
+                    class={menu_classes}
+                    hidden={!self.expanded}
                 >
-                    { for self.props.children.iter().map(|mut c|{
+                    { for ctx.props().children.iter().map(|mut c|{
                         // request a close callback from the item
-                        c.set_need_close(self.link.callback(|_|Msg::Close));
+                        c.set_need_close(ctx.link().callback(|_|Msg::Close));
                         c
                     }) }
                 </ul>
@@ -108,8 +96,8 @@ impl Component for AppLauncher {
 }
 
 impl AppLauncher {
-    fn render_trigger(&self) -> Html {
-        if let Some(toggle) = &self.props.toggle {
+    fn render_trigger(&self, props: &Props) -> Html {
+        if let Some(toggle) = &props.toggle {
             toggle.clone()
         } else {
             Icon::Th.into()
@@ -119,19 +107,19 @@ impl AppLauncher {
 
 #[derive(Clone, PartialEq)]
 pub enum AppLauncherChild {
-    Item(<AppLauncherItem as Component>::Properties),
-    Divider(<Divider as Component>::Properties),
+    Item(Rc<<AppLauncherItem as Component>::Properties>),
+    Divider(Rc<<Divider as Component>::Properties>),
 }
 
 impl From<AppLauncherItemProps> for AppLauncherChild {
     fn from(props: AppLauncherItemProps) -> Self {
-        AppLauncherChild::Item(props)
+        AppLauncherChild::Item(Rc::new(props))
     }
 }
 
 impl From<()> for AppLauncherChild {
     fn from(_: ()) -> Self {
-        AppLauncherChild::Divider(())
+        AppLauncherChild::Divider(Rc::new(()))
     }
 }
 
@@ -145,6 +133,7 @@ impl AppLauncherChildVariant {
     fn set_need_close(&mut self, callback: Callback<()>) {
         match self.props {
             AppLauncherChild::Item(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
             _ => {}
@@ -155,11 +144,11 @@ impl AppLauncherChildVariant {
 impl<CHILD> From<VChild<CHILD>> for AppLauncherChildVariant
 where
     CHILD: Component,
-    CHILD::Properties: Into<AppLauncherChild>,
+    CHILD::Properties: Into<AppLauncherChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }
@@ -199,55 +188,43 @@ pub enum AppLauncherItemMsg {
 }
 
 #[derive(Clone)]
-pub struct AppLauncherItem {
-    props: AppLauncherItemProps,
-    link: ComponentLink<Self>,
-}
+pub struct AppLauncherItem {}
 
 impl Component for AppLauncherItem {
     type Message = AppLauncherItemMsg;
     type Properties = AppLauncherItemProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             AppLauncherItemMsg::Clicked => {
-                if let Some(onclick) = &self.props.onclick {
+                if let Some(onclick) = &ctx.props().onclick {
                     onclick.emit(());
                 }
                 // request close from our parent
-                self.props.want_close.emit(());
+                ctx.props().want_close.emit(());
             }
         }
         false
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let action = if self.props.onclick.is_some() {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let action = if ctx.props().onclick.is_some() {
             html! {
                 <Button
                     class="pf-c-app-launcher__menu-item"
-                    onclick=self.link.callback(|_|Self::Message::Clicked)
+                    onclick={ctx.link().callback(|_|Self::Message::Clicked)}
                     >
-                    { for self.props.children.iter() }
+                    { for ctx.props().children.iter() }
                 </Button>
             }
         } else {
             let mut classes = Classes::from("pf-c-app-launcher__menu-item");
 
-            let target = if self.props.external {
+            let target = if ctx.props().external {
                 classes.push("pf-m-external");
                 "_blank"
             } else {
@@ -256,20 +233,19 @@ impl Component for AppLauncherItem {
 
             html! {
                 <a
-                    class=classes
-                    target=target
-                    href=self.props.href.clone()>
+                    class={classes}
+                    target={target}
+                    href={ctx.props().href.clone()}
+                >
 
-                { for self.props.children.iter() }
+                { for ctx.props().children.iter() }
 
-                { if self.props.external {html!{
-                    <>
+                if ctx.props().external {
                     <span class="pf-c-app-launcher__menu-item-external-icon">
                         { Icon::ExternalLinkAlt }
                     </span>
                     <span class="pf-screen-reader">{"(opens new window)"}</span>
-                    </>
-                }} else {html!{}} }
+                }
 
                 </a>
             }

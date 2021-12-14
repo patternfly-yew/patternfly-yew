@@ -6,36 +6,21 @@ pub struct Props {
     pub filter: Option<String>,
 }
 
-pub struct Background {
-    props: Props,
-}
+pub struct Background {}
 
 impl Component for Background {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        if let Some(filter) = &self.props.filter {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        if let Some(filter) = &ctx.props().filter {
             let styles = format!("--pf-c-background-image--Filter: {};", filter);
             html! {
-                <div class="pf-c-background-image" style=styles></div>
+                <div class="pf-c-background-image" style={styles}></div>
             }
         } else {
             // FIXME: something is still wrong here, the filter gets applied, but seems to have no effect

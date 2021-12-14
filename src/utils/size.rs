@@ -11,7 +11,7 @@ pub enum Size {
 }
 
 impl Size {
-    pub fn as_class(&self) -> &str {
+    pub fn as_class(&self) -> &'static str {
         match self {
             Size::XSmall => "pf-m-xs",
             Size::Small => "pf-m-sm",

@@ -8,46 +8,22 @@ pub struct Props {
     pub open: bool,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct PageSidebar {
-    props: Props,
-}
+#[function_component(PageSidebar)]
+pub fn page_sidebar(props: &Props) -> Html {
+    let mut classes = match props.open {
+        true => classes!["pf-m-expanded"],
+        false => classes!["pf-m-collapsed"],
+    };
 
-impl Component for PageSidebar {
-    type Message = ();
-    type Properties = Props;
+    classes.push("pf-c-page__sidebar");
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let collapsed = match self.props.open {
-            true => vec!["pf-m-expanded"],
-            false => vec!["pf-m-collapsed"],
-        };
-
-        html! {
-            <div
-                aria-hidden=!self.props.open
-                class=("pf-c-page__sidebar",collapsed)>
-                <div class="pf-c-page__sidebar-body">
-                    { for self.props.children.iter() }
-                </div>
+    html! {
+        <div
+            aria-hidden={(!props.open).to_string()}
+            class={classes}>
+            <div class="pf-c-page__sidebar-body">
+                { for props.children.iter() }
             </div>
-        }
+        </div>
     }
 }

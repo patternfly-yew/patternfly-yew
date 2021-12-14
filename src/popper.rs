@@ -1,6 +1,7 @@
 use crate::integration::popperjs;
 
 use std::fmt::Debug;
+use std::marker::PhantomData;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
 
@@ -28,14 +29,13 @@ where
     C: PopperContent + 'static,
     C::Properties: PartialEq + Debug,
 {
-    props: Props<C::Properties>,
-    link: ComponentLink<Self>,
-
     target: NodeRef,
     content: NodeRef,
     popper: Option<popperjs::Instance>,
 
     state: Option<popperjs::State>,
+
+    _marker: PhantomData<C>,
 }
 
 #[derive(Clone, Debug)]
@@ -52,18 +52,17 @@ where
     type Message = Msg;
     type Properties = Props<C::Properties>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             target: NodeRef::default(),
             content: NodeRef::default(),
             popper: None,
             state: None,
+            _marker: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::State(state) => {
                 let state = Some(state);
@@ -75,36 +74,28 @@ where
                 changed
             }
             Msg::Close => {
-                self.props.onclose.emit(());
+                ctx.props().onclose.emit(());
                 false
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props.active != props.active {
-            if props.active {
-                self.show().unwrap();
-            } else {
-                self.hide();
-            }
-        }
-
-        if self.props != props {
-            self.props = props;
-            true
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if ctx.props().active {
+            self.show(ctx).ok();
         } else {
-            false
+            self.hide();
         }
+        true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         self.check_update().ok();
 
-        let onclose = self.link.callback(|_| Msg::Close);
+        let onclose = ctx.link().callback(|_| Msg::Close);
 
         let content = <C as PopperContent>::view(
-            &self.props.content,
+            &ctx.props().content,
             onclose,
             self.content.clone(),
             self.state.clone(),
@@ -112,15 +103,13 @@ where
 
         return html! {
             <>
-                <span ref=self.target.clone()>
-                    { for self.props.children.iter() }
+                <span ref={self.target.clone()}>
+                    { for ctx.props().children.iter() }
                 </span>
                 { content }
             </>
         };
     }
-
-    fn destroy(&mut self) {}
 }
 
 impl<C> Popper<C>
@@ -128,7 +117,7 @@ where
     C: PopperContent,
     C::Properties: Clone + PartialEq + Debug,
 {
-    fn show(&mut self) -> Result<(), JsValue> {
+    fn show(&mut self, ctx: &Context<Self>) -> Result<(), JsValue> {
         if self.popper.is_some() {
             return Ok(());
         }
@@ -142,7 +131,7 @@ where
             .get()
             .ok_or_else(|| JsValue::from("Missing content"))?;
 
-        let update = self.link.callback(|state| Msg::State(state));
+        let update = ctx.link().callback(|state| Msg::State(state));
         let opts = popperjs::create_default_opts(update)?;
 
         //web_sys::console::debug_1(&opts);

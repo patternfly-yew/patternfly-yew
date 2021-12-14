@@ -11,49 +11,20 @@ pub struct Props {
     pub cols: WithBreakpoints<usize>,
 }
 
-pub struct Grid {
-    props: Props,
-}
+#[function_component(Grid)]
+pub fn grid(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-l-grid");
 
-impl Component for Grid {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.gutter {
+        classes.push("pf-m-gutter");
     }
 
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
+    classes.extend(props.cols.mapped(|cols| format!("pf-m-all-{}-col", cols)));
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-grid");
-
-        if self.props.gutter {
-            classes.push("pf-m-gutter");
-        }
-
-        classes = classes.extend(
-            self.props
-                .cols
-                .mapped(|cols| format!("pf-m-all-{}-col", cols)),
-        );
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
     }
 }
 
@@ -70,46 +41,21 @@ pub struct GridItemProps {
     pub offset: WithBreakpoints<u16>,
 }
 
-pub struct GridItem {
-    props: GridItemProps,
-}
+#[function_component(GridItem)]
+pub fn grid_item(props: &GridItemProps) -> Html {
+    let mut classes = Classes::from("pf-l-grid__item");
 
-impl Component for GridItem {
-    type Message = ();
-    type Properties = GridItemProps;
+    classes.extend(props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
+    classes.extend(props.rows.mapped(|cols| format!("pf-m-{}-row", cols)));
+    classes.extend(
+        props
+            .offset
+            .mapped(|cols| format!("pf-m-offset-{}-col", cols)),
+    );
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-grid__item");
-
-        classes = classes.extend(self.props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
-        classes = classes.extend(self.props.rows.mapped(|cols| format!("pf-m-{}-row", cols)));
-        classes = classes.extend(
-            self.props
-                .offset
-                .mapped(|cols| format!("pf-m-offset-{}-col", cols)),
-        );
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
+    html! {
+            <div class={classes}>
+                { for props.children.iter() }
             </div>
-        };
     }
 }

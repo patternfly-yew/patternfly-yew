@@ -1,4 +1,5 @@
 use crate::{Avatar, Button, Divider, GlobalClose, Icon, Position, Variant};
+use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
@@ -29,9 +30,6 @@ pub struct Props {
 }
 
 pub struct Dropdown {
-    props: Props,
-    link: ComponentLink<Self>,
-
     expanded: bool,
     global_close: GlobalClose,
 }
@@ -46,16 +44,14 @@ impl Component for Dropdown {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
             expanded: false,
-            props,
-            global_close: GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close)),
-            link,
+            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
@@ -65,16 +61,7 @@ impl Component for Dropdown {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-dropdown");
         if self.expanded {
             classes.push("pf-m-expanded");
@@ -82,54 +69,55 @@ impl Component for Dropdown {
 
         let mut menu_classes = Classes::from("pf-c-dropdown__menu");
 
-        match self.props.position {
+        match ctx.props().position {
             Position::Left => {}
             Position::Right => menu_classes.push("pf-m-align-right"),
             Position::Top => classes.push("pf-m-top"),
         }
 
-        let onclick = self.link.callback(|_| Msg::Toggle);
+        let onclick = ctx.link().callback(|_| Msg::Toggle);
 
-        let variant = match self.props.plain {
+        let variant = match ctx.props().plain {
             true => Variant::Plain,
             false => Variant::None,
         };
 
-        return html! {
-            <div class=classes
-                ref=self.global_close.clone()>
+        html! {
+            <div class={classes}
+                ref={self.global_close.clone()}
+            >
                 <Button
                     class="pf-c-dropdown__toggle"
-                    style=self.props.toggle_style.clone()
-                    variant=variant
+                    style={ctx.props().toggle_style.clone()}
+                    variant={variant}
                     r#type="button"
-                    disabled=self.props.disabled
-                    onclick=onclick
-                    id=&self.props.id
+                    disabled={ctx.props().disabled}
+                    onclick={onclick}
+                    id={ctx.props().id.clone()}
                     >
-                    { self.props.toggle.clone() }
+                    { ctx.props().toggle.clone() }
                 </Button>
                 <div
-                    class=menu_classes
-                    hidden=!self.expanded
+                    class={menu_classes}
+                    hidden={!self.expanded}
                 >
                     <ul>
-                    { for self.props.children.iter().map(|mut c|{
+                    { for ctx.props().children.iter().map(|mut c|{
                         // request a close callback from the item
-                        c.set_need_close(self.link.callback(|_|Msg::Close));
+                        c.set_need_close(ctx.link().callback(|_|Msg::Close));
                         c
                     }) }
                     </ul>
                 </div>
             </div>
-        };
+        }
     }
 }
 
 // toggle
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct ToggleProps {
+pub struct DropdownToggleProps {
     #[prop_or_default]
     pub image: Option<Html>,
     #[prop_or_default]
@@ -138,51 +126,26 @@ pub struct ToggleProps {
     pub icon: Option<Icon>,
 }
 
-pub struct DropdownToggle {
-    props: ToggleProps,
-}
-
-impl Component for DropdownToggle {
-    type Message = ();
-    type Properties = ToggleProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <>
-                { if let Some(ref image) = self.props.image {html!{
-                    <span class="pf-c-dropdown__toggle-image">
-                        { image.clone() }
-                    </span>
-                }} else { html!{} }}
-                <span class="pf-c-dropdown__toggle-text">
-                    { &self.props.text }
+#[function_component(DropdownToggle)]
+pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
+    html! {
+        <>
+            if let Some(image) = &props.image {
+                <span class="pf-c-dropdown__toggle-image">
+                    { image.clone() }
                 </span>
-                <span class="pf-c-dropdown__toggle-icon">
-                    { if let Some(icon) = self.props.icon {html!{
-                        icon
-                    }} else { html!{
-                        Icon::CaretDown
-                    }} }
-                </span>
-            </>
-        };
+            }
+            <span class="pf-c-dropdown__toggle-text">
+                { &props.text }
+            </span>
+            <span class="pf-c-dropdown__toggle-icon">
+                if let Some(icon) = props.icon {
+                    { icon }
+                } else {
+                    { Icon::CaretDown }
+                }
+            </span>
+        </>
     }
 }
 
@@ -190,33 +153,33 @@ impl Component for DropdownToggle {
 
 #[derive(Clone, PartialEq)]
 pub enum DropdownChild {
-    Item(<DropdownItem as Component>::Properties),
-    Divider(<Divider as Component>::Properties),
-    Group(<DropdownItemGroup as Component>::Properties),
-    Text(<DropdownItemText as Component>::Properties),
+    Item(Rc<<DropdownItem as Component>::Properties>),
+    Divider(Rc<<Divider as Component>::Properties>),
+    Group(Rc<<DropdownItemGroup as Component>::Properties>),
+    Text(Rc<<DropdownItemText as Component>::Properties>),
 }
 
 impl From<DropdownItemProps> for DropdownChild {
     fn from(props: DropdownItemProps) -> Self {
-        DropdownChild::Item(props)
+        DropdownChild::Item(Rc::new(props))
     }
 }
 
 impl From<()> for DropdownChild {
     fn from(_: ()) -> Self {
-        DropdownChild::Divider(())
+        DropdownChild::Divider(Rc::new(()))
     }
 }
 
 impl From<DropdownItemGroupProps> for DropdownChild {
     fn from(props: DropdownItemGroupProps) -> Self {
-        DropdownChild::Group(props)
+        DropdownChild::Group(Rc::new(props))
     }
 }
 
 impl From<DropdownItemTextProps> for DropdownChild {
     fn from(props: DropdownItemTextProps) -> Self {
-        DropdownChild::Text(props)
+        DropdownChild::Text(Rc::new(props))
     }
 }
 
@@ -232,9 +195,11 @@ impl DropdownChildVariant {
     fn set_need_close(&mut self, callback: Callback<()>) {
         match self.props {
             DropdownChild::Item(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
             DropdownChild::Group(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
             _ => {}
@@ -245,11 +210,11 @@ impl DropdownChildVariant {
 impl<CHILD> From<VChild<CHILD>> for DropdownChildVariant
 where
     CHILD: Component,
-    CHILD::Properties: Into<DropdownChild>,
+    CHILD::Properties: Into<DropdownChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }
@@ -295,57 +260,45 @@ pub enum DropdownItemMsg {
 }
 
 #[derive(Clone)]
-pub struct DropdownItem {
-    props: DropdownItemProps,
-    link: ComponentLink<Self>,
-}
+pub struct DropdownItem {}
 
 impl Component for DropdownItem {
     type Message = DropdownItemMsg;
     type Properties = DropdownItemProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Clicked => {
-                if let Some(onclick) = &self.props.onclick {
+                if let Some(onclick) = &ctx.props().onclick {
                     onclick.emit(());
                 }
                 // request close from our parent
-                self.props.want_close.emit(());
+                ctx.props().want_close.emit(());
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let action = if self.props.onclick.is_some() {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let action = if ctx.props().onclick.is_some() {
             html! {
                 <Button
                     class="pf-c-dropdown__menu-item"
-                    onclick=self.link.callback(|_|Self::Message::Clicked)
+                    onclick={ctx.link().callback(|_|Self::Message::Clicked)}
                     >
-                    { for self.props.children.iter() }
+                    { for ctx.props().children.iter() }
                 </Button>
             }
         } else {
             html! {
                 <a
                     class="pf-c-dropdown__menu-item"
-                    target=self.props.target.clone()
-                    href=self.props.href.clone()>{ for self.props.children.iter() }</a>
+                    target={ctx.props().target.clone()}
+                    href={ctx.props().href.clone()}>{ for ctx.props().children.iter() }</a>
             }
         };
 
@@ -366,10 +319,7 @@ pub struct DropdownItemGroupProps {
 }
 
 #[derive(Clone)]
-pub struct DropdownItemGroup {
-    props: DropdownItemGroupProps,
-    link: ComponentLink<Self>,
-}
+pub struct DropdownItemGroup {}
 
 #[derive(Clone, Copy, Debug)]
 pub enum DropdownItemGroupMsg {
@@ -380,31 +330,22 @@ impl Component for DropdownItemGroup {
     type Message = DropdownItemGroupMsg;
     type Properties = DropdownItemGroupProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Self::Message::Close => self.props.want_close.emit(()),
+            Self::Message::Close => ctx.props().want_close.emit(()),
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        html! {
             <>
-            { for self.props.children.iter().map(|mut c|{
-                c.set_need_close(self.link.callback(|_|Self::Message::Close));
+            { for ctx.props().children.iter().map(|mut c|{
+                c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
                 html!{
                     <section class="pf-c-dropdown__group">
                     { c }
@@ -412,7 +353,7 @@ impl Component for DropdownItemGroup {
                 }
             })}
             </>
-        };
+        }
     }
 }
 
@@ -424,65 +365,21 @@ pub struct DropdownItemTextProps {
     pub children: Children,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct DropdownItemText {
-    props: DropdownItemTextProps,
-}
-
-impl Component for DropdownItemText {
-    type Message = ();
-    type Properties = DropdownItemTextProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <div class="pf-c-dropdown__menu-item pf-m-text">
-            { for self.props.children.iter() }
-            </div>
-        };
+#[function_component(DropdownItemText)]
+pub fn dropwdown_item_text(props: &DropdownItemTextProps) -> Html {
+    html! {
+        <div class="pf-c-dropdown__menu-item pf-m-text">
+        { for props.children.iter() }
+        </div>
     }
 }
 
 // kebab toggle
 
-pub struct KebabToggle {}
-
-impl Component for KebabToggle {
-    type Message = ();
-    type Properties = ();
-
-    fn create(_props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <DropdownToggle icon=Icon::EllipsisV/>
-        };
+#[function_component(KebabToggle)]
+pub fn kebab_toggle() -> Html {
+    html! {
+        <DropdownToggle icon={Icon::EllipsisV}/>
     }
 }
 
@@ -496,39 +393,13 @@ pub struct UserToggleProps {
     pub src: String,
 }
 
-pub struct UserToggle {
-    props: UserToggleProps,
-}
-
-impl Component for UserToggle {
-    type Message = ();
-    type Properties = UserToggleProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <DropdownToggle
-                image=html!{
-                    <Avatar src=self.props.src.clone()/>
-                }
-                text=&self.props.name
-                />
-        };
+#[function_component(UserToggle)]
+pub fn user_toggle(props: &UserToggleProps) -> Html {
+    let image = html! { <Avatar src={props.src.clone()} /> };
+    html! {
+        <DropdownToggle
+            image={image}
+            text={props.name.clone()}
+            />
     }
 }

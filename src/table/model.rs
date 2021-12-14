@@ -1,10 +1,10 @@
 use std::fmt::Debug;
-use std::ops::{Deref, DerefMut};
+use std::ops::Deref;
 use std::sync::{Arc, RwLock};
-use yew::prelude::*;
 
 use super::TableRenderer;
 
+/// A model providing data for a table.
 pub trait TableModel: Debug + Default + PartialEq + Clone {
     type Item: TableRenderer;
 
@@ -20,7 +20,7 @@ pub trait TableModel: Debug + Default + PartialEq + Clone {
     fn is_expanded(&self, index: usize) -> bool;
 
     /// Set the expanded state of the entry
-    fn set_expanded(&mut self, index: usize, state: bool) -> ShouldRender;
+    fn set_expanded(&self, index: usize, state: bool) -> bool;
 
     fn map<F, R>(&self, f: F) -> Vec<R>
     where
@@ -41,129 +41,6 @@ impl<T> TableModelEntry<T> {
             expanded: false,
             index: 0,
         }
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq,
-{
-    entries: Vec<TableModelEntry<T>>,
-}
-
-impl<T> Deref for SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq,
-{
-    type Target = Vec<TableModelEntry<T>>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.entries
-    }
-}
-
-impl<T> DerefMut for SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq,
-{
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.entries
-    }
-}
-
-impl<T> Default for SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq,
-{
-    fn default() -> Self {
-        Self { entries: vec![] }
-    }
-}
-
-impl<T> From<Vec<T>> for SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq,
-{
-    fn from(entries: Vec<T>) -> Self {
-        let mut result = Vec::with_capacity(entries.len());
-
-        let mut index = 0;
-        for e in entries {
-            result.push(TableModelEntry {
-                value: e,
-                index,
-                expanded: false,
-            });
-            index += 1;
-        }
-
-        Self { entries: result }
-    }
-}
-
-impl<T> TableModel for SimpleTableModel<T>
-where
-    T: TableRenderer + Clone + Debug + PartialEq + 'static,
-{
-    type Item = T;
-
-    fn len(&self) -> usize {
-        self.entries.len()
-    }
-
-    fn is_expanded(&self, index: usize) -> bool {
-        self.entries.is_expanded(index)
-    }
-
-    fn set_expanded(&mut self, index: usize, state: bool) -> bool {
-        self.entries.set_expanded(index, state)
-    }
-
-    fn map<F, R>(&self, f: F) -> Vec<R>
-    where
-        F: Fn(&TableModelEntry<T>) -> R,
-    {
-        self.entries.map(f)
-    }
-}
-
-impl<T> TableModel for Vec<TableModelEntry<T>>
-where
-    T: TableRenderer + Clone + Debug + PartialEq + 'static,
-{
-    type Item = T;
-
-    fn len(&self) -> usize {
-        self.len()
-    }
-
-    fn is_expanded(&self, index: usize) -> bool {
-        self.get(index).map(|e| e.expanded).unwrap_or(false)
-    }
-
-    fn set_expanded(&mut self, index: usize, state: bool) -> bool {
-        if let Some(entry) = self.get_mut(index) {
-            if entry.expanded != state {
-                entry.expanded = state;
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
-    }
-
-    fn map<F, R>(&self, f: F) -> Vec<R>
-    where
-        F: Fn(&TableModelEntry<T>) -> R,
-    {
-        let mut result = Vec::new();
-        for entry in self {
-            result.push(f(entry));
-        }
-        result
     }
 }
 
@@ -262,11 +139,12 @@ where
     fn is_expanded(&self, index: usize) -> bool {
         self.entries
             .read()
-            .map(|e| e.is_expanded(index))
+            .ok()
+            .and_then(|e| e.get(index).map(|e| e.expanded))
             .unwrap_or(false)
     }
 
-    fn set_expanded(&mut self, index: usize, state: bool) -> bool {
+    fn set_expanded(&self, index: usize, state: bool) -> bool {
         let mut entries = self.entries.write().unwrap();
 
         if let Some(entry) = entries.get_mut(index) {

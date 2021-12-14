@@ -17,7 +17,7 @@ where
     fn as_classes(&self) -> Classes {
         let mut result = Classes::new();
         for i in self {
-            result = result.extend(i.as_classes());
+            result.extend(i.as_classes());
         }
         result
     }

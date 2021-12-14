@@ -1,13 +1,14 @@
 use crate::{Action, Alert, AlertGroup, Type};
-
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
-use std::collections::BinaryHeap;
-use std::{collections::HashSet, time::Duration};
-use yew::prelude::*;
-use yew::services::timeout::*;
-use yew::worker::*;
-use yew::{agent::Dispatcher, utils::window, virtual_dom::VChild};
+use gloo_timers::callback::Timeout;
+use std::{
+    collections::{BinaryHeap, HashSet},
+    time::Duration,
+};
+use web_sys::window;
+use yew::{prelude::*, virtual_dom::VChild};
+use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, HandlerId};
 
 /// Toasts are small alerts that get shown on the top right corner of the page.
 ///
@@ -22,7 +23,6 @@ use yew::{agent::Dispatcher, utils::window, virtual_dom::VChild};
 /// # use yew::prelude::*;
 /// # use patternfly_yew::*;
 /// pub struct App{
-///   link: ComponentLink<Self>
 /// };
 /// pub enum Msg {
 ///   Toast(Toast),
@@ -30,11 +30,11 @@ use yew::{agent::Dispatcher, utils::window, virtual_dom::VChild};
 /// # impl Component for App {
 /// type Message = Msg;
 /// # type Properties = ();
-/// # fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+/// # fn create(_:&Context<Self>) -> Self {
 /// #   unimplemented!()
 /// # }
 ///
-/// fn update(&mut self, msg: Self::Message) -> bool {
+/// fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
 ///   match msg {
 ///     Msg::Toast(toast) => {
 ///       ToastDispatcher::new().toast(toast);
@@ -43,16 +43,12 @@ use yew::{agent::Dispatcher, utils::window, virtual_dom::VChild};
 ///   }
 /// }
 ///
-/// # fn change(&mut self,_props: Self::Properties) -> bool {
-/// #   unimplemented!()
-/// # }
-///
-/// fn view(&self) -> Html {
+/// fn view(&self, ctx: &Context<Self>) -> Html {
 ///  html!{
 ///     <>
 ///       <ToastViewer/>
 ///       <div>
-///         <button onclick=self.link.callback(|_|{
+///         <button onclick=ctx.link().callback(|_|{
 ///             Msg::Toast("Toast Title".into())
 ///         })>
 ///           { "Click me" }  
@@ -110,7 +106,7 @@ pub struct Toaster {
 }
 
 impl Agent for Toaster {
-    type Reach = Context<Self>;
+    type Reach = yew_agent::Context<Self>;
     type Message = ();
     type Input = ToasterRequest;
     type Output = ToastAction;
@@ -152,6 +148,7 @@ impl Toaster {
             self.link.respond(*viewer, ToastAction::ShowToast(toast));
         } else {
             window()
+                .unwrap()
                 .alert_with_message(&format!(
                     "Dropped toast. No toast component registered. Message was: {}",
                     toast.title
@@ -208,13 +205,11 @@ pub struct ToastEntry {
 /// Exactly one instance is required in your page in order to actually show the toasts. The instance
 /// must be on the body level of the HTML document.
 pub struct ToastViewer {
-    props: Props,
-    link: ComponentLink<Self>,
     alerts: Vec<ToastEntry>,
     _bridge: ToastBridge,
     counter: usize,
 
-    task: Option<TimeoutTask>,
+    task: Option<Timeout>,
     timeouts: BinaryHeap<Reverse<DateTime<Utc>>>,
 }
 
@@ -228,11 +223,12 @@ impl Component for ToastViewer {
     type Message = ToastViewerMsg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let bridge = ToastBridge::new(link.callback(|action| ToastViewerMsg::Perform(action)));
+    fn create(ctx: &Context<Self>) -> Self {
+        let bridge = ToastBridge::new(
+            ctx.link()
+                .callback(|action| ToastViewerMsg::Perform(action)),
+        );
         Self {
-            props,
-            link,
             _bridge: bridge,
             alerts: Vec::new(),
             counter: 0,
@@ -241,24 +237,15 @@ impl Component for ToastViewer {
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            ToastViewerMsg::Perform(action) => self.perform(action),
-            ToastViewerMsg::Cleanup => self.cleanup(),
+            ToastViewerMsg::Perform(action) => self.perform(ctx, action),
+            ToastViewerMsg::Cleanup => self.cleanup(ctx),
             ToastViewerMsg::Close(id) => self.remove_toast(id),
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, _: &Context<Self>) -> Html {
         html! {
             <AlertGroup toast=true>
                 { for self.alerts.iter().map(|entry|entry.alert.clone()) }
@@ -272,14 +259,14 @@ impl ToastViewer {
         Utc::now()
     }
 
-    fn perform(&mut self, action: ToastAction) -> ShouldRender {
+    fn perform(&mut self, ctx: &Context<Self>, action: ToastAction) -> bool {
         match action {
-            ToastAction::ShowToast(toast) => self.add_toast(toast),
+            ToastAction::ShowToast(toast) => self.add_toast(ctx, toast),
         }
         true
     }
 
-    fn add_toast(&mut self, toast: Toast) {
+    fn add_toast(&mut self, ctx: &Context<Self>, toast: Toast) {
         let now = Self::now();
         let timeout = toast
             .timeout
@@ -290,14 +277,14 @@ impl ToastViewer {
         self.counter += 1;
 
         let onclose = match toast.timeout {
-            None => Some(self.link.callback(move |_| ToastViewerMsg::Close(id))),
+            None => Some(ctx.link().callback(move |_| ToastViewerMsg::Close(id))),
             Some(_) => None,
         };
 
         self.alerts.push(ToastEntry {
             id,
             alert: html_nested! {
-                <Alert r#type=toast.r#type title=toast.title onclose=onclose actions=toast.actions>
+                <Alert r#type={toast.r#type} title={toast.title} onclose={onclose} actions={toast.actions}>
                     { toast.body }
                 </Alert>
             },
@@ -305,18 +292,18 @@ impl ToastViewer {
         });
 
         if let Some(timeout) = timeout {
-            self.schedule_cleanup(timeout);
+            self.schedule_cleanup(ctx, timeout);
         }
     }
 
-    fn schedule_cleanup(&mut self, timeout: DateTime<Utc>) {
+    fn schedule_cleanup(&mut self, ctx: &Context<Self>, timeout: DateTime<Utc>) {
         log::debug!("Schedule cleanup: {:?}", timeout);
 
         self.timeouts.push(Reverse(timeout));
-        self.trigger_next_cleanup();
+        self.trigger_next_cleanup(ctx);
     }
 
-    fn trigger_next_cleanup(&mut self) {
+    fn trigger_next_cleanup(&mut self, ctx: &Context<Self>) {
         if self.task.is_some() {
             log::debug!("Already have a task");
             return;
@@ -331,23 +318,23 @@ impl ToastViewer {
             let duration = duration.to_std();
             log::debug!("Duration: {:?}", duration);
             if let Ok(duration) = duration {
-                self.task = Some(TimeoutService::spawn(
-                    duration,
-                    self.link.callback(|_| ToastViewerMsg::Cleanup),
-                ));
+                let link = ctx.link().clone();
+                self.task = Some(Timeout::new(duration.as_millis() as u32, move || {
+                    link.send_message(ToastViewerMsg::Cleanup);
+                }));
                 log::debug!("Scheduled cleanup: {:?}", duration);
                 break;
             }
         }
     }
 
-    fn remove_toast(&mut self, id: usize) -> ShouldRender {
+    fn remove_toast(&mut self, id: usize) -> bool {
         self.retain_alert(|entry| entry.id != id)
     }
 
-    fn cleanup(&mut self) -> ShouldRender {
+    fn cleanup(&mut self, ctx: &Context<Self>) -> bool {
         self.task = None;
-        self.trigger_next_cleanup();
+        self.trigger_next_cleanup(ctx);
 
         let now = Self::now();
 
@@ -360,7 +347,7 @@ impl ToastViewer {
         })
     }
 
-    fn retain_alert<F>(&mut self, f: F) -> ShouldRender
+    fn retain_alert<F>(&mut self, f: F) -> bool
     where
         F: Fn(&ToastEntry) -> bool,
     {

@@ -101,17 +101,18 @@ impl Icon {
             .unwrap_or_default();
 
         html! {
-            <span style=style>
+            <span style={style}>
                 { self.as_html() }
             </span>
         }
     }
 
     pub fn with_classes(&self, classes: Classes) -> Html {
-        let icon_classes = self.as_classes();
+        let mut icon_classes = self.as_classes();
+        icon_classes.extend(classes);
 
         html! {
-            <i class=(icon_classes, classes) aria-hidden="true"></i>
+            <i class={icon_classes} aria-hidden="true"></i>
         }
     }
 }
@@ -119,14 +120,14 @@ impl Icon {
 fn fas(name: &str) -> Classes {
     let mut classes = Classes::new();
     classes.push("fas");
-    classes.push(name);
+    classes.push(name.to_string());
     classes
 }
 
 fn pf(name: &str) -> Classes {
     let mut classes = Classes::new();
     classes.push("pficon");
-    classes.push(name);
+    classes.push(name.to_string());
     classes
 }
 

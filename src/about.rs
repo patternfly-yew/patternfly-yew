@@ -25,23 +25,20 @@ pub enum Msg {
 }
 
 #[derive(Clone)]
-pub struct About {
-    props: Props,
-    link: ComponentLink<Self>,
-}
+pub struct About {}
 
 impl Component for About {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Close => {
-                if let Some(onclose) = &self.props.onclose {
+                if let Some(onclose) = &ctx.props().onclose {
                     onclose.emit(());
                 } else {
                     BackdropDispatcher::default().close();
@@ -51,56 +48,47 @@ impl Component for About {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let hero_style = match (self.props.hero_style.as_ref(), self.props.logo.is_empty()) {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let hero_style = match (ctx.props().hero_style.as_ref(), ctx.props().logo.is_empty()) {
             (Some(hero_style), _) => hero_style.into(),
             (None, false) => format!(
                 "--pf-c-about-modal-box__hero--sm--BackgroundImage:url({url});",
-                url = self.props.logo
+                url = ctx.props().logo
             ),
             (None, true) => "".into(),
         };
 
         return html! {
             <div class="pf-c-about-modal-box" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
-                { if !self.props.brand_src.is_empty() {html!{
+                { if !ctx.props().brand_src.is_empty() {html!{
                     <div class="pf-c-about-modal-box__brand">
                         <img
                           class="pf-c-about-modal-box__brand-image"
-                          src=self.props.brand_src
-                          alt=self.props.brand_alt
+                          src={ctx.props().brand_src.clone()}
+                          alt={ctx.props().brand_alt.clone()}
                         />
                     </div>
                 }} else {html!{}}}
 
                 <div class="pf-c-about-modal-box__close">
                   <Button
-                    variant=Variant::Plain
+                    variant={Variant::Plain}
                     aria_label="Close dialog"
-                    onclick=self.link.callback(|_|Msg::Close)>
+                    onclick={ctx.link().callback(|_|Msg::Close)}>
                     { Icon::Times }
                   </Button>
                 </div>
 
                 <div class="pf-c-about-modal-box__header">
-                  <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ &self.props.title }</h1>
+                  <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ &ctx.props().title }</h1>
                 </div>
-                <div class="pf-c-about-modal-box__hero" style=hero_style></div>
+                <div class="pf-c-about-modal-box__hero" style={hero_style}></div>
 
               <div class="pf-c-about-modal-box__content">
-                { for self.props.children.iter() }
+                { for ctx.props().children.iter() }
                 <p
                   class="pf-c-about-modal-box__strapline"
-                >{self.props.strapline.clone()}</p>
+                >{ctx.props().strapline.clone()}</p>
               </div>
 
             </div>

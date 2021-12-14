@@ -18,7 +18,7 @@ impl Default for Type {
 }
 
 impl Type {
-    pub fn as_classes(&self) -> Vec<&str> {
+    pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
             Type::Default => vec![],
             Type::Info => vec!["pf-m-info"],
@@ -68,54 +68,43 @@ pub struct Props {
     pub onclose: Option<Callback<()>>,
 }
 
-pub struct Alert {
-    props: Props,
-}
+pub struct Alert {}
 
 impl Component for Alert {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-alert");
 
-        classes = classes.extend(self.props.r#type.as_classes());
+        classes.extend(ctx.props().r#type.as_classes());
 
-        if self.props.inline {
+        if ctx.props().inline {
             classes.push("pf-m-inline");
         }
 
-        if self.props.truncate {
+        if ctx.props().truncate {
             classes.push("pf-m-truncate");
         }
 
-        let t = self.props.r#type;
+        let t = ctx.props().r#type;
 
-        let actions = if self.props.actions.is_empty() {
+        let actions = if ctx.props().actions.is_empty() {
             html! {}
         } else {
             html! {
                 <div class="pf-c-alert__action-group">
-                    {for self.props.actions.iter().map(|action|{
+                    {for ctx.props().actions.iter().map(|action|{
                         html!{
-                            <Button variant=Variant::InlineLink label=&action.label onclick=action.callback.reform(|_|())/>
+                            <Button
+                                variant={Variant::InlineLink}
+                                label={action.label.clone()}
+                                onclick={action.callback.reform(|_|())}
+                            />
                         }
                     })}
                 </div>
@@ -123,20 +112,20 @@ impl Component for Alert {
         };
 
         return html! {
-            <div id=self.props.id class=classes aria_label=t.aria_label()>
+            <div id={ctx.props().id.clone()} class={classes} aria_label={t.aria_label()}>
                 <div class="pf-c-alert__icon">{ t.icon() }</div>
                 <div class="pf-c-alert__title">
                     <strong>
-                        <span class="pf-screen-reader">{t.aria_label()}{":"}</span>
-                        { &self.props.title }
+                        <span class="pf-screen-reader">{ t.aria_label() }{":"}</span>
+                        { &ctx.props().title }
                     </strong>
                 </div>
 
                 {
-                    if let Some(onclose) = self.props.onclose.as_ref() {
+                    if let Some(onclose) = ctx.props().onclose.as_ref() {
                         html!{
                             <div class="pf-c-alert__action">
-                                <Button variant=Variant::Plain icon=Icon::Times onclick=onclose.clone().reform(|_|())/>
+                                <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
                             </div>
                         }
                     } else {
@@ -145,10 +134,10 @@ impl Component for Alert {
                 }
 
                 {
-                    if self.props.children.len() > 0 {
+                    if ctx.props().children.len() > 0 {
                         html!{
                             <div class="pf-c-alert__description">
-                                { for self.props.children.iter() }
+                                { for ctx.props().children.iter() }
                             </div>
                         }
                     } else {
@@ -173,41 +162,26 @@ pub struct GroupProps {
     pub toast: bool,
 }
 
-pub struct AlertGroup {
-    props: GroupProps,
-}
+pub struct AlertGroup {}
 
 impl Component for AlertGroup {
     type Message = ();
     type Properties = GroupProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-alert-group");
 
-        if self.props.toast {
+        if ctx.props().toast {
             classes.push("pf-m-toast");
         }
 
         return html! {
-            <ul class=classes>
-                { for self.props.children.iter().map(|child|html_nested!{
+            <ul class={classes}>
+                { for ctx.props().children.iter().map(|child|html!{
                     <li class="pf-c-alert-group__item">
                         { child }
                     </li>

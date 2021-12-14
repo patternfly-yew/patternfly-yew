@@ -1,8 +1,8 @@
 [package]
 name = "patternfly-yew"
-version = "0.0.27"
+version = "0.1.0"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
-edition = "2018"
+edition = "2021"
 license = "Apache-2.0"
 description = "Patternfly 4 components for Yew"
 repository = "https://github.com/ctron/patternfly-yew"
@@ -17,10 +17,11 @@ wasm-bindgen-futures = "0.4"
 serde = "1"
 serde_json = "1"
 
-yew = "0.17"
-yew-router = { version = "0.14", optional = true }
+yew = "0.19"
+yew-router = { version = "0.15", optional = true }
+yew-agent = "0.1"
 js-sys = "0.3"
-web-sys = { version = "0.3", features = ["HtmlCollection", "NodeList"] }
+web-sys = { version = "0.3", features = ["HtmlCollection", "NodeList", "DomTokenList"] }
 
 chrono = { version = "0.4", features = ["wasmbind"] }
 
@@ -30,7 +31,12 @@ strum = "0.19"
 strum_macros = "0.19"
 
 uuid = { version = "0.8", features = ["v4", "wasm-bindgen"] }
+gloo-timers = "0.2"
+gloo-utils = "0.1"
 
 [features]
 default = ["router"]
 router = ["yew-router"]
+
+[patch.crates-io]
+yew-router = { version = "0.15", path = "../yew-router/yew-router", optional = true }

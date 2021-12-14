@@ -27,8 +27,6 @@ pub struct Props {
 }
 
 pub struct Card {
-    props: Props,
-    link: ComponentLink<Self>,
     expanded: bool,
 }
 
@@ -41,15 +39,11 @@ impl Component for Card {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self {
-            props,
-            link,
-            expanded: false,
-        }
+    fn create(_: &Context<Self>) -> Self {
+        Self { expanded: false }
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
@@ -58,69 +52,56 @@ impl Component for Card {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-card");
 
-        if self.props.compact {
+        if ctx.props().compact {
             classes.push("pf-m-compact");
         }
 
-        if self.props.expandable && self.expanded {
+        if ctx.props().expandable && self.expanded {
             classes.push("pf-m-expanded");
         }
 
-        if self.props.large {
+        if ctx.props().large {
             classes.push("pf-m-display-lg");
         }
 
-        if self.props.flat {
+        if ctx.props().flat {
             classes.push("pf-m-flat");
         }
 
-        if self.props.hoverable {
+        if ctx.props().hoverable {
             classes.push("pf-m-hoverable");
         }
 
-        if self.props.selectable {
+        if ctx.props().selectable {
             classes.push("pf-m-selectable");
         }
 
-        if self.props.selected {
+        if ctx.props().selected {
             classes.push("pf-m-selected");
         }
 
         html! {
             <div
-                class=classes
-                onclick=&self.props.onclick
+                class={classes}
+                onclick={&ctx.props().onclick}
                 >
-                { self.header() }
-                {
-                    if self.expanded || !self.props.expandable {
-                        self.body()
-                    } else {
-                        html!{}
-                    }
+                { self.header(ctx) }
+                if self.expanded || !ctx.props().expandable {
+                    { self.body(ctx) }
                 }
-                { self.footer() }
+                { self.footer(ctx) }
             </div>
         }
     }
 }
 
 impl Card {
-    fn body(&self) -> Html {
+    fn body(&self, ctx: &Context<Self>) -> Html {
         html! {
-            {for self.props.children.iter().map(|child|{
+            {for ctx.props().children.iter().map(|child|{
                 html_nested!{
                     <div class="pf-c-card__body">
                         { child }
@@ -130,8 +111,8 @@ impl Card {
         }
     }
 
-    fn header(&self) -> Html {
-        if self.props.expandable {
+    fn header(&self, ctx: &Context<Self>) -> Html {
+        if ctx.props().expandable {
             html! {
                 <div class="pf-c-card__header">
                     <div class="pf-c-card__header-toggle">
@@ -139,21 +120,21 @@ impl Card {
                             class="pf-c-button pf-m-plain"
                             type="button"
                             aria-label="Details"
-                            onclick=self.link.callback(|_|Msg::Toggle)
+                            onclick={ctx.link().callback(|_|Msg::Toggle)}
                             >
                             <span class="pf-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
                         </button>
                     </div>
-                    { self.title() }
+                    { self.title(ctx) }
                 </div>
             }
         } else {
-            self.title()
+            self.title(ctx)
         }
     }
 
-    fn title(&self) -> Html {
-        match &self.props.title {
+    fn title(&self, ctx: &Context<Self>) -> Html {
+        match &ctx.props().title {
             Some(t) => html! {
                 <div class="pf-c-card__title">
                     { t.clone() }
@@ -163,8 +144,8 @@ impl Card {
         }
     }
 
-    fn footer(&self) -> Html {
-        match &self.props.footer {
+    fn footer(&self, ctx: &Context<Self>) -> Html {
+        match &ctx.props().footer {
             Some(f) => html! {
                 <div class="pf-c-card__footer">
                     { f.clone() }

@@ -7,39 +7,13 @@ pub struct TableColumnProps {
     pub label: Option<String>,
 }
 
-#[derive(Clone, Debug)]
-pub struct TableColumn {
-    props: TableColumnProps,
-}
-
-impl Component for TableColumn {
-    type Message = ();
-    type Properties = TableColumnProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        match &self.props.label {
-            None => html! {},
-            Some(label) => {
-                html! {
-                    <th role="columnheader">{ &label }</th>
-                }
+#[function_component(TableColumn)]
+pub fn table_column(props: &TableColumnProps) -> Html {
+    match &props.label {
+        None => html! {},
+        Some(label) => {
+            html! {
+                <th role="columnheader">{ &label }</th>
             }
         }
     }

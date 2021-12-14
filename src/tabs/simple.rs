@@ -1,4 +1,5 @@
 use crate::Icon;
+use std::rc::Rc;
 use yew::prelude::*;
 use yew::virtual_dom::VChild;
 
@@ -18,8 +19,6 @@ pub struct Props {
 }
 
 pub struct Tabs {
-    props: Props,
-    link: ComponentLink<Self>,
     active: usize,
 }
 
@@ -31,15 +30,11 @@ impl Component for Tabs {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self {
-            props,
-            link,
-            active: 0,
-        }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self { active: 0 }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Select(idx) => {
                 if self.active != idx {
@@ -52,38 +47,30 @@ impl Component for Tabs {
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-tabs");
 
-        if self.props.r#box {
-            classes = classes.extend("pf-m-box");
+        if ctx.props().r#box {
+            classes.push("pf-m-box");
         }
 
-        if self.props.vertical {
-            classes = classes.extend("pf-m-vertical");
+        if ctx.props().vertical {
+            classes.push("pf-m-vertical");
         }
 
-        if self.props.filled {
-            classes = classes.extend("pf-m-fill");
+        if ctx.props().filled {
+            classes.push("pf-m-fill");
         }
 
         let mut idx = 0;
-        let children = self
-            .props
+        let children = ctx
+            .props()
             .children
             .iter()
             .map(|mut c| {
-                c.props.current = self.active == idx;
-                c.props.onselect = self.link.callback(move |_| Msg::Select(idx));
+                let props = Rc::make_mut(&mut c.props);
+                props.current = self.active == idx;
+                props.onselect = ctx.link().callback(move |_| Msg::Select(idx));
                 idx += 1;
                 c
             })
@@ -93,7 +80,7 @@ impl Component for Tabs {
 
         return html! {
             <>
-            <div class=classes id=self.props.id>
+            <div class={classes} id={ctx.props().id.clone()}>
                 <button
                     class="pf-c-tabs__scroll-button"
                     disabled=true
@@ -142,55 +129,37 @@ pub enum TabMsg {
     Clicked,
 }
 
-pub struct Tab {
-    props: TabProps,
-    link: ComponentLink<Self>,
-}
+pub struct Tab {}
 
 impl Component for Tab {
     type Message = TabMsg;
     type Properties = TabProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            TabMsg::Clicked => self.props.onselect.emit(()),
+            TabMsg::Clicked => ctx.props().onselect.emit(()),
         }
         false
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-tabs__item");
 
-        if self.props.current {
-            classes = classes.extend("pf-m-current");
+        if ctx.props().current {
+            classes.push("pf-m-current");
         }
 
         return html! {
-            <li class=classes>
-                <button class="pf-c-tabs__link" onclick=self.link.callback(|_|TabMsg::Clicked)>
-                    {
-                        if let Some(icon) = self.props.icon {
-                            html!{
-                                <span class="pf-c-tabs__item-icon" aria_hidden=true> { icon } </span>
-                            }
-                        } else {
-                            html!{}
-                        }
+            <li class={classes}>
+                <button class="pf-c-tabs__link" onclick={ctx.link().callback(|_|TabMsg::Clicked)}>
+                    if let Some(icon) = ctx.props().icon {
+                        <span class="pf-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
                     }
-                    <span class="pf-c-tabs__item-text"> { &self.props.label } </span>
+                    <span class="pf-c-tabs__item-text"> { &ctx.props().label } </span>
                 </button>
             </li>
         };

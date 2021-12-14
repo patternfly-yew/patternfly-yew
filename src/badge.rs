@@ -7,44 +7,19 @@ pub struct Props {
     pub read: bool,
 }
 
-pub struct Badge {
-    props: Props,
-}
+#[function_component(Badge)]
+pub fn badge(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-c-badge");
 
-impl Component for Badge {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.read {
+        classes.push("pf-m-read");
+    } else {
+        classes.push("pf-m-unread");
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-badge");
-
-        if self.props.read {
-            classes.push("pf-m-read");
-        } else {
-            classes.push("pf-m-unread");
-        }
-
-        html! {
-            <span class=classes>
-                { for self.props.children.iter() }
-            </span>
-        }
+    html! {
+        <span class={classes}>
+            { for props.children.iter() }
+        </span>
     }
 }

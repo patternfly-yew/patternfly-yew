@@ -35,40 +35,15 @@ pub struct ToolbarProps {
     pub id: String,
 }
 
-pub struct Toolbar {
-    props: ToolbarProps,
-}
-
-impl Component for Toolbar {
-    type Message = ();
-    type Properties = ToolbarProps;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <div id=self.props.id class="pf-c-toolbar">
-                <div class="pf-c-toolbar__content">
-                    <div class="pf-c-toolbar__content-section">
-                        { for self.props.children.iter() }
-                    </div>
+#[function_component(Toolbar)]
+pub fn toolbar(props: &ToolbarProps) -> Html {
+    html! {
+        <div id={props.id.clone()} class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-c-toolbar__content-section">
+                    { for props.children.iter() }
                 </div>
             </div>
-        };
+        </div>
     }
 }

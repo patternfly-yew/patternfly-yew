@@ -1,4 +1,5 @@
 use crate::{GlobalClose, Icon, InputGroup, TextInput, TextInputIcon};
+use std::rc::Rc;
 use yew::prelude::*;
 
 #[derive(Properties, Debug, Clone, PartialEq)]
@@ -19,9 +20,6 @@ pub enum Msg {
 }
 
 pub struct ContextSelector {
-    props: Props,
-    link: ComponentLink<Self>,
-
     expanded: bool,
     global_close: GlobalClose,
 }
@@ -30,17 +28,16 @@ impl Component for ContextSelector {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let global_close = GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close));
+    fn create(ctx: &Context<Self>) -> Self {
+        let global_close =
+            GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close));
         Self {
-            props,
-            link,
             expanded: false,
             global_close,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Toggle => {
                 self.expanded = !self.expanded;
@@ -49,23 +46,14 @@ impl Component for ContextSelector {
                 self.expanded = false;
             }
             Self::Message::Search(value) => {
-                self.props.onsearch.emit(value);
+                ctx.props().onsearch.emit(value);
                 return false;
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-context-selector");
 
         if self.expanded {
@@ -74,31 +62,32 @@ impl Component for ContextSelector {
 
         return html! {
             <div
-                class=classes
-                ref=self.global_close.clone()
+                class={classes}
+                ref={self.global_close.clone()}
             >
                 <button
                     class="pf-c-context-selector__toggle"
-                    aria-expanded=self.expanded
-                    onclick=self.link.callback(|_|Msg::Toggle)
+                    aria-expanded={self.expanded.to_string()}
+                    onclick={ctx.link().callback(|_|Msg::Toggle)}
                 >
-                    <span class="pf-c-context-selector__toggle-text">{&self.props.selected}</span>
+                    <span class="pf-c-context-selector__toggle-text">{&ctx.props().selected}</span>
                     <span class="pf-c-context-selector__toggle-icon">{Icon::CaretDown}</span>
                 </button>
                 <div class="pf-c-context-selector__menu"
-                    hidden=!self.expanded
+                    hidden={!self.expanded}
                 >
                     <div class="pf-c-context-selector__menu-search">
                         <InputGroup>
                             <TextInput
-                                onchange=self.link.callback(|v|Msg::Search(v))
-                                icon=TextInputIcon::Search
+                                onchange={ctx.link().callback(|v|Msg::Search(v))}
+                                icon={TextInputIcon::Search}
                                 r#type="search"/>
                         </InputGroup>
                     </div>
                     <ul class="pf-c-context-selector__menu-list">
-                        { for self.props.children.iter().map(|mut item|{
-                            item.props.need_close = self.link.callback(|_|Msg::Close);
+                        { for ctx.props().children.iter().map(|mut item|{
+                            let mut props = Rc::make_mut(&mut item.props);
+                            props.need_close = ctx.link().callback(|_|Msg::Close);
                             item
                         }) }
                     </ul>
@@ -126,50 +115,38 @@ pub enum ItemMsg {
     Clicked,
 }
 
-pub struct ContextSelectorItem {
-    props: ItemProps,
-    link: ComponentLink<Self>,
-}
+pub struct ContextSelectorItem {}
 
 impl Component for ContextSelectorItem {
     type Message = ItemMsg;
     type Properties = ItemProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Clicked => {
-                self.props.onclick.emit(());
-                self.props.need_close.emit(());
+                ctx.props().onclick.emit(());
+                ctx.props().need_close.emit(());
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-context-selector__menu-list-item");
 
         return html! {
             <li>
                 <button
-                    class=classes
-                    disabled=self.props.disabled
+                    class={classes}
+                    disabled={ctx.props().disabled}
                     type="button"
-                    onclick=self.link.callback(|_|ItemMsg::Clicked)
+                    onclick={ctx.link().callback(|_|ItemMsg::Clicked)}
                     >
-                    { &self.props.label }
+                    { &ctx.props().label }
                 </button>
             </li>
         };

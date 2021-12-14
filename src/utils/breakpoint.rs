@@ -5,7 +5,7 @@
 use crate::AsClasses;
 use std::fmt::Debug;
 use std::ops::Deref;
-use yew::virtual_dom::Transformer;
+use yew::html::IntoPropValue;
 use yew::Classes;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -31,6 +31,13 @@ impl<T> WithBreakpoint<T>
 where
     T: Clone + Debug + PartialEq,
 {
+    pub fn new(modifier: T) -> Self {
+        Self {
+            on: Breakpoint::None,
+            modifier,
+        }
+    }
+
     pub fn map<R, F>(&self, f: F) -> WithBreakpoint<R>
     where
         R: Clone + Debug + PartialEq,
@@ -43,10 +50,19 @@ where
     }
 }
 
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
 where
     T: Clone + Debug + PartialEq;
+
+impl<T> std::default::Default for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    fn default() -> Self {
+        Self(vec![])
+    }
+}
 
 impl<T> WithBreakpoints<T>
 where
@@ -58,6 +74,45 @@ where
         F: Fn(&T) -> R,
     {
         WithBreakpoints(self.0.iter().map(|i| i.map(|m| f(m))).collect::<Vec<_>>())
+    }
+}
+
+impl<T> From<Vec<WithBreakpoint<T>>> for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    fn from(value: Vec<WithBreakpoint<T>>) -> Self {
+        Self(value)
+    }
+}
+
+impl<T> From<&[WithBreakpoint<T>]> for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    fn from(value: &[WithBreakpoint<T>]) -> Self {
+        Self(Vec::from(value))
+    }
+}
+
+impl<T, const N: usize> From<[WithBreakpoint<T>; N]> for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    fn from(value: [WithBreakpoint<T>; N]) -> Self {
+        Self(Vec::from(value))
+    }
+}
+
+impl<T> IntoIterator for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq,
+{
+    type Item = WithBreakpoint<T>;
+    type IntoIter = std::vec::IntoIter<WithBreakpoint<T>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
     }
 }
 
@@ -151,6 +206,15 @@ where
     }
 }
 
+impl<T> IntoPropValue<Vec<WithBreakpoint<T>>> for WithBreakpoint<T>
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn into_prop_value(self) -> Vec<WithBreakpoint<T>> {
+        vec![self]
+    }
+}
+
 impl<T> Deref for WithBreakpoints<T>
 where
     T: Clone + Debug + PartialEq + ToString,
@@ -167,10 +231,7 @@ where
     T: Clone + Debug + PartialEq + ToString,
 {
     fn from(modifier: T) -> Self {
-        Self {
-            on: Breakpoint::None,
-            modifier,
-        }
+        Self::new(modifier)
     }
 }
 
@@ -192,24 +253,46 @@ where
     }
 }
 
-impl<T> Transformer<(T,), WithBreakpoint<T>> for yew::virtual_dom::VComp
+impl<T> IntoPropValue<WithBreakpoints<T>> for Vec<WithBreakpoint<T>>
 where
     T: Clone + Debug + PartialEq + ToString,
 {
-    fn transform(from: (T,)) -> WithBreakpoint<T> {
-        from.0.into()
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into()
     }
 }
 
-impl<T> Transformer<(T,), WithBreakpoints<T>> for yew::virtual_dom::VComp
+impl<T> IntoPropValue<WithBreakpoints<T>> for &[WithBreakpoint<T>]
 where
     T: Clone + Debug + PartialEq + ToString,
 {
-    fn transform(from: (T,)) -> WithBreakpoints<T> {
-        WithBreakpoints(vec![from.0.into()])
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into()
     }
 }
 
+impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [WithBreakpoint<T>; N]
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into()
+    }
+}
+
+impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [T; N]
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into_iter()
+            .map(|i| WithBreakpoint::new(i))
+            .collect::<Vec<WithBreakpoint<T>>>()
+            .into()
+    }
+}
+
+/*
 impl<T, const N: usize> Transformer<[T; N], WithBreakpoints<T>> for yew::virtual_dom::VComp
 where
     T: Clone + Debug + PartialEq + ToString,
@@ -227,3 +310,4 @@ where
         WithBreakpoints(from.iter().map(|i| i.clone().into()).collect::<Vec<_>>())
     }
 }
+*/

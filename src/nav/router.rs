@@ -1,27 +1,25 @@
 use super::*;
-use std::fmt::Debug;
-use yew::prelude::*;
-
 use std::collections::HashMap;
-
+use std::fmt::Debug;
+use std::marker::PhantomData;
+use std::rc::Rc;
 use yew::html::ChildrenRenderer;
+use yew::prelude::*;
 use yew::virtual_dom::{VChild, VComp};
-use yew_router::{
-    agent::RouteRequest::GetCurrentRoute, components::RouterAnchor, prelude::RouteAgentBridge,
-    Switch,
-};
+use yew_router::agent::RouteRequest::GetCurrentRoute;
+use yew_router::prelude::*;
 
 // nav router item
 
 #[cfg(feature = "router")]
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavRouterItemProps<SWITCH>
+pub struct NavRouterItemProps<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
     #[prop_or_default]
     pub children: Children,
-    pub to: SWITCH,
+    pub to: R,
     #[prop_or_default]
     pub active: bool,
 
@@ -31,153 +29,147 @@ where
 
 /// A navigation item, using the Router.
 #[cfg(feature = "router")]
-pub struct NavRouterItem<SWITCH>
+pub struct NavRouterItem<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + Debug,
 {
-    props: NavRouterItemProps<SWITCH>,
     active: bool,
     _router: RouteAgentBridge,
+    _marker: PhantomData<R>,
 }
 
 #[cfg(feature = "router")]
 #[derive(Clone)]
-pub enum NavRouterMsg<SWITCH>
+pub enum NavRouterMsg<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
-    RouteChange(Option<SWITCH>),
+    RouteChange(Option<R>),
 }
 
 #[cfg(feature = "router")]
-impl<SWITCH> Component for NavRouterItem<SWITCH>
+impl<R> Component for NavRouterItem<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
 {
-    type Message = NavRouterMsg<SWITCH>;
-    type Properties = NavRouterItemProps<SWITCH>;
+    type Message = NavRouterMsg<R>;
+    type Properties = NavRouterItemProps<R>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(|route: yew_router::route::Route| {
+    fn create(ctx: &Context<Self>) -> Self {
+        let callback = ctx.link().callback(|route: yew_router::route::Route| {
             NavRouterMsg::RouteChange(Switch::switch(route))
         });
-        let active = props.active;
-        let mut bridge = RouteAgentBridge::new(callback);
-        bridge.send(GetCurrentRoute);
+        let active = ctx.props().active;
+        let mut _router = RouteAgentBridge::new(callback);
+        _router.send(GetCurrentRoute);
         Self {
-            props,
             active,
-            _router: bridge,
+            _router,
+            _marker: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             NavRouterMsg::RouteChange(ref route) => {
                 self.active = route
                     .as_ref()
-                    .map(|sw| sw == &self.props.to)
+                    .map(|sw| sw == &ctx.props().to)
                     .unwrap_or_default();
 
-                self.props.on_active.emit(self.active);
+                ctx.props().on_active.emit(self.active);
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-nav__link");
 
         if self.active {
             classes.push("pf-m-current");
         }
 
-        return html! {
+        html! {
             <li class="pf-c-nav__item">
-                <RouterAnchor<SWITCH> route=self.props.to.clone() classes=classes.to_string()>
-                    { for self.props.children.iter() }
-                </RouterAnchor<SWITCH>>
+                <RouterAnchor<R> route={ctx.props().to.clone()} classes={classes.to_string()}>
+                    { for ctx.props().children.iter() }
+                </RouterAnchor<R>>
             </li>
-        };
+        }
     }
 }
 
 // nav router group children
 
 #[derive(Clone, PartialEq)]
-pub enum NavRouterExpandableChild<SWITCH>
+pub enum NavRouterExpandableChild<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
 {
-    Item(<NavItem as Component>::Properties),
-    RouterItem(<NavRouterItem<SWITCH> as Component>::Properties),
+    Item(Rc<<NavItem as Component>::Properties>),
+    RouterItem(Rc<<NavRouterItem<R> as Component>::Properties>),
 }
 
-impl<SWITCH> NavRouterExpandableChild<SWITCH>
+impl<R> NavRouterExpandableChild<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
     fn set_on_active(&mut self, callback: Callback<bool>) {
         match self {
-            Self::RouterItem(props) => props.on_active = callback,
+            Self::RouterItem(props) => {
+                let props = Rc::make_mut(props);
+                props.on_active = callback
+            }
             _ => {}
         }
     }
 }
 
-impl<SWITCH> From<NavItemProps> for NavRouterExpandableChild<SWITCH>
+impl<R> From<NavItemProps> for NavRouterExpandableChild<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
     fn from(props: NavItemProps) -> Self {
-        NavRouterExpandableChild::Item(props)
+        NavRouterExpandableChild::Item(Rc::new(props))
     }
 }
 
-impl<SWITCH> From<NavRouterItemProps<SWITCH>> for NavRouterExpandableChild<SWITCH>
+impl<R> From<NavRouterItemProps<R>> for NavRouterExpandableChild<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
-    fn from(props: NavRouterItemProps<SWITCH>) -> Self {
-        NavRouterExpandableChild::RouterItem(props)
+    fn from(props: NavRouterItemProps<R>) -> Self {
+        NavRouterExpandableChild::RouterItem(Rc::new(props))
     }
 }
 
 // nav router group variant
 
 #[derive(PartialEq, Clone)]
-pub struct NavRouterExpandableVariant<SWITCH>
+pub struct NavRouterExpandableVariant<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
 {
-    props: NavRouterExpandableChild<SWITCH>,
+    props: NavRouterExpandableChild<R>,
 }
 
-impl<SWITCH, CHILD> From<VChild<CHILD>> for NavRouterExpandableVariant<SWITCH>
+impl<R, CHILD> From<VChild<CHILD>> for NavRouterExpandableVariant<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
     CHILD: Component,
-    CHILD::Properties: Into<NavRouterExpandableChild<SWITCH>>,
+    CHILD::Properties: Into<NavRouterExpandableChild<R>> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }
 
-impl<SWITCH> Into<Html> for NavRouterExpandableVariant<SWITCH>
+impl<R> Into<Html> for NavRouterExpandableVariant<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug,
 {
     fn into(self) -> Html {
         match self.props {
@@ -185,7 +177,7 @@ where
                 VComp::new::<NavItem>(props, NodeRef::default(), None).into()
             }
             NavRouterExpandableChild::RouterItem(props) => {
-                VComp::new::<NavRouterItem<SWITCH>>(props, NodeRef::default(), None).into()
+                VComp::new::<NavRouterItem<R>>(props, NodeRef::default(), None).into()
             }
         }
     }
@@ -193,27 +185,25 @@ where
 
 // nav router group
 
-#[derive(Clone, Properties)]
-pub struct NavRouterExpandableProps<SWITCH>
+#[derive(Clone, PartialEq, Properties)]
+pub struct NavRouterExpandableProps<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
 {
     #[prop_or_default]
-    pub children: ChildrenRenderer<NavRouterExpandableVariant<SWITCH>>,
+    pub children: ChildrenRenderer<NavRouterExpandableVariant<R>>,
     #[prop_or_default]
     pub title: String,
 }
 
 /// A navigation item, using the Router.
-pub struct NavRouterExpandable<SWITCH>
+pub struct NavRouterExpandable<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + Debug,
 {
-    props: NavRouterExpandableProps<SWITCH>,
-    link: ComponentLink<Self>,
-
     state: HashMap<usize, bool>,
     active: bool,
+    _marker: PhantomData<R>,
 }
 
 #[derive(Clone)]
@@ -221,23 +211,22 @@ pub enum NavRouterExpandableMsg {
     ChildActive(usize, bool),
 }
 
-impl<SWITCH> Component for NavRouterExpandable<SWITCH>
+impl<R> Component for NavRouterExpandable<R>
 where
-    SWITCH: Switch + Clone + PartialEq + Debug + 'static,
+    R: Switch + PartialEq + Clone + Debug + 'static,
 {
     type Message = NavRouterExpandableMsg;
-    type Properties = NavRouterExpandableProps<SWITCH>;
+    type Properties = NavRouterExpandableProps<R>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             state: HashMap::new(),
             active: false,
+            _marker: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::ChildActive(idx, active) => {
                 self.state.insert(idx, active);
@@ -247,20 +236,15 @@ where
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         return html! {
             <NavExpandable
-                title=&self.props.title
-                expanded=&self.active
+                title={ctx.props().title.clone()}
+                expanded={self.active}
                 >
-                { for self.props.children.iter().enumerate().map(|(i, mut c)|{
-                    let on_active = self
-                        .link
+                { for ctx.props().children.iter().enumerate().map(|(i, mut c)|{
+                    let on_active = ctx
+                        .link()
                         .callback(move |active| NavRouterExpandableMsg::ChildActive(i, active));
                     c.props.set_on_active(on_active);
                     c

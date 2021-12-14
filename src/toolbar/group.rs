@@ -9,40 +9,15 @@ pub struct ToolbarGroupProps {
     pub modifiers: Vec<WithBreakpoint<ToolbarElementModifier>>,
 }
 
-pub struct ToolbarGroup {
-    props: ToolbarGroupProps,
-}
+#[function_component(ToolbarGroup)]
+pub fn toolbar_group(props: &ToolbarGroupProps) -> Html {
+    let mut classes = Classes::from("pf-c-toolbar__group");
 
-impl Component for ToolbarGroup {
-    type Message = ();
-    type Properties = ToolbarGroupProps;
+    classes.extend(props.modifiers.as_classes());
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-toolbar__group");
-
-        classes = classes.extend(self.props.modifiers.as_classes());
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
     }
 }

@@ -1,6 +1,8 @@
 use crate::{Badge, Button, Divider, GlobalClose, Icon, Variant};
 use std::cell::Cell;
 use std::fmt::{Debug, Display};
+use std::marker::PhantomData;
+use std::rc::Rc;
 use uuid::Uuid;
 use yew::{
     html::ChildrenRenderer,
@@ -51,9 +53,6 @@ pub struct Select<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    props: Props<K>,
-    link: ComponentLink<Self>,
-
     selection: Vec<K>,
 
     expanded: bool,
@@ -74,81 +73,71 @@ where
     type Message = Msg<K>;
     type Properties = Props<K>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
             expanded: false,
-            props,
-            global_close: GlobalClose::new(NodeRef::default(), link.callback(|_| Msg::Close)),
-            link,
+            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
             selection: Vec::new(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Toggle => {
                 self.expanded = !self.expanded;
             }
             Msg::Close => self.expanded = false,
-            Msg::Clicked(k) => self.clicked(k),
+            Msg::Clicked(k) => self.clicked(ctx, k),
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-select");
         if self.expanded {
             classes.push("pf-m-expanded");
         }
-        if self.props.top {
+        if ctx.props().top {
             classes.push("pf-m-top");
         }
 
         let menu_classes = Classes::from("pf-c-select__menu");
 
-        let onclick = self.link.callback(|_| Msg::Toggle);
+        let onclick = ctx.link().callback(|_| Msg::Toggle);
 
-        let variant = match self.props.plain {
+        let variant = match ctx.props().plain {
             true => Variant::Plain,
             false => Variant::None,
         };
 
         return html! {
-            <div class=classes
-                ref=self.global_close.clone()>
+            <div class={classes}
+                ref={self.global_close.clone()}
+            >
                 <Button
                     class="pf-c-select__toggle"
-                    variant=variant
+                    variant={variant}
                     r#type="button"
-                    disabled=self.props.disabled
-                    onclick=onclick
-                    id=&self.props.id
+                    disabled={ctx.props().disabled}
+                    onclick={onclick}
+                    id={ctx.props().id.clone()}
                     >
                     <div class="pf-c-select__toggle-wrapper">
-                        { self.render_selection() }
+                        { self.render_selection(ctx) }
                     </div>
                     <div class="pf-c-select__toggle-arrow">
                         { Icon::CaretDown }
                     </div>
                 </Button>
                 <div
-                    class=menu_classes
-                    hidden=!self.expanded
+                    class={menu_classes}
+                    hidden={!self.expanded}
                 >
                     {
-                        match self.props.variant {
-                            SelectVariant::Single(_) => self.render_button(),
-                            SelectVariant::Multiple(_) => self.render_button(),
-                            SelectVariant::Checkbox(_) => self.render_checkbox(),
+                        match ctx.props().variant {
+                            SelectVariant::Single(_) => self.render_button(ctx),
+                            SelectVariant::Multiple(_) => self.render_button(ctx),
+                            SelectVariant::Checkbox(_) => self.render_checkbox(ctx),
                         }
                     }
                 </div>
@@ -161,20 +150,20 @@ impl<K> Select<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    fn render_selection(&self) -> Html {
+    fn render_selection(&self, ctx: &Context<Self>) -> Html {
         let selection = self.selection.as_slice();
         if selection.is_empty() {
-            return html! {<span class="pf-c-select__toggle-text">{&self.props.placeholder}</span>};
+            return html! {<span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>};
         }
 
-        match &self.props.variant {
+        match &ctx.props().variant {
             SelectVariant::Single(_) => {
                 return html! {<span class="pf-c-select__toggle-text">{ &selection[0] }</span>};
             }
             SelectVariant::Checkbox(_) | SelectVariant::Multiple(_) => {
                 return html! {
                     <>
-                        <span class="pf-c-select__toggle-text">{&self.props.placeholder}</span>
+                        <span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>
                         <div class="pf-c-select__toggle_badge">
                             <Badge read=true>{selection.len()}</Badge>
                         </div>
@@ -184,37 +173,37 @@ where
         }
     }
 
-    fn render_button(&self) -> Html {
+    fn render_button(&self, ctx: &Context<Self>) -> Html {
         return html! {
             <ul>
-                { for self.props.children.iter().map(|mut c|{
+                { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
-                    c.set_need_close(self.link.callback(|_|Msg::Close));
-                    c.set_need_clicked(self.link.callback(|k|Msg::Clicked(k)));
-                    c.set_variant(self.props.variant.clone());
+                    c.set_need_close(ctx.link().callback(|_|Msg::Close));
+                    c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
+                    c.set_variant(ctx.props().variant.clone());
                     c
                 }) }
             </ul>
         };
     }
 
-    fn render_checkbox(&self) -> Html {
+    fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
         return html! {
             <fieldset class="pf-c-select__menu-fieldset" aria-label="Select input">
-                { for self.props.children.iter().map(|mut c|{
+                { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
-                    c.set_need_close(self.link.callback(|_|Msg::Close));
-                    c.set_need_clicked(self.link.callback(|k|Msg::Clicked(k)));
-                    c.set_variant(self.props.variant.clone());
+                    c.set_need_close(ctx.link().callback(|_|Msg::Close));
+                    c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
+                    c.set_variant(ctx.props().variant.clone());
                     c
                 }) }
             </fieldset>
         };
     }
 
-    fn clicked(&mut self, key: K) {
+    fn clicked(&mut self, ctx: &Context<Self>, key: K) {
         log::info!("Clicked: {}", key);
-        match &self.props.variant {
+        match &ctx.props().variant {
             SelectVariant::Single(on) => {
                 self.selection = vec![key.clone()];
                 on.emit(key);
@@ -244,9 +233,9 @@ pub enum SelectChild<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    Option(<SelectOption<K> as Component>::Properties),
-    Divider(<Divider as Component>::Properties),
-    Group(<SelectGroup<K> as Component>::Properties),
+    Option(Rc<<SelectOption<K> as Component>::Properties>),
+    Divider(Rc<<Divider as Component>::Properties>),
+    Group(Rc<<SelectGroup<K> as Component>::Properties>),
 }
 
 impl<K> From<SelectOptionProps<K>> for SelectChild<K>
@@ -254,7 +243,7 @@ where
     K: Clone + PartialEq + Display + Debug,
 {
     fn from(props: SelectOptionProps<K>) -> Self {
-        SelectChild::Option(props)
+        SelectChild::Option(Rc::new(props))
     }
 }
 
@@ -263,7 +252,7 @@ where
     K: Clone + PartialEq + Display + Debug,
 {
     fn from(_: ()) -> Self {
-        SelectChild::Divider(())
+        SelectChild::Divider(Rc::new(()))
     }
 }
 
@@ -272,7 +261,7 @@ where
     K: Clone + PartialEq + Display + Debug,
 {
     fn from(props: SelectGroupProps<K>) -> Self {
-        SelectChild::Group(props)
+        SelectChild::Group(Rc::new(props))
     }
 }
 
@@ -294,9 +283,11 @@ where
     fn set_need_close(&mut self, callback: Callback<()>) {
         match self.props {
             SelectChild::Option(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
             SelectChild::Group(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
             _ => {}
@@ -306,9 +297,11 @@ where
     fn set_need_clicked(&mut self, callback: Callback<K>) {
         match self.props {
             SelectChild::Option(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_clicked = callback;
             }
             SelectChild::Group(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.want_clicked = callback;
             }
             _ => {}
@@ -318,9 +311,11 @@ where
     fn set_variant(&mut self, variant: SelectVariant<K>) {
         match self.props {
             SelectChild::Option(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.variant = variant;
             }
             SelectChild::Group(ref mut props) => {
+                let props = Rc::make_mut(props);
                 props.variant = variant;
             }
             _ => {}
@@ -331,12 +326,12 @@ where
 impl<K, CHILD> From<VChild<CHILD>> for SelectChildVariant<K>
 where
     CHILD: Component,
-    CHILD::Properties: Into<SelectChild<K>>,
+    CHILD::Properties: Into<SelectChild<K>> + Clone,
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }
@@ -400,9 +395,8 @@ pub struct SelectOption<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    props: SelectOptionProps<K>,
-    link: ComponentLink<Self>,
     default_id: Cell<Option<String>>,
+    _marker: PhantomData<K>,
 }
 
 impl<K> Component for SelectOption<K>
@@ -412,48 +406,38 @@ where
     type Message = SelectOptionMsg;
     type Properties = SelectOptionProps<K>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             default_id: Default::default(),
+            _marker: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Clicked => {
-                log::info!("Clicked on: {:?}", self.props.value);
-                if let Some(onclick) = &self.props.onclick {
+                log::info!("Clicked on: {:?}", ctx.props().value);
+                if let Some(onclick) = &ctx.props().onclick {
                     // if we have a click handler, we don't send the default handling
-                    onclick.emit(self.props.value.clone());
+                    onclick.emit(ctx.props().value.clone());
                 } else {
                     // default is to report clicked, if we have a key
-                    self.props.want_clicked.emit(self.props.value.clone());
+                    ctx.props().want_clicked.emit(ctx.props().value.clone());
                 }
-                if matches!(self.props.variant, SelectVariant::Single(_)) {
+                if matches!(ctx.props().variant, SelectVariant::Single(_)) {
                     // request close from our parent, only when we are neither multi nor checkbox
-                    self.props.want_close.emit(());
+                    ctx.props().want_close.emit(());
                 }
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        match self.props.variant {
-            SelectVariant::Single(_) => self.render_button(),
-            SelectVariant::Multiple(_) => self.render_button(),
-            SelectVariant::Checkbox(_) => self.render_checkbox(),
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        match ctx.props().variant {
+            SelectVariant::Single(_) => self.render_button(ctx),
+            SelectVariant::Multiple(_) => self.render_button(ctx),
+            SelectVariant::Checkbox(_) => self.render_checkbox(ctx),
         }
     }
 }
@@ -462,37 +446,37 @@ impl<K> SelectOption<K>
 where
     K: Clone + PartialEq + Display + Debug,
 {
-    fn render_button(&self) -> Html {
+    fn render_button(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-select__menu-item");
 
-        if self.props.selected {
+        if ctx.props().selected {
             classes.push("pf-m-selected");
         }
 
-        if self.props.description.is_some() {
+        if ctx.props().description.is_some() {
             classes.push("pf-m-description");
         }
 
         return html! {
             <li role="presentation">
                 <button
-                    class=classes
+                    class={classes}
                     role="option"
-                    onclick=self.link.callback(|_|SelectOptionMsg::Clicked)
+                    onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     >
-                { if let Some(description) = &self.props.description {
+                { if let Some(description) = &ctx.props().description {
                     html!{
                         <>
-                        <span class="pf-c-select__menu-item-main">{ &self.props.value }</span>
+                        <span class="pf-c-select__menu-item-main">{ &ctx.props().value }</span>
                         <span class="pf-c-select__menu-item-description">{ &description }</span>
-                        { self.render_selected() }
+                        { self.render_selected(ctx) }
                         </>
                     }
                 } else {
                     html!{
                         <>
-                        { &self.props.value }
-                        { self.render_selected() }
+                        { &ctx.props().value }
+                        { self.render_selected(ctx) }
                         </>
                     }
                 }}
@@ -501,18 +485,18 @@ where
         };
     }
 
-    fn render_checkbox(&self) -> Html {
+    fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-check pf-c-select__menu-item");
 
-        if self.props.selected {
+        if ctx.props().selected {
             classes.push("pf-m-selected");
         }
 
-        if self.props.description.is_some() {
+        if ctx.props().description.is_some() {
             classes.push("pf-m-description");
         }
 
-        let id = self.props.id.clone().unwrap_or_else(|| {
+        let id = ctx.props().id.clone().unwrap_or_else(|| {
             let id = self
                 .default_id
                 .take()
@@ -523,29 +507,29 @@ where
 
         return html! {
             <label
-                class=classes
-                for=id
+                class={classes}
+                for={id.clone()}
             >
                 <input
-                    id=id
+                    id={id}
                     class="pf-c-check__input"
                     type="checkbox"
-                    checked=self.props.selected
-                    onclick=self.link.callback(|_|SelectOptionMsg::Clicked)
+                    checked={ctx.props().selected}
+                    onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     />
-                <span class="pf-c-check__label">{ &self.props.value }</span>
+                <span class="pf-c-check__label">{ &ctx.props().value }</span>
             </label>
         };
     }
 
-    fn render_selected(&self) -> Html {
-        if self.props.selected {
-            return html! {
+    fn render_selected(&self, ctx: &Context<Self>) -> Html {
+        return if ctx.props().selected {
+            html! {
                 <span class="pf-c-select__menu-item-icon">{ Icon::Check }</span>
-            };
+            }
         } else {
-            return html! {};
-        }
+            html! {}
+        };
     }
 }
 
@@ -572,8 +556,7 @@ pub struct SelectGroup<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    props: SelectGroupProps<K>,
-    link: ComponentLink<Self>,
+    _marker: PhantomData<K>,
 }
 
 #[derive(Clone, Debug)]
@@ -589,42 +572,35 @@ where
     type Message = SelectGroupMsg<K>;
     type Properties = SelectGroupProps<K>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {
+            _marker: Default::default(),
+        }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Self::Message::Close => self.props.want_close.emit(()),
-            Self::Message::Clicked(k) => self.props.want_clicked.emit(k),
+            Self::Message::Close => ctx.props().want_close.emit(()),
+            Self::Message::Clicked(k) => ctx.props().want_clicked.emit(k),
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        html! {
             <>
                 <div class="pf-c-select__menu-group">
                     <div class="pf-c-select__menu-group-title" aria-hidden="true">
-                        { &self.props.label }
+                        { &ctx.props().label }
                     </div>
-                    { for self.props.children.iter().map(|mut c|{
-                        c.set_need_close(self.link.callback(|_|Self::Message::Close));
-                        c.set_need_clicked(self.link.callback(|k|Self::Message::Clicked(k)));
-                        c.set_variant(self.props.variant.clone());
+                    { for ctx.props().children.iter().map(|mut c|{
+                        c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
+                        c.set_need_clicked(ctx.link().callback(|k|Self::Message::Clicked(k)));
+                        c.set_variant(ctx.props().variant.clone());
                         c
                     })}
                 </div>
             </>
-        };
+        }
     }
 }

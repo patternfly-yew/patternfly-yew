@@ -8,43 +8,18 @@ pub struct Props {
     pub gutter: bool,
 }
 
-pub struct Stack {
-    props: Props,
-}
+#[function_component(Stack)]
+pub fn stack(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-l-stack");
 
-impl Component for Stack {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.gutter {
+        classes.push("pf-m-gutter");
     }
 
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-stack");
-
-        if self.props.gutter {
-            classes.push("pf-m-gutter");
-        }
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
     }
 }
 
@@ -56,42 +31,17 @@ pub struct StackItemProps {
     pub fill: bool,
 }
 
-pub struct StackItem {
-    props: StackItemProps,
-}
+#[function_component(StackItem)]
+pub fn stack_item(props: &StackItemProps) -> Html {
+    let mut classes = Classes::from("pf-l-stack__item");
 
-impl Component for StackItem {
-    type Message = ();
-    type Properties = StackItemProps;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.fill {
+        classes.push("pf-m-fill");
     }
 
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-stack__item");
-
-        if self.props.fill {
-            classes.push("pf-m-fill");
-        }
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
-    }
+    return html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
+    };
 }

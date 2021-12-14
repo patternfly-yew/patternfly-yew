@@ -7,49 +7,23 @@ pub struct Props {
     pub gutter: bool,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct Gallery {
-    props: Props,
-}
+#[function_component(Gallery)]
+pub fn gallery(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-l-gallery");
 
-impl Component for Gallery {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    if props.gutter {
+        classes.push("pf-m-gutter");
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-gallery");
-
-        if self.props.gutter {
-            classes.push("pf-m-gutter");
-        }
-
-        return html! {
-            <div class=classes>
-            { for self.props.children.iter().map(|child|{
-                html_nested!{
-                    <div class="pf-l-gallery__item">
-                        { child }
-                    </div>
-                }
-            }) }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+        { for props.children.iter().map(|child|{
+            html!{
+                <div class="pf-l-gallery__item">
+                    { child }
+                </div>
+            }
+        }) }
+        </div>
     }
 }

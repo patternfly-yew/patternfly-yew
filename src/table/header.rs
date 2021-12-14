@@ -16,46 +16,31 @@ pub struct TableHeaderProps {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct TableHeader {
-    props: TableHeaderProps,
-}
+pub struct TableHeader {}
 
 impl Component for TableHeader {
     type Message = ();
     type Properties = TableHeaderProps;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         return html! {
             <thead>
 
                 <tr role="row">
 
-                    { if self.props.expandable {
+                    { if ctx.props().expandable {
                         html!{<td></td>}
                     } else {
                         html!{}
                     }}
 
-                    { for self.props.children.iter() }
+                    { for ctx.props().children.iter() }
 
-                    { if self.props.hide_actions {html!{}} else {html!{
+                    { if ctx.props().hide_actions {html!{}} else {html!{
                         <td></td>
                     }}}
 

@@ -15,58 +15,21 @@ pub struct Props {
     pub footer: Children,
 }
 
-pub struct Login {
-    props: Props,
-}
-
-impl Component for Login {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="pf-c-login">
-                <div class="pf-c-login__container">
-                    {
-                        if !self.props.header.is_empty() {
-                            html!{ <header class="pf-c-login__header">{for self.props.header.iter()}</header> }
-                        } else {
-                            html!{}
-                        }
-                    }
-                    { for self.props.children.iter() }
-                    {
-                        if !self.props.footer.is_empty() {
-                            html!{ <footer class="pf-c-login__footer">{for self.props.footer.iter()}</footer> }
-                        } else {
-                            html!{}
-                        }
-                    }
-                </div>
+#[function_component(Login)]
+pub fn login(props: &Props) -> Html {
+    html! {
+        <div class="pf-c-login">
+            <div class="pf-c-login__container">
+                if !props.header.is_empty() {
+                    <header class="pf-c-login__header">{for props.header.iter()}</header>
+                }
+                { for props.children.iter() }
+                if !props.footer.is_empty() {
+                    <footer class="pf-c-login__footer">{for props.footer.iter()}</footer>
+                }
             </div>
-        }
+        </div>
     }
-}
-
-pub struct LoginMain {
-    props: LoginMainProps,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -75,38 +38,13 @@ pub struct LoginMainProps {
     pub children: Children,
 }
 
-impl Component for LoginMain {
-    type Message = ();
-    type Properties = LoginMainProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+#[function_component(LoginMain)]
+pub fn login_main(props: &LoginMainProps) -> Html {
+    html! {
+        <main class="pf-c-login__main">
+            { for props.children.iter() }
+        </main>
     }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <main class="pf-c-login__main">
-                { for self.props.children.iter() }
-            </main>
-        }
-    }
-}
-
-pub struct LoginMainHeader {
-    props: LoginMainHeaderProps,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -116,41 +54,16 @@ pub struct LoginMainHeaderProps {
     pub description: String,
 }
 
-impl Component for LoginMainHeader {
-    type Message = ();
-    type Properties = LoginMainHeaderProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+#[function_component(LoginMainHeader)]
+pub fn login_main_header(props: &LoginMainHeaderProps) -> Html {
+    html! {
+        <header class="pf-c-login__main-header">
+            { props.title.clone() }
+            <p class="pf-c-login__main-header-desc">
+                {&props.description}
+            </p>
+        </header>
     }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <header class="pf-c-login__main-header">
-                { self.props.title.clone() }
-                <p class="pf-c-login__main-header-desc">
-                    {&self.props.description}
-                </p>
-            </header>
-        }
-    }
-}
-
-pub struct LoginMainBody {
-    props: LoginMainBodyProps,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -159,32 +72,11 @@ pub struct LoginMainBodyProps {
     pub children: Children,
 }
 
-impl Component for LoginMainBody {
-    type Message = ();
-    type Properties = LoginMainBodyProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="pf-c-login__main-body">
-                { for self.props.children.iter() }
-            </div>
-        }
+#[function_component(LoginMainBody)]
+pub fn login_main_body(props: &LoginMainBodyProps) -> Html {
+    html! {
+        <div class="pf-c-login__main-body">
+            { for props.children.iter() }
+        </div>
     }
 }

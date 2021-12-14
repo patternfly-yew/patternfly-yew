@@ -1,5 +1,6 @@
-use crate::{AsClasses, SpaceItems, Spacer, WithBreakpoint};
+use crate::{AsClasses, SpaceItems, Spacer, WithBreakpoints};
 use std::fmt::Debug;
+use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
@@ -19,7 +20,7 @@ pub enum FlexModifier {
     None,
     Column,
     Justify(Justify),
-    Align(Alignement)
+    Align(Alignement),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -37,7 +38,7 @@ pub enum Alignement {
     Center,
     End,
     Baseline,
-    Stretch
+    Stretch,
 }
 
 impl ToString for FlexModifier {
@@ -66,7 +67,7 @@ impl ToString for FlexModifier {
                 Alignement::End => "pf-m-align-self-flex-end",
                 Alignement::Baseline => "pf-m-align-self-flex-baseline",
                 Alignement::Stretch => "pf-m-align-self-flex-stretch",
-            }
+            },
         }
         .to_string()
     }
@@ -74,19 +75,19 @@ impl ToString for FlexModifier {
 
 #[derive(Clone, PartialEq)]
 pub enum FlexChild {
-    Flex(<Flex as Component>::Properties),
-    FlexItem(<FlexItem as Component>::Properties),
+    Flex(Rc<<Flex as Component>::Properties>),
+    FlexItem(Rc<<FlexItem as Component>::Properties>),
 }
 
 impl From<FlexProps> for FlexChild {
     fn from(props: FlexProps) -> Self {
-        FlexChild::Flex(props)
+        FlexChild::Flex(Rc::new(props))
     }
 }
 
 impl From<FlexItemProps> for FlexChild {
     fn from(props: FlexItemProps) -> Self {
-        FlexChild::FlexItem(props)
+        FlexChild::FlexItem(Rc::new(props))
     }
 }
 
@@ -98,11 +99,11 @@ pub struct FlexChildVariant {
 impl<CHILD> From<VChild<CHILD>> for FlexChildVariant
 where
     CHILD: Component,
-    CHILD::Properties: Into<FlexChild>,
+    CHILD::Properties: Into<FlexChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }
@@ -135,51 +136,25 @@ pub struct FlexProps {
     #[prop_or_default]
     pub children: ChildrenRenderer<FlexChildVariant>,
     #[prop_or_default]
-    pub modifiers: Vec<WithBreakpoint<FlexModifier>>,
+    pub modifiers: WithBreakpoints<FlexModifier>,
     #[prop_or_default]
-    pub spacer: Vec<WithBreakpoint<Spacer>>,
+    pub spacer: WithBreakpoints<Spacer>,
     #[prop_or_default]
-    pub space_items: Vec<WithBreakpoint<SpaceItems>>,
+    pub space_items: WithBreakpoints<SpaceItems>,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct Flex {
-    props: FlexProps,
-}
+#[function_component(Flex)]
+pub fn flex(props: &FlexProps) -> Html {
+    let mut classes = Classes::from("pf-l-flex");
 
-impl Component for Flex {
-    type Message = ();
-    type Properties = FlexProps;
+    classes.extend(props.modifiers.as_classes());
+    classes.extend(props.space_items.as_classes());
+    classes.extend(props.spacer.as_classes());
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-flex");
-
-        classes = classes.extend(self.props.modifiers.as_classes());
-        classes = classes.extend(self.props.space_items.as_classes());
-        classes = classes.extend(self.props.spacer.as_classes());
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
     }
 }
 
@@ -190,47 +165,21 @@ pub struct FlexItemProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub modifiers: Vec<WithBreakpoint<FlexModifier>>,
+    pub modifiers: WithBreakpoints<FlexModifier>,
     #[prop_or_default]
-    pub spacer: Vec<WithBreakpoint<Spacer>>,
+    pub spacer: WithBreakpoints<Spacer>,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct FlexItem {
-    props: FlexItemProps,
-}
+#[function_component(FlexItem)]
+pub fn flex_item(props: &FlexItemProps) -> Html {
+    let mut classes = Classes::from("pf-l-flex__item");
 
-impl Component for FlexItem {
-    type Message = ();
-    type Properties = FlexItemProps;
+    classes.extend(props.modifiers.as_classes());
+    classes.extend(props.spacer.as_classes());
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-l-flex__item");
-
-        classes = classes.extend(self.props.modifiers.as_classes());
-        classes = classes.extend(self.props.spacer.as_classes());
-
-        return html! {
-            <div class=classes>
-                { for self.props.children.iter() }
-            </div>
-        };
+    html! {
+        <div class={classes}>
+            { for props.children.iter() }
+        </div>
     }
 }

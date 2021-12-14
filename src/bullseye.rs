@@ -15,45 +15,19 @@ pub struct Props {
 /// Bullseye layout.
 ///
 /// https://www.patternfly.org/v4/layouts/bullseye
-#[derive(Clone, PartialEq)]
-pub struct Bullseye {
-    props: Props,
-}
-
-impl Component for Bullseye {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="pf-l-bullseye">
-                { for self.props.children.iter().map(|c|{
-                    if self.props.plain {
-                        // according to the PatternFly documentation wrapping element with the item
-                        // shouldn't make a difference. In practice, sometimes it does.
-                        c
-                    } else {html!{
-                        <div class="pf-l-bullseye__item">{c}</div>
-                    }}
-                }) }
-            </div>
-        }
+#[function_component(Bullseye)]
+pub fn bullseye(props: &Props) -> Html {
+    html! {
+        <div class="pf-l-bullseye">
+            { for props.children.iter().map(|c|{
+                if props.plain {
+                    // according to the PatternFly documentation wrapping element with the item
+                    // shouldn't make a difference. In practice, sometimes it does.
+                    c
+                } else {html!{
+                    <div class="pf-l-bullseye__item">{c}</div>
+                }}
+            }) }
+        </div>
     }
 }

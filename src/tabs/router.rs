@@ -1,28 +1,28 @@
 use std::fmt::Debug;
+use std::marker::PhantomData;
 use std::rc::Rc;
 use yew::prelude::*;
-use yew_router::agent::RouteRequest::GetCurrentRoute;
-use yew_router::agent::*;
-use yew_router::Switch;
+use yew_router::agent::RouteRequest;
+use yew_router::prelude::*;
 
-pub struct SwitchTransformer<GSWITCH, LSWITCH>
+pub struct SwitchTransformer<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + PartialEq + Debug,
+    LR: 'static + Clone + PartialEq + Debug,
 {
-    from: Box<dyn Fn(&GSWITCH) -> Option<&LSWITCH>>,
-    to: Box<dyn Fn(LSWITCH) -> GSWITCH>,
+    from: Box<dyn Fn(&GR) -> Option<&LR>>,
+    to: Box<dyn Fn(LR) -> GR>,
 }
 
-impl<GSWITCH, LSWITCH> SwitchTransformer<GSWITCH, LSWITCH>
+impl<GR, LR> SwitchTransformer<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + PartialEq + Debug,
+    LR: 'static + Clone + PartialEq + Debug,
 {
     pub fn new<FROM, TO>(from: FROM, to: TO) -> Rc<Self>
     where
-        FROM: Fn(&GSWITCH) -> Option<&LSWITCH> + 'static,
-        TO: Fn(LSWITCH) -> GSWITCH + 'static,
+        FROM: Fn(&GR) -> Option<&LR> + 'static,
+        TO: Fn(LR) -> GR + 'static,
     {
         Rc::new(Self {
             from: Box::new(from),
@@ -33,13 +33,13 @@ where
 
 // tab router
 
-#[derive(Properties, Clone)]
-pub struct Props<GSWITCH, LSWITCH>
+#[derive(Clone, Properties)]
+pub struct Props<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + PartialEq + Clone + Debug + 'static,
+    LR: Switch + PartialEq + Clone + Debug + 'static,
 {
-    pub transformer: Rc<SwitchTransformer<GSWITCH, LSWITCH>>,
+    pub transformer: Rc<SwitchTransformer<GR, LR>>,
 
     #[prop_or_default]
     pub r#box: bool,
@@ -48,99 +48,107 @@ where
     #[prop_or_default]
     pub filled: bool,
     #[prop_or_default]
-    pub children: ChildrenWithProps<TabRouterItem<LSWITCH>>,
+    pub children: ChildrenWithProps<TabRouterItem<LR>>,
+}
+
+impl<GR, LR> PartialEq for Props<GR, LR>
+where
+    GR: Switch + PartialEq + Clone + Debug + 'static,
+    LR: Switch + PartialEq + Clone + Debug + 'static,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.r#box == other.r#box
+            && self.vertical == other.vertical
+            && self.filled == other.filled
+            && self.children == other.children
+            && Rc::ptr_eq(&self.transformer, &other.transformer)
+    }
 }
 
 #[derive(Clone, Debug)]
-pub enum TabsRouterMsg<GSWITCH, LSWITCH>
+pub enum TabsRouterMsg<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + Debug,
+    LR: Switch + Debug,
 {
-    RouteChange(Option<GSWITCH>),
-    Select(LSWITCH),
+    RouteChange(Option<GR>),
+    Select(LR),
 }
 
-pub struct TabsRouter<GSWITCH, LSWITCH>
+pub struct TabsRouter<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + Debug,
+    LR: Switch + Debug,
 {
-    props: Props<GSWITCH, LSWITCH>,
-    link: ComponentLink<Self>,
     _router: RouteAgentBridge,
+    _marker: PhantomData<LR>,
 
-    active: Option<GSWITCH>,
+    active: Option<GR>,
 }
 
-impl<GSWITCH, LSWITCH> Component for TabsRouter<GSWITCH, LSWITCH>
+impl<GR, LR> Component for TabsRouter<GR, LR>
 where
-    GSWITCH: 'static + Switch + Clone + PartialEq + Debug,
-    LSWITCH: 'static + Clone + PartialEq + Debug,
+    GR: Switch + PartialEq + Clone + Debug + 'static,
+    LR: Switch + PartialEq + Clone + Debug + 'static,
 {
-    type Message = TabsRouterMsg<GSWITCH, LSWITCH>;
-    type Properties = Props<GSWITCH, LSWITCH>;
+    type Message = TabsRouterMsg<GR, LR>;
+    type Properties = Props<GR, LR>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(|route: yew_router::route::Route| {
+    fn create(ctx: &Context<Self>) -> Self {
+        let callback = ctx.link().callback(|route: yew_router::route::Route| {
             TabsRouterMsg::RouteChange(Switch::switch(route))
         });
-        let mut bridge = RouteAgentBridge::new(callback);
-        bridge.send(GetCurrentRoute);
+        let mut _router = RouteAgentBridge::new(callback);
+        _router.send(RouteRequest::GetCurrentRoute);
         Self {
-            props,
-            link,
             active: None,
-            _router: bridge,
+            _router,
+            _marker: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             TabsRouterMsg::RouteChange(route) => {
                 self.active = route;
                 true
             }
             TabsRouterMsg::Select(route) => {
-                let route = (self.props.transformer.to)(route);
+                let route = (ctx.props().transformer.to)(route);
                 RouteAgentDispatcher::<()>::new().send(RouteRequest::ChangeRoute(route.into()));
                 false
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-tabs");
 
-        if self.props.r#box {
-            classes = classes.extend("pf-m-box");
+        if ctx.props().r#box {
+            classes.push("pf-m-box");
         }
 
-        if self.props.vertical {
-            classes = classes.extend("pf-m-vertical");
+        if ctx.props().vertical {
+            classes.push("pf-m-vertical");
         }
 
-        if self.props.filled {
-            classes = classes.extend("pf-m-fill");
+        if ctx.props().filled {
+            classes.push("pf-m-fill");
         }
 
         let local = self
             .active
             .as_ref()
-            .and_then(|active| (self.props.transformer.from)(active));
+            .and_then(|active| (ctx.props().transformer.from)(active));
 
         return html! {
-            <div class=classes>
+            <div class={classes}>
                 <ul class="pf-c-tabs__list">
-                    { for self.props.children.iter().map(|mut c|{
+                    { for ctx.props().children.iter().map(|mut c|{
                         let to = c.props.to.clone();
-                        c.props.current = local.map(|local| *local == c.props.to).unwrap_or_default();
-                        c.props.onselect = self.link.callback(move |_|TabsRouterMsg::Select(to.clone()));
+                        let props = Rc::make_mut(&mut c.props);
+                        props.current = local.map(|local| *local == to.clone()).unwrap_or_default();
+                        props.onselect = ctx.link().callback(move |_|TabsRouterMsg::Select(to.clone()));
                         c
                     }) }
                 </ul>
@@ -152,14 +160,14 @@ where
 // tab router item
 
 #[derive(Properties, Clone, Debug, PartialEq)]
-pub struct TabRouterItemProps<SWITCH>
+pub struct TabRouterItemProps<R>
 where
-    SWITCH: 'static + Clone + Debug + PartialEq,
+    R: Switch + PartialEq + Debug,
 {
     /// The tab label
     pub label: String,
     /// The switch this item references to
-    pub to: SWITCH,
+    pub to: R,
     /// If the item is currently selected
     #[prop_or_default]
     pub(crate) current: bool,
@@ -172,54 +180,46 @@ pub enum TabRouterItemMsg {
     Clicked,
 }
 
-pub struct TabRouterItem<SWITCH>
+pub struct TabRouterItem<R>
 where
-    SWITCH: 'static + Clone + Debug + PartialEq,
+    R: Switch + PartialEq,
 {
-    props: TabRouterItemProps<SWITCH>,
-    link: ComponentLink<Self>,
+    _marker: PhantomData<R>,
 }
 
-impl<SWITCH> Component for TabRouterItem<SWITCH>
+impl<R> Component for TabRouterItem<R>
 where
-    SWITCH: 'static + Clone + Debug + PartialEq,
+    R: Switch + PartialEq + Debug + 'static,
 {
     type Message = TabRouterItemMsg;
-    type Properties = TabRouterItemProps<SWITCH>;
+    type Properties = TabRouterItemProps<R>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_: &Context<Self>) -> Self {
+        Self {
+            _marker: Default::default(),
+        }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             TabRouterItemMsg::Clicked => {
-                self.props.onselect.emit(());
+                ctx.props().onselect.emit(());
             }
         }
         false
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-tabs__item");
 
-        if self.props.current {
-            classes = classes.extend("pf-m-current");
+        if ctx.props().current {
+            classes.push("pf-m-current");
         }
 
         return html! {
-            <li class=classes>
-                <button class="pf-c-tabs__link" onclick=self.link.callback(|_|TabRouterItemMsg::Clicked)>
-                    <span class="pf-c-tabs__item-text"> { &self.props.label } </span>
+            <li class={classes}>
+                <button class="pf-c-tabs__link" onclick={ctx.link().callback(|_|TabRouterItemMsg::Clicked)}>
+                    <span class="pf-c-tabs__item-text"> { &ctx.props().label } </span>
                 </button>
             </li>
         };

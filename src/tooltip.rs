@@ -14,8 +14,6 @@ pub struct TooltipProps {
 }
 
 pub struct Tooltip {
-    props: TooltipProps,
-    link: ComponentLink<Self>,
     node: NodeRef,
     active: bool,
 }
@@ -30,16 +28,14 @@ impl Component for Tooltip {
     type Message = TooltipMsg;
     type Properties = TooltipProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: &Context<Self>) -> Self {
         Self {
-            props,
-            link,
             node: NodeRef::default(),
             active: false,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
         log::debug!("Update: {:?}", msg);
 
         match msg {
@@ -54,24 +50,15 @@ impl Component for Tooltip {
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let enter = self.link.callback(|_| TooltipMsg::Enter);
-        let leave = self.link.callback(|_| TooltipMsg::Leave);
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let enter = ctx.link().callback(|_| TooltipMsg::Enter);
+        let leave = ctx.link().callback(|_| TooltipMsg::Leave);
 
         return html! {
             <>
-                <Popper<Tooltip> active=self.active content=self.props.clone()>
-                    <span onmouseenter=enter.clone() onmouseleave=leave.clone() ref=self.node.clone()>
-                        { for self.props.children.iter() }
+                <Popper<Tooltip> active={self.active} content={ctx.props().clone()}>
+                    <span onmouseenter={enter.clone()} onmouseleave={leave.clone()} ref={self.node.clone()}>
+                        { for ctx.props().children.iter() }
                     </span>
                 </Popper<Tooltip>>
             </>
@@ -95,7 +82,14 @@ impl PopperContent for Tooltip {
             .map(|s| s.orientation)
             .unwrap_or(Orientation::Bottom);
 
-        html! {<TooltipPopup ref=r#ref styles=styles hidden=state.is_none() orientation=orientation text=&props.text/>}
+        html! {
+        <TooltipPopup
+            ref={r#ref}
+            styles={styles}
+            hidden={state.is_none()}
+            orientation={orientation}
+            text={props.text.clone()}
+        />}
     }
 }
 
@@ -111,50 +105,25 @@ pub struct TooltipPopupProps {
     pub styles: String,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct TooltipPopup {
-    props: TooltipPopupProps,
-}
+#[function_component(TooltipPopup)]
+pub fn tooltip_popup(props: &TooltipPopupProps) -> Html {
+    let mut classes = Classes::from("pf-c-tooltip");
 
-impl Component for TooltipPopup {
-    type Message = ();
-    type Properties = TooltipPopupProps;
+    classes.extend(props.orientation.as_classes());
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    let style = if props.hidden {
+        "display: none;"
+    } else {
+        &props.styles
     }
+    .to_string();
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        let mut classes = Classes::from("pf-c-tooltip");
-
-        classes = classes.extend(self.props.orientation.as_classes());
-
-        let style = if self.props.hidden {
-            "display: none;"
-        } else {
-            &self.props.styles
-        };
-
-        return html! {
-            <div style=style class=classes role="tooltip">
-                <div class="pf-c-tooltip__arrow"></div>
-                <div class="pf-c-tooltip__content">
-                    { &self.props.text }
-                </div>
+    html! {
+        <div style={style} class={classes} role="tooltip">
+            <div class="pf-c-tooltip__arrow"></div>
+            <div class="pf-c-tooltip__content">
+                { &props.text }
             </div>
-        };
+        </div>
     }
 }

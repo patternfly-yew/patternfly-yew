@@ -52,71 +52,56 @@ pub struct Props {
     pub href: String,
 }
 
-pub struct Label {
-    props: Props,
-}
+pub struct Label {}
 
 impl Component for Label {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-label");
 
-        classes = classes.extend(Classes::from(self.props.color));
+        classes.extend(Classes::from(ctx.props().color));
 
-        if self.props.outline {
+        if ctx.props().outline {
             classes.push("pf-m-outline");
         }
 
-        if self.props.overflow {
+        if ctx.props().overflow {
             classes.push("pf-m-overflow");
         }
 
         let content = |content: Html| {
-            if self.props.href.is_empty() {
+            if ctx.props().href.is_empty() {
                 html! {<span class="pf-c-label__content">{content}</span>}
             } else {
-                html! {<a class="pf-c-label__content" href=self.props.href.clone()>{content}</a>}
+                html! {<a class="pf-c-label__content" href={ctx.props().href.clone()}>{content}</a>}
             }
         };
 
         return html! {
-            <span class=classes>
+            <span class={classes}>
                 { content (
                     html!{
                         <>
-                            { self.render_icon() }
-                            { &self.props.label }
+                            { self.render_icon(ctx) }
+                            { &ctx.props().label }
                         </>
                     }
                 )}
-                { self.render_close() }
+                { self.render_close(ctx) }
             </span>
         };
     }
 }
 
 impl Label {
-    fn render_icon(&self) -> Html {
-        if let Some(icon) = &self.props.icon {
+    fn render_icon(&self, ctx: &Context<Self>) -> Html {
+        if let Some(icon) = &ctx.props().icon {
             html! {
                 <span class="pf-c-label__icon">
                     { icon.as_html() }
@@ -127,11 +112,11 @@ impl Label {
         }
     }
 
-    fn render_close(&self) -> Html {
-        if let Some(onclose) = &self.props.onclose {
+    fn render_close(&self, ctx: &Context<Self>) -> Html {
+        if let Some(onclose) = &ctx.props().onclose {
             let onclose = onclose.reform(|_| {});
             return html! {
-                <Button variant=Variant::Plain icon=Icon::Times onclick=onclose/>
+                <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose}/>
             };
         } else {
             return html! {};

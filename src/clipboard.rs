@@ -1,13 +1,11 @@
-use std::time::Duration;
-use wasm_bindgen::prelude::*;
-use yew::prelude::*;
-use yew::services::{Task, TimeoutService};
-
 use crate::button::*;
 use crate::form::*;
 use crate::icon::*;
 use crate::*;
-use yew::web_sys::{Element, HtmlInputElement};
+use gloo_timers::callback::Timeout;
+use wasm_bindgen::prelude::*;
+use web_sys::{Element, HtmlInputElement};
+use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -69,10 +67,8 @@ const FAILED_MESSAGE: &'static str = "Failed to copy";
 const OK_MESSAGE: &'static str = "Copied!";
 
 pub struct Clipboard {
-    props: Props,
-    link: ComponentLink<Self>,
     message: &'static str,
-    task: Option<Box<dyn Task>>,
+    task: Option<Timeout>,
     expanded: bool,
     value: String,
     text_ref: NodeRef,
@@ -83,17 +79,15 @@ impl Component for Clipboard {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let expanded = match props.variant {
+    fn create(ctx: &Context<Self>) -> Self {
+        let expanded = match ctx.props().variant {
             ClipboardVariant::Expanded => true,
             _ => false,
         };
 
-        let value = props.value.clone();
+        let value = ctx.props().value.clone();
 
         Self {
-            props,
-            link,
             message: DEFAULT_MESSAGE,
             task: None,
             expanded,
@@ -103,67 +97,55 @@ impl Component for Clipboard {
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Copy => {
-                self.sync_value();
-                self.do_copy();
+                self.sync_value(ctx);
+                self.do_copy(ctx);
             }
             Msg::Copied => {
-                self.trigger_message(OK_MESSAGE);
+                self.trigger_message(ctx, OK_MESSAGE);
             }
             Msg::Failed(msg) => {
-                self.trigger_message(msg);
+                self.trigger_message(ctx, msg);
             }
             Msg::Reset => {
                 self.message = DEFAULT_MESSAGE;
                 self.task.take();
             }
             Msg::ToggleExpand => {
-                self.sync_value();
+                self.sync_value(ctx);
                 self.expanded = !self.expanded;
             }
         }
         true
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.value = props.value.clone();
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-clipboard-copy");
 
         if self.expanded {
             classes.push("pf-m-expanded");
         }
-        if self.props.variant.is_inline() {
+        if ctx.props().variant.is_inline() {
             classes.push("pf-m-inline");
         }
 
         return html! {
-            <div class=classes>
-                { match self.props.variant {
+            <div class={classes}>
+                { match ctx.props().variant {
                     ClipboardVariant::Inline => {
                         html!{
                             <>
-                            {
-                                if self.props.code {
-                                    html!{<code name=self.props.name id=self.props.id class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>}
-                                } else {
-                                    html!{<span name=self.props.name id=self.props.id class="pf-c-clipboard-copy__text">{&self.value}</span>}
-                                }
+                            if ctx.props().code {
+                                <code name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>
+                            } else {
+                                <span name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text">{&self.value}</span>
                             }
                             <span class="pf-c-clipboard-copy__actions">
                                 <span class="pf-c-clipboard-copy__actions-item">
-                                    <Tooltip text=self.message>
-                                        <Button aria_label="Copy to clipboard" variant=Variant::Plain icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
+                                    <Tooltip text={self.message}>
+                                        <Button aria_label="Copy to clipboard" variant={Variant::Plain} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                     </Tooltip>
                                 </span>
                             </span>
@@ -174,13 +156,19 @@ impl Component for Clipboard {
                         html!{
                             <>
                             <div class="pf-c-clipboard-copy__group">
-                                { self.expander() }
-                                <TextInput ref=self.text_ref.clone() readonly={self.props.readonly | self.expanded} value=&self.value name=&self.props.name id=&self.props.id/>
-                                <Tooltip text=self.message>
-                                    <Button aria_label="Copy to clipboard" variant=Variant::Control icon=Icon::Copy onclick=self.link.callback(|_|Msg::Copy)/>
+                                { self.expander(ctx) }
+                                <TextInput
+                                    ref={self.text_ref.clone()}
+                                    readonly={ctx.props().readonly | self.expanded}
+                                    value={self.value.clone()}
+                                    name={ctx.props().name.clone()}
+                                    id={ctx.props().id.clone()}
+                                />
+                                <Tooltip text={self.message}>
+                                    <Button aria_label="Copy to clipboard" variant={Variant::Control} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                 </Tooltip>
                             </div>
-                            { self.expanded() }
+                            { self.expanded(ctx) }
                             </>
                         }
                     }
@@ -191,20 +179,21 @@ impl Component for Clipboard {
 }
 
 impl Clipboard {
-    fn trigger_message(&mut self, msg: &'static str) {
+    fn trigger_message(&mut self, ctx: &Context<Self>, msg: &'static str) {
         self.message = msg;
-        self.task.take();
-        self.task = Some(Box::new(TimeoutService::spawn(
-            Duration::from_secs(2),
-            self.link.callback(|_| Msg::Reset),
-        )));
+        self.task = Some({
+            let link = ctx.link().clone();
+            Timeout::new(2_000, move || {
+                link.send_message(Msg::Reset);
+            })
+        });
     }
 
-    fn do_copy(&self) {
+    fn do_copy(&self, ctx: &Context<Self>) {
         let s = self.value.clone();
 
-        let ok: Callback<()> = self.link.callback(|_| Msg::Copied);
-        let err: Callback<&'static str> = self.link.callback(|s| Msg::Failed(s));
+        let ok: Callback<()> = ctx.link().callback(|_| Msg::Copied);
+        let err: Callback<&'static str> = ctx.link().callback(|s| Msg::Failed(s));
 
         wasm_bindgen_futures::spawn_local(async move {
             match copy_to_clipboard(s).await {
@@ -214,18 +203,18 @@ impl Clipboard {
         });
     }
 
-    fn expander(&self) -> Html {
-        if !self.props.variant.is_expandable() {
+    fn expander(&self, ctx: &Context<Self>) -> Html {
+        if !ctx.props().variant.is_expandable() {
             return Default::default();
         }
 
-        let onclick = self.link.callback(|_| Msg::ToggleExpand);
+        let onclick = ctx.link().callback(|_| Msg::ToggleExpand);
 
         return html! {
             <Button
-                expanded=self.expanded
-                variant=Variant::Control
-                onclick=onclick>
+                expanded={self.expanded}
+                variant={Variant::Control}
+                onclick={onclick}>
                 <div class="pf-c-clipboard-copy__toggle-icon">
                     { Icon::AngleRight }
                 </div>
@@ -233,18 +222,18 @@ impl Clipboard {
         };
     }
 
-    fn expanded(&self) -> Html {
+    fn expanded(&self, ctx: &Context<Self>) -> Html {
         if !self.expanded {
             return Default::default();
         }
 
         return html! {
             <div
-                ref=self.details_ref.clone()
+                ref={self.details_ref.clone()}
                 class="pf-c-clipboard-copy__expandable-content"
-                contenteditable=!self.props.readonly>
+                contenteditable={(!ctx.props().readonly).to_string()}>
 
-                { if self.props.code {
+                { if ctx.props().code {
                     html!{ <pre>{&self.value}</pre> }
                 } else {
                     html!{ &self.value}
@@ -255,8 +244,8 @@ impl Clipboard {
     }
 
     /// Sync the value between internal, text field or details.
-    fn sync_value(&mut self) {
-        if self.props.readonly || self.props.variant.is_inline() {
+    fn sync_value(&mut self, ctx: &Context<Self>) {
+        if ctx.props().readonly || ctx.props().variant.is_inline() {
             return;
         }
 

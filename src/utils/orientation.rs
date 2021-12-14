@@ -7,7 +7,7 @@ pub enum Orientation {
 }
 
 impl Orientation {
-    pub fn as_classes(&self) -> Vec<&str> {
+    pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
             Orientation::Left => vec!["pf-m-left"],
             Orientation::Right => vec!["pf-m-right"],

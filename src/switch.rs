@@ -1,6 +1,6 @@
 use crate::{random_id, Icon};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew::web_sys::HtmlInputElement;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -25,11 +25,7 @@ pub struct Props {
 }
 
 pub struct Switch {
-    link: ComponentLink<Self>,
-    props: Props,
-
     id: String,
-
     input_ref: NodeRef,
 }
 
@@ -41,66 +37,64 @@ impl Component for Switch {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props.id.as_ref().cloned().unwrap_or_else(|| random_id());
+    fn create(ctx: &Context<Self>) -> Self {
+        let id = ctx
+            .props()
+            .id
+            .as_ref()
+            .cloned()
+            .unwrap_or_else(|| random_id());
         Self {
-            props,
             id,
-            link,
             input_ref: Default::default(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Changed => {
-                self.props.on_change.emit(self.current_state());
+                ctx.props().on_change.emit(self.current_state());
                 return false;
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            let id = props
-                .id
-                .as_ref()
-                .cloned()
-                .unwrap_or_else(|| self.id.clone());
-            self.props = props;
-            self.id = id;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        self.id = ctx
+            .props()
+            .id
+            .as_ref()
+            .cloned()
+            .unwrap_or_else(|| self.id.clone());
+        true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <label class="pf-c-switch" for=self.id>
+            <label class="pf-c-switch" for={self.id.clone()}>
                 <input
-                    ref=self.input_ref.clone()
+                    ref={self.input_ref.clone()}
                     class="pf-c-switch__input"
                     type="checkbox"
-                    id=self.id
-                    aria-label=self.props.aria_label
-                    checked=self.props.checked
-                    disabled=self.props.disabled
-                    onchange=self.link.callback(|_|Msg::Changed)
+                    id={self.id.clone()}
+                    aria-label={ctx.props().aria_label.clone()}
+                    checked={ctx.props().checked}
+                    disabled={ctx.props().disabled}
+                    onchange={ctx.link().callback(|_|Msg::Changed)}
                     />
                 <span class="pf-c-switch__toggle">
-                    { if self.props.label.is_none() { html!{
-                    <span class="pf-c-switch__toggle-icon">
-                        { Icon::Check }
-                    </span>
-                    }} else { html!{}} }
+                    if ctx.props().label.is_none() {
+                        <span class="pf-c-switch__toggle-icon">
+                            { Icon::Check }
+                        </span>
+                    }
                 </span>
-                { if let Some(ref label) = self.props.label {html!{
+                if let Some(ref label) = ctx.props().label {
                     <>
-                    <span class="pf-c-switch__label pf-m-on">{label}</span>
-                    <span class="pf-c-switch__label pf-m-off">{self.props.label_off.as_ref().unwrap_or_else(||label)}</span>
+                    <span class="pf-c-switch__label pf-m-on">{ label }</span>
+                    <span class="pf-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or_else(||label) }</span>
                     </>
-                }} else {html!{}}}
+                }
             </label>
         }
     }

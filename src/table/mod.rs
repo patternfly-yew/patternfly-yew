@@ -8,6 +8,8 @@ pub use model::*;
 
 use crate::{icon::Icon, AsClasses, Dropdown, DropdownChildVariant, KebabToggle};
 use std::fmt::Debug;
+use std::marker::PhantomData;
+use std::rc::Rc;
 use yew::prelude::*;
 use yew::virtual_dom::{vnode::VNode::VComp, VChild};
 
@@ -50,8 +52,7 @@ pub struct Table<M>
 where
     M: TableModel + 'static,
 {
-    props: TableProps<M>,
-    link: ComponentLink<Self>,
+    _marker: PhantomData<M>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
@@ -127,39 +128,26 @@ where
     type Message = Msg;
     type Properties = TableProps<M>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let mut result = Self { props, link };
-        result.sync_expandable();
-        result
+    fn create(_: &Context<Self>) -> Self {
+        Self {
+            _marker: Default::default(),
+        }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         log::debug!(target: LOG_TARGET, "Update - msg: {:?}", msg);
 
         match msg {
-            Msg::Collapse(idx) => self.set_expanded(idx, false),
-            Msg::Expand(idx) => self.set_expanded(idx, true),
+            Msg::Collapse(idx) => self.set_expanded(ctx, idx, false),
+            Msg::Expand(idx) => self.set_expanded(ctx, idx, true),
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        log::debug!(target: LOG_TARGET, "Change: {:?}", props);
-        if self.props != props {
-            self.props = props;
-
-            self.sync_expandable();
-
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-table");
 
-        if self
-            .props
+        if ctx
+            .props()
             .header
             .as_ref()
             .map_or(false, |header| header.props.sticky)
@@ -167,7 +155,7 @@ where
             classes.push("pf-m-sticky-header");
         }
 
-        match self.props.mode {
+        match ctx.props().mode {
             TableMode::Compact => {
                 classes.push("pf-m-compact");
             }
@@ -186,10 +174,10 @@ where
         };
 
         return html! {
-            <table class=classes role="grid">
-                { self.render_caption() }
-                { self.render_header() }
-                { self.render_entries() }
+            <table class={classes} role="grid">
+                { self.render_caption(ctx) }
+                { self.render_header(ctx) }
+                { self.render_entries(ctx) }
             </table>
         };
     }
@@ -199,16 +187,8 @@ impl<M> Table<M>
 where
     M: TableModel,
 {
-    fn sync_expandable(&mut self) {
-        // sync down expandable state
-        let expandable = self.is_expandable();
-        if let Some(ref mut header) = self.props.header {
-            header.props.expandable = expandable;
-        }
-    }
-
-    fn render_caption(&self) -> Html {
-        match &self.props.caption {
+    fn render_caption(&self, ctx: &Context<Self>) -> Html {
+        match &ctx.props().caption {
             Some(caption) => html! {
                 <caption>{caption}</caption>
             },
@@ -216,19 +196,24 @@ where
         }
     }
 
-    fn render_header(&self) -> Html {
-        match &self.props.header {
-            Some(header) => VComp(yew::virtual_dom::VComp::from(header.clone())),
+    fn render_header(&self, ctx: &Context<Self>) -> Html {
+        match &ctx.props().header {
+            Some(header) => {
+                let mut header = header.clone();
+                let props = Rc::make_mut(&mut header.props);
+                props.expandable = self.is_expandable(ctx);
+                VComp(yew::virtual_dom::VComp::from(header))
+            }
             None => html! {},
         }
     }
 
-    fn render_entries(&self) -> Vec<Html> {
-        let expandable = self.is_expandable();
+    fn render_entries(&self, ctx: &Context<Self>) -> Vec<Html> {
+        let expandable = self.is_expandable(ctx);
 
-        let result = self.props.entries.map(|entry| match expandable {
-            true => self.render_expandable_entry(&entry),
-            false => self.render_normal_entry(&entry),
+        let result = ctx.props().entries.map(|entry| match expandable {
+            true => self.render_expandable_entry(ctx, &entry),
+            false => self.render_normal_entry(ctx, &entry),
         });
 
         if expandable {
@@ -242,21 +227,25 @@ where
         }
     }
 
-    fn render_normal_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
+    fn render_normal_entry(&self, ctx: &Context<Self>, entry: &TableModelEntry<M::Item>) -> Html {
         return html! {
             <tr role="row">
-                { self.render_row(&entry.value)}
+                { self.render_row(ctx, &entry.value)}
             </tr>
         };
     }
 
-    fn render_expandable_entry(&self, entry: &TableModelEntry<M::Item>) -> Html {
+    fn render_expandable_entry(
+        &self,
+        ctx: &Context<Self>,
+        entry: &TableModelEntry<M::Item>,
+    ) -> Html {
         let expanded = entry.expanded;
         let idx = entry.index;
 
         let onclick = match expanded {
-            true => self.link.callback(move |_: MouseEvent| Msg::Collapse(idx)),
-            false => self.link.callback(move |_: MouseEvent| Msg::Expand(idx)),
+            true => ctx.link().callback(move |_: MouseEvent| Msg::Collapse(idx)),
+            false => ctx.link().callback(move |_: MouseEvent| Msg::Expand(idx)),
         };
 
         let mut classes = Classes::from("pf-c-button");
@@ -275,8 +264,8 @@ where
             expanded_class.push("pf-m-expanded");
         }
 
-        let mut cols = self
-            .props
+        let mut cols = ctx
+            .props()
             .header
             .as_ref()
             .map_or(0, |header| header.props.children.len())
@@ -287,7 +276,7 @@ where
         if !entry
             .value
             .is_full_width_details()
-            .unwrap_or(self.props.full_width_details)
+            .unwrap_or(ctx.props().full_width_details)
         {
             cells.push(html! {<td></td>});
             cols -= 1;
@@ -295,9 +284,9 @@ where
 
         for cell in entry.value.render_details() {
             let mut classes = Classes::new();
-            classes = classes.extend(cell.modifiers.as_classes());
+            classes.extend(cell.modifiers.as_classes());
             cells.push(html! {
-                <td class=classes role="cell" colspan={cell.cols}>
+                <td class={classes} role="cell" colspan={cell.cols.to_string()}>
                     <div class="pf-c-table__expandable-row-content">
                         { cell.content }
                     </div>
@@ -315,38 +304,41 @@ where
 
         if cols > 0 {
             cells.push(html! {
-                <td colspan=cols></td>
+                <td colspan={cols.to_string()}></td>
             });
         }
 
+        let mut tr_classes = classes!("pf-c-table__expandable-row");
+        tr_classes.extend(expanded_class.clone());
+
         return html! {
-            <tbody role="rowgroup" class=expanded_class.clone()>
+            <tbody role="rowgroup" class={expanded_class}>
                 <tr role="row">
                     <td class="pf-c-table__toggle" role="cell">
-                        <button class=classes onclick=onclick aria-expanded=aria_expanded>
+                        <button class={classes} onclick={onclick} aria-expanded={aria_expanded}>
                             <div class="pf-c-table__toggle_icon">
                                 { if expanded { Icon::AngleDown } else { Icon::AngleRight }}
                             </div>
                         </button>
                     </td>
 
-                    { self.render_row(&entry.value) }
+                    { self.render_row(ctx, &entry.value) }
                 </tr>
 
-                <tr class=("pf-c-table__expandable-row",expanded_class.clone()) role="row">
+                <tr class={tr_classes} role="row">
                     { cells }
                 </tr>
             </tbody>
         };
     }
 
-    fn set_expanded(&mut self, idx: usize, state: bool) -> ShouldRender {
-        self.props.entries.set_expanded(idx, state)
+    fn set_expanded(&mut self, ctx: &Context<Self>, idx: usize, state: bool) -> bool {
+        ctx.props().entries.set_expanded(idx, state)
     }
 
-    fn render_row(&self, entry: &M::Item) -> Vec<Html> {
-        let len = self
-            .props
+    fn render_row(&self, ctx: &Context<Self>, entry: &M::Item) -> Vec<Html> {
+        let len = ctx
+            .props()
             .header
             .as_ref()
             .map_or(0, |header| header.props.children.len());
@@ -354,16 +346,16 @@ where
         let mut cells: Vec<Html> = Vec::with_capacity(len);
 
         let mut index = 0;
-        for col in self
-            .props
+        for col in ctx
+            .props()
             .header
             .iter()
             .flat_map(|header| header.props.children.iter())
         {
             let cell = entry.render(ColumnIndex { index });
-            let label = col.props.label;
+            let label = col.props.label.clone();
             cells.push(html! {
-                <td role="cell" data-label=label.unwrap_or_default()>
+                <td role="cell" data-label={label.unwrap_or_default()}>
                     {cell}
                 </td>
             });
@@ -371,13 +363,14 @@ where
             index += 1;
         }
 
+        let toggle = html! {<KebabToggle/>};
         let actions = entry.actions();
         if !actions.is_empty() {
             cells.push(html! {
                 <td class="pf-c-table__action">
                     <Dropdown
                         plain=true
-                        toggle={html!{<KebabToggle/>}}
+                        toggle={toggle}
                         >
                         { actions }
                     </Dropdown>
@@ -388,8 +381,8 @@ where
         cells
     }
 
-    fn is_expandable(&self) -> bool {
-        match self.props.mode {
+    fn is_expandable(&self, ctx: &Context<Self>) -> bool {
+        match ctx.props().mode {
             TableMode::Expandable | TableMode::CompactExpandable => true,
             _ => false,
         }

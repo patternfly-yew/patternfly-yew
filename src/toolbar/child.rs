@@ -1,4 +1,5 @@
 use super::*;
+use std::rc::Rc;
 use yew::{
     prelude::*,
     virtual_dom::{VChild, VComp},
@@ -6,19 +7,19 @@ use yew::{
 
 #[derive(Clone, PartialEq)]
 pub enum ToolbarChild {
-    Item(<ToolbarItem as Component>::Properties),
-    Group(<ToolbarGroup as Component>::Properties),
+    Item(Rc<<ToolbarItem as Component>::Properties>),
+    Group(Rc<<ToolbarGroup as Component>::Properties>),
 }
 
 impl From<ToolbarItemProps> for ToolbarChild {
     fn from(props: ToolbarItemProps) -> Self {
-        ToolbarChild::Item(props)
+        ToolbarChild::Item(Rc::new(props))
     }
 }
 
 impl From<ToolbarGroupProps> for ToolbarChild {
     fn from(props: ToolbarGroupProps) -> Self {
-        ToolbarChild::Group(props)
+        ToolbarChild::Group(Rc::new(props))
     }
 }
 
@@ -30,11 +31,11 @@ pub struct ToolbarChildVariant {
 impl<CHILD> From<VChild<CHILD>> for ToolbarChildVariant
 where
     CHILD: Component,
-    CHILD::Properties: Into<ToolbarChild>,
+    CHILD::Properties: Into<ToolbarChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
-            props: vchild.props.into(),
+            props: (*vchild.props).clone().into(),
         }
     }
 }

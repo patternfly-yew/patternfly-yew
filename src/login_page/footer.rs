@@ -13,57 +13,28 @@ pub struct LoginMainFooterLinkProps {
     pub children: Children,
 }
 
-pub struct LoginMainFooterLink {
-    props: LoginMainFooterLinkProps,
-}
+#[function_component(LoginMainFooterLink)]
+pub fn login_main_footer_link(props: &LoginMainFooterLinkProps) -> Html {
+    let link = html! {
+        <a
+            class="pf-c-login__main-footer-links-item-link"
+            href={props.href.clone()}
+            target={props.target.clone()}
+            aria_label={props.label.clone()}
+            >
+            { for props.children.iter() }
+        </a>
+    };
 
-impl Component for LoginMainFooterLink {
-    type Message = ();
-    type Properties = LoginMainFooterLinkProps;
-
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
+    if props.label.is_empty() {
+        link
+    } else {
+        html! {
+            <Tooltip text={props.label.clone()}>
+                {link}
+            </Tooltip>
         }
     }
-
-    fn view(&self) -> Html {
-        let link = html! {
-            <a
-                class="pf-c-login__main-footer-links-item-link"
-                href=self.props.href.clone()
-                target=&self.props.target
-                aria_label=&self.props.label
-                >
-                { for self.props.children.iter() }
-            </a>
-        };
-
-        if self.props.label.is_empty() {
-            link
-        } else {
-            return html! {
-                <Tooltip text=&self.props.label>
-                    {link}
-                </Tooltip>
-            };
-        }
-    }
-}
-
-pub struct LoginMainFooter {
-    props: LoginMainFooterProps,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -76,57 +47,36 @@ pub struct LoginMainFooterProps {
     pub links: ChildrenWithProps<LoginMainFooterLink>,
 }
 
-impl Component for LoginMainFooter {
-    type Message = ();
-    type Properties = LoginMainFooterProps;
+#[function_component(LoginMainFooter)]
+pub fn login_main_footer(props: &LoginMainFooterProps) -> Html {
+    html! {
+        <footer class="pf-c-login__main-footer">
+            { for props.children.iter() }
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
-    }
+            { if props.links.len() > 0 {
+                html!{
+                    <ul class="pf-c-login__main-footer-links">
+                    { for props.links.iter().map(|item|{
+                        html!{ <li class="pf-c-login__main-footer-links-item">{item}</li> }
+                    }) }
+                    </ul>
+                }
+            } else {
+                html!{}
+            }}
 
-    fn update(&mut self, _msg: Self::Message) -> bool {
-        true
-    }
+            { if props.band.len() > 0 {
+                html!{
+                    <div class="pf-c-login__main-footer-band">
+                    { for props.band.iter().map(|item|{
+                        html!{ <p class="pf-c-login__main-footer-band-item">{item}</p> }
+                    }) }
+                    </div>
+                }
+            } else {
+                html!{}
+            }}
 
-    fn change(&mut self, props: Self::Properties) -> bool {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn view(&self) -> Html {
-        return html! {
-            <footer class="pf-c-login__main-footer">
-                { for self.props.children.iter() }
-
-                { if self.props.links.len() > 0 {
-                    html!{
-                        <ul class="pf-c-login__main-footer-links">
-                        { for self.props.links.iter().map(|item|{
-                            html!{ <li class="pf-c-login__main-footer-links-item">{item}</li> }
-                        }) }
-                        </ul>
-                    }
-                } else {
-                    html!{}
-                }}
-
-                { if self.props.band.len() > 0 {
-                    html!{
-                        <div class="pf-c-login__main-footer-band">
-                        { for self.props.band.iter().map(|item|{
-                            html!{ <p class="pf-c-login__main-footer-band-item">{item}</p> }
-                        }) }
-                        </div>
-                    }
-                } else {
-                    html!{}
-                }}
-
-            </footer>
-        };
+        </footer>
     }
 }
