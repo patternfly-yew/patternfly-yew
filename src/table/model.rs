@@ -67,7 +67,6 @@ impl<T> From<Vec<T>> for SharedTableModel<T> {
         }
 
         let id = ID.fetch_add(1, Ordering::SeqCst);
-        log::info!("ID: {}", id);
 
         Self {
             entries: Arc::new(RwLock::new(entries)),
