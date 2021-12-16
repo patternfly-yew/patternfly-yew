@@ -1,8 +1,11 @@
-use std::fmt::Debug;
-use std::ops::Deref;
-use std::sync::{Arc, RwLock};
-
 use super::TableRenderer;
+use std::{
+    fmt::Debug,
+    sync::{
+        atomic::{AtomicUsize, Ordering},
+        Arc, RwLock,
+    },
+};
 
 /// A model providing data for a table.
 pub trait TableModel: Debug + Default + PartialEq + Clone {
@@ -47,7 +50,11 @@ impl<T> TableModelEntry<T> {
 #[derive(Clone, Debug)]
 pub struct SharedTableModel<T> {
     entries: Arc<RwLock<Vec<TableModelEntry<T>>>>,
+    generation: usize,
+    id: usize,
 }
+
+static ID: AtomicUsize = AtomicUsize::new(0);
 
 impl<T> From<Vec<T>> for SharedTableModel<T> {
     fn from(initial_entries: Vec<T>) -> Self {
@@ -59,13 +66,22 @@ impl<T> From<Vec<T>> for SharedTableModel<T> {
             index += 1;
         }
 
+        let id = ID.fetch_add(1, Ordering::SeqCst);
+        log::info!("ID: {}", id);
+
         Self {
             entries: Arc::new(RwLock::new(entries)),
+            generation: 0,
+            id,
         }
     }
 }
 
 impl<T> SharedTableModel<T> {
+    pub fn new() -> Self {
+        vec![].into()
+    }
+
     fn new_entry(entry: T, index: usize) -> TableModelEntry<T> {
         TableModelEntry {
             expanded: false,
@@ -76,15 +92,18 @@ impl<T> SharedTableModel<T> {
 
     pub fn push(&mut self, entry: T) {
         let mut entries = self.entries.write().unwrap();
+        self.generation += 1;
         let index = entries.len();
         entries.push(Self::new_entry(entry, index))
     }
 
     pub fn insert(&mut self, index: usize, entry: T) {
         let mut entries = self.entries.write().unwrap();
+        self.generation += 1;
+
         entries.insert(index, Self::new_entry(entry, index));
 
-        // now we need to re-index everything after index
+        // now we need to re-index everything after insert
 
         for entry in &mut entries[index + 1..] {
             entry.index += 1;
@@ -93,11 +112,14 @@ impl<T> SharedTableModel<T> {
 
     pub fn pop(&mut self) -> Option<TableModelEntry<T>> {
         let mut entries = self.entries.write().unwrap();
+        self.generation += 1;
         entries.pop()
     }
 
     pub fn clear(&mut self) {
-        self.entries.write().unwrap().clear();
+        let entries = self.entries.write();
+        self.generation += 1;
+        entries.unwrap().clear();
     }
 }
 
@@ -107,22 +129,16 @@ impl<T> Default for SharedTableModel<T> {
     }
 }
 
+/// Shared models are equal by their instance id and generation. NOT by their content.
+///
+/// This is required, because components need to refresh when their view on the model has changed,
+/// as the content only exists once in memory.
 impl<T> PartialEq for SharedTableModel<T>
 where
     T: Clone + PartialEq,
 {
     fn eq(&self, other: &Self) -> bool {
-        let others: Vec<_> = {
-            other
-                .entries
-                .read()
-                .map(|other| other.clone())
-                .unwrap_or(vec![])
-        };
-        self.entries
-            .read()
-            .map(|entries| entries.deref().eq(&others))
-            .unwrap_or(false)
+        self.generation == other.generation && self.id == other.id
     }
 }
 
@@ -173,5 +189,34 @@ where
             })
             .unwrap_or_default();
         result
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::SharedTableModel;
+
+    #[test]
+    fn test() {
+        // create two linked models
+        let mut m1 = SharedTableModel::<String>::new();
+        let m2 = m1.clone();
+
+        // push data
+        m1.push("Foo".into());
+
+        // the models must not be equal, as one of them was modified
+        assert_ne!(m1, m2);
+
+        // when we clone it again, they must be equal
+        let m3 = m1.clone();
+        assert_eq!(m1, m3);
+    }
+
+    #[test]
+    fn test_different_models() {
+        let m1 = SharedTableModel::<String>::new();
+        let m2 = SharedTableModel::<String>::new();
+        assert_ne!(m1, m2);
     }
 }
