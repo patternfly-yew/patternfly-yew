@@ -60,6 +60,8 @@ pub enum Msg {
     Failed(&'static str),
     Reset,
     ToggleExpand,
+    /// Sync the content from the
+    Sync,
 }
 
 const DEFAULT_MESSAGE: &'static str = "Copy to clipboard";
@@ -70,7 +72,8 @@ pub struct Clipboard {
     message: &'static str,
     task: Option<Timeout>,
     expanded: bool,
-    value: String,
+    // the value, when overridden by the user
+    value: Option<String>,
     text_ref: NodeRef,
     details_ref: NodeRef,
 }
@@ -85,13 +88,11 @@ impl Component for Clipboard {
             _ => false,
         };
 
-        let value = ctx.props().value.clone();
-
         Self {
             message: DEFAULT_MESSAGE,
             task: None,
             expanded,
-            value,
+            value: None,
             text_ref: NodeRef::default(),
             details_ref: NodeRef::default(),
         }
@@ -100,7 +101,6 @@ impl Component for Clipboard {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Copy => {
-                self.sync_value(ctx);
                 self.do_copy(ctx);
             }
             Msg::Copied => {
@@ -114,8 +114,11 @@ impl Component for Clipboard {
                 self.task.take();
             }
             Msg::ToggleExpand => {
-                self.sync_value(ctx);
                 self.expanded = !self.expanded;
+            }
+            Msg::Sync => {
+                self.sync_from_edit(ctx);
+                return false;
             }
         }
         true
@@ -131,16 +134,18 @@ impl Component for Clipboard {
             classes.push("pf-m-inline");
         }
 
-        return html! {
+        let value = self.value(ctx);
+
+        html! {
             <div class={classes}>
                 { match ctx.props().variant {
                     ClipboardVariant::Inline => {
                         html!{
                             <>
                             if ctx.props().code {
-                                <code name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text pf-m-code">{&self.value}</code>
+                                <code name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text pf-m-code">{value}</code>
                             } else {
-                                <span name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text">{&self.value}</span>
+                                <span name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-c-clipboard-copy__text">{value}</span>
                             }
                             <span class="pf-c-clipboard-copy__actions">
                                 <span class="pf-c-clipboard-copy__actions-item">
@@ -160,9 +165,10 @@ impl Component for Clipboard {
                                 <TextInput
                                     ref={self.text_ref.clone()}
                                     readonly={ctx.props().readonly | self.expanded}
-                                    value={self.value.clone()}
+                                    value={value}
                                     name={ctx.props().name.clone()}
                                     id={ctx.props().id.clone()}
+                                    oninput={ctx.link().callback(|_|Msg::Sync)}
                                 />
                                 <Tooltip text={self.message}>
                                     <Button aria_label="Copy to clipboard" variant={Variant::Control} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
@@ -174,11 +180,17 @@ impl Component for Clipboard {
                     }
                 }}
             </div>
-        };
+        }
     }
 }
 
 impl Clipboard {
+    fn value(&self, ctx: &Context<Self>) -> String {
+        self.value
+            .clone()
+            .unwrap_or_else(|| ctx.props().value.clone())
+    }
+
     fn trigger_message(&mut self, ctx: &Context<Self>, msg: &'static str) {
         self.message = msg;
         self.task = Some({
@@ -190,7 +202,7 @@ impl Clipboard {
     }
 
     fn do_copy(&self, ctx: &Context<Self>) {
-        let s = self.value.clone();
+        let s = self.value(&ctx);
 
         let ok: Callback<()> = ctx.link().callback(|_| Msg::Copied);
         let err: Callback<&'static str> = ctx.link().callback(|s| Msg::Failed(s));
@@ -227,40 +239,59 @@ impl Clipboard {
             return Default::default();
         }
 
-        return html! {
+        let value = self.value(ctx);
+
+        html! {
             <div
                 ref={self.details_ref.clone()}
                 class="pf-c-clipboard-copy__expandable-content"
-                contenteditable={(!ctx.props().readonly).to_string()}>
+                contenteditable={(!ctx.props().readonly).to_string()}
+                oninput={ctx.link().callback(|_|Msg::Sync)}
+            >
 
-                { if ctx.props().code {
-                    html!{ <pre>{&self.value}</pre> }
+                if ctx.props().code {
+                    <pre>{ value }</pre>
                 } else {
-                    html!{ &self.value}
-                } }
+                    { value }
+                }
 
             </div>
-        };
+        }
     }
 
     /// Sync the value between internal, text field or details.
-    fn sync_value(&mut self, ctx: &Context<Self>) {
+    fn sync_from_edit(&mut self, ctx: &Context<Self>) {
         if ctx.props().readonly || ctx.props().variant.is_inline() {
             return;
         }
 
-        let value = if !self.expanded {
-            let ele: Option<HtmlInputElement> = self.text_ref.cast::<HtmlInputElement>();
-            ele.map(|ele| ele.value()).unwrap_or_else(|| "".into())
-        } else {
+        let value = if self.expanded {
+            // from div to input
             let ele: Option<Element> = self.details_ref.cast::<Element>();
             ele.and_then(|ele| ele.text_content())
                 .unwrap_or_else(|| "".into())
+        } else {
+            // from input to div
+            let ele: Option<HtmlInputElement> = self.text_ref.cast::<HtmlInputElement>();
+            ele.map(|ele| ele.value()).unwrap_or_else(|| "".into())
         };
 
-        // log::info!("New value: {}", value);
+        log::info!("New value: {}", value);
 
-        self.value = value;
+        // sync back
+        if self.expanded {
+            if let Some(ele) = self.text_ref.cast::<HtmlInputElement>() {
+                ele.set_value(&value);
+            }
+        } else {
+            if let Some(ele) = self.details_ref.cast::<Element>() {
+                ele.set_text_content(Some(&value));
+            }
+        }
+
+        // sync to internal state
+
+        self.value = Some(value);
     }
 }
 

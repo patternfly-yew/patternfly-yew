@@ -157,7 +157,7 @@ pub struct TextInputProps {
 }
 
 pub struct TextInput {
-    value: String,
+    value: Option<String>,
     input_ref: NodeRef,
 }
 
@@ -170,10 +170,9 @@ impl Component for TextInput {
     type Message = TextInputMsg;
     type Properties = TextInputProps;
 
-    fn create(ctx: &Context<Self>) -> Self {
-        let value = ctx.props().value.clone();
+    fn create(_: &Context<Self>) -> Self {
         Self {
-            value,
+            value: None,
             input_ref: Default::default(),
         }
     }
@@ -181,13 +180,13 @@ impl Component for TextInput {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             TextInputMsg::Changed(data) => {
-                self.value = data.clone();
+                self.value = Some(data.clone());
                 ctx.props().onchange.emit(data);
             }
             TextInputMsg::Input(data) => {
                 ctx.props().oninput.emit(data);
                 if let Some(value) = self.extract_value() {
-                    self.value = value.clone();
+                    self.value = Some(value.clone());
                     ctx.props().onchange.emit(value);
                 }
                 // only re-render if we have a validator
@@ -199,7 +198,7 @@ impl Component for TextInput {
 
     fn changed(&mut self, ctx: &Context<Self>) -> bool {
         if ctx.props().readonly {
-            self.value = ctx.props().value.clone();
+            self.value = None;
         }
         true
     }
@@ -227,6 +226,8 @@ impl Component for TextInput {
             .link()
             .callback(|evt: InputEvent| TextInputMsg::Input(evt.data().unwrap_or_default()));
 
+        let value = self.value(ctx);
+
         html! {
             <input
                 ref={self.input_ref.clone()}
@@ -238,7 +239,7 @@ impl Component for TextInput {
                 disabled={ctx.props().disabled}
                 readonly={ctx.props().readonly}
                 aria-invalid={aria_invalid.to_string()}
-                value={self.value.clone()}
+                value={value}
                 placeholder={ctx.props().placeholder.clone()}
                 onchange={onchange}
                 oninput={oninput}
@@ -255,13 +256,19 @@ impl TextInput {
             .map(|input| input.value())
     }
 
+    fn value(&self, ctx: &Context<Self>) -> String {
+        self.value
+            .clone()
+            .unwrap_or_else(|| ctx.props().value.clone())
+    }
+
     /// Get the effective input state
     ///
     /// This may be the result of the validator, or if none was set, the provided input state
     /// from the properties.
     fn input_state(&self, ctx: &Context<Self>) -> InputState {
         match &ctx.props().validator {
-            Validator::Custom(validator) => validator(&self.value),
+            Validator::Custom(validator) => validator(&self.value(ctx)),
             _ => ctx.props().state,
         }
     }
