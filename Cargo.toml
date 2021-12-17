@@ -18,7 +18,7 @@ serde = "1"
 serde_json = "1"
 
 yew = "0.19"
-yew-router = { version = "0.15", optional = true }
+yew-router = { version = "0.16", optional = true, package = "yew-router-nested" }
 yew-agent = "0.1"
 js-sys = "0.3"
 web-sys = { version = "0.3", features = ["HtmlCollection", "NodeList", "DomTokenList"] }
@@ -39,4 +39,4 @@ default = ["router"]
 router = ["yew-router"]
 
 [patch.crates-io]
-yew-router = { version = "0.15", path = "../yew-router/yew-router", optional = true }
+#yew-router-nested= { version = "0.16", path = "../yew-router/yew-router-nested", optional = true }
