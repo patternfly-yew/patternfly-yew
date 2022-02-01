@@ -96,9 +96,12 @@ impl Component for Modal {
                     >{ &ctx.props().title }</h1>
                 </header>
 
-                <div class="pf-c-modal-box__body">
-                    <p>{ &ctx.props().description }</p>
-                </div>
+
+                if !&ctx.props().description.is_empty() {
+                    <div class="pf-c-modal-box__body">
+                        <p>{ &ctx.props().description }</p>
+                    </div>
+                }
 
                 { for ctx.props().children.iter().map(|c|{
                    {html!{
