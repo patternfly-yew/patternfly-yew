@@ -34,14 +34,24 @@ pub fn title(props: &Props) -> Html {
 
     if let Some(size) = props.size {
         classes.push(size.as_class());
+    } else {
+        match props.level {
+            Level::H1 => classes.push(Size::XXLarge.as_class()),
+            Level::H2 => classes.push(Size::XLarge.as_class()),
+            Level::H3 => classes.push(Size::Large.as_class()),
+            Level::H4 => classes.push(Size::Medium.as_class()),
+            Level::H5 => classes.push(Size::Medium.as_class()),
+            Level::H6 => classes.push(Size::Medium.as_class()),
+        }
     }
 
-    match props.level {
-        Level::H1 => html! {<h1 class={classes}>{ for props.children.iter() }</h1>},
-        Level::H2 => html! {<h2 class={classes}>{ for props.children.iter() }</h2>},
-        Level::H3 => html! {<h3 class={classes}>{ for props.children.iter() }</h3>},
-        Level::H4 => html! {<h4 class={classes}>{ for props.children.iter() }</h4>},
-        Level::H5 => html! {<h5 class={classes}>{ for props.children.iter() }</h5>},
-        Level::H6 => html! {<h6 class={classes}>{ for props.children.iter() }</h6>},
-    }
+    let heading = match props.level {
+        Level::H1 => html! {<h1>{ for props.children.iter() }</h1>},
+        Level::H2 => html! {<h2>{ for props.children.iter() }</h2>},
+        Level::H3 => html! {<h3>{ for props.children.iter() }</h3>},
+        Level::H4 => html! {<h4>{ for props.children.iter() }</h4>},
+        Level::H5 => html! {<h5>{ for props.children.iter() }</h5>},
+        Level::H6 => html! {<h6>{ for props.children.iter() }</h6>},
+    };
+    html! { <div class={classes}>{heading}</div> }
 }
