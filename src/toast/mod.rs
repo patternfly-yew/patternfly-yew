@@ -48,9 +48,9 @@ use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, Handl
 ///     <>
 ///       <ToastViewer/>
 ///       <div>
-///         <button onclick=ctx.link().callback(|_|{
+///         <button onclick={ctx.link().callback(|_|{
 ///             Msg::Toast("Toast Title".into())
-///         })>
+///         })}>
 ///           { "Click me" }  
 ///         </button>
 ///       </div>
