@@ -451,8 +451,10 @@ pub struct ActionGroupProps {
 pub fn action_group(props: &ActionGroupProps) -> Html {
     html! {
         <div class="pf-c-form__group pf-m-action">
-            <div class="pf-c-form__actions">
-                { for props.children.iter() }
+            <div class="pf-c-form__group-control">
+                <div class="pf-c-form__actions">
+                    { for props.children.iter() }
+                </div>
             </div>
         </div>
     }
