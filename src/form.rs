@@ -1,17 +1,34 @@
-use crate::{Button, Validator};
+use crate::{Button, Validator, WithBreakpoints};
+use std::fmt::{Display, Formatter};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct FormHorizontal;
+
+impl Display for FormHorizontal {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str("pf-m-horizontal")
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
+    #[prop_or_default]
+    pub horizontal: WithBreakpoints<FormHorizontal>,
+
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(Form)]
 pub fn form(props: &Props) -> Html {
+    let mut classes = Classes::from("pf-c-form");
+
+    classes.extend(props.horizontal.clone());
+
     html! {
-        <form novalidate=true class="pf-c-form">
+        <form novalidate=true class={classes}>
             { for props.children.iter().map(|child|{
                     child
             }) }
