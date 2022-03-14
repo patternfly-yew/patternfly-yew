@@ -1,3 +1,7 @@
+mod select;
+
+pub use select::*;
+
 use crate::{Button, Validator, WithBreakpoints};
 use std::fmt::{Display, Formatter};
 use web_sys::HtmlInputElement;
