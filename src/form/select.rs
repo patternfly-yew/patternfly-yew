@@ -16,9 +16,6 @@ pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
     pub disabled: bool,
 
     #[prop_or_default]
-    pub multiple: bool,
-
-    #[prop_or_default]
     pub placeholder: String,
 
     #[prop_or_default]
@@ -63,8 +60,13 @@ where
     fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-form-control");
 
+        let multiple = !matches!(ctx.props().variant, SelectVariant::Single(_));
+
         html! (
-            <select class={classes}>
+            <select
+                class={classes}
+                multiple={multiple}
+                >
                 { for ctx.props().children.iter().map(|mut c|{
                     c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
                     c.set_variant(ctx.props().variant.clone());
