@@ -69,7 +69,6 @@ where
                 >
                 { for ctx.props().children.iter().map(|mut c|{
                     c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
-                    c.set_variant(ctx.props().variant.clone());
                     c
                 }) }
             </select>
@@ -172,20 +171,6 @@ where
             _ => {}
         }
     }
-
-    fn set_variant(&mut self, variant: SelectVariant<K>) {
-        match self.props {
-            FormSelectChild::Option(ref mut props) => {
-                let props = Rc::make_mut(props);
-                props.variant = variant;
-            }
-            FormSelectChild::Group(ref mut props) => {
-                let props = Rc::make_mut(props);
-                props.variant = variant;
-            }
-            _ => {}
-        }
-    }
 }
 
 impl<K, CHILD> From<VChild<CHILD>> for FormSelectChildVariant<K>
@@ -243,9 +228,6 @@ where
 
     #[prop_or_default]
     pub(crate) want_clicked: Callback<K>,
-
-    #[prop_or_default]
-    pub(crate) variant: SelectVariant<K>,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -290,20 +272,9 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-select__menu-item");
-
-        if ctx.props().selected {
-            classes.push("pf-m-selected");
-        }
-
-        if ctx.props().description.is_some() {
-            classes.push("pf-m-description");
-        }
-
-        return html! {
+        html! (
             <option
                 id={ctx.props().id.clone()}
-                class={classes}
                 selected={ctx.props().selected}
                 value={ctx.props().value.to_string()}
                 onclick={ctx.link().callback(|_|FormSelectOptionMsg::Clicked)}
@@ -314,7 +285,7 @@ where
                     html!{ &ctx.props().value }
                 }}
             </option>
-        };
+        )
     }
 }
 
@@ -373,7 +344,6 @@ where
                 <optgroup label={ctx.props().label.clone()}>
                     { for ctx.props().children.iter().map(|mut c|{
                         c.set_need_clicked(ctx.link().callback(|k|Self::Message::Clicked(k)));
-                        c.set_variant(ctx.props().variant.clone());
                         c
                     })}
                 </optgroup>
