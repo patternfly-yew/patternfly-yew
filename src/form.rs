@@ -18,6 +18,9 @@ pub struct Props {
     pub horizontal: WithBreakpoints<FormHorizontal>,
 
     #[prop_or_default]
+    pub limit_width: bool,
+
+    #[prop_or_default]
     pub children: Children,
 }
 
@@ -26,6 +29,10 @@ pub fn form(props: &Props) -> Html {
     let mut classes = Classes::from("pf-c-form");
 
     classes.extend(props.horizontal.clone());
+
+    if props.limit_width {
+        classes.push("pf-m-limit-width");
+    }
 
     html! {
         <form novalidate=true class={classes}>
