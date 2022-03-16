@@ -21,23 +21,22 @@ const CLICK_TYPE: &str = "mousedown";
 /// later using the function [`GlobalClose::node_ref`].
 pub struct GlobalClose {
     node_ref: NodeRef,
-    listener: JsValue,
+    listener: Closure<dyn Fn(MouseEvent)>,
 }
 
 impl GlobalClose {
     pub fn new(node_ref: NodeRef, callback: Callback<()>) -> Self {
         let cloned_ref = node_ref.clone();
-        let clicked = Closure::wrap(Box::new(move |e: MouseEvent| match cloned_ref.get() {
+        let listener = Closure::wrap(Box::new(move |e: MouseEvent| match cloned_ref.get() {
             Some(control_ref) => {
                 if !control_ref.contains(e.target().as_ref().and_then(|t| t.dyn_ref())) {
                     callback.emit(());
                 }
             }
             _ => {}
-        }) as Box<dyn FnMut(MouseEvent)>);
-        let listener = clicked.into_js_value();
+        }) as Box<dyn Fn(MouseEvent)>);
 
-        if let Some(cb) = listener.dyn_ref() {
+        if let Some(cb) = listener.as_ref().dyn_ref() {
             window()
                 .unwrap()
                 .add_event_listener_with_callback(CLICK_TYPE, cb)
@@ -54,7 +53,7 @@ impl GlobalClose {
 
 impl Drop for GlobalClose {
     fn drop(&mut self) {
-        if let Some(cb) = self.listener.dyn_ref() {
+        if let Some(cb) = self.listener.as_ref().dyn_ref() {
             window()
                 .unwrap()
                 .remove_event_listener_with_callback(CLICK_TYPE, cb)

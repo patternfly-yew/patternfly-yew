@@ -1,7 +1,6 @@
 use crate::Orientation;
 
 use wasm_bindgen::prelude::*;
-use yew::prelude::*;
 
 use serde_json::json;
 
@@ -86,19 +85,11 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
     })
 }
 
-pub(crate) fn create_default_opts(update: Callback<State>) -> Result<JsValue, JsValue> {
-    let apply = Closure::wrap(Box::new(move |this: &Instance| {
-        // web_sys::console::debug_2(&JsValue::from("apply: "), this);
-        let msg = from_popper(this).unwrap();
-        // log::info!("Msg: {:?}", msg);
-
-        update.emit(msg);
-    }) as Box<dyn FnMut(&Instance)>);
-
+pub(crate) fn create_default_opts(apply: &Closure<dyn Fn(&Instance)>) -> Result<JsValue, JsValue> {
     let m1 = js_sys::Object::new();
     js_sys::Reflect::set(&m1, &JsValue::from("name"), &JsValue::from("applyStyles"))?;
     js_sys::Reflect::set(&m1, &JsValue::from("phase"), &JsValue::from("write"))?;
-    js_sys::Reflect::set(&m1, &JsValue::from("fn"), &apply.into_js_value())?;
+    js_sys::Reflect::set(&m1, &JsValue::from("fn"), apply.as_ref())?;
 
     let m2 = JsValue::from_serde(&json!({
         "name":"offset",

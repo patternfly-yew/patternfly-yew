@@ -1,7 +1,9 @@
 use crate::integration::popperjs;
 
+use crate::integration::popperjs::{from_popper, Instance};
 use std::fmt::Debug;
 use std::marker::PhantomData;
+use wasm_bindgen::closure::Closure;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
 
@@ -32,6 +34,7 @@ where
     target: NodeRef,
     content: NodeRef,
     popper: Option<popperjs::Instance>,
+    _callback: Option<Closure<dyn Fn(&Instance)>>,
 
     state: Option<popperjs::State>,
 
@@ -57,6 +60,7 @@ where
             target: NodeRef::default(),
             content: NodeRef::default(),
             popper: None,
+            _callback: None,
             state: None,
             _marker: Default::default(),
         }
@@ -132,7 +136,15 @@ where
             .ok_or_else(|| JsValue::from("Missing content"))?;
 
         let update = ctx.link().callback(|state| Msg::State(state));
-        let opts = popperjs::create_default_opts(update)?;
+        let update = Closure::wrap(Box::new(move |this: &Instance| {
+            // web_sys::console::debug_2(&JsValue::from("apply: "), this);
+            let msg = from_popper(this).unwrap();
+            // log::info!("Msg: {:?}", msg);
+
+            update.emit(msg);
+        }) as Box<dyn Fn(&Instance)>);
+
+        let opts = popperjs::create_default_opts(&update)?;
 
         //web_sys::console::debug_1(&opts);
 
@@ -140,6 +152,7 @@ where
 
         // web_sys::console::debug_1(&popper);
         self.popper = Some(popper);
+        self._callback = Some(update);
 
         Ok(())
     }
