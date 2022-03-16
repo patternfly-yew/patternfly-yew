@@ -319,6 +319,29 @@ impl Default for ResizeOrientation {
     }
 }
 
+#[derive(Clone, PartialEq, Eq)]
+pub enum Wrap {
+    Hard,
+    Soft,
+    Off,
+}
+
+impl Default for Wrap {
+    fn default() -> Self {
+        Self::Soft
+    }
+}
+
+impl Display for Wrap {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Off => f.write_str("off"),
+            Self::Soft => f.write_str("soft"),
+            Self::Hard => f.write_str("hard"),
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextAreaProps {
     #[prop_or_default]
@@ -333,6 +356,19 @@ pub struct TextAreaProps {
     pub readonly: bool,
     #[prop_or_default]
     pub state: InputState,
+
+    #[prop_or_default]
+    pub placeholder: String,
+    #[prop_or_default]
+    pub spellcheck: Option<bool>,
+    #[prop_or_default]
+    pub wrap: Wrap,
+
+    #[prop_or_default]
+    pub rows: Option<usize>,
+    #[prop_or_default]
+    pub cols: Option<usize>,
+
     #[prop_or_default]
     pub resize: ResizeOrientation,
 
@@ -415,6 +451,14 @@ impl Component for TextArea {
                 readonly={ctx.props().readonly}
                 aria-invalid={aria_invalid.to_string()}
                 value={ctx.props().value.clone()}
+
+                cols={ctx.props().cols.as_ref().map(|v|v.to_string())}
+                rows={ctx.props().rows.as_ref().map(|v|v.to_string())}
+
+                wrap={ctx.props().wrap.to_string()}
+                spellcheck={ctx.props().spellcheck.map(|v|v.to_string())}
+                placeholder={ctx.props().placeholder.clone()}
+
                 onchange={onchange}
                 oninput={oninput}
                 />
