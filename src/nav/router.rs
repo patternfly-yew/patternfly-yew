@@ -11,7 +11,6 @@ use yew_router::prelude::*;
 
 // nav router item
 
-#[cfg(feature = "router")]
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavRouterItemProps<R>
 where
@@ -28,7 +27,6 @@ where
 }
 
 /// A navigation item, using the Router.
-#[cfg(feature = "router")]
 pub struct NavRouterItem<R>
 where
     R: Switch + Debug,
@@ -38,7 +36,6 @@ where
     _marker: PhantomData<R>,
 }
 
-#[cfg(feature = "router")]
 #[derive(Clone)]
 pub enum NavRouterMsg<R>
 where
@@ -47,7 +44,6 @@ where
     RouteChange(Option<R>),
 }
 
-#[cfg(feature = "router")]
 impl<R> Component for NavRouterItem<R>
 where
     R: Switch + PartialEq + Clone + Debug + 'static,
@@ -194,6 +190,8 @@ where
     pub children: ChildrenRenderer<NavRouterExpandableVariant<R>>,
     #[prop_or_default]
     pub title: String,
+    #[prop_or_default]
+    pub expanded: bool,
 }
 
 /// A navigation item, using the Router.
@@ -237,10 +235,12 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
+        let expanded = self.active || ctx.props().expanded;
+
         return html! {
             <NavExpandable
                 title={ctx.props().title.clone()}
-                expanded={self.active}
+                expanded={expanded}
                 >
                 { for ctx.props().children.iter().enumerate().map(|(i, mut c)|{
                     let on_active = ctx
