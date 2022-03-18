@@ -74,7 +74,7 @@ impl Component for Pagination {
         // The pagination menu : "1-20 of nnn"
         let mut menu_classes = Classes::from("pf-c-options-menu");
         if self.expanded {
-            menu_classes.push("pf-c-options-menu pf-m-expanded");
+            menu_classes.push("pf-m-expanded");
         }
 
         // The default rust div operator does floor(), we need ceil, so we cast to float before doing the operation
@@ -89,7 +89,8 @@ impl Component for Pagination {
         };
 
         let total_entries = ctx.props().total_entries.map(|m| format!("{}", m)).unwrap_or(String::from("many"));
-        let showing = format!("{} - {}", ctx.props().offset,  ctx.props().offset + ctx.props().selected_choice);
+        // +1 because humans don't count from 0 :)
+        let showing = format!("{} - {}", ctx.props().offset +1,  ctx.props().offset + ctx.props().selected_choice);
 
         return html! {
 
@@ -100,7 +101,7 @@ impl Component for Pagination {
             <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
             <b>{ total_entries.clone() }</b>
         </div>
-        <div class="pf-c-options-menu">
+        <div class={ menu_classes }>
             <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                 <span class="pf-c-options-menu__toggle-text">
                      <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
@@ -108,7 +109,7 @@ impl Component for Pagination {
                 </span>
             <Button
                 class="pf-c-options-menu__toggle-button"
-                id="pagination-options-menu-top-example-toggle"
+                id="pagination-options-menu-top-toggle"
                 //aria-haspopup="listbox"
                 aria_label="Items per page"
                 onclick={ctx.link().callback(|_|Msg::ToggleMenu)}
@@ -118,31 +119,27 @@ impl Component for Pagination {
                     </span>
             </Button>
     </div>
-    <ul
-      class="pf-c-options-menu__menu"
-      aria-labelledby= { if self.expanded {
-                "pagination-options-menu-top-example-toggle"
-                    } else {
-                        "pagination-options-menu-top-expanded-example-toggle"
-                    }
-            }
-      //hidden
-    >
+    {{ if self.expanded {
+        html! {
+        <ul class="pf-c-options-menu__menu" >
             //TODO : bubble up the choice to the parent component when clicked
-    { for ctx.props().entries_per_page_choices.iter().map(|i| html!{
-              <li>
-                <Button class="pf-c-options-menu__menu-item">
-                    {i} {" per page"}
-                </Button>
-              </li>
-    })}
-    </ul>
+            { for ctx.props().entries_per_page_choices.iter().map(|i| html!{
+                  <li>
+                    <Button class="pf-c-options-menu__menu-item">
+                        {i} {" per page"}
+                    </Button>
+                  </li>
+            })}
+        </ul>
+        }
+    } else { html! {} }
+    }}
   </div>
 
 
         // the navigation buttons
 
-        <Nav>
+        <nav class="pf-c-pagination__nav" aria-label="Pagination">
             <div class="pf-c-pagination__nav-control pf-m-first">
               <Button
                 variant={Variant::InlineLink}
@@ -201,7 +198,7 @@ impl Component for Pagination {
                 <i class="fas fa-angle-double-right" aria-hidden="true"></i>
               </Button>
             </div>
-        </Nav>
+        </nav>
     </div>
         };
     }
