@@ -1,4 +1,4 @@
-#![recursion_limit = "512"]
+#![recursion_limit = "1024"]
 mod about;
 mod alert;
 mod app_launcher;
@@ -31,6 +31,7 @@ mod nav;
 mod page;
 mod pagesection;
 mod pagesidebar;
+mod pagination;
 mod popover;
 mod popper;
 mod select;
@@ -79,6 +80,7 @@ pub use nav::*;
 pub use page::*;
 pub use pagesection::*;
 pub use pagesidebar::*;
+pub use pagination::*;
 pub use popover::*;
 pub use popper::*;
 pub use select::*;
