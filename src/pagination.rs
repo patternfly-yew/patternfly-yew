@@ -1,9 +1,5 @@
-use crate::{Avatar, Button, Divider, GlobalClose, Icon, Nav, Position, Variant};
-use yew::{
-    html::ChildrenRenderer,
-    prelude::*,
-    virtual_dom::{VChild, VComp},
-};
+use crate::{Button, GlobalClose, Variant};
+use yew::prelude::*;
 
 
 #[derive(Clone, PartialEq, Properties)]
@@ -18,25 +14,31 @@ pub struct Props {
     pub selected_choice: i32,
 
 
-    // callbacks for the buttons
+    // callback for the buttons
     #[prop_or_default]
-    pub on_first: Callback<()>,
+    pub navigation_callback: Callback<Navigation>,
+
     #[prop_or_default]
-    pub on_previous: Callback<()>,
-    #[prop_or_default]
-    pub on_next: Callback<()>,
-    #[prop_or_default]
-    pub on_last: Callback<()>,
+    pub limit_callback: Callback<i32>,
+}
+
+pub enum Navigation {
+    First,
+    Previous,
+    Next,
+    Last
 }
 
 pub struct Pagination {
     expanded: bool,
+    global_close: GlobalClose,
 }
 
 #[derive(Clone, Debug)]
 pub enum Msg {
     ToggleMenu,
     CloseMenu,
+    SetLimit(i32),
 
     First,
     Previous,
@@ -48,9 +50,10 @@ impl Component for Pagination {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
             expanded: false,
+            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::CloseMenu)),
         }
     }
 
@@ -58,18 +61,18 @@ impl Component for Pagination {
         match msg {
             Msg::ToggleMenu => {
                 self.expanded = !self.expanded;
-            }
+            },
+            Msg::SetLimit(limit) => ctx.props().limit_callback.emit(limit),
             Msg::CloseMenu => self.expanded = false,
-            Msg::First => ctx.props().on_first.emit(()),
-            Msg::Previous => ctx.props().on_previous.emit(()),
-            Msg::Next => ctx.props().on_next.emit(()),
-            Msg::Last => ctx.props().on_last.emit(()),
+            Msg::First => ctx.props().navigation_callback.emit(Navigation::First),
+            Msg::Previous => ctx.props().navigation_callback.emit(Navigation::Previous),
+            Msg::Next => ctx.props().navigation_callback.emit(Navigation::Next),
+            Msg::Last => ctx.props().navigation_callback.emit(Navigation::Last),
         }
         true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-pagination");
 
         // The pagination menu : "1-20 of nnn"
         let mut menu_classes = Classes::from("pf-c-options-menu");
@@ -91,6 +94,9 @@ impl Component for Pagination {
         let total_entries = ctx.props().total_entries.map(|m| format!("{}", m)).unwrap_or(String::from("many"));
         // +1 because humans don't count from 0 :)
         let showing = format!("{} - {}", ctx.props().offset +1,  ctx.props().offset + ctx.props().selected_choice);
+
+        let limit_choices = ctx.props().entries_per_page_choices.clone();
+        let link = ctx.link().clone();
 
         return html! {
 
@@ -122,14 +128,15 @@ impl Component for Pagination {
     {{ if self.expanded {
         html! {
         <ul class="pf-c-options-menu__menu" >
-            //TODO : bubble up the choice to the parent component when clicked
-            { for ctx.props().entries_per_page_choices.iter().map(|i| html!{
+            { for limit_choices.iter().map(|limit|  { html!{
                   <li>
-                    <Button class="pf-c-options-menu__menu-item">
-                        {i} {" per page"}
+                    <Button
+                        class="pf-c-options-menu__menu-item"
+                        onclick={link.callback(|_|Msg::SetLimit(5))}>
+                            {limit} {" per page"}
                     </Button>
                   </li>
-            })}
+            }})}
         </ul>
         }
     } else { html! {} }
