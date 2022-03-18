@@ -62,7 +62,10 @@ impl Component for Pagination {
             Msg::ToggleMenu => {
                 self.expanded = !self.expanded;
             },
-            Msg::SetLimit(limit) => ctx.props().limit_callback.emit(limit),
+            Msg::SetLimit(limit) => {
+                ctx.props().limit_callback.emit(limit);
+                ctx.link().send_message(Msg::CloseMenu)
+            },
             Msg::CloseMenu => self.expanded = false,
             Msg::First => ctx.props().navigation_callback.emit(Navigation::First),
             Msg::Previous => ctx.props().navigation_callback.emit(Navigation::Previous),
@@ -133,7 +136,7 @@ impl Component for Pagination {
                   <li>
                     <Button
                         class="pf-c-options-menu__menu-item"
-                        onclick={link.callback(move |_|Msg::SetLimit(limit))}>
+                                onclick={link.callback(move |_|Msg::SetLimit(limit))}>
                             {limit} {" per page"}
                     </Button>
                   </li>
