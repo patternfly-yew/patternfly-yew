@@ -77,8 +77,6 @@ impl Component for Pagination {
             menu_classes.push("pf-c-options-menu pf-m-expanded");
         }
 
-        //let onclick = self.link.callback(|_| Msg::ToggleMenu);
-
         // The default rust div operator does floor(), we need ceil, so we cast to float before doing the operation
         let max_page = ctx.props().total_entries.map(|m| (m as f32 / ctx.props().selected_choice as f32).ceil() as i32);
         let current_page = (ctx.props().offset as f32 / ctx.props().selected_choice as f32).ceil() as i32;
@@ -99,13 +97,13 @@ impl Component for Pagination {
 
         // the selector of how many entries per page to display
         <div class="pf-c-pagination__total-items">
-            <b>{ showing.clone() }</b>
+            <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
             <b>{ total_entries.clone() }</b>
         </div>
         <div class="pf-c-options-menu">
             <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                 <span class="pf-c-options-menu__toggle-text">
-                     <b>{ showing }</b>
+                     <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
                     <b>{ total_entries }</b>
                 </span>
             <Button
@@ -142,12 +140,12 @@ impl Component for Pagination {
   </div>
 
 
-        // the navvigation buttons
+        // the navigation buttons
 
         <Nav>
             <div class="pf-c-pagination__nav-control pf-m-first">
               <Button
-                variant={Variant::Plain}
+                variant={Variant::InlineLink}
                 onclick={ctx.link().callback(|_|Msg::First)}
                 disabled={ ctx.props().offset == 0 }
                 aria_label="Go to first page"
@@ -186,9 +184,9 @@ impl Component for Pagination {
             <div class="pf-c-pagination__nav-control pf-m-next">
               <Button
                 aria_label="Go to next page"
-                variant={Variant::Plain}
+                variant={Variant::InlineLink}
                 onclick={ctx.link().callback(|_|Msg::Next)}
-                disabled={max_page.map_or_else(|| true ,|m| current_page >= m)}
+                disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
               >
                 <i class="fas fa-angle-right" aria-hidden="true"></i>
               </Button>
@@ -196,7 +194,7 @@ impl Component for Pagination {
             <div class="pf-c-pagination__nav-control pf-m-last">
               <Button
                 aria_label="Go to last page"
-                variant={Variant::Plain}
+                variant={Variant::InlineLink}
                 onclick={ctx.link().callback(|_|Msg::Last)}
                 disabled={is_last_page}
               >
