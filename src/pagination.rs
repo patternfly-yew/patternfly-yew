@@ -100,7 +100,7 @@ impl Component for Pagination {
 
         return html! {
 
-    <div class="pf-c-pagination">
+    <div class="pf-c-pagination" ref={self.global_close.clone()} >
 
         // the selector of how many entries per page to display
         <div class="pf-c-pagination__total-items">
@@ -128,11 +128,12 @@ impl Component for Pagination {
     {{ if self.expanded {
         html! {
         <ul class="pf-c-options-menu__menu" >
-            { for limit_choices.iter().map(|limit|  { html!{
+            { for limit_choices.into_iter().map(|limit|  { html!{
+                //todo add a check icon for the selected choice
                   <li>
                     <Button
                         class="pf-c-options-menu__menu-item"
-                        onclick={link.callback(|_|Msg::SetLimit(5))}>
+                        onclick={link.callback(move |_|Msg::SetLimit(limit))}>
                             {limit} {" per page"}
                     </Button>
                   </li>
