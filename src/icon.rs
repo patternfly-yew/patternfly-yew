@@ -70,6 +70,7 @@ icons! {
 
     InfoCircle => fas("fa-info-circle"),
 
+    Minus => fas("fa-minus"),
     MinusCircleIcon => fas("fa-minus-circle"),
 
     Pause => fas("fa-pause"),
