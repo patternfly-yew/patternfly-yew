@@ -1,6 +1,7 @@
 use crate::integration::popperjs;
 
 use crate::integration::popperjs::{from_popper, Instance};
+use crate::GlobalClose;
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use wasm_bindgen::closure::Closure;
@@ -31,11 +32,12 @@ where
     C: PopperContent + 'static,
     C::Properties: PartialEq + Debug,
 {
+    global_close: GlobalClose,
     target: NodeRef,
-    content: NodeRef,
     popper: Option<popperjs::Instance>,
     _callback: Option<Closure<dyn Fn(&Instance)>>,
 
+    active: bool,
     state: Option<popperjs::State>,
 
     _marker: PhantomData<C>,
@@ -55,14 +57,15 @@ where
     type Message = Msg;
     type Properties = Props<C::Properties>;
 
-    fn create(_: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
             target: NodeRef::default(),
-            content: NodeRef::default(),
             popper: None,
             _callback: None,
+            active: false,
             state: None,
             _marker: Default::default(),
+            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
         }
     }
 
@@ -70,27 +73,35 @@ where
         match msg {
             Msg::State(state) => {
                 let state = Some(state);
-                let mut changed = false;
                 if self.state != state {
                     self.state = state;
-                    changed = true;
+                    true
+                } else {
+                    false
                 }
-                changed
             }
             Msg::Close => {
-                ctx.props().onclose.emit(());
+                if self.active {
+                    ctx.props().onclose.emit(());
+                }
                 false
             }
         }
     }
 
     fn changed(&mut self, ctx: &Context<Self>) -> bool {
-        if ctx.props().active {
-            self.show(ctx).ok();
+        let active = ctx.props().active;
+        if self.active != active {
+            self.active = active;
+            if self.active {
+                self.show(ctx).ok();
+            } else {
+                self.hide();
+            }
+            true
         } else {
-            self.hide();
+            false
         }
-        true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
@@ -101,18 +112,20 @@ where
         let content = <C as PopperContent>::view(
             &ctx.props().content,
             onclose,
-            self.content.clone(),
+            self.global_close.clone(),
             self.state.clone(),
         );
 
-        return html! {
+        let content = create_portal(content, gloo_utils::body().into());
+
+        html! (
             <>
                 <span ref={self.target.clone()}>
                     { for ctx.props().children.iter() }
                 </span>
                 { content }
             </>
-        };
+        )
     }
 }
 
@@ -131,7 +144,7 @@ where
             .get()
             .ok_or_else(|| JsValue::from("Missing target"))?;
         let content = self
-            .content
+            .global_close
             .get()
             .ok_or_else(|| JsValue::from("Missing content"))?;
 

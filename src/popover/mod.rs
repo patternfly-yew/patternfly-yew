@@ -14,12 +14,12 @@ pub struct PopoverProps {
 
     /// The header content of the popover.
     #[prop_or_default]
-    pub header: Html,
+    pub header: Option<Html>,
     /// The content which will be show in the popover.
     pub children: Children,
     /// The footer content of the popover.
     #[prop_or_default]
-    pub footer: Html,
+    pub footer: Option<Html>,
 
     /// Binds the onclick handler of the target to toggle visibility.
     #[prop_or_default]
@@ -33,7 +33,7 @@ pub struct Popover {
 
 #[derive(Clone, Debug)]
 pub enum PopoverMsg {
-    Toggle,
+    Open,
     Close,
 }
 
@@ -50,9 +50,13 @@ impl Component for Popover {
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            PopoverMsg::Toggle => {
-                self.active = !self.active;
-                true
+            PopoverMsg::Open => {
+                if !self.active {
+                    self.active = true;
+                    true
+                } else {
+                    false
+                }
             }
             PopoverMsg::Close => {
                 if self.active {
@@ -68,25 +72,30 @@ impl Component for Popover {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let (onclick, onclose) = match ctx.props().toggle_by_onclick {
             true => (
-                ctx.link().callback(|_| PopoverMsg::Toggle),
+                ctx.link().callback(|_| PopoverMsg::Open),
                 ctx.link().callback(|_| PopoverMsg::Close),
             ),
             false => Default::default(),
         };
 
-        return html! {
+        let style = match self.active {
+            true => "pointer-events: none;",
+            false => "",
+        };
+
+        html! (
             <>
                 <Popper<Popover>
                     active={self.active}
                     content={ctx.props().clone()}
                     onclose={onclose}
                     >
-                    <span onclick={onclick} ref={self.node.clone()}>
+                    <span style={style} onclick={onclick} ref={self.node.clone()}>
                         { ctx.props().target.clone() }
                     </span>
                 </Popper<Popover>>
             </>
-        };
+        )
     }
 }
 
@@ -108,7 +117,7 @@ impl PopperContent for Popover {
             .map(|s| s.orientation)
             .unwrap_or(Orientation::Bottom);
 
-        html! {
+        html! (
             <PopoverPopup
                 ref={r#ref}
                 styles={styles}
@@ -118,7 +127,7 @@ impl PopperContent for Popover {
                 children={props.children.clone()}
                 onclose={onclose}
             />
-        }
+        )
     }
 }
 
@@ -129,7 +138,7 @@ pub struct PopoverPopupProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub header: Html,
+    pub header: Option<Html>,
     #[prop_or_default]
     pub footer: Option<Html>,
     pub orientation: Orientation,
@@ -185,7 +194,6 @@ impl Component for PopoverPopup {
             <div style={style} class={classes} role="dialog" aria-model="true">
                 <div class="pf-c-popover__arrow"></div>
                 <div class="pf-c-popover__content">
-                    { ctx.props().header.clone() }
 
                     <Button
                         variant={Variant::Plain}
@@ -193,6 +201,12 @@ impl Component for PopoverPopup {
                         aria_label="Close"
                         onclick={onclose}
                     />
+
+                    if let Some(header) = &ctx.props().header {
+                        <h1 class="pf-c-title pf-m-md">
+                            { header.clone() }
+                        </h1>
+                    }
 
                     <div class="pf-c-popover__body">
                         { for ctx.props().children.iter() }
