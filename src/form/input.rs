@@ -1,4 +1,6 @@
-use crate::{InputState, ValidatingComponentProperties, ValidationContext, Validator};
+use crate::{
+    InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext, Validator,
+};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -46,14 +48,18 @@ pub struct TextInputProps {
     pub oninput: Callback<String>,
     // Called when validation should occur
     #[prop_or_default]
-    pub onvalidate: Callback<ValidationContext>,
+    pub onvalidate: Callback<ValidationContext<String>>,
 
     #[prop_or_default]
-    pub validator: Validator<InputState>,
+    pub validator: Validator<InputState, String>,
 }
 
-impl ValidatingComponentProperties for TextInputProps {
-    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext>) {
+impl ValidatingComponent for TextInput {
+    type Value = String;
+}
+
+impl ValidatingComponentProperties<String> for TextInputProps {
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
         self.onvalidate = onvalidate;
     }
 

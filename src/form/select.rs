@@ -1,4 +1,4 @@
-use crate::{Divider, SelectVariant};
+use crate::{Divider, SelectVariant, ValidationContext};
 use std::fmt::{Debug, Display};
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -23,6 +23,9 @@ pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
 
     #[prop_or_default]
     pub children: ChildrenRenderer<FormSelectChildVariant<K>>,
+
+    #[prop_or_default]
+    pub onvalidate: Callback<ValidationContext<Vec<K>>>,
 }
 
 pub struct FormSelect<K>
@@ -85,7 +88,8 @@ where
         match &ctx.props().variant {
             SelectVariant::Single(on) => {
                 self.selection = vec![key.clone()];
-                on.emit(key);
+                on.emit(key.clone());
+                ctx.props().onvalidate.emit(self.selection.clone().into());
             }
             SelectVariant::Multiple(on) | SelectVariant::Checkbox(on) => {
                 match self.selection.iter().position(|x| *x == key) {
@@ -100,6 +104,7 @@ where
                 }
 
                 on.emit(self.selection.clone());
+                ctx.props().onvalidate.emit(self.selection.clone().into());
             }
         }
     }

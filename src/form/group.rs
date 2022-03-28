@@ -160,7 +160,7 @@ impl<'a> From<FormGroupHelpText<'a>> for VNode {
 #[derive(Clone, Properties)]
 pub struct FormGroupValidatedProps<C>
 where
-    C: Component,
+    C: Component + ValidatingComponent,
 {
     #[prop_or_default]
     pub children: ChildrenWithProps<C>,
@@ -168,16 +168,19 @@ where
     pub label: String,
     #[prop_or_default]
     pub required: bool,
-    pub validator: Validator<ValidationResult>,
+    pub validator: Validator<ValidationResult, C::Value>,
 }
 
-pub enum FormGroupValidatedMsg {
-    Validate(ValidationContext),
+pub enum FormGroupValidatedMsg<C>
+where
+    C: ValidatingComponent,
+{
+    Validate(ValidationContext<C::Value>),
 }
 
 impl<C> PartialEq for FormGroupValidatedProps<C>
 where
-    C: Component,
+    C: Component + ValidatingComponent,
 {
     fn eq(&self, other: &Self) -> bool {
         self.required == other.required
@@ -195,17 +198,21 @@ where
     state: Option<ValidationResult>,
 }
 
-pub trait ValidatingComponentProperties {
-    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext>);
+pub trait ValidatingComponent {
+    type Value;
+}
+
+pub trait ValidatingComponentProperties<T> {
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<T>>);
     fn set_input_state(&mut self, state: InputState);
 }
 
 impl<C> Component for FormGroupValidated<C>
 where
-    C: Component,
-    C::Properties: Clone + ValidatingComponentProperties,
+    C: Component + ValidatingComponent,
+    <C as Component>::Properties: ValidatingComponentProperties<C::Value> + Clone,
 {
-    type Message = FormGroupValidatedMsg;
+    type Message = FormGroupValidatedMsg<C>;
     type Properties = FormGroupValidatedProps<C>;
 
     fn create(_: &Context<Self>) -> Self {
