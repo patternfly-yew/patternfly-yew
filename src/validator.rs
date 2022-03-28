@@ -66,3 +66,16 @@ where
         Self::Custom(std::rc::Rc::new(v))
     }
 }
+
+pub trait IntoValidator<S, T> {
+    fn into_validator(self) -> Validator<S, T>;
+}
+
+impl<F, S, T> IntoValidator<S, T> for F
+where
+    F: Fn(ValidationContext<T>) -> S + 'static,
+{
+    fn into_validator(self) -> Validator<S, T> {
+        Validator::Custom(std::rc::Rc::new(self))
+    }
+}
