@@ -34,4 +34,4 @@ macro_rules! spacer {
 }
 
 spacer!(Spacer, "pf-m-spacer");
-spacer!(SpaceItems, "pf-m-space-item");
+spacer!(SpaceItems, "pf-m-space-items");
