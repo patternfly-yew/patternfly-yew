@@ -1,4 +1,4 @@
-use crate::{InputState, ValidatingComponentProperties, Validator};
+use crate::{InputState, ValidatingComponentProperties, ValidationContext, Validator};
 use std::fmt::{Display, Formatter};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
@@ -79,7 +79,7 @@ pub struct TextAreaProps {
     pub oninput: Callback<String>,
     // Called when validation should occur
     #[prop_or_default]
-    pub onvalidate: Callback<String>,
+    pub onvalidate: Callback<ValidationContext>,
 
     #[prop_or_default]
     pub validator: Validator<InputState>,
@@ -91,6 +91,7 @@ pub struct TextArea {
 }
 
 pub enum TextAreaMsg {
+    Init,
     Changed(String),
     Input(String),
 }
@@ -101,6 +102,8 @@ impl Component for TextArea {
 
     fn create(ctx: &Context<Self>) -> Self {
         let value = ctx.props().value.clone();
+        ctx.link().send_message(Self::Message::Init);
+
         Self {
             value,
             input_ref: NodeRef::default(),
@@ -109,10 +112,17 @@ impl Component for TextArea {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
+            TextAreaMsg::Init => {
+                ctx.props().onvalidate.emit(ValidationContext {
+                    value: self.value.clone(),
+                    initial: true,
+                });
+                false
+            }
             TextAreaMsg::Changed(data) => {
                 self.value = data.clone();
                 ctx.props().onchange.emit(data.clone());
-                ctx.props().onvalidate.emit(data);
+                ctx.props().onvalidate.emit(data.into());
                 false
             }
             TextAreaMsg::Input(data) => {
@@ -120,7 +130,7 @@ impl Component for TextArea {
                 if let Some(value) = self.extract_value() {
                     self.value = value.clone();
                     ctx.props().onchange.emit(value.clone());
-                    ctx.props().onvalidate.emit(value.clone());
+                    ctx.props().onvalidate.emit(value.clone().into());
                 }
                 false
             }
@@ -186,14 +196,14 @@ impl TextArea {
     /// from the properties.
     fn input_state(&self, ctx: &Context<Self>) -> InputState {
         match &ctx.props().validator {
-            Validator::Custom(validator) => validator(&self.value),
+            Validator::Custom(validator) => validator(self.value.clone().into()),
             _ => ctx.props().state,
         }
     }
 }
 
 impl ValidatingComponentProperties for TextAreaProps {
-    fn set_onvalidate(&mut self, onvalidate: Callback<String>) {
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext>) {
         self.onvalidate = onvalidate;
     }
 

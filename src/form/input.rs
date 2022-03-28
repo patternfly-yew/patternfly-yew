@@ -1,4 +1,4 @@
-use crate::{InputState, ValidatingComponentProperties, Validator};
+use crate::{InputState, ValidatingComponentProperties, ValidationContext, Validator};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -46,14 +46,14 @@ pub struct TextInputProps {
     pub oninput: Callback<String>,
     // Called when validation should occur
     #[prop_or_default]
-    pub onvalidate: Callback<String>,
+    pub onvalidate: Callback<ValidationContext>,
 
     #[prop_or_default]
     pub validator: Validator<InputState>,
 }
 
 impl ValidatingComponentProperties for TextInputProps {
-    fn set_onvalidate(&mut self, onvalidate: Callback<String>) {
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext>) {
         self.onvalidate = onvalidate;
     }
 
@@ -68,6 +68,7 @@ pub struct TextInput {
 }
 
 pub enum TextInputMsg {
+    Init,
     Changed(String),
     Input(String),
 }
@@ -76,7 +77,9 @@ impl Component for TextInput {
     type Message = TextInputMsg;
     type Properties = TextInputProps;
 
-    fn create(_: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
+        ctx.link().send_message(Self::Message::Init);
+
         Self {
             value: None,
             input_ref: Default::default(),
@@ -85,17 +88,23 @@ impl Component for TextInput {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
+            TextInputMsg::Init => {
+                ctx.props().onvalidate.emit(ValidationContext {
+                    value: self.value(ctx),
+                    initial: true,
+                });
+            }
             TextInputMsg::Changed(data) => {
                 self.value = Some(data.clone());
                 ctx.props().onchange.emit(data.clone());
-                ctx.props().onvalidate.emit(data);
+                ctx.props().onvalidate.emit(data.into());
             }
             TextInputMsg::Input(data) => {
                 ctx.props().oninput.emit(data);
                 if let Some(value) = self.extract_value() {
                     self.value = Some(value.clone());
                     ctx.props().onchange.emit(value.clone());
-                    ctx.props().onvalidate.emit(value);
+                    ctx.props().onvalidate.emit(value.into());
                 }
                 // only re-render if we have a validator
                 return ctx.props().validator.is_custom();
@@ -176,7 +185,7 @@ impl TextInput {
     /// from the properties.
     fn input_state(&self, ctx: &Context<Self>) -> InputState {
         match &ctx.props().validator {
-            Validator::Custom(validator) => validator(&self.value(ctx)),
+            Validator::Custom(validator) => validator(self.value(ctx).into()),
             _ => ctx.props().state,
         }
     }

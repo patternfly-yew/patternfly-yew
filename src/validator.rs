@@ -1,7 +1,22 @@
+#[derive(Clone, Debug)]
+pub struct ValidationContext {
+    pub value: String,
+    pub initial: bool,
+}
+
+impl From<String> for ValidationContext {
+    fn from(value: String) -> Self {
+        ValidationContext {
+            value,
+            initial: false,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub enum Validator<S> {
     None,
-    Custom(std::rc::Rc<dyn Fn(&str) -> S>),
+    Custom(std::rc::Rc<dyn Fn(ValidationContext) -> S>),
 }
 
 impl<S> Validator<S> {
@@ -12,9 +27,16 @@ impl<S> Validator<S> {
         }
     }
 
-    pub fn run(&self, value: &str) -> Option<S> {
+    pub fn run<C>(&self, ctx: C) -> Option<S>
+    where
+        C: Into<ValidationContext>,
+    {
+        self.run_ctx(ctx.into())
+    }
+
+    pub fn run_ctx(&self, ctx: ValidationContext) -> Option<S> {
         match self {
-            Self::Custom(validator) => Some(validator(value)),
+            Self::Custom(validator) => Some(validator(ctx)),
             _ => None,
         }
     }
@@ -38,7 +60,7 @@ impl<S> PartialEq for Validator<S> {
 
 impl<F, S> From<F> for Validator<S>
 where
-    F: Fn(&str) -> S + 'static,
+    F: Fn(ValidationContext) -> S + 'static,
 {
     fn from(v: F) -> Self {
         Self::Custom(std::rc::Rc::new(v))

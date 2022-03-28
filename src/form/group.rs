@@ -1,4 +1,4 @@
-use crate::{AsClasses, Icon, InputState, ValidationResult, Validator};
+use crate::{AsClasses, Icon, InputState, ValidationContext, ValidationResult, Validator};
 use std::marker::PhantomData;
 use std::rc::Rc;
 use yew::{prelude::*, virtual_dom::VNode};
@@ -172,7 +172,7 @@ where
 }
 
 pub enum FormGroupValidatedMsg {
-    Validate(String),
+    Validate(ValidationContext),
 }
 
 impl<C> PartialEq for FormGroupValidatedProps<C>
@@ -196,7 +196,7 @@ where
 }
 
 pub trait ValidatingComponentProperties {
-    fn set_onvalidate(&mut self, onvalidate: Callback<String>);
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext>);
     fn set_input_state(&mut self, state: InputState);
 }
 
@@ -218,7 +218,7 @@ where
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Validate(value) => {
-                self.state = ctx.props().validator.run(&value);
+                self.state = ctx.props().validator.run(value);
             }
         }
         true
