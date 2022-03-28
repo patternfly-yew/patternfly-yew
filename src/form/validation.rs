@@ -56,9 +56,11 @@ pub struct ValidationResult {
 
 impl From<ValidationResult> for Option<HelperText> {
     fn from(result: ValidationResult) -> Self {
-        if matches!(result.state, InputState::Default) {
+        if matches!(result.state, InputState::Default) && result.message.is_none() {
+            // default state and no message
             None
         } else {
+            // non-default state or some message
             Some(HelperText {
                 message: result.message.unwrap_or_default(),
                 input_state: result.state,
@@ -92,6 +94,10 @@ impl ValidationResult {
             state,
             message: Some(message.into()),
         }
+    }
+
+    pub fn help<S: Into<String>>(message: S) -> Self {
+        Self::new(InputState::Default, message)
     }
 
     pub fn error<S: Into<String>>(message: S) -> Self {
