@@ -1,12 +1,14 @@
 mod area;
 mod group;
 mod input;
+mod section;
 mod select;
 mod validation;
 
 pub use area::*;
 pub use group::*;
 pub use input::*;
+pub use section::*;
 pub use select::*;
 pub use validation::*;
 
