@@ -84,7 +84,7 @@ pub struct TextAreaProps {
     pub onvalidate: Callback<ValidationContext<String>>,
 
     #[prop_or_default]
-    pub validator: Validator<InputState, String>,
+    pub validator: Validator<String, InputState>,
 }
 
 pub struct TextArea {
@@ -197,10 +197,10 @@ impl TextArea {
     /// This may be the result of the validator, or if none was set, the provided input state
     /// from the properties.
     fn input_state(&self, ctx: &Context<Self>) -> InputState {
-        match &ctx.props().validator {
-            Validator::Custom(validator) => validator(self.value.clone().into()),
-            _ => ctx.props().state,
-        }
+        ctx.props()
+            .validator
+            .run_if(|| ValidationContext::from(self.value.clone()))
+            .unwrap_or_else(|| ctx.props().state)
     }
 }
 

@@ -168,7 +168,7 @@ where
     pub label: String,
     #[prop_or_default]
     pub required: bool,
-    pub validator: Validator<ValidationResult, C::Value>,
+    pub validator: Validator<C::Value, ValidationResult>,
 }
 
 pub enum FormGroupValidatedMsg<C>

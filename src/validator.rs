@@ -14,12 +14,12 @@ impl<T> From<T> for ValidationContext<T> {
 }
 
 #[derive(Clone)]
-pub enum Validator<S, T> {
+pub enum Validator<T, S> {
     None,
     Custom(std::rc::Rc<dyn Fn(ValidationContext<T>) -> S>),
 }
 
-impl<S, T> Validator<S, T> {
+impl<T, S> Validator<T, S> {
     pub fn is_custom(&self) -> bool {
         match self {
             Self::Custom(_) => true,
@@ -27,13 +27,26 @@ impl<S, T> Validator<S, T> {
         }
     }
 
+    /// Convert into the context and run
     pub fn run<C>(&self, ctx: C) -> Option<S>
     where
         C: Into<ValidationContext<T>>,
     {
-        self.run_ctx(ctx.into())
+        self.run_if(|| ctx.into())
     }
 
+    /// Only convert when necessary, and run.
+    pub fn run_if<F>(&self, f: F) -> Option<S>
+    where
+        F: FnOnce() -> ValidationContext<T>,
+    {
+        match self {
+            Self::Custom(validator) => Some(validator(f())),
+            _ => None,
+        }
+    }
+
+    /// Run with the provided context.
     pub fn run_ctx(&self, ctx: ValidationContext<T>) -> Option<S> {
         match self {
             Self::Custom(validator) => Some(validator(ctx)),
@@ -42,14 +55,14 @@ impl<S, T> Validator<S, T> {
     }
 }
 
-impl<S, T> Default for Validator<S, T> {
+impl<T, S> Default for Validator<T, S> {
     fn default() -> Self {
         Self::None
     }
 }
 
 /// Validators are equal if they are still None. Everything else is a change.
-impl<S, T> PartialEq for Validator<S, T> {
+impl<T, S> PartialEq for Validator<T, S> {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Validator::None, Validator::None) => true,
@@ -58,7 +71,7 @@ impl<S, T> PartialEq for Validator<S, T> {
     }
 }
 
-impl<F, S, T> From<F> for Validator<S, T>
+impl<F, T, S> From<F> for Validator<T, S>
 where
     F: Fn(ValidationContext<T>) -> S + 'static,
 {
@@ -67,15 +80,15 @@ where
     }
 }
 
-pub trait IntoValidator<S, T> {
-    fn into_validator(self) -> Validator<S, T>;
+pub trait IntoValidator<T, S> {
+    fn into_validator(self) -> Validator<T, S>;
 }
 
-impl<F, S, T> IntoValidator<S, T> for F
+impl<F, T, S> IntoValidator<T, S> for F
 where
     F: Fn(ValidationContext<T>) -> S + 'static,
 {
-    fn into_validator(self) -> Validator<S, T> {
+    fn into_validator(self) -> Validator<T, S> {
         Validator::Custom(std::rc::Rc::new(self))
     }
 }
