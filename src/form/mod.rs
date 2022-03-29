@@ -12,7 +12,7 @@ pub use section::*;
 pub use select::*;
 pub use validation::*;
 
-use crate::{Button, WithBreakpoints};
+use crate::{Alert, Button, WithBreakpoints};
 use std::fmt::{Display, Formatter};
 use yew::prelude::*;
 
@@ -35,6 +35,9 @@ pub struct Props {
 
     #[prop_or_default]
     pub children: Children,
+
+    #[prop_or_default]
+    pub alert: Option<ChildrenWithProps<Alert>>,
 }
 
 #[function_component(Form)]
@@ -49,6 +52,11 @@ pub fn form(props: &Props) -> Html {
 
     html! {
         <form novalidate=true class={classes}>
+
+            if let Some(alert) = &props.alert {
+                { alert.clone() }
+            }
+
             { for props.children.iter().map(|child|{
                     child
             }) }
