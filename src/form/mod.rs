@@ -15,6 +15,7 @@ pub use validation::*;
 use crate::{Alert, Button, WithBreakpoints};
 use std::fmt::{Display, Formatter};
 use yew::prelude::*;
+use yew::virtual_dom::VChild;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FormHorizontal;
@@ -37,7 +38,7 @@ pub struct Props {
     pub children: Children,
 
     #[prop_or_default]
-    pub alert: Option<ChildrenWithProps<Alert>>,
+    pub alert: Option<VChild<Alert>>,
 }
 
 #[function_component(Form)]
@@ -54,7 +55,9 @@ pub fn form(props: &Props) -> Html {
         <form novalidate=true class={classes}>
 
             if let Some(alert) = &props.alert {
-                { alert.clone() }
+                <div class="pf-c-form__alert">
+                    { alert.clone() }
+                </div>
             }
 
             { for props.children.iter().map(|child|{
