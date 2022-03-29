@@ -8,8 +8,11 @@ pub struct Props {
 }
 
 #[function_component(FormSection)]
-pub fn badge(props: &Props) -> Html {
-    let id = use_state(|| props.title.as_ref().map(|_| Uuid::new_v4().to_string()));
+pub fn section(props: &Props) -> Html {
+    let id = use_state(|| match props.title.is_some() {
+        true => Some(Uuid::new_v4().to_string()),
+        false => None,
+    });
 
     html! (
         <section class="pf-c-form__section" role="group" aria-labelledby={(*id).clone()}>
