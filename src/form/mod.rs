@@ -12,10 +12,9 @@ pub use section::*;
 pub use select::*;
 pub use validation::*;
 
-use crate::{Alert, Button, WithBreakpoints};
+use crate::{Alert, Button, Type, WithBreakpoints};
 use std::fmt::{Display, Formatter};
 use yew::prelude::*;
-use yew::virtual_dom::VChild;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FormHorizontal;
@@ -24,6 +23,13 @@ impl Display for FormHorizontal {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_str("pf-m-horizontal")
     }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct FormAlert {
+    pub r#type: Type,
+    pub title: String,
+    pub children: Html,
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -38,7 +44,7 @@ pub struct Props {
     pub children: Children,
 
     #[prop_or_default]
-    pub alert: Option<VChild<Alert>>,
+    pub alert: Option<FormAlert>,
 }
 
 #[function_component(Form)]
@@ -54,15 +60,22 @@ pub fn form(props: &Props) -> Html {
     html! {
         <form novalidate=true class={classes}>
 
+            <div>
             if let Some(alert) = &props.alert {
                 <div class="pf-c-form__alert">
-                    { alert.clone() }
+                    <Alert
+                        inline=true
+                        r#type={alert.r#type}
+                        title={alert.title.clone()}
+                        >
+                        { alert.children.clone() }
+                    </Alert>
                 </div>
             }
+            </div>
 
-            { for props.children.iter().map(|child|{
-                    child
-            }) }
+            { for props.children.iter() }
+
         </form>
     }
 }
