@@ -176,7 +176,7 @@ impl Component for Form {
                 ctx.props()
                     .validation_error_title
                     .as_deref()
-                    .unwrap_or("The form contains fields with error."),
+                    .unwrap_or("The form contains fields with errors."),
                 &html!(),
             ),
         );
@@ -199,7 +199,6 @@ impl Component for Form {
             <ContextProvider<ValidationFormContext> context={validation_context} >
                 <form novalidate=true class={classes} id={ctx.props().id.clone()}>
 
-                    <div>
                     if let Some(alert) = alert {
                         <div class="pf-c-form__alert">
                             <Alert
@@ -210,8 +209,9 @@ impl Component for Form {
                                 { alert.children.clone() }
                             </Alert>
                         </div>
+                    } else {
+                        <div style="display: none;"></div>
                     }
-                    </div>
 
                     { for ctx.props().children.iter() }
 
