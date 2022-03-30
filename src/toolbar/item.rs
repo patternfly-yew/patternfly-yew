@@ -26,6 +26,16 @@ impl AsClasses for ToolbarItemType {
             Self::SearchFilter => "pf-m-search-filter".into(),
         }
     }
+
+    fn extend(&self, classes: &mut Classes) {
+        match self {
+            Self::None => {}
+            Self::BulkSelect => classes.push("pf-m-bulk-select"),
+            Self::OverflowMenu => classes.push("pf-m-overflow-menu"),
+            Self::Pagination => classes.push("pf-m-pagination"),
+            Self::SearchFilter => classes.push("pf-m-search-filter"),
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Properties)]

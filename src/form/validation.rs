@@ -16,12 +16,12 @@ impl Default for InputState {
 }
 
 impl AsClasses for InputState {
-    fn as_classes(&self) -> Classes {
+    fn extend(&self, classes: &mut Classes) {
         match self {
-            Self::Default => Classes::default(),
-            Self::Success => Classes::from_iter(["pf-m-success".to_string()]),
-            Self::Warning => Classes::from_iter(["pf-m-warning".to_string()]),
-            Self::Error => Classes::from_iter(["pf-m-error".to_string()]),
+            Self::Default => {}
+            Self::Success => classes.push("pf-m-success"),
+            Self::Warning => classes.push("pf-m-warning"),
+            Self::Error => classes.push("pf-m-error"),
         }
     }
 }

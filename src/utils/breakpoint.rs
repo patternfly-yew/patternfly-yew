@@ -64,6 +64,15 @@ where
     }
 }
 
+impl<T> AsClasses for WithBreakpoints<T>
+where
+    T: Clone + Debug + PartialEq + ToString,
+{
+    fn extend(&self, classes: &mut Classes) {
+        AsClasses::extend(&self.0, classes);
+    }
+}
+
 impl<T> WithBreakpoints<T>
 where
     T: Clone + Debug + PartialEq,
@@ -191,8 +200,10 @@ impl<T> AsClasses for Vec<WithBreakpoint<T>>
 where
     T: Clone + Debug + PartialEq + ToString,
 {
-    fn as_classes(&self) -> Classes {
-        Classes::from(self.iter().map(|b| b.to_string()).collect::<Vec<_>>())
+    fn extend(&self, classes: &mut Classes) {
+        for b in self {
+            classes.push(b.to_string())
+        }
     }
 }
 

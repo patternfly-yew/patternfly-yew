@@ -38,9 +38,9 @@ macro_rules! icons {
         }
 
         impl AsClasses for Icon {
-            fn as_classes(&self) -> Classes {
+            fn extend(&self, classes: &mut Classes) {
                 match self {
-                    $(Self::$n => $e),*
+                    $(Self::$n => classes.extend($e)),*
                 }
             }
         }
@@ -108,28 +108,21 @@ impl Icon {
         }
     }
 
-    pub fn with_classes(&self, classes: Classes) -> Html {
-        let mut icon_classes = self.as_classes();
-        icon_classes.extend(classes);
+    pub fn with_classes(&self, mut classes: Classes) -> Html {
+        self.extend(&mut classes);
 
         html! {
-            <i class={icon_classes} aria-hidden="true"></i>
+            <i class={classes} aria-hidden="true"></i>
         }
     }
 }
 
-fn fas(name: &str) -> Classes {
-    let mut classes = Classes::new();
-    classes.push("fas");
-    classes.push(name.to_string());
-    classes
+fn fas(name: &str) -> [&str; 2] {
+    ["fas", name]
 }
 
-fn pf(name: &str) -> Classes {
-    let mut classes = Classes::new();
-    classes.push("pficon");
-    classes.push(name.to_string());
-    classes
+fn pf(name: &str) -> [&str; 2] {
+    ["pficon", name]
 }
 
 impl From<Icon> for VNode {

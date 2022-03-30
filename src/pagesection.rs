@@ -91,3 +91,28 @@ impl PageSection {
         }
     }
 }
+
+#[derive(Clone, Debug, Properties, PartialEq)]
+pub struct PageTabsProperties {
+    #[prop_or_default]
+    pub limit_width: bool,
+    #[prop_or_default]
+    pub children: Children,
+}
+
+#[function_component(PageTabs)]
+pub fn page_tabs(props: &PageTabsProperties) -> Html {
+    let mut classes = Classes::from("pf-c-page__main-tabs");
+
+    if props.limit_width {
+        classes.push("pf-m-limit-width");
+    }
+
+    html!(
+        <section class={classes}>
+            <div class="pf-c-page__main-body">
+                { for props.children.iter() }
+            </div>
+        </section>
+    )
+}

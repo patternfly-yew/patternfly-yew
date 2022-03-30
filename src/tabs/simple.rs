@@ -1,7 +1,6 @@
-use crate::Icon;
-use std::rc::Rc;
-use yew::prelude::*;
-use yew::virtual_dom::VChild;
+use crate::{AsClasses, Icon, WithBreakpoints};
+use std::{fmt::Formatter, rc::Rc};
+use yew::{prelude::*, virtual_dom::VChild};
 
 #[derive(Clone, Debug, Properties, PartialEq)]
 pub struct Props {
@@ -16,6 +15,9 @@ pub struct Props {
     pub vertical: bool,
     #[prop_or_default]
     pub filled: bool,
+
+    #[prop_or_default]
+    pub inset: Option<Inset>,
 }
 
 pub struct Tabs {
@@ -62,6 +64,10 @@ impl Component for Tabs {
             classes.push("pf-m-fill");
         }
 
+        if let Some(inset) = &ctx.props().inset {
+            inset.extend(&mut classes);
+        }
+
         let mut idx = 0;
         let children = ctx
             .props()
@@ -78,7 +84,7 @@ impl Component for Tabs {
 
         let active = children[self.active].props.children.clone();
 
-        return html! {
+        html! (
             <>
             <div class={classes} id={ctx.props().id.clone()}>
                 <button
@@ -103,11 +109,51 @@ impl Component for Tabs {
             </div>
             { active }
             </>
-        };
+        )
     }
 }
 
 // tab
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Insets {
+    None,
+    Small,
+    Medium,
+    Large,
+    XLarge,
+    XXLarge,
+}
+
+impl std::fmt::Display for Insets {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::None => f.write_str("pf-m-inset-none"),
+            Self::Small => f.write_str("pf-m-inset-sm"),
+            Self::Medium => f.write_str("pf-m-inset-md"),
+            Self::Large => f.write_str("pf-m-inset-lg"),
+            Self::XLarge => f.write_str("pf-m-inset-xl"),
+            Self::XXLarge => f.write_str("pf-m-inset-2xl"),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Inset {
+    Inset(WithBreakpoints<Insets>),
+    Page,
+}
+
+impl AsClasses for Inset {
+    fn extend(&self, classes: &mut Classes) {
+        match self {
+            Inset::Page => classes.push("pf-m-page-insets"),
+            Inset::Inset(insets) => {
+                insets.extend(classes);
+            }
+        }
+    }
+}
 
 #[derive(Clone, Debug, Properties, PartialEq)]
 pub struct TabProps {

@@ -1,3 +1,4 @@
+use crate::{AsClasses, Inset};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -47,6 +48,10 @@ where
     pub vertical: bool,
     #[prop_or_default]
     pub filled: bool,
+
+    #[prop_or_default]
+    pub inset: Option<Inset>,
+
     #[prop_or_default]
     pub children: ChildrenWithProps<TabRouterItem<LR>>,
 }
@@ -134,6 +139,10 @@ where
 
         if ctx.props().filled {
             classes.push("pf-m-fill");
+        }
+
+        if let Some(inset) = &ctx.props().inset {
+            inset.extend(&mut classes);
         }
 
         let local = self

@@ -66,9 +66,9 @@ pub enum SpanModifiers {
 }
 
 impl AsClasses for SpanModifiers {
-    fn as_classes(&self) -> Classes {
+    fn extend(&self, classes: &mut Classes) {
         match self {
-            Self::Truncate => Classes::from("pf-m-truncate"),
+            Self::Truncate => classes.push("pf-m-truncate"),
         }
     }
 }
