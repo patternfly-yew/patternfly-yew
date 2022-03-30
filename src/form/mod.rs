@@ -169,7 +169,7 @@ impl Component for Form {
                 ctx.props()
                     .validation_warning_title
                     .as_deref()
-                    .unwrap_or("The form contains field with warnings."),
+                    .unwrap_or("The form contains fields with warnings."),
                 &html!(),
             ),
             (
