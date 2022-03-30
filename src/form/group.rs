@@ -1,6 +1,8 @@
-use crate::{AsClasses, Icon, InputState, ValidationContext, ValidationResult, Validator};
-use std::marker::PhantomData;
-use std::rc::Rc;
+use crate::{
+    AsClasses, Icon, InputState, ValidatingComponent, ValidatingComponentProperties,
+    ValidationContext, ValidationResult, Validator,
+};
+use std::{marker::PhantomData, rc::Rc};
 use yew::{prelude::*, virtual_dom::VNode};
 
 // form group
@@ -169,6 +171,9 @@ where
     #[prop_or_default]
     pub required: bool,
     pub validator: Validator<C::Value, ValidationResult>,
+
+    #[prop_or_default]
+    pub onvalidated: Callback<ValidationResult>,
 }
 
 pub enum FormGroupValidatedMsg<C>
@@ -198,15 +203,6 @@ where
     state: Option<ValidationResult>,
 }
 
-pub trait ValidatingComponent {
-    type Value;
-}
-
-pub trait ValidatingComponentProperties<T> {
-    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<T>>);
-    fn set_input_state(&mut self, state: InputState);
-}
-
 impl<C> Component for FormGroupValidated<C>
 where
     C: Component + ValidatingComponent,
@@ -225,7 +221,13 @@ where
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Validate(value) => {
-                self.state = ctx.props().validator.run(value);
+                let state = ctx.props().validator.run(value);
+                if self.state != state {
+                    self.state = state;
+                    ctx.props()
+                        .onvalidated
+                        .emit(self.state.clone().unwrap_or_default());
+                }
             }
         }
         true

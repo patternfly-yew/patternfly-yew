@@ -1,5 +1,5 @@
-use crate::{AsClasses, HelperText, Icon};
-use yew::Classes;
+use crate::{AsClasses, HelperText, Icon, ValidationContext};
+use yew::{Callback, Classes};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InputState {
@@ -107,4 +107,13 @@ impl ValidationResult {
     pub fn warning<S: Into<String>>(message: S) -> Self {
         Self::new(InputState::Warning, message)
     }
+}
+
+pub trait ValidatingComponent {
+    type Value;
+}
+
+pub trait ValidatingComponentProperties<T> {
+    fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<T>>);
+    fn set_input_state(&mut self, state: InputState);
 }
