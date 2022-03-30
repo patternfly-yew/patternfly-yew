@@ -163,7 +163,7 @@ impl Component for Form {
         }
 
         let alert = &ctx.props().alert;
-        let validation_alert = Self::to_alert(
+        let validation_alert = Self::make_alert(
             self.validation.state,
             (
                 ctx.props()
@@ -222,7 +222,7 @@ impl Component for Form {
 }
 
 impl Form {
-    fn to_alert(
+    fn make_alert(
         state: InputState,
         warning: (&str, &Html),
         error: (&str, &Html),
