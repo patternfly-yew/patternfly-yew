@@ -54,8 +54,9 @@ pub struct Props {
     #[prop_or_default]
     pub alert: Option<FormAlert>,
 
+    /// Reports the overall validation state
     #[prop_or_default]
-    pub onvalidated: Callback<ValidationResult>,
+    pub onvalidated: Callback<InputState>,
 
     pub validation_warning_title: Option<String>,
     pub validation_error_title: Option<String>,
@@ -147,9 +148,15 @@ impl Component for Form {
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::GroupValidationChanged(state) => self.validation.push_state(state),
+            Msg::GroupValidationChanged(state) => {
+                let changed = self.validation.push_state(state);
+                if changed {
+                    ctx.props().onvalidated.emit(self.validation.state);
+                }
+                changed
+            }
         }
     }
 
