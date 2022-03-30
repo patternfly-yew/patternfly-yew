@@ -10,6 +10,7 @@ pub use group::*;
 pub use input::*;
 pub use section::*;
 pub use select::*;
+use std::collections::BTreeMap;
 pub use validation::*;
 
 use crate::{Alert, Button, Type, WithBreakpoints};
@@ -32,8 +33,15 @@ pub struct FormAlert {
     pub children: Html,
 }
 
+//
+// Form
+//
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
+    #[prop_or_default]
+    pub id: Option<String>,
+
     #[prop_or_default]
     pub horizontal: WithBreakpoints<FormHorizontal>,
 
@@ -45,38 +53,193 @@ pub struct Props {
 
     #[prop_or_default]
     pub alert: Option<FormAlert>,
+
+    #[prop_or_default]
+    pub onvalidated: Callback<ValidationResult>,
+
+    pub validation_warning_title: Option<String>,
+    pub validation_error_title: Option<String>,
 }
 
-#[function_component(Form)]
-pub fn form(props: &Props) -> Html {
-    let mut classes = Classes::from("pf-c-form");
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct ValidationState {
+    results: BTreeMap<String, ValidationResult>,
+    state: InputState,
+}
 
-    classes.extend(props.horizontal.clone());
-
-    if props.limit_width {
-        classes.push("pf-m-limit-width");
+impl ValidationState {
+    fn to_state(&self) -> InputState {
+        let mut current = InputState::Default;
+        for r in self.results.values() {
+            if r.state > current {
+                current = r.state;
+            }
+            if current == InputState::Error {
+                break;
+            }
+        }
+        current
     }
 
-    html! {
-        <form novalidate=true class={classes}>
-
-            <div>
-            if let Some(alert) = &props.alert {
-                <div class="pf-c-form__alert">
-                    <Alert
-                        inline=true
-                        r#type={alert.r#type}
-                        title={alert.title.clone()}
-                        >
-                        { alert.children.clone() }
-                    </Alert>
-                </div>
+    fn push_state(&mut self, state: GroupValidationResult) -> bool {
+        match state.1 {
+            Some(result) => {
+                self.results.insert(state.0, result);
             }
-            </div>
+            None => {
+                self.results.remove(&state.0);
+            }
+        }
 
-            { for props.children.iter() }
+        // update with diff
 
-        </form>
+        let state = self.to_state();
+        if self.state != state {
+            self.state = state;
+            true
+        } else {
+            false
+        }
+    }
+}
+
+#[derive(Clone, Default, PartialEq)]
+pub struct ValidationFormContext {
+    callback: Callback<GroupValidationResult>,
+    state: InputState,
+}
+
+impl ValidationFormContext {
+    pub fn new(callback: Callback<GroupValidationResult>, state: InputState) -> Self {
+        Self { callback, state }
+    }
+
+    pub fn is_error(&self) -> bool {
+        matches!(self.state, InputState::Error)
+    }
+
+    pub fn push_state(&self, state: GroupValidationResult) {
+        self.callback.emit(state);
+    }
+
+    pub fn clear_state(&self, id: String) {
+        self.callback.emit(GroupValidationResult(id, None));
+    }
+}
+
+pub struct GroupValidationResult(pub String, pub Option<ValidationResult>);
+
+pub struct Form {
+    validation: ValidationState,
+}
+
+pub enum Msg {
+    GroupValidationChanged(GroupValidationResult),
+}
+
+impl Component for Form {
+    type Message = Msg;
+    type Properties = Props;
+
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {
+            validation: Default::default(),
+        }
+    }
+
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg {
+            Msg::GroupValidationChanged(state) => self.validation.push_state(state),
+        }
+    }
+
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let mut classes = Classes::from("pf-c-form");
+
+        classes.extend(ctx.props().horizontal.clone());
+
+        if ctx.props().limit_width {
+            classes.push("pf-m-limit-width");
+        }
+
+        let alert = &ctx.props().alert;
+        let validation_alert = Self::to_alert(
+            self.validation.state,
+            (
+                ctx.props()
+                    .validation_warning_title
+                    .as_deref()
+                    .unwrap_or("The form contains field with warnings."),
+                &html!(),
+            ),
+            (
+                ctx.props()
+                    .validation_error_title
+                    .as_deref()
+                    .unwrap_or("The form contains fields with error."),
+                &html!(),
+            ),
+        );
+
+        // reduce by severity
+
+        let alert = match (alert, &validation_alert) {
+            (None, None) => None,
+            (Some(alert), None) | (None, Some(alert)) => Some(alert),
+            (Some(props), Some(validation)) if validation.r#type > props.r#type => Some(validation),
+            (Some(props), Some(_)) => Some(props),
+        };
+
+        let validation_context = ValidationFormContext::new(
+            ctx.link().callback(Msg::GroupValidationChanged),
+            self.validation.state,
+        );
+
+        html! (
+            <ContextProvider<ValidationFormContext> context={validation_context} >
+                <form novalidate=true class={classes} id={ctx.props().id.clone()}>
+
+                    <div>
+                    if let Some(alert) = alert {
+                        <div class="pf-c-form__alert">
+                            <Alert
+                                inline=true
+                                r#type={alert.r#type}
+                                title={alert.title.clone()}
+                                >
+                                { alert.children.clone() }
+                            </Alert>
+                        </div>
+                    }
+                    </div>
+
+                    { for ctx.props().children.iter() }
+
+                </form>
+            </ContextProvider<ValidationFormContext>>
+        )
+    }
+}
+
+impl Form {
+    fn to_alert(
+        state: InputState,
+        warning: (&str, &Html),
+        error: (&str, &Html),
+    ) -> Option<FormAlert> {
+        match state {
+            InputState::Default | InputState::Success => None,
+            InputState::Warning => Some(FormAlert {
+                r#type: Type::Warning,
+                title: warning.0.to_string(),
+                children: warning.1.clone(),
+            }),
+            InputState::Error => Some(FormAlert {
+                r#type: Type::Danger,
+                title: error.0.to_string(),
+                children: error.1.clone(),
+            }),
+        }
     }
 }
 

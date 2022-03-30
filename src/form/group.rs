@@ -1,8 +1,10 @@
 use crate::{
-    AsClasses, Icon, InputState, ValidatingComponent, ValidatingComponentProperties,
-    ValidationContext, ValidationResult, Validator,
+    AsClasses, GroupValidationResult, Icon, InputState, ValidatingComponent,
+    ValidatingComponentProperties, ValidationContext, ValidationFormContext, ValidationResult,
+    Validator,
 };
 use std::{marker::PhantomData, rc::Rc};
+use uuid::Uuid;
 use yew::{prelude::*, virtual_dom::VNode};
 
 // form group
@@ -200,6 +202,7 @@ where
 {
     _marker: PhantomData<C>,
 
+    id: String,
     state: Option<ValidationResult>,
 }
 
@@ -214,6 +217,7 @@ where
     fn create(_: &Context<Self>) -> Self {
         Self {
             _marker: Default::default(),
+            id: Uuid::new_v4().to_string(),
             state: None,
         }
     }
@@ -227,10 +231,26 @@ where
                     ctx.props()
                         .onvalidated
                         .emit(self.state.clone().unwrap_or_default());
+                    if let Some((validation_ctx, _)) = ctx
+                        .link()
+                        .context::<ValidationFormContext>(Callback::noop())
+                    {
+                        validation_ctx
+                            .push_state(GroupValidationResult(self.id.clone(), self.state.clone()));
+                    }
                 }
             }
         }
         true
+    }
+
+    fn destroy(&mut self, ctx: &Context<Self>) {
+        if let Some((ctx, _)) = ctx
+            .link()
+            .context::<ValidationFormContext>(Callback::noop())
+        {
+            ctx.clear_state(self.id.clone());
+        }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {

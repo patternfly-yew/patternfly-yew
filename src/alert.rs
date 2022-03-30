@@ -2,7 +2,7 @@ use crate::{Action, Button, Icon, Variant};
 
 use yew::prelude::*;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Type {
     Default,
     Info,

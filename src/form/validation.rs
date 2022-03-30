@@ -1,7 +1,7 @@
 use crate::{AsClasses, HelperText, Icon, ValidationContext};
 use yew::{Callback, Classes};
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub enum InputState {
     Default,
     Success,
