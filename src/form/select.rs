@@ -1,7 +1,10 @@
-use crate::{Divider, SelectVariant, ValidationContext};
+use crate::{SelectVariant, ValidationContext};
 use std::fmt::{Debug, Display};
 use std::marker::PhantomData;
 use std::rc::Rc;
+use std::str::FromStr;
+use wasm_bindgen::JsCast;
+use web_sys::{HtmlOptionElement, HtmlSelectElement};
 use yew::{
     html::ChildrenRenderer,
     prelude::*,
@@ -9,7 +12,7 @@ use yew::{
 };
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
+pub struct Props<K: 'static + Clone + PartialEq + Display + Debug + FromStr> {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -30,34 +33,38 @@ pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
 
 pub struct FormSelect<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display + Debug + FromStr,
 {
-    selection: Vec<K>,
+    _marker: PhantomData<K>,
+    node_ref: NodeRef,
 }
 
 #[derive(Clone, Debug)]
-pub enum Msg<K> {
-    Clicked(K),
+pub enum Msg {
+    Changed,
 }
 
 impl<K> Component for FormSelect<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display + Debug + FromStr,
 {
-    type Message = Msg<K>;
+    type Message = Msg;
     type Properties = Props<K>;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            selection: Vec::new(),
+            _marker: Default::default(),
+            node_ref: Default::default(),
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::Clicked(k) => self.clicked(ctx, k),
+            Msg::Changed => {
+                self.input_changed(ctx);
+                false
+            }
         }
-        true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
@@ -65,15 +72,16 @@ where
 
         let multiple = !matches!(ctx.props().variant, SelectVariant::Single(_));
 
+        let oninput = ctx.link().callback(|_| Msg::Changed);
+
         html! (
             <select
                 class={classes}
                 multiple={multiple}
+                {oninput}
+                ref={self.node_ref.clone()}
                 >
-                { for ctx.props().children.iter().map(|mut c|{
-                    c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
-                    c
-                }) }
+                { for ctx.props().children.iter() }
             </select>
         )
     }
@@ -81,30 +89,31 @@ where
 
 impl<K> FormSelect<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display + Debug + FromStr,
 {
-    fn clicked(&mut self, ctx: &Context<Self>, key: K) {
-        log::info!("Clicked: {}", key);
-        match &ctx.props().variant {
-            SelectVariant::Single(on) => {
-                self.selection = vec![key.clone()];
-                on.emit(key.clone());
-                ctx.props().onvalidate.emit(self.selection.clone().into());
-            }
-            SelectVariant::Multiple(on) | SelectVariant::Checkbox(on) => {
-                match self.selection.iter().position(|x| *x == key) {
-                    Some(idx) => {
-                        // remove
-                        self.selection.remove(idx);
-                    }
-                    None => {
-                        // add
-                        self.selection.push(key);
+    fn input_changed(&self, ctx: &Context<Self>) {
+        if let Some(ele) = self.node_ref.cast::<HtmlSelectElement>() {
+            match &ctx.props().variant {
+                SelectVariant::Single(callback) => {
+                    let value = ele.value();
+                    if let Ok(value) = K::from_str(&value) {
+                        callback.emit(value);
                     }
                 }
-
-                on.emit(self.selection.clone());
-                ctx.props().onvalidate.emit(self.selection.clone().into());
+                SelectVariant::Checkbox(callback) | SelectVariant::Multiple(callback) => {
+                    let opts = ele.selected_options();
+                    let mut values = Vec::new();
+                    for i in 0..opts.length() {
+                        if let Some(opt) = opts.item(i) {
+                            if let Some(ele) = opt.dyn_ref::<HtmlOptionElement>() {
+                                if let Ok(value) = K::from_str(&ele.value()) {
+                                    values.push(value);
+                                }
+                            }
+                        }
+                    }
+                    callback.emit(values);
+                }
             }
         }
     }
@@ -118,7 +127,6 @@ where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     Option(Rc<<FormSelectOption<K> as Component>::Properties>),
-    Divider(Rc<<Divider as Component>::Properties>),
     Group(Rc<<FormSelectGroup<K> as Component>::Properties>),
 }
 
@@ -128,15 +136,6 @@ where
 {
     fn from(props: FormSelectOptionProps<K>) -> Self {
         FormSelectChild::Option(Rc::new(props))
-    }
-}
-
-impl<K> From<()> for FormSelectChild<K>
-where
-    K: Clone + PartialEq + Display + Debug,
-{
-    fn from(_: ()) -> Self {
-        FormSelectChild::Divider(Rc::new(()))
     }
 }
 
@@ -157,25 +156,6 @@ where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     props: FormSelectChild<K>,
-}
-
-impl<K> FormSelectChildVariant<K>
-where
-    K: Clone + PartialEq + Display + Debug,
-{
-    fn set_need_clicked(&mut self, callback: Callback<K>) {
-        match self.props {
-            FormSelectChild::Option(ref mut props) => {
-                let props = Rc::make_mut(props);
-                props.want_clicked = callback;
-            }
-            FormSelectChild::Group(ref mut props) => {
-                let props = Rc::make_mut(props);
-                props.want_clicked = callback;
-            }
-            _ => {}
-        }
-    }
 }
 
 impl<K, CHILD> From<VChild<CHILD>> for FormSelectChildVariant<K>
@@ -199,9 +179,6 @@ where
         match self.props {
             FormSelectChild::Option(props) => {
                 VComp::new::<FormSelectOption<K>>(props, NodeRef::default(), None).into()
-            }
-            FormSelectChild::Divider(props) => {
-                VComp::new::<Divider>(props, NodeRef::default(), None).into()
             }
             FormSelectChild::Group(props) => {
                 VComp::new::<FormSelectGroup<K>>(props, NodeRef::default(), None).into()
@@ -235,11 +212,6 @@ where
     pub(crate) want_clicked: Callback<K>,
 }
 
-#[derive(Clone, Copy, Debug)]
-pub enum FormSelectOptionMsg {
-    Clicked,
-}
-
 pub struct FormSelectOption<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
@@ -251,7 +223,7 @@ impl<K> Component for FormSelectOption<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    type Message = FormSelectOptionMsg;
+    type Message = ();
     type Properties = FormSelectOptionProps<K>;
 
     fn create(_: &Context<Self>) -> Self {
@@ -260,29 +232,12 @@ where
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Self::Message::Clicked => {
-                log::info!("Clicked on: {:?}", ctx.props().value);
-                if let Some(onclick) = &ctx.props().onclick {
-                    // if we have a click handler, we don't send the default handling
-                    onclick.emit(ctx.props().value.clone());
-                } else {
-                    // default is to report clicked, if we have a key
-                    ctx.props().want_clicked.emit(ctx.props().value.clone());
-                }
-            }
-        }
-        true
-    }
-
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! (
             <option
                 id={ctx.props().id.clone()}
                 selected={ctx.props().selected}
                 value={ctx.props().value.to_string()}
-                onclick={ctx.link().callback(|_|FormSelectOptionMsg::Clicked)}
             >
                 { if let Some(description) = &ctx.props().description {
                     html!{ &description }
@@ -304,10 +259,6 @@ where
     pub label: String,
     #[prop_or_default]
     pub children: ChildrenRenderer<FormSelectChildVariant<K>>,
-    #[prop_or_default]
-    pub(crate) want_clicked: Callback<K>,
-    #[prop_or_default]
-    pub(crate) variant: SelectVariant<K>,
 }
 
 #[derive(Clone)]
@@ -318,16 +269,11 @@ where
     _marker: PhantomData<K>,
 }
 
-#[derive(Clone, Debug)]
-pub enum FormSelectGroupMsg<K> {
-    Clicked(K),
-}
-
 impl<K> Component for FormSelectGroup<K>
 where
     K: Clone + PartialEq + Display + Debug,
 {
-    type Message = FormSelectGroupMsg<K>;
+    type Message = ();
     type Properties = FormSelectGroupProps<K>;
 
     fn create(_: &Context<Self>) -> Self {
@@ -336,21 +282,11 @@ where
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Self::Message::Clicked(k) => ctx.props().want_clicked.emit(k),
-        }
-        true
-    }
-
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <>
                 <optgroup label={ctx.props().label.clone()}>
-                    { for ctx.props().children.iter().map(|mut c|{
-                        c.set_need_clicked(ctx.link().callback(|k|Self::Message::Clicked(k)));
-                        c
-                    })}
+                    { for ctx.props().children.iter() }
                 </optgroup>
             </>
         }
