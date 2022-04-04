@@ -233,18 +233,17 @@ impl Slider {
 
     fn calc_percent(value: f64, props: &Props) -> f64 {
         let delta = props.max.value - props.min.value;
-        let p = value / delta;
+        let p = (value - props.min.value) / delta;
         p.clamp(0f64, 1f64)
     }
 
     fn calc_value(p: f64, props: &Props) -> f64 {
         let delta = props.max.value - props.min.value;
-        delta * p
+        props.min.value + delta * p
     }
 
     fn render_step(&self, step: &Step, props: &Props) -> Html {
-        let position = step.value / (props.max.value - props.min.value);
-        let position = position.clamp(0f64, 1f64);
+        let position = Self::calc_percent(step.value, props);
         let active = position <= self.value;
 
         let mut classes = Classes::from("pf-c-slider__step");
