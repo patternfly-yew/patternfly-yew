@@ -57,6 +57,8 @@ pub struct Props {
     pub label_precision: usize,
 
     #[prop_or_default]
+    pub suppress_initial_change: bool,
+    #[prop_or_default]
     pub onchange: Callback<f64>,
 }
 
@@ -102,8 +104,10 @@ impl Component for Slider {
             None => (0f64, ctx.props().min.value),
         };
 
-        // initial send a change event
-        ctx.props().onchange.emit(value);
+        if !ctx.props().suppress_initial_change {
+            // initial send a change event
+            ctx.props().onchange.emit(value);
+        }
 
         Self {
             value: percent,
