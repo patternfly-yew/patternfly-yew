@@ -24,6 +24,7 @@ js-sys = "0.3"
 web-sys = { version = "0.3", features = [
     "HtmlCollection",
     "NodeList",
+    "DomRect",
     "DomTokenList",
     "HtmlSelectElement",
     "HtmlOptionElement",
@@ -38,6 +39,7 @@ strum = "0.19"
 strum_macros = "0.19"
 
 uuid = { version = "0.8", features = ["v4", "wasm-bindgen"] }
+gloo-events = "0.1"
 gloo-timers = "0.2"
 gloo-utils = "0.1"
 
