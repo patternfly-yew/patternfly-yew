@@ -107,10 +107,14 @@ impl Component for Slider {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::SetPercent(value) => {
-                self.value = value;
-                ctx.props()
-                    .onchange
-                    .emit(Self::calc_value(self.value, ctx.props()));
+                if self.value != value {
+                    self.value = value;
+                    ctx.props()
+                        .onchange
+                        .emit(Self::calc_value(self.value, ctx.props()));
+                } else {
+                    return false;
+                }
             }
             Msg::Start(x) => {
                 log::info!("Start: {x}");
