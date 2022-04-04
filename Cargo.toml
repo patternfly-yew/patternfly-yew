@@ -28,7 +28,10 @@ web-sys = { version = "0.3", features = [
     "DomTokenList",
     "HtmlSelectElement",
     "HtmlOptionElement",
-    "HtmlOptionsCollection"
+    "HtmlOptionsCollection",
+    "Touch",
+    "TouchEvent",
+    "TouchList",
 ] }
 
 chrono = { version = "0.4", features = ["wasmbind"] }

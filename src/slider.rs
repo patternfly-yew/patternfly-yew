@@ -63,9 +63,15 @@ pub struct Props {
 pub enum Msg {
     // set the value in percent
     SetPercent(f64),
-    Start(i32),
+    Start(Input, i32),
     Move(i32),
     Stop,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Input {
+    Mouse,
+    Touch,
 }
 
 pub struct Slider {
@@ -74,6 +80,9 @@ pub struct Slider {
 
     mousemove: Option<EventListener>,
     mouseup: Option<EventListener>,
+    touchmove: Option<EventListener>,
+    touchend: Option<EventListener>,
+    touchcancel: Option<EventListener>,
 
     refs: Refs,
 }
@@ -98,9 +107,13 @@ impl Component for Slider {
 
         Self {
             value: percent,
+            refs: Default::default(),
+
             mousemove: None,
             mouseup: None,
-            refs: Default::default(),
+            touchmove: None,
+            touchend: None,
+            touchcancel: None,
         }
     }
 
@@ -116,9 +129,12 @@ impl Component for Slider {
                     return false;
                 }
             }
-            Msg::Start(x) => {
+            Msg::Start(input, x) => {
                 log::info!("Start: {x}");
-                self.start(ctx);
+                match input {
+                    Input::Mouse => self.start_mouse(ctx),
+                    Input::Touch => self.start_touch(ctx),
+                }
             }
             Msg::Move(x) => {
                 log::info!("Move: {x}");
@@ -128,6 +144,9 @@ impl Component for Slider {
                 log::info!("Stop");
                 self.mousemove = None;
                 self.mouseup = None;
+                self.touchmove = None;
+                self.touchend = None;
+                self.touchcancel = None;
             }
         }
         true
@@ -145,7 +164,16 @@ impl Component for Slider {
         let onmousedown = ctx.link().callback(|e: MouseEvent| {
             e.stop_propagation();
             e.prevent_default();
-            Msg::Start(e.client_x())
+            Msg::Start(Input::Mouse, e.client_x())
+        });
+
+        let ontouchstart = ctx.link().batch_callback(|e: TouchEvent| {
+            e.stop_propagation();
+            if let Some(t) = e.touches().get(0) {
+                vec![Msg::Start(Input::Touch, t.client_x())]
+            } else {
+                vec![]
+            }
         });
 
         html!(
@@ -162,6 +190,7 @@ impl Component for Slider {
                     }
                     <div class="pf-c-slider__thumb"
                         {onmousedown}
+                        {ontouchstart}
                         role="slider"
                         aria-valuemin={ctx.props().min.value.to_string()}
                         aria-valuemax={ctx.props().max.value.to_string()}
@@ -177,36 +206,80 @@ impl Component for Slider {
 }
 
 impl Slider {
-    fn start(&mut self, ctx: &Context<Self>) {
-        let mousemove = ctx.link().callback(|e: i32| Msg::Move(e));
-        let mousemove = EventListener::new_with_options(
-            &document(),
-            "mousemove",
-            EventListenerOptions::enable_prevent_default(),
-            move |event| {
-                if let Some(e) = event.dyn_ref::<MouseEvent>() {
-                    e.stop_propagation();
-                    e.prevent_default();
-                    mousemove.emit(e.client_x());
-                }
-            },
-        );
+    fn start_mouse(&mut self, ctx: &Context<Self>) {
+        let onmove = ctx.link().callback(|e: i32| Msg::Move(e));
+        let onstop = ctx.link().callback(|_: ()| Msg::Stop);
+
+        let mousemove = {
+            let onmove = onmove.clone();
+            EventListener::new_with_options(
+                &document(),
+                "mousemove",
+                EventListenerOptions::enable_prevent_default(),
+                move |event| {
+                    if let Some(e) = event.dyn_ref::<MouseEvent>() {
+                        e.stop_propagation();
+                        e.prevent_default();
+                        onmove.emit(e.client_x());
+                    }
+                },
+            )
+        };
         self.mousemove = Some(mousemove);
 
-        let mouseup = ctx.link().callback(|_: ()| Msg::Stop);
         let mouseup = EventListener::new_with_options(
             &document(),
             "mouseup",
-            EventListenerOptions::enable_prevent_default(),
-            move |event| {
-                if let Some(e) = event.dyn_ref::<MouseEvent>() {
-                    e.stop_propagation();
-                    e.prevent_default();
-                    mouseup.emit(());
-                }
+            EventListenerOptions::default(),
+            move |_| {
+                onstop.emit(());
             },
         );
         self.mouseup = Some(mouseup);
+    }
+
+    fn start_touch(&mut self, ctx: &Context<Self>) {
+        let onmove = ctx.link().callback(|e: i32| Msg::Move(e));
+        let onstop = ctx.link().callback(|_: ()| Msg::Stop);
+
+        let touchmove = EventListener::new_with_options(
+            &document(),
+            "touchmove",
+            EventListenerOptions::enable_prevent_default(),
+            move |event| {
+                if let Some(e) = event.dyn_ref::<TouchEvent>() {
+                    e.prevent_default();
+                    e.stop_immediate_propagation();
+                    if let Some(t) = e.touches().get(0) {
+                        onmove.emit(t.client_x());
+                    }
+                }
+            },
+        );
+        self.touchmove = Some(touchmove);
+
+        let touchend = {
+            let onstop = onstop.clone();
+            EventListener::new_with_options(
+                &document(),
+                "touchend",
+                EventListenerOptions::default(),
+                move |_| {
+                    onstop.emit(());
+                },
+            )
+        };
+        self.touchend = Some(touchend);
+
+        let touchcancel = EventListener::new_with_options(
+            &document(),
+            "touchcancel",
+            EventListenerOptions::default(),
+            move |_| {
+                onstop.emit(());
+            },
+        );
+        self.touchcancel = Some(touchcancel);
     }
 
     fn r#move(&mut self, ctx: &Context<Self>, x: i32) {
