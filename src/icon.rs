@@ -1,4 +1,5 @@
 use crate::AsClasses;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
 
@@ -128,5 +129,17 @@ fn pf(name: &str) -> [&str; 2] {
 impl From<Icon> for VNode {
     fn from(icon: Icon) -> Self {
         icon.as_html()
+    }
+}
+
+impl IntoPropValue<Html> for Icon {
+    fn into_prop_value(self) -> Html {
+        self.as_html()
+    }
+}
+
+impl IntoPropValue<Option<Html>> for Icon {
+    fn into_prop_value(self) -> Option<Html> {
+        Some(self.as_html())
     }
 }
