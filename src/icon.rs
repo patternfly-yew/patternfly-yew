@@ -51,7 +51,9 @@ macro_rules! icons {
 icons! {
     AngleDown => fas("fa-angle-down"),
     AngleLeft => fas("fa-angle-left"),
+    AngleDoubleLeft => fas("fa-angle-double-left"),
     AngleRight => fas("fa-angle-right"),
+    AngleDoubleRight => fas("fa-angle-double-right"),
     AngleUp => fas("fa-angle-up"),
 
     Bell => fas("fa-bell"),
