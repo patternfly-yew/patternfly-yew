@@ -6,20 +6,20 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
-    pub total_entries: Option<i32>,
+    pub total_entries: Option<u32>,
     #[prop_or_default]
-    pub offset: i32,
+    pub offset: u32,
     #[prop_or(vec![10,20,30])]
-    pub entries_per_page_choices: Vec<i32>,
+    pub entries_per_page_choices: Vec<u32>,
     #[prop_or(20)]
-    pub selected_choice: i32,
+    pub selected_choice: u32,
 
     // callback for the buttons
     #[prop_or_default]
     pub navigation_callback: Callback<Navigation>,
 
     #[prop_or_default]
-    pub limit_callback: Callback<i32>,
+    pub limit_callback: Callback<u32>,
 }
 
 pub enum Navigation {
@@ -27,7 +27,7 @@ pub enum Navigation {
     Previous,
     Next,
     Last,
-    Page(i32),
+    Page(u32),
 }
 
 pub struct Pagination {
@@ -39,13 +39,13 @@ pub struct Pagination {
 pub enum Msg {
     ToggleMenu,
     CloseMenu,
-    SetLimit(i32),
+    SetLimit(u32),
 
     First,
     Previous,
     Next,
     Last,
-    Page(String),
+    Page(u32),
 }
 
 impl Component for Pagination {
@@ -76,10 +76,7 @@ impl Component for Pagination {
             Msg::Previous => ctx.props().navigation_callback.emit(Navigation::Previous),
             Msg::Next => ctx.props().navigation_callback.emit(Navigation::Next),
             Msg::Last => ctx.props().navigation_callback.emit(Navigation::Last),
-            Msg::Page(num) => ctx
-                .props()
-                .navigation_callback
-                .emit(Navigation::Page(num.parse::<i32>().unwrap_or(1))),
+            Msg::Page(num) => ctx.props().navigation_callback.emit(Navigation::Page(num)),
         }
         true
     }
@@ -95,9 +92,9 @@ impl Component for Pagination {
         let max_page = ctx
             .props()
             .total_entries
-            .map(|m| (m as f32 / ctx.props().selected_choice as f32).ceil() as i32);
+            .map(|m| (m as f64 / ctx.props().selected_choice as f64).ceil() as u32);
         let current_page =
-            (ctx.props().offset as f32 / ctx.props().selected_choice as f32).ceil() as i32;
+            (ctx.props().offset as f64 / ctx.props().selected_choice as f64).ceil() as u32;
 
         let is_last_page = if let Some(max) = ctx.props().total_entries {
             ctx.props().offset + ctx.props().selected_choice > max
@@ -109,7 +106,7 @@ impl Component for Pagination {
             .props()
             .total_entries
             .map(|m| format!("{}", m))
-            .unwrap_or(String::from("unknown"));
+            .unwrap_or_else(|| String::from("unknown"));
         // +1 because humans don't count from 0 :)
         let showing = format!(
             "{} - {}",
@@ -122,7 +119,7 @@ impl Component for Pagination {
 
         // todo also add max page
         let page_number_field_validator = Validator::from(
-            |ctx: ValidationContext<String>| match ctx.value.parse::<i32>() {
+            |ctx: ValidationContext<String>| match ctx.value.parse::<u32>() {
                 Ok(value) => {
                     if value > 0 {
                         InputState::Default
@@ -138,8 +135,8 @@ impl Component for Pagination {
         let onchange_callback = {
             ctx.link().callback(move |input: String| {
                 match validator_clone.run(ValidationContext::from(input.clone())) {
-                    Some(InputState::Default) => Msg::Page(input),
-                    _ => Msg::Page(current_page.to_string())
+                    Some(InputState::Default) => Msg::Page(input.parse::<u32>().unwrap()),
+                    _ => Msg::Page(current_page + 1),
                 }
             })
         };
