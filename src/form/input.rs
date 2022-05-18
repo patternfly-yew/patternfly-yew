@@ -42,8 +42,11 @@ pub struct TextInputProps {
     #[prop_or_default]
     pub placeholder: String,
 
+    /// This event is triggered when the element loses focus.
     #[prop_or_default]
     pub onchange: Callback<String>,
+    /// This event is similar to the onchange event.
+    /// The difference is that the oninput event occurs immediately after the value of an element has changed.
     #[prop_or_default]
     pub oninput: Callback<String>,
     // Called when validation should occur

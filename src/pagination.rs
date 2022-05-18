@@ -1,5 +1,5 @@
 use crate::{
-    Button, GlobalClose, Icon, TextInput, ValidationContext, ValidationResult, Validator, Variant,
+    Button, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator, Variant,
 };
 use yew::prelude::*;
 
@@ -79,7 +79,7 @@ impl Component for Pagination {
             Msg::Page(num) => ctx
                 .props()
                 .navigation_callback
-                .emit(Navigation::Page(num.parse::<i32>().unwrap_or(0))),
+                .emit(Navigation::Page(num.parse::<i32>().unwrap_or(1))),
         }
         true
     }
@@ -120,15 +120,29 @@ impl Component for Pagination {
         let limit_choices = ctx.props().entries_per_page_choices.clone();
         let link = ctx.link().clone();
 
-        // FIXME: this must be of type Validator<std::string::String, validation::InputState> ?
-        // also add min and max page
-        let _page_number_field_validator =
-            Validator::from(
-                |ctx: ValidationContext<String>| match ctx.value.parse::<i32>() {
-                    Ok(_) => ValidationResult::ok(),
-                    Err(_) => ValidationResult::error("Must be a number"),
-                },
-            );
+        // todo also add max page
+        let page_number_field_validator = Validator::from(
+            |ctx: ValidationContext<String>| match ctx.value.parse::<i32>() {
+                Ok(value) => {
+                    if value > 0 {
+                        InputState::Default
+                    } else {
+                        InputState::Error
+                    }
+                }
+                Err(_) => InputState::Error,
+            },
+        );
+
+        let validator_clone = page_number_field_validator.clone();
+        let onchange_callback = {
+            ctx.link().callback(move |input: String| {
+                match validator_clone.run(ValidationContext::from(input.clone())) {
+                    Some(InputState::Default) => Msg::Page(input),
+                    _ => Msg::Page(current_page.to_string())
+                }
+            })
+        };
 
         return html! {
 
@@ -211,9 +225,8 @@ impl Component for Pagination {
                   <div class="pf-c-pagination__nav-page-select">
                     <TextInput
                       r#type="number"
-                      // fixme
-                      //validator={page_number_field_validator}
-                      oninput={ctx.link().callback(|input|Msg::Page(input))}
+                      validator={page_number_field_validator}
+                      onchange={onchange_callback}
                       value = {(current_page+1).to_string()}
                     />
                   {{
