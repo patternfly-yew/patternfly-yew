@@ -41,6 +41,8 @@ pub struct TextInputProps {
     pub r#type: String,
     #[prop_or_default]
     pub placeholder: String,
+    #[prop_or_default]
+    pub autofocus: bool,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -73,7 +75,12 @@ impl ValidatingComponentProperties<String> for TextInputProps {
 
 pub struct TextInput {
     value: Option<String>,
-    input_ref: NodeRef,
+    refs: Refs,
+}
+
+#[derive(Default)]
+struct Refs {
+    input: NodeRef,
 }
 
 pub enum TextInputMsg {
@@ -91,7 +98,7 @@ impl Component for TextInput {
 
         Self {
             value: None,
-            input_ref: Default::default(),
+            refs: Default::default(),
         }
     }
 
@@ -142,7 +149,7 @@ impl Component for TextInput {
 
         let (classes, aria_invalid) = self.input_state(ctx).convert(classes);
 
-        let input_ref = self.input_ref.clone();
+        let input_ref = self.refs.input.clone();
         let onchange = ctx.link().batch_callback(move |_| {
             input_ref
                 .cast::<HtmlInputElement>()
@@ -156,7 +163,7 @@ impl Component for TextInput {
 
         html! {
             <input
-                ref={self.input_ref.clone()}
+                ref={self.refs.input.clone()}
                 class={classes}
                 type={ctx.props().r#type.clone()}
                 name={ctx.props().name.clone()}
@@ -172,12 +179,19 @@ impl Component for TextInput {
                 />
         }
     }
+
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
+        if first_render && ctx.props().autofocus {
+            self.focus();
+        }
+    }
 }
 
 impl TextInput {
     /// Extract the current value from the input element
     fn extract_value(&self) -> Option<String> {
-        self.input_ref
+        self.refs
+            .input
             .cast::<HtmlInputElement>()
             .map(|input| input.value())
     }
@@ -186,6 +200,12 @@ impl TextInput {
         self.value
             .clone()
             .unwrap_or_else(|| ctx.props().value.clone())
+    }
+
+    fn focus(&self) {
+        if let Some(input) = self.refs.input.cast::<HtmlInputElement>() {
+            input.focus().ok();
+        }
     }
 
     /// Get the effective input state
