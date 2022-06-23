@@ -43,6 +43,8 @@ pub struct TextInputProps {
     pub placeholder: String,
     #[prop_or_default]
     pub autofocus: bool,
+    #[prop_or_default]
+    pub form: Option<String>,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -174,6 +176,7 @@ impl Component for TextInput {
                 aria-invalid={aria_invalid.to_string()}
                 value={value}
                 placeholder={ctx.props().placeholder.clone()}
+                form={ctx.props().form.clone()}
                 onchange={onchange}
                 oninput={oninput}
                 />

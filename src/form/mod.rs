@@ -46,6 +46,11 @@ pub struct Props {
     pub horizontal: WithBreakpoints<FormHorizontal>,
 
     #[prop_or_default]
+    pub action: Option<String>,
+    #[prop_or_default]
+    pub method: Option<String>,
+
+    #[prop_or_default]
     pub limit_width: bool,
 
     #[prop_or_default]
@@ -204,7 +209,13 @@ impl Component for Form {
 
         html! (
             <ContextProvider<ValidationFormContext> context={validation_context} >
-                <form novalidate=true class={classes} id={ctx.props().id.clone()}>
+                <form
+                    novalidate=true
+                    class={classes}
+                    id={ctx.props().id.clone()}
+                    action={ctx.props().action.clone()}
+                    method={ctx.props().method.clone()}
+                >
 
                     if let Some(alert) = alert {
                         <div class="pf-c-form__alert">

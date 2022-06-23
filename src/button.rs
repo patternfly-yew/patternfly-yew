@@ -86,6 +86,11 @@ pub struct Props {
     pub r#type: String,
 
     #[prop_or_default]
+    pub form: Option<String>,
+    #[prop_or_default]
+    pub formaction: Option<String>,
+
+    #[prop_or_default]
     pub role: Option<String>,
 
     #[prop_or_default]
@@ -151,6 +156,8 @@ impl Component for Button {
                 type={ctx.props().r#type.clone()}
                 onclick={ctx.link().callback(Msg::Clicked)}
                 role={ctx.props().role.clone().unwrap_or_default()}
+                form={ctx.props().form.clone()}
+                formaction={ctx.props().formaction.clone()}
             >
 
                 { self.label(ctx) }
