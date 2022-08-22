@@ -1,8 +1,7 @@
 use crate::Orientation;
-
-use wasm_bindgen::prelude::*;
-
+use gloo_utils::format::JsValueSerdeExt;
 use serde_json::json;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "/src/js/popperjs.js")]
 extern "C" {

@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -11,7 +11,7 @@ keywords = ["yew", "patternfly", "web", "html"]
 readme = "README.md"
 
 [dependencies]
-wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 
 serde = "1"
@@ -38,13 +38,15 @@ chrono = { version = "0.4", features = ["wasmbind"] }
 
 log = "0.4"
 
-strum = "0.19"
-strum_macros = "0.19"
+strum = "0.24"
+strum_macros = "0.24"
 
-uuid = { version = "0.8", features = ["v4", "wasm-bindgen"] }
-gloo-events = "0.1"
-gloo-timers = "0.2"
-gloo-utils = "0.1"
+uuid = { version = "1", features = ["v4"] }
+getrandom = { version = "0.2", features = ["js"] }
+
+gloo-events = "0.1.2"
+gloo-timers = "0.2.4"
+gloo-utils = "0.1.5"
 
 [features]
 default = ["router"]
