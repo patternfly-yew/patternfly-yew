@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -41,8 +41,7 @@ log = "0.4"
 strum = "0.24"
 strum_macros = "0.24"
 
-uuid = { version = "1", features = ["v4"] }
-getrandom = { version = "0.2", features = ["js"] }
+uuid = { version = "1", features = ["v4", "js"] }
 
 gloo-events = "0.1.2"
 gloo-timers = "0.2.4"
