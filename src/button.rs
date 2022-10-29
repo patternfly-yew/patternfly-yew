@@ -1,4 +1,4 @@
-use crate::Icon;
+use crate::{Icon, Spinner, SpinnerSize};
 use web_sys::HtmlElement;
 use yew::prelude::*;
 
@@ -80,6 +80,9 @@ pub struct Props {
     pub block: bool,
 
     #[prop_or_default]
+    pub loading: bool,
+
+    #[prop_or_default]
     pub aria_label: Option<String>,
 
     #[prop_or("button".into())]
@@ -145,6 +148,9 @@ impl Component for Button {
         if ctx.props().block {
             classes.push("pf-m-block");
         }
+        if ctx.props().loading {
+            classes.push("pf-m-progress pf-m-in-progress")
+        }
 
         return html! {
             <button
@@ -159,6 +165,11 @@ impl Component for Button {
                 form={ctx.props().form.clone()}
                 formaction={ctx.props().formaction.clone()}
             >
+                if ctx.props().loading {
+                    <span class="pf-c-button__progress">
+                        <Spinner svg=false size={SpinnerSize::Md} />
+                    </span>
+                }
 
                 { self.label(ctx) }
                 { for ctx.props().children.iter() }
