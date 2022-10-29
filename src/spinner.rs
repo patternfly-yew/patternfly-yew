@@ -33,6 +33,8 @@ pub struct Props {
     pub diameter: String,
     #[prop_or(String::from("Loading..."))]
     pub aria_label: String,
+    #[prop_or(true)]
+    pub svg: bool,
 }
 
 pub struct Spinner;
@@ -57,15 +59,27 @@ impl Component for Spinner {
         };
 
         html! {
-            <svg
-                class={classes}
-                role="progressbar"
-                viewBox="0 0 100 100"
-                aria-label={ ctx.props().aria_label.clone() }
-                { style }
-            >
-                <circle class="pf-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
-            </svg>
+            if ctx.props().svg {
+                <svg
+                    class={classes}
+                    role="progressbar"
+                    viewBox="0 0 100 100"
+                    aria-label={ ctx.props().aria_label.clone() }
+                    { style }
+                >
+                    <circle class="pf-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
+                </svg>
+            } else {
+                <span
+                    class={classes}
+                    role="progressbar"
+                    aria-label={ ctx.props().aria_label.clone() }
+                >
+                    <span class="pf-c-spinner__clipper"></span>
+                    <span class="pf-c-spinner__lead-ball"></span>
+                    <span class="pf-c-spinner__tail-ball"></span>
+                </span>
+            }
         }
     }
 }
