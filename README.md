@@ -1,4 +1,4 @@
-# Patternfly components for Yew
+# PatternFly components for Yew
 
 [![crates.io](https://img.shields.io/crates/v/patternfly-yew.svg)](https://crates.io/crates/patternfly-yew)
 [![docs.rs](https://docs.rs/patternfly-yew/badge.svg)](https://docs.rs/patternfly-yew)
