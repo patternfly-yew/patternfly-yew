@@ -45,6 +45,8 @@ pub struct TextInputProps {
     pub autofocus: bool,
     #[prop_or_default]
     pub form: Option<String>,
+    #[prop_or_default]
+    pub autocomplete: Option<String>,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -177,6 +179,7 @@ impl Component for TextInput {
                 value={value}
                 placeholder={ctx.props().placeholder.clone()}
                 form={ctx.props().form.clone()}
+                autocomplete={ctx.props().autocomplete.clone()}
                 onchange={onchange}
                 oninput={oninput}
                 />
