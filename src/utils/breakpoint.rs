@@ -55,7 +55,7 @@ pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
 where
     T: Clone + Debug + PartialEq;
 
-impl<T> std::default::Default for WithBreakpoints<T>
+impl<T> Default for WithBreakpoints<T>
 where
     T: Clone + Debug + PartialEq,
 {
