@@ -2,25 +2,29 @@ use yew::prelude::*;
 
 #[derive(PartialEq)]
 pub enum SpinnerSize {
+    None,
     Sm,
     Md,
     Lg,
     Xl,
+    Custom(String),
 }
 
 impl Default for SpinnerSize {
     fn default() -> Self {
-        Self::Xl
+        Self::None
     }
 }
 
 impl SpinnerSize {
     pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
+            Self::None => Vec::new(),
             Self::Sm => vec!["pf-m-sm"],
             Self::Md => vec!["pf-m-md"],
             Self::Lg => vec!["pf-m-lg"],
             Self::Xl => vec!["pf-m-xl"],
+            Self::Custom(_) => Vec::new(),
         }
     }
 }
@@ -29,8 +33,6 @@ impl SpinnerSize {
 pub struct Props {
     #[prop_or_default]
     pub size: SpinnerSize,
-    #[prop_or_default]
-    pub diameter: String,
     #[prop_or(String::from("Loading..."))]
     pub aria_label: String,
     #[prop_or(true)]
@@ -51,8 +53,7 @@ impl Component for Spinner {
         let mut classes = Classes::from("pf-c-spinner");
         classes.extend(ctx.props().size.as_classes());
 
-        let diameter = ctx.props().diameter.clone();
-        let style = if !diameter.is_empty() {
+        let style = if let SpinnerSize::Custom(diameter) = &ctx.props().size {
             format!("--pf-c-spinner--diameter: {};", diameter)
         } else {
             String::new()
