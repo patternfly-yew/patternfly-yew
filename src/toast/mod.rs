@@ -333,10 +333,10 @@ impl ToastViewer {
     }
 
     fn cleanup(&mut self, ctx: &Context<Self>) -> bool {
+        let now = Self::now();
+
         self.task = None;
         self.trigger_next_cleanup(ctx);
-
-        let now = Self::now();
 
         self.retain_alert(|alert| {
             if let Some(timeout) = alert.timeout {
