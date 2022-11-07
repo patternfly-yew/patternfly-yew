@@ -167,7 +167,7 @@ impl Component for Button {
             >
                 if ctx.props().loading {
                     <span class="pf-c-button__progress">
-                        <Spinner svg=false size={SpinnerSize::Md} />
+                        <Spinner size={SpinnerSize::Md} />
                     </span>
                 }
 
