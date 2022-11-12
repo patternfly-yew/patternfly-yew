@@ -163,14 +163,11 @@ impl Component for Button {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes: Classes = ctx
-            .props()
-            .class
-            .as_ref()
-            .map(|s| s.into())
-            .unwrap_or_else(|| Classes::from("pf-c-button"));
 
-        classes.extend(ctx.props().variant.as_classes());
+        let mut classes: Classes = classes!(
+            "pf-c-button",
+            ctx.props().class.clone(),
+            ctx.props().variant.as_classes());
 
         if ctx.props().expanded {
             classes.push("pf-m-expanded");
