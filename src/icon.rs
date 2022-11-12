@@ -56,6 +56,11 @@ icons! {
     AngleDoubleRight => fas("fa-angle-double-right"),
     AngleUp => fas("fa-angle-up"),
 
+    ArrowDown => fas("fa-arrow-down"),
+    ArrowLeft => fas("fa-arrow-left"),
+    ArrowRight => fas("fa-arrow-right"),
+    ArrowUp => fas("fa-arrow-up"),
+
     Bell => fas("fa-bell"),
 
     CaretDown => fas("fa-caret-down"),
