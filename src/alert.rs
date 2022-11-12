@@ -1,4 +1,4 @@
-use crate::{Action, Button, Icon, Variant};
+use crate::{Action, Icon, button::{Button, Variant}};
 
 use yew::prelude::*;
 

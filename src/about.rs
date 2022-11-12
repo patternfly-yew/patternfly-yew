@@ -1,4 +1,4 @@
-use crate::{BackdropDispatcher, Button, Icon, Variant};
+use crate::{BackdropDispatcher, Icon, button::{Button, Variant}};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]

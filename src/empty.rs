@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::{Action, Button, Icon, Size, Title, Variant};
+use crate::{Action, Icon, Size, Title, button::{Button, Variant}};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

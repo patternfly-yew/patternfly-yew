@@ -1,6 +1,8 @@
 use crate::{Icon, Spinner, SpinnerSize};
 use web_sys::HtmlElement;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
+use yew::virtual_dom::AttrValue;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Variant {
@@ -53,6 +55,37 @@ impl Default for Align {
     }
 }
 
+/// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type
+#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+pub enum Type {
+    Submit,
+    Reset,
+    Button
+}
+
+impl Default for Type {
+    fn default() -> Self {
+        Type::Button
+    }
+}
+
+impl ToString for Type {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Submit => "submit",
+            Self::Reset => "reset",
+            Self::Button => "button",
+        }
+            .into()
+    }
+}
+
+impl IntoPropValue<Option<AttrValue>> for Type {
+    fn into_prop_value(self) -> Option<AttrValue> {
+        Some(self.to_string().into())
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
@@ -85,8 +118,8 @@ pub struct Props {
     #[prop_or_default]
     pub aria_label: Option<String>,
 
-    #[prop_or("button".into())]
-    pub r#type: String,
+    #[prop_or_default]
+    pub r#type: Type,
 
     #[prop_or_default]
     pub form: Option<String>,

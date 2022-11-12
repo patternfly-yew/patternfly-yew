@@ -1,4 +1,4 @@
-use crate::{Avatar, Button, Divider, GlobalClose, Icon, Position, Variant};
+use crate::{Avatar, Divider, GlobalClose, Icon, Position, button::{Button, Type, Variant}};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -90,7 +90,7 @@ impl Component for Dropdown {
                     class="pf-c-dropdown__toggle"
                     style={ctx.props().toggle_style.clone()}
                     variant={variant}
-                    r#type="button"
+                    r#type={Type::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     id={ctx.props().id.clone()}

@@ -1,4 +1,4 @@
-use crate::{Badge, Button, Divider, GlobalClose, Icon, Variant};
+use crate::{Badge, Divider, GlobalClose, Icon, button::{Button, Type, Variant}};
 use std::cell::Cell;
 use std::fmt::{Debug, Display};
 use std::marker::PhantomData;
@@ -117,7 +117,7 @@ where
                 <Button
                     class="pf-c-select__toggle"
                     variant={variant}
-                    r#type="button"
+                    r#type={Type::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     id={ctx.props().id.clone()}
