@@ -13,7 +13,7 @@ pub use select::*;
 use std::collections::BTreeMap;
 pub use validation::*;
 
-use crate::{Alert, Button, Type, WithBreakpoints};
+use crate::{Alert, Type, WithBreakpoints, button::Button};
 use std::fmt::{Display, Formatter};
 use yew::prelude::*;
 

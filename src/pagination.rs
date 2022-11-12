@@ -1,5 +1,5 @@
 use crate::{
-    Button, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator, Variant,
+    GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator, button::{Button, Variant},
 };
 use yew::prelude::*;
 
