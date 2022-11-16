@@ -1,4 +1,4 @@
-use crate::{Avatar, Divider, GlobalClose, Icon, Position, button::{Button, ButtonType, Variant}};
+use crate::{Avatar, Button, ButtonType, Divider, GlobalClose, Icon, Position, Variant};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
