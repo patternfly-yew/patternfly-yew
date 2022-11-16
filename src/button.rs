@@ -57,19 +57,19 @@ impl Default for Align {
 
 /// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
-pub enum Type {
+pub enum ButtonType {
     Submit,
     Reset,
     Button
 }
 
-impl Default for Type {
+impl Default for ButtonType {
     fn default() -> Self {
-        Type::Button
+        ButtonType::Button
     }
 }
 
-impl ToString for Type {
+impl ToString for ButtonType {
     fn to_string(&self) -> String {
         match self {
             Self::Submit => "submit",
@@ -80,7 +80,7 @@ impl ToString for Type {
     }
 }
 
-impl IntoPropValue<Option<AttrValue>> for Type {
+impl IntoPropValue<Option<AttrValue>> for ButtonType {
     fn into_prop_value(self) -> Option<AttrValue> {
         Some(self.to_string().into())
     }
@@ -119,7 +119,7 @@ pub struct Props {
     pub aria_label: Option<String>,
 
     #[prop_or_default]
-    pub r#type: Type,
+    pub r#type: ButtonType,
 
     #[prop_or_default]
     pub form: Option<String>,

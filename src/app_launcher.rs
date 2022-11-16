@@ -1,4 +1,4 @@
-use crate::{Divider, GlobalClose, Icon, Position, button::{Button, Type}};
+use crate::{Button, ButtonType, Divider, GlobalClose, Icon, Position};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -74,7 +74,7 @@ impl Component for AppLauncher {
                 >
                 <Button
                     class="pf-c-app-launcher__toggle"
-                    r#type={Type::Button}
+                    r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     >
