@@ -163,7 +163,6 @@ impl Component for Button {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-
         let mut classes: Classes = classes!(
             "pf-c-button",
             ctx.props().class.clone(),
