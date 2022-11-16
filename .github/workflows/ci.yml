@@ -12,18 +12,12 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-      
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -32,13 +26,15 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Check rustfmt
+        run:
+          cargo fmt --all -- --check
+
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+        run: |
+          cargo build --release
+
       - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --release
+        run: |
+          cargo test --release
