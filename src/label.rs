@@ -1,4 +1,4 @@
-use crate::{Icon, button::{Button, Variant}};
+use crate::{Button, Icon, Variant};
 use yew::prelude::*;
 
 use strum_macros::{Display, EnumIter, EnumString};
