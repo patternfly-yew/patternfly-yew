@@ -98,7 +98,7 @@ pub struct Props {
     #[prop_or_default]
     pub label: String,
     #[prop_or_default]
-    pub onclick: Callback<yew::MouseEvent>,
+    pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
     pub variant: Variant,
     #[prop_or_default]
