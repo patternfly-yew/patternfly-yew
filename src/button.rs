@@ -60,7 +60,7 @@ impl Default for Align {
 pub enum ButtonType {
     Submit,
     Reset,
-    Button
+    Button,
 }
 
 impl Default for ButtonType {
@@ -76,7 +76,7 @@ impl ToString for ButtonType {
             Self::Reset => "reset",
             Self::Button => "button",
         }
-            .into()
+        .into()
     }
 }
 
@@ -169,7 +169,8 @@ impl Component for Button {
         let mut classes: Classes = classes!(
             "pf-c-button",
             ctx.props().class.clone(),
-            ctx.props().variant.as_classes());
+            ctx.props().variant.as_classes()
+        );
 
         if ctx.props().expanded {
             classes.push("pf-m-expanded");
