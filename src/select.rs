@@ -366,9 +366,6 @@ where
     pub description: Option<String>,
 
     #[prop_or_default]
-    pub selected: bool,
-
-    #[prop_or_default]
     pub onclick: Option<Callback<K>>,
 
     #[prop_or_default]
@@ -392,6 +389,7 @@ where
 {
     default_id: Cell<Option<String>>,
     _marker: PhantomData<K>,
+    selected: bool,
 }
 
 impl<K> Component for SelectOption<K>
@@ -405,6 +403,7 @@ where
         Self {
             default_id: Default::default(),
             _marker: Default::default(),
+            selected: false,
         }
     }
 
@@ -412,6 +411,7 @@ where
         match msg {
             Self::Message::Clicked => {
                 log::info!("Clicked on: {:?}", ctx.props().value);
+                self.selected = !self.selected;
                 if let Some(onclick) = &ctx.props().onclick {
                     // if we have a click handler, we don't send the default handling
                     onclick.emit(ctx.props().value.clone());
@@ -444,7 +444,7 @@ where
     fn render_button(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-select__menu-item");
 
-        if ctx.props().selected {
+        if self.selected {
             classes.push("pf-m-selected");
         }
 
@@ -481,15 +481,7 @@ where
     }
 
     fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-check pf-c-select__menu-item");
-
-        if ctx.props().selected {
-            classes.push("pf-m-selected");
-        }
-
-        if ctx.props().description.is_some() {
-            classes.push("pf-m-description");
-        }
+        let classes = Classes::from("pf-c-check pf-c-select__menu-item");
 
         let id = ctx.props().id.clone().unwrap_or_else(|| {
             let id = self
@@ -509,16 +501,27 @@ where
                     id={id}
                     class="pf-c-check__input"
                     type="checkbox"
-                    checked={ctx.props().selected}
+                    checked={self.selected}
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     />
                 <span class="pf-c-check__label">{ &ctx.props().value }</span>
+
+                {if let Some(description) = &ctx.props().description {
+                        html!{
+                            <>
+                            <span class="pf-c-check__description">{&description}</span>
+                            </>
+                        }
+                    }
+                    else {
+                        html! {}
+                }}
             </label>
         };
     }
 
-    fn render_selected(&self, ctx: &Context<Self>) -> Html {
-        return if ctx.props().selected {
+    fn render_selected(&self, _: &Context<Self>) -> Html {
+        return if self.selected {
             html! {
                 <span class="pf-c-select__menu-item-icon">{ Icon::Check }</span>
             }
