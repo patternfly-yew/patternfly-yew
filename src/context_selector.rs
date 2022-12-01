@@ -68,6 +68,7 @@ impl Component for ContextSelector {
                 <button
                     class="pf-c-context-selector__toggle"
                     aria-expanded={self.expanded.to_string()}
+                    type="button"
                     onclick={ctx.link().callback(|_|Msg::Toggle)}
                 >
                     <span class="pf-c-context-selector__toggle-text">{&ctx.props().selected}</span>
