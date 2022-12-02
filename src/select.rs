@@ -24,6 +24,19 @@ impl<K> Default for SelectVariant<K> {
     }
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum BadgeVariant {
+    None,
+    Count,
+    Values,
+}
+
+impl Default for BadgeVariant {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
     #[prop_or_default]
@@ -45,6 +58,9 @@ pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
 
     #[prop_or_default]
     pub variant: SelectVariant<K>,
+
+    #[prop_or_default]
+    pub badge: BadgeVariant,
 
     #[prop_or_default]
     pub children: ChildrenRenderer<SelectChildVariant<K>>,
@@ -165,9 +181,25 @@ where
                 return html! {
                     <>
                         <span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>
-                        <div class="pf-c-select__toggle_badge">
-                            <Badge read=true>{selection.len()}</Badge>
-                        </div>
+                            { match &ctx.props().badge {
+                                BadgeVariant::None => html!{},
+                                BadgeVariant::Count => {
+                                  html! {
+                                    <div class="pf-c-select__toggle_badge">
+                                      <Badge read=true>{selection.len()}</Badge>
+                                    </div>
+                                  }
+                                },
+                                BadgeVariant::Values => {
+                                  html!{ <>
+                                      { selection.iter().map(|b| {
+                                          html!{<Badge read=true>{b}</Badge>}
+                                        }).collect::<Html>()
+                                      }
+                                  </>}
+                               }
+                            }}
+
                     </>
                 };
             }
