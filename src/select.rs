@@ -1,4 +1,4 @@
-use crate::{Badge, Button, ButtonType, Divider, GlobalClose, Icon, Variant};
+use crate::{Button, ButtonType, Chip, Divider, GlobalClose, Icon, Variant};
 use std::cell::Cell;
 use std::fmt::{Debug, Display};
 use std::marker::PhantomData;
@@ -25,13 +25,13 @@ impl<K> Default for SelectVariant<K> {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum BadgeVariant {
+pub enum ChipVariant {
     None,
     Count,
     Values,
 }
 
-impl Default for BadgeVariant {
+impl Default for ChipVariant {
     fn default() -> Self {
         Self::None
     }
@@ -60,7 +60,7 @@ pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
     pub variant: SelectVariant<K>,
 
     #[prop_or_default]
-    pub badge: BadgeVariant,
+    pub chip: ChipVariant,
 
     #[prop_or_default]
     pub children: ChildrenRenderer<SelectChildVariant<K>>,
@@ -181,19 +181,26 @@ where
                 return html! {
                     <>
                         <span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>
-                            { match &ctx.props().badge {
-                                BadgeVariant::None => html!{},
-                                BadgeVariant::Count => {
+                            { match &ctx.props().chip {
+                                ChipVariant::None => html!{},
+                                ChipVariant::Count => {
                                   html! {
                                     <div class="pf-c-select__toggle_badge">
-                                      <Badge read=true>{selection.len()}</Badge>
+                                      <Chip text={selection.len().to_string()}/>
                                     </div>
                                   }
                                 },
-                                BadgeVariant::Values => {
+                                ChipVariant::Values => {
                                   html!{ <>
                                       { selection.iter().map(|b| {
-                                          html!{<Badge read=true>{b}</Badge>}
+                                         let link = {
+                                            let b = b.clone();
+                                            ctx.link().callback(move |()|Msg::Clicked(b.clone()))
+                                          };
+                                          html!{<Chip
+                                                  text={b.to_string()}
+                                                  onclose={link}
+                                                 />}
                                         }).collect::<Html>()
                                       }
                                   </>}
