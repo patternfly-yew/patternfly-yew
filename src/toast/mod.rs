@@ -2,13 +2,8 @@ use crate::{Action, Alert, AlertGroup, Type};
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
 use gloo_timers::callback::Timeout;
-use std::{
-    collections::{BinaryHeap, HashSet},
-    time::Duration,
-};
-use web_sys::window;
+use std::{collections::BinaryHeap, time::Duration};
 use yew::{prelude::*, virtual_dom::VChild};
-use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, HandlerId};
 
 /// Toasts are small alerts that get shown on the top right corner of the page.
 ///
@@ -22,42 +17,27 @@ use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, Handl
 /// ```
 /// # use yew::prelude::*;
 /// # use patternfly_yew::*;
-/// pub struct App{
-/// };
-/// pub enum Msg {
-///   Toast(Toast),
-/// }
-/// # impl Component for App {
-/// type Message = Msg;
-/// # type Properties = ();
-/// # fn create(_:&Context<Self>) -> Self {
-/// #   unimplemented!()
-/// # }
-///
-/// fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
-///   match msg {
-///     Msg::Toast(toast) => {
-///       ToastDispatcher::new().toast(toast);
-///       false
-///     }
-///   }
-/// }
-///
-/// fn view(&self, ctx: &Context<Self>) -> Html {
-///  html!{
+/// #[function_component(App)]
+/// fn app() -> Html {
+///   html! {
 ///     <>
-///       <ToastViewer/>
-///       <div>
-///         <button onclick={ctx.link().callback(|_|{
-///             Msg::Toast("Toast Title".into())
-///         })}>
-///           { "Click me" }  
-///         </button>
-///       </div>
+///       <ToastViewer>
+///         <View/>
+///       </ToastViewer>
 ///     </>
 ///   }
 /// }
-/// # }
+/// #[function_component(View)]
+/// fn view() -> Html {
+///   let toaster = use_toaster().expect("Must be nested under a ToastViewer component");
+///   html!{
+///     <div>
+///       <button onclick={move |_| toaster.toast("Toast Title".into())}>
+///         { "Click me" }  
+///       </button>
+///     </div>
+///   }
+/// }
 /// ```
 #[derive(Clone, Debug, Default)]
 pub struct Toast {
@@ -96,103 +76,22 @@ pub enum ToastAction {
 }
 
 /// An agent for displaying toasts.
+#[derive(Clone, PartialEq)]
 pub struct Toaster {
-    link: AgentLink<Self>,
-    /// The toast viewer.
-    ///
-    /// While we can handle more than one, we will only send toasts to one viewer. Registering
-    /// more than one viewer will produce unexpected results.
-    viewer: HashSet<HandlerId>,
-}
-
-impl Agent for Toaster {
-    type Reach = yew_agent::Context<Self>;
-    type Message = ();
-    type Input = ToasterRequest;
-    type Output = ToastAction;
-
-    fn create(link: AgentLink<Self>) -> Self {
-        Self {
-            link,
-            viewer: HashSet::new(),
-        }
-    }
-
-    fn update(&mut self, _: Self::Message) {}
-
-    fn connected(&mut self, id: HandlerId) {
-        if id.is_respondable() {
-            self.viewer.insert(id);
-        }
-    }
-
-    fn handle_input(&mut self, msg: Self::Input, _: HandlerId) {
-        match msg {
-            ToasterRequest::Toast(msg) => {
-                self.show_toast(msg);
-            }
-        }
-    }
-
-    fn disconnected(&mut self, id: HandlerId) {
-        if id.is_respondable() {
-            self.viewer.remove(&id);
-        }
-    }
+    callback: Callback<ToastAction>,
 }
 
 impl Toaster {
-    fn show_toast(&self, toast: Toast) {
-        let viewer = self.viewer.iter().next();
-        if let Some(viewer) = viewer {
-            self.link.respond(*viewer, ToastAction::ShowToast(toast));
-        } else {
-            window()
-                .unwrap()
-                .alert_with_message(&format!(
-                    "Dropped toast. No toast component registered. Message was: {}",
-                    toast.title
-                ))
-                .ok();
-        }
-    }
-}
-
-/// Client to the toast agent which can be used to request toasts.
-pub struct ToastDispatcher(Dispatcher<Toaster>);
-
-impl ToastDispatcher {
-    pub fn new() -> Self {
-        ToastDispatcher(Toaster::dispatcher())
-    }
-
-    /// Request a toast from the toast agent.
-    pub fn toast(&mut self, toast: Toast) {
-        self.0.send(ToasterRequest::Toast(toast))
-    }
-}
-
-impl Default for ToastDispatcher {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-/// A client for implementing a toast viewer.
-///
-/// This is used by the (ToastViewer)[`ToastViewer`]. It is only needed if you want to implement
-/// your own toast viewer.
-pub struct ToastBridge(Box<dyn Bridge<Toaster>>);
-
-impl ToastBridge {
-    pub fn new(callback: Callback<<Toaster as Agent>::Output>) -> Self {
-        let router_agent = Toaster::bridge(callback);
-        ToastBridge(router_agent)
+    /// Request a toast from the toast viewer.
+    pub fn toast(&self, toast: Toast) {
+        self.callback.emit(ToastAction::ShowToast(toast))
     }
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {}
+pub struct Props {
+    pub children: Children,
+}
 
 pub struct ToastEntry {
     id: usize,
@@ -205,8 +104,8 @@ pub struct ToastEntry {
 /// Exactly one instance is required in your page in order to actually show the toasts. The instance
 /// must be on the body level of the HTML document.
 pub struct ToastViewer {
+    context: Toaster,
     alerts: Vec<ToastEntry>,
-    _bridge: ToastBridge,
     counter: usize,
 
     task: Option<Timeout>,
@@ -224,12 +123,11 @@ impl Component for ToastViewer {
     type Properties = Props;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let bridge = ToastBridge::new(
-            ctx.link()
-                .callback(|action| ToastViewerMsg::Perform(action)),
-        );
+        let context = Toaster {
+            callback: ctx.link().callback(ToastViewerMsg::Perform),
+        };
         Self {
-            _bridge: bridge,
+            context,
             alerts: Vec::new(),
             counter: 0,
             task: None,
@@ -245,11 +143,16 @@ impl Component for ToastViewer {
         }
     }
 
-    fn view(&self, _: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let context = self.context.clone();
+
         html! {
-            <AlertGroup toast=true>
-                { for self.alerts.iter().map(|entry|entry.alert.clone()) }
-            </AlertGroup>
+            <ContextProvider<Toaster> {context}>
+                <AlertGroup toast=true>
+                    { for self.alerts.iter().map(|entry|entry.alert.clone()) }
+                </AlertGroup>
+                { for ctx.props().children.iter() }
+            </ContextProvider<Toaster>>
         }
     }
 }
@@ -355,4 +258,10 @@ impl ToastViewer {
         self.alerts.retain(f);
         before != self.alerts.len()
     }
+}
+
+/// Get a [`Toaster`] context.
+#[hook]
+pub fn use_toaster() -> Option<Toaster> {
+    use_context()
 }

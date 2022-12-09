@@ -89,7 +89,7 @@ impl IntoPropValue<Option<AttrValue>> for ButtonType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     #[prop_or_default]
-    pub id: String,
+    pub id: Option<String>,
     #[prop_or_default]
     pub class: Option<String>,
     #[prop_or_default]
@@ -187,11 +187,11 @@ impl Component for Button {
                 ref={self.node_ref.clone()}
                 id={ctx.props().id.clone()}
                 class={classes}
-                style={ctx.props().style.as_ref().cloned().unwrap_or_default()}
+                style={ctx.props().style.clone()}
                 disabled={ctx.props().disabled}
                 type={ctx.props().r#type.clone()}
                 onclick={ctx.link().callback(Msg::Clicked)}
-                role={ctx.props().role.clone().unwrap_or_default()}
+                role={ctx.props().role.clone()}
                 form={ctx.props().form.clone()}
                 formaction={ctx.props().formaction.clone()}
             >

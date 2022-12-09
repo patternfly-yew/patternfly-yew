@@ -1,9 +1,11 @@
-#[cfg(feature = "router")]
+#[cfg(feature = "yew-nested-router")]
 mod router;
-#[cfg(feature = "router")]
-pub use router::*;
 
-use crate::Icon;
+#[cfg(feature = "yew-nested-router")]
+pub use router::*;
+use std::collections::HashSet;
+
+use crate::{Icon, Id};
 use std::fmt::Debug;
 use yew::prelude::*;
 
@@ -107,6 +109,17 @@ pub fn nav_item(props: &NavItemProps) -> Html {
     };
 }
 
+#[derive(Clone, PartialEq)]
+pub struct Expandable {
+    callback: Callback<(Id, bool)>,
+}
+
+impl Expandable {
+    pub fn state(&self, id: Id, active: bool) {
+        self.callback.emit((id, active));
+    }
+}
+
 // nav expandable
 
 #[derive(Clone, PartialEq, Properties)]
@@ -122,11 +135,14 @@ pub struct NavExpandableProps {
 /// Expandable navigation group/section.
 pub struct NavExpandable {
     expanded: Option<bool>,
+    context: Expandable,
+    active: HashSet<Id>,
 }
 
 #[derive(Clone, Debug)]
 pub enum MsgExpandable {
     Toggle,
+    ChildState(Id, bool),
 }
 
 impl Component for NavExpandable {
@@ -139,7 +155,17 @@ impl Component for NavExpandable {
             false => None,
         };
 
-        Self { expanded }
+        log::debug!("Creating new NavExpandable");
+
+        let callback = ctx
+            .link()
+            .callback(|(id, state)| MsgExpandable::ChildState(id, state));
+
+        Self {
+            expanded,
+            active: Default::default(),
+            context: Expandable { callback },
+        }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -147,15 +173,33 @@ impl Component for NavExpandable {
             MsgExpandable::Toggle => {
                 self.expanded = Some(!self.is_expanded(ctx));
             }
+            MsgExpandable::ChildState(id, state) => match state {
+                true => {
+                    self.active.insert(id);
+                }
+                false => {
+                    self.active.remove(&id);
+                }
+            },
         }
         true
     }
 
-    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
         if ctx.props().expanded {
             self.expanded = Some(true);
         }
         true
+    }
+
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
+        if first_render {
+            if self.expanded.is_none() && self.is_expanded(ctx) {
+                // if this is the first render, and we are expanded, we want to stay that way.
+                // Unless a user explicitly toggles.
+                self.expanded = Some(true);
+            }
+        }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
@@ -167,33 +211,50 @@ impl Component for NavExpandable {
             classes.push("pf-m-expanded");
         }
 
-        return html! {
-            <li class={classes}>
-                <button
-                    class="pf-c-nav__link"
-                    aria-expanded={expanded.to_string()}
-                    onclick={ctx.link().callback(|_|MsgExpandable::Toggle)}
-                    >
-                    { &ctx.props().title }
-                    <span class="pf-c-nav__toggle">
-                        <span class="pf-c-nav__toggle-icon">
-                            { Icon::AngleRight }
-                        </span>
-                    </span>
-                </button>
+        let context = self.context.clone();
 
-                <section class="pf-c-nav__subnav" hidden={!expanded}>
-                    <NavList>
-                        { for ctx.props().children.iter() }
-                    </NavList>
-                </section>
-            </li>
-        };
+        html! {
+            <ContextProvider<Expandable> {context}>
+                <li class={classes}>
+                    <button
+                        class="pf-c-nav__link"
+                        aria-expanded={expanded.to_string()}
+                        onclick={ctx.link().callback(|_|MsgExpandable::Toggle)}
+                    >
+                        { &ctx.props().title }
+                        <span class="pf-c-nav__toggle">
+                            <span class="pf-c-nav__toggle-icon">
+                                { Icon::AngleRight }
+                            </span>
+                        </span>
+                    </button>
+
+                    <section class="pf-c-nav__subnav" hidden={!expanded}>
+                        <NavList>
+                            { for ctx.props().children.iter() }
+                        </NavList>
+                    </section>
+                </li>
+            </ContextProvider<Expandable>>
+        }
     }
 }
 
 impl NavExpandable {
     fn is_expanded(&self, ctx: &Context<Self>) -> bool {
-        self.expanded.unwrap_or(ctx.props().expanded)
+        // if we have a current state, that will always override.
+        let expanded = self.expanded.unwrap_or_else(|| {
+            // if any child is currently active.
+            let active = !self.active.is_empty();
+
+            ctx.props().expanded || active
+        });
+
+        expanded
     }
+}
+
+#[hook]
+pub fn use_expandable() -> Option<Expandable> {
+    use_context::<Expandable>()
 }

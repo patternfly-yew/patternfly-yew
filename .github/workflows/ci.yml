@@ -14,13 +14,24 @@ jobs:
 
     runs-on: ubuntu-22.04
 
+    strategy:
+      matrix:
+        toolchain:
+          - stable
+          # minimum version for Yew
+          - "1.60"
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install Rust ${{ matrix.toolchain }}
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --component rustfmt,clippy --target wasm32-unknown-unknown
+          rustup default ${{ matrix.toolchain }}
 
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
