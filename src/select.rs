@@ -8,6 +8,7 @@ use yew::{
     html::ChildrenRenderer,
     prelude::*,
     virtual_dom::{VChild, VComp},
+    BaseComponent,
 };
 
 #[derive(Clone, Debug, PartialEq)]
@@ -234,7 +235,7 @@ where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     Option(Rc<<SelectOption<K> as Component>::Properties>),
-    Divider(Rc<<Divider as Component>::Properties>),
+    Divider(Rc<<Divider as BaseComponent>::Properties>),
     Group(Rc<<SelectGroup<K> as Component>::Properties>),
 }
 
@@ -325,7 +326,7 @@ where
 
 impl<K, CHILD> From<VChild<CHILD>> for SelectChildVariant<K>
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<SelectChild<K>> + Clone,
     K: 'static + Clone + PartialEq + Display + Debug,
 {
@@ -342,15 +343,9 @@ where
 {
     fn into(self) -> Html {
         match self.props {
-            SelectChild::Option(props) => {
-                VComp::new::<SelectOption<K>>(props, NodeRef::default(), None).into()
-            }
-            SelectChild::Divider(props) => {
-                VComp::new::<Divider>(props, NodeRef::default(), None).into()
-            }
-            SelectChild::Group(props) => {
-                VComp::new::<SelectGroup<K>>(props, NodeRef::default(), None).into()
-            }
+            SelectChild::Option(props) => VComp::new::<SelectOption<K>>(props, None).into(),
+            SelectChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
+            SelectChild::Group(props) => VComp::new::<SelectGroup<K>>(props, None).into(),
         }
     }
 }

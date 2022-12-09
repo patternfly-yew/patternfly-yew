@@ -89,7 +89,7 @@ where
         }
     }
 
-    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
         let active = ctx.props().active;
         if self.active != active {
             self.active = active;

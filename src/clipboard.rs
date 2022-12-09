@@ -163,7 +163,7 @@ impl Component for Clipboard {
                             <div class="pf-c-clipboard-copy__group">
                                 { self.expander(ctx) }
                                 <TextInput
-                                    ref={self.text_ref.clone()}
+                                    r#ref={self.text_ref.clone()}
                                     readonly={ctx.props().readonly | self.expanded}
                                     value={value}
                                     name={ctx.props().name.clone()}

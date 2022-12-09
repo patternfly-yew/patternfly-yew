@@ -1,4 +1,4 @@
-use crate::{Button, ButtonType, Divider, GlobalClose, Icon, Position};
+use crate::{Divider, GlobalClose, Icon, Position};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -67,22 +67,23 @@ impl Component for AppLauncher {
 
         let onclick = ctx.link().callback(|_| Msg::Toggle);
 
-        return html! {
+        html! {
             <nav
                 class={classes}
                 ref={self.global_close.clone()}
                 >
-                <Button
+                <button
                     class="pf-c-app-launcher__toggle"
-                    r#type={ButtonType::Button}
+                    type="button"
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     >
                     { self.render_trigger(&ctx.props()) }
-                </Button>
+                </button>
                 <ul
                     class={menu_classes}
                     hidden={!self.expanded}
+                    role="menu"
                 >
                     { for ctx.props().children.iter().map(|mut c|{
                         // request a close callback from the item
@@ -91,7 +92,7 @@ impl Component for AppLauncher {
                     }) }
                 </ul>
             </nav>
-        };
+        }
     }
 }
 
@@ -108,7 +109,7 @@ impl AppLauncher {
 #[derive(Clone, PartialEq)]
 pub enum AppLauncherChild {
     Item(Rc<<AppLauncherItem as Component>::Properties>),
-    Divider(Rc<<Divider as Component>::Properties>),
+    Divider(Rc<<Divider as BaseComponent>::Properties>),
 }
 
 impl From<AppLauncherItemProps> for AppLauncherChild {
@@ -143,7 +144,7 @@ impl AppLauncherChildVariant {
 
 impl<CHILD> From<VChild<CHILD>> for AppLauncherChildVariant
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<AppLauncherChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
@@ -156,12 +157,8 @@ where
 impl Into<Html> for AppLauncherChildVariant {
     fn into(self) -> Html {
         match self.props {
-            AppLauncherChild::Item(props) => {
-                VComp::new::<AppLauncherItem>(props, NodeRef::default(), None).into()
-            }
-            AppLauncherChild::Divider(props) => {
-                VComp::new::<Divider>(props, NodeRef::default(), None).into()
-            }
+            AppLauncherChild::Item(props) => VComp::new::<AppLauncherItem>(props, None).into(),
+            AppLauncherChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
         }
     }
 }
@@ -214,12 +211,14 @@ impl Component for AppLauncherItem {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let action = if ctx.props().onclick.is_some() {
             html! {
-                <Button
+                <button
                     class="pf-c-app-launcher__menu-item"
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
+                    type="button"
+                    role="menuitem"
                     >
                     { for ctx.props().children.iter() }
-                </Button>
+                </button>
             }
         } else {
             let mut classes = Classes::from("pf-c-app-launcher__menu-item");
@@ -251,8 +250,8 @@ impl Component for AppLauncherItem {
             }
         };
 
-        return html! {
+        html! {
             <li>{action}</li>
-        };
+        }
     }
 }

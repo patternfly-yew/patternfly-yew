@@ -1,140 +1,46 @@
 use gloo_utils::document;
-use std::collections::HashSet;
+use std::rc::Rc;
 use wasm_bindgen::JsValue;
-use web_sys::window;
 use yew::prelude::*;
-use yew_agent::{Agent, AgentLink, Bridge, Bridged, Dispatched, Dispatcher, HandlerId};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Backdrop {
     pub content: Html,
 }
 
-#[doc(hidden)]
-#[derive(Debug)]
-pub enum BackdropRequest {
-    Open(Backdrop),
-    Close,
-}
-
-#[doc(hidden)]
-pub enum BackdropAction {
-    Open(Backdrop),
-    Close,
-}
-
-/// An agent for displaying toasts.
+/// A context for displaying backdrops.
+#[derive(Clone, PartialEq)]
 pub struct Backdropper {
-    link: AgentLink<Self>,
-    /// The backdrop viewer.
-    ///
-    /// While we can handle more than one, we will only send backdrops to one viewer. Registering
-    /// more than one viewer will produce unexpected results.
-    viewer: HashSet<HandlerId>,
-}
-
-impl Agent for Backdropper {
-    type Reach = yew_agent::Context<Self>;
-    type Message = ();
-    type Input = BackdropRequest;
-    type Output = BackdropAction;
-
-    fn create(link: AgentLink<Self>) -> Self {
-        Self {
-            link,
-            viewer: HashSet::new(),
-        }
-    }
-
-    fn update(&mut self, _: Self::Message) {}
-
-    fn connected(&mut self, id: HandlerId) {
-        if id.is_respondable() {
-            self.viewer.insert(id);
-        }
-    }
-
-    fn handle_input(&mut self, msg: Self::Input, _: HandlerId) {
-        match msg {
-            BackdropRequest::Open(backdrop) => {
-                self.notify_backdrop(BackdropAction::Open(backdrop));
-            }
-            BackdropRequest::Close => {
-                self.notify_backdrop(BackdropAction::Close);
-            }
-        }
-    }
-
-    fn disconnected(&mut self, id: HandlerId) {
-        if id.is_respondable() {
-            self.viewer.remove(&id);
-        }
-    }
+    callback: Callback<Msg>,
 }
 
 impl Backdropper {
-    fn notify_backdrop(&self, msg: BackdropAction) {
-        let viewer = self.viewer.iter().next();
-        if let Some(viewer) = viewer {
-            self.link.respond(*viewer, msg);
-        } else {
-            window()
-                .unwrap()
-                .alert_with_message(&format!(
-                    "Dropped backdrop. No backdrop component registered."
-                ))
-                .ok();
-        }
-    }
-}
-
-/// Client to the backdrop agent which can be used to request backdrops.
-pub struct BackdropDispatcher(Dispatcher<Backdropper>);
-
-impl BackdropDispatcher {
-    pub fn new() -> Self {
-        Self(Backdropper::dispatcher())
-    }
-
     /// Request a backdrop from the backdrop agent.
-    pub fn open(&mut self, backdrop: Backdrop) {
-        self.0.send(BackdropRequest::Open(backdrop))
+    pub fn open(&self, backdrop: Backdrop) {
+        self.callback.emit(Msg::Open(Rc::new(backdrop)));
     }
 
     /// Close the current backdrop.
-    pub fn close(&mut self) {
-        self.0.send(BackdropRequest::Close)
-    }
-}
-
-impl Default for BackdropDispatcher {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-pub struct BackdropBridge(Box<dyn Bridge<Backdropper>>);
-
-impl BackdropBridge {
-    pub fn new(callback: Callback<<Backdropper as Agent>::Output>) -> Self {
-        BackdropBridge(Backdropper::bridge(callback))
+    pub fn close(&self) {
+        self.callback.emit(Msg::Close);
     }
 }
 
 // component
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {}
+pub struct Props {
+    pub children: Children,
+}
 
 pub struct BackdropViewer {
-    _bridge: BackdropBridge,
-
-    content: Html,
+    content: Rc<Backdrop>,
     open: bool,
+    ctx: Backdropper,
 }
 
 pub enum Msg {
-    Open(Backdrop),
+    Open(Rc<Backdrop>),
     Close,
 }
 
@@ -143,41 +49,46 @@ impl Component for BackdropViewer {
     type Properties = Props;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let bridge = BackdropBridge::new(ctx.link().callback(|action| match action {
-            BackdropAction::Open(backdrop) => Msg::Open(backdrop),
-            BackdropAction::Close => Msg::Close,
-        }));
+        let ctx = Backdropper {
+            callback: ctx.link().callback(|msg| msg),
+        };
+
         Self {
-            _bridge: bridge,
             content: Default::default(),
             open: false,
+            ctx,
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Open(content) => {
-                self.content = content.content;
+                self.content = content;
                 self.open();
             }
             Msg::Close => {
-                self.content = Default::default();
-                self.close();
+                if self.open {
+                    self.content = Default::default();
+                    self.close();
+                }
             }
         }
         true
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        if self.open {
-            return html! {
-                <div class="pf-c-backdrop">
-                    { self.content.clone() }
-                </div>
-            };
-        } else {
-            return html! {};
-        }
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        html!(
+            <>
+                <ContextProvider<Backdropper> context={self.ctx.clone()}>
+                    if self.open {
+                        <div class="pf-c-backdrop">
+                            { self.content.content.clone() }
+                        </div>
+                    }
+                    { for ctx.props().children.iter() }
+                </ContextProvider<Backdropper>>
+            </>
+        )
     }
 }
 
@@ -197,4 +108,10 @@ impl BackdropViewer {
         }
         self.open = false;
     }
+}
+
+/// Interact with the [`BackdropViewer`] through the [`Backdropper`].
+#[hook]
+pub fn use_backdrop() -> Option<Backdropper> {
+    use_context::<Backdropper>()
 }

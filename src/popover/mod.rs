@@ -119,7 +119,7 @@ impl PopperContent for Popover {
 
         html! (
             <PopoverPopup
-                ref={r#ref}
+                r#ref={r#ref}
                 styles={styles}
                 orientation={orientation}
                 header={props.header.clone()}
@@ -150,6 +150,9 @@ pub struct PopoverPopupProps {
     /// called when the close button is clicked
     #[prop_or_default]
     pub onclose: Callback<()>,
+
+    #[prop_or_default]
+    pub r#ref: NodeRef,
 }
 
 #[derive(Clone)]
@@ -191,7 +194,13 @@ impl Component for PopoverPopup {
         let onclose = ctx.link().callback(|_| PopoverPopupMsg::Close);
 
         return html! {
-            <div style={style} class={classes} role="dialog" aria-model="true">
+            <div
+                ref={&ctx.props().r#ref}
+                style={style}
+                class={classes}
+                role="dialog"
+                aria-model="true"
+            >
                 <div class="pf-c-popover__arrow"></div>
                 <div class="pf-c-popover__content">
 

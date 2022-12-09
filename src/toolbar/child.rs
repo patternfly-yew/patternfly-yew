@@ -7,8 +7,8 @@ use yew::{
 
 #[derive(Clone, PartialEq)]
 pub enum ToolbarChild {
-    Item(Rc<<ToolbarItem as Component>::Properties>),
-    Group(Rc<<ToolbarGroup as Component>::Properties>),
+    Item(Rc<<ToolbarItem as BaseComponent>::Properties>),
+    Group(Rc<<ToolbarGroup as BaseComponent>::Properties>),
 }
 
 impl From<ToolbarItemProps> for ToolbarChild {
@@ -30,7 +30,7 @@ pub struct ToolbarChildVariant {
 
 impl<CHILD> From<VChild<CHILD>> for ToolbarChildVariant
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<ToolbarChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
@@ -43,12 +43,8 @@ where
 impl Into<Html> for ToolbarChildVariant {
     fn into(self) -> Html {
         match self.props {
-            ToolbarChild::Item(props) => {
-                VComp::new::<ToolbarItem>(props, NodeRef::default(), None).into()
-            }
-            ToolbarChild::Group(props) => {
-                VComp::new::<ToolbarGroup>(props, NodeRef::default(), None).into()
-            }
+            ToolbarChild::Item(props) => VComp::new::<ToolbarItem>(props, None).into(),
+            ToolbarChild::Group(props) => VComp::new::<ToolbarGroup>(props, None).into(),
         }
     }
 }

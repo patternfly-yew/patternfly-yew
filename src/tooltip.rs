@@ -83,13 +83,14 @@ impl PopperContent for Tooltip {
             .unwrap_or(Orientation::Bottom);
 
         html! {
-        <TooltipPopup
-            ref={r#ref}
-            styles={styles}
-            hidden={state.is_none()}
-            orientation={orientation}
-            text={props.text.clone()}
-        />}
+            <TooltipPopup
+                r#ref={r#ref}
+                styles={styles}
+                hidden={state.is_none()}
+                orientation={orientation}
+                text={props.text.clone()}
+            />
+        }
     }
 }
 
@@ -103,6 +104,8 @@ pub struct TooltipPopupProps {
     pub hidden: bool,
     #[prop_or_default]
     pub styles: String,
+    #[prop_or_default]
+    pub r#ref: NodeRef,
 }
 
 #[function_component(TooltipPopup)]
@@ -119,7 +122,7 @@ pub fn tooltip_popup(props: &TooltipPopupProps) -> Html {
     .to_string();
 
     html! {
-        <div style={style} class={classes} role="tooltip">
+        <div ref={&props.r#ref} style={style} class={classes} role="tooltip">
             <div class="pf-c-tooltip__arrow"></div>
             <div class="pf-c-tooltip__content">
                 { &props.text }

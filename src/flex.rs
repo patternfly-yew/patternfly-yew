@@ -75,8 +75,8 @@ impl ToString for FlexModifier {
 
 #[derive(Clone, PartialEq)]
 pub enum FlexChild {
-    Flex(Rc<<Flex as Component>::Properties>),
-    FlexItem(Rc<<FlexItem as Component>::Properties>),
+    Flex(Rc<<Flex as BaseComponent>::Properties>),
+    FlexItem(Rc<<FlexItem as BaseComponent>::Properties>),
 }
 
 impl From<FlexProps> for FlexChild {
@@ -98,7 +98,7 @@ pub struct FlexChildVariant {
 
 impl<CHILD> From<VChild<CHILD>> for FlexChildVariant
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<FlexChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
@@ -111,10 +111,8 @@ where
 impl Into<Html> for FlexChildVariant {
     fn into(self) -> Html {
         match self.props {
-            FlexChild::Flex(props) => VComp::new::<Flex>(props, NodeRef::default(), None).into(),
-            FlexChild::FlexItem(props) => {
-                VComp::new::<FlexItem>(props, NodeRef::default(), None).into()
-            }
+            FlexChild::Flex(props) => VComp::new::<Flex>(props, None).into(),
+            FlexChild::FlexItem(props) => VComp::new::<FlexItem>(props, None).into(),
         }
     }
 }

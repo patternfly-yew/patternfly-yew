@@ -61,6 +61,9 @@ pub struct TextInputProps {
 
     #[prop_or_default]
     pub validator: Validator<String, InputState>,
+
+    #[prop_or_default]
+    pub r#ref: NodeRef,
 }
 
 impl ValidatingComponent for TextInput {
@@ -102,7 +105,9 @@ impl Component for TextInput {
 
         Self {
             value: None,
-            refs: Default::default(),
+            refs: Refs {
+                input: ctx.props().r#ref.clone(),
+            },
         }
     }
 
@@ -133,7 +138,7 @@ impl Component for TextInput {
         true
     }
 
-    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
         if ctx.props().readonly {
             self.value = None;
         }

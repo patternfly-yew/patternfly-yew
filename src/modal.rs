@@ -1,4 +1,5 @@
-use crate::BackdropDispatcher;
+use crate::{utils::ContextWrapper, Backdropper};
+use std::ops::Deref;
 use yew::prelude::*;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -44,17 +45,21 @@ pub struct Props {
 
 pub enum Msg {
     Close,
+    SetBackdrop(Backdropper),
 }
 
-#[derive(Clone)]
-pub struct Modal {}
+pub struct Modal {
+    backdrop: ContextWrapper<Backdropper>,
+}
 
 impl Component for Modal {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
+    fn create(ctx: &Context<Self>) -> Self {
+        Self {
+            backdrop: ContextWrapper::from((ctx, Msg::SetBackdrop)),
+        }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -63,8 +68,13 @@ impl Component for Modal {
                 if let Some(onclose) = &ctx.props().onclose {
                     onclose.emit(());
                 } else {
-                    BackdropDispatcher::default().close();
+                    if let Some(backdrop) = self.backdrop.deref() {
+                        backdrop.close();
+                    }
                 }
+            }
+            Msg::SetBackdrop(backdrop) => {
+                self.backdrop.set(backdrop);
             }
         }
         true

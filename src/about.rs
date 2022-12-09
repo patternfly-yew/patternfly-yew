@@ -1,4 +1,5 @@
-use crate::{BackdropDispatcher, Button, Icon, Variant};
+use crate::{utils::ContextWrapper, Backdropper, Button, Icon, Variant};
+use std::ops::Deref;
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
@@ -22,17 +23,20 @@ pub struct Props {
 
 pub enum Msg {
     Close,
+    SetBackdrop(Backdropper),
 }
 
-#[derive(Clone)]
-pub struct About {}
+pub struct About {
+    backdrop: ContextWrapper<Backdropper>,
+}
 
 impl Component for About {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
+    fn create(ctx: &Context<Self>) -> Self {
+        let backdrop = ContextWrapper::from((ctx, Msg::SetBackdrop));
+        Self { backdrop }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -41,8 +45,13 @@ impl Component for About {
                 if let Some(onclose) = &ctx.props().onclose {
                     onclose.emit(());
                 } else {
-                    BackdropDispatcher::default().close();
+                    if let Some(backdrop) = self.backdrop.deref() {
+                        backdrop.close();
+                    }
                 }
+            }
+            Msg::SetBackdrop(backdropper) => {
+                self.backdrop.set(backdropper);
             }
         }
         true

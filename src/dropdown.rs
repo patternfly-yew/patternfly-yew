@@ -154,9 +154,9 @@ pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
 #[derive(Clone, PartialEq)]
 pub enum DropdownChild {
     Item(Rc<<DropdownItem as Component>::Properties>),
-    Divider(Rc<<Divider as Component>::Properties>),
+    Divider(Rc<<Divider as BaseComponent>::Properties>),
     Group(Rc<<DropdownItemGroup as Component>::Properties>),
-    Text(Rc<<DropdownItemText as Component>::Properties>),
+    Text(Rc<<DropdownItemText as BaseComponent>::Properties>),
 }
 
 impl From<DropdownItemProps> for DropdownChild {
@@ -209,7 +209,7 @@ impl DropdownChildVariant {
 
 impl<CHILD> From<VChild<CHILD>> for DropdownChildVariant
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<DropdownChild> + Clone,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
@@ -222,18 +222,10 @@ where
 impl Into<Html> for DropdownChildVariant {
     fn into(self) -> Html {
         match self.props {
-            DropdownChild::Item(props) => {
-                VComp::new::<DropdownItem>(props, NodeRef::default(), None).into()
-            }
-            DropdownChild::Divider(props) => {
-                VComp::new::<Divider>(props, NodeRef::default(), None).into()
-            }
-            DropdownChild::Group(props) => {
-                VComp::new::<DropdownItemGroup>(props, NodeRef::default(), None).into()
-            }
-            DropdownChild::Text(props) => {
-                VComp::new::<DropdownItemText>(props, NodeRef::default(), None).into()
-            }
+            DropdownChild::Item(props) => VComp::new::<DropdownItem>(props, None).into(),
+            DropdownChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
+            DropdownChild::Group(props) => VComp::new::<DropdownItemGroup>(props, None).into(),
+            DropdownChild::Text(props) => VComp::new::<DropdownItemText>(props, None).into(),
         }
     }
 }
@@ -286,25 +278,28 @@ impl Component for DropdownItem {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let action = if ctx.props().onclick.is_some() {
             html! {
-                <Button
+                <button
                     class="pf-c-dropdown__menu-item"
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
+                    type="button"
                     >
                     { for ctx.props().children.iter() }
-                </Button>
+                </button>
             }
         } else {
             html! {
                 <a
                     class="pf-c-dropdown__menu-item"
                     target={ctx.props().target.clone()}
-                    href={ctx.props().href.clone()}>{ for ctx.props().children.iter() }</a>
+                    href={ctx.props().href.clone()}>
+                { for ctx.props().children.iter() }
+                </a>
             }
         };
 
-        return html! {
+        html! {
             <li>{action}</li>
-        };
+        }
     }
 }
 
@@ -346,7 +341,7 @@ impl Component for DropdownItemGroup {
             <>
             { for ctx.props().children.iter().map(|mut c|{
                 c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
-                html!{
+                html! {
                     <section class="pf-c-dropdown__group">
                     { c }
                     </section>
@@ -369,7 +364,7 @@ pub struct DropdownItemTextProps {
 pub fn dropwdown_item_text(props: &DropdownItemTextProps) -> Html {
     html! {
         <div class="pf-c-dropdown__menu-item pf-m-text">
-        { for props.children.iter() }
+            { for props.children.iter() }
         </div>
     }
 }

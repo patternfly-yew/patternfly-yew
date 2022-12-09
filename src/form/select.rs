@@ -160,7 +160,7 @@ where
 
 impl<K, CHILD> From<VChild<CHILD>> for FormSelectChildVariant<K>
 where
-    CHILD: Component,
+    CHILD: BaseComponent,
     CHILD::Properties: Into<FormSelectChild<K>> + Clone,
     K: 'static + Clone + PartialEq + Display + Debug,
 {
@@ -177,12 +177,8 @@ where
 {
     fn into(self) -> Html {
         match self.props {
-            FormSelectChild::Option(props) => {
-                VComp::new::<FormSelectOption<K>>(props, NodeRef::default(), None).into()
-            }
-            FormSelectChild::Group(props) => {
-                VComp::new::<FormSelectGroup<K>>(props, NodeRef::default(), None).into()
-            }
+            FormSelectChild::Option(props) => VComp::new::<FormSelectOption<K>>(props, None).into(),
+            FormSelectChild::Group(props) => VComp::new::<FormSelectGroup<K>>(props, None).into(),
         }
     }
 }
