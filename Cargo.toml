@@ -26,7 +26,7 @@ uuid = { version = "1", features = ["v4", "js"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 yew = "0.20"
-yew-nested-router = { version = "0.0.2", optional = true }
+yew-nested-router = { version = "0.0.3", optional = true }
 
 web-sys = { version = "0.3", features = [
     "HtmlCollection",
@@ -47,4 +47,4 @@ router = ["yew-nested-router"]
 
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }
-yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
+#yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
