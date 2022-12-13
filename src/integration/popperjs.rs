@@ -1,10 +1,14 @@
 use crate::Orientation;
-use gloo_utils::format::JsValueSerdeExt;
 use serde_json::json;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsValue;
+use wasm_bindgen::closure::Closure;
+use wasm_bindgen::prelude::wasm_bindgen;
+use gloo_utils::format::JsValueSerdeExt;
+
 
 #[wasm_bindgen(module = "/src/js/popperjs.js")]
 extern "C" {
+
 
     #[wasm_bindgen(js_name = "createPopper")]
     pub fn create_popper(
@@ -90,7 +94,9 @@ pub(crate) fn create_default_opts(apply: &Closure<dyn Fn(&Instance)>) -> Result<
     js_sys::Reflect::set(&m1, &JsValue::from("phase"), &JsValue::from("write"))?;
     js_sys::Reflect::set(&m1, &JsValue::from("fn"), apply.as_ref())?;
 
-    let m2 = JsValue::from_serde(&json!({
+    // fixme : I am not sure why i am not able to use that trait from gloo-util without specifying the full path ?
+    // https://docs.rs/gloo-utils/latest/gloo_utils/format/trait.JsValueSerdeExt.html#tymethod.from_serde
+    let m2 = <JsValue as JsValueSerdeExt>::from_serde(&json!({
         "name":"offset",
         "options": {
             "offset": [0,11],
@@ -98,7 +104,7 @@ pub(crate) fn create_default_opts(apply: &Closure<dyn Fn(&Instance)>) -> Result<
     }))
     .unwrap();
 
-    let m3 = JsValue::from_serde(&json!({
+    let m3 = <JsValue as JsValueSerdeExt>::from_serde(&json!({
         "name": "preventOverflow",
         "options": {
             "padding": 0,
