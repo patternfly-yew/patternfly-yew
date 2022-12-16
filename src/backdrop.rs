@@ -88,7 +88,7 @@ impl Backdropper {
     where
         B: Into<Backdrop>,
     {
-        self.callback.emit(Msg::Open(Rc::new(backdrop)));
+        self.callback.emit(Msg::Open(Rc::new(backdrop.into())));
     }
 
     /// Close the current backdrop.
