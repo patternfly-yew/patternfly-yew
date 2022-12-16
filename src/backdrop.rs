@@ -59,7 +59,7 @@ pub struct Backdrop {
 }
 
 impl Backdrop {
-    pub fn new<F>(content: Html) -> Self {
+    pub fn new(content: Html) -> Self {
         Self { content }
     }
 }
