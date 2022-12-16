@@ -18,7 +18,7 @@ pub struct Props {
     pub disabled: bool,
 
     #[prop_or_default]
-    pub on_change: Callback<bool>,
+    pub onchange: Callback<bool>,
 
     #[prop_or_default]
     pub aria_label: String,
@@ -53,7 +53,7 @@ impl Component for Switch {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Changed => {
-                ctx.props().on_change.emit(self.current_state());
+                ctx.props().onchange.emit(self.current_state());
                 return false;
             }
         }
