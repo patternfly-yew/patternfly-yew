@@ -48,6 +48,13 @@ pub enum Msg {
     SetBackdrop(Backdropper),
 }
 
+/// A modal dialog.
+///
+/// ## Contexts
+///
+/// If the modal dialog is wrapped by a [`BackdropViewer`] component and no `onclose` callback is
+/// set, then it will automatically close the backdrop when the modal dialog gets closed.
+///
 pub struct Modal {
     backdrop: ContextWrapper<Backdropper>,
 }
@@ -67,10 +74,8 @@ impl Component for Modal {
             Msg::Close => {
                 if let Some(onclose) = &ctx.props().onclose {
                     onclose.emit(());
-                } else {
-                    if let Some(backdrop) = self.backdrop.deref() {
-                        backdrop.close();
-                    }
+                } else if let Some(backdrop) = self.backdrop.deref() {
+                    backdrop.close();
                 }
             }
             Msg::SetBackdrop(backdrop) => {
@@ -84,7 +89,7 @@ impl Component for Modal {
         let mut classes = ctx.props().variant.as_classes();
         classes.push("pf-c-modal-box");
 
-        return html! {
+        html! {
             <div class={classes}
                     role="dialog"
                     aria-modal="true"
@@ -125,6 +130,6 @@ impl Component for Modal {
                   </footer>
                 }
             </div>
-        };
+        }
     }
 }
