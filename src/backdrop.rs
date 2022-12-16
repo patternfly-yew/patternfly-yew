@@ -3,9 +3,71 @@ use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
 
-#[derive(Clone, Debug, Default)]
+/// Backdrop overlay the main content and show some new content, until it gets closed.
+///
+/// New content can be sent to the backdrop viewer using the [`Backdropper::open`] call. It can be
+/// closed using the [`Backdropper::close`] call.
+///
+/// ## Example
+///
+/// ```
+/// # use yew::prelude::*;
+/// # use patternfly_yew::*;
+/// #[function_component(App)]
+/// fn app() -> Html {
+///   html! {
+///     <>
+///       <BackdropViewer>
+///         <View/>
+///       </BackdropViewer>
+///     </>
+///   }
+/// }
+/// #[function_component(View)]
+/// fn view() -> Html {
+///   let backdropper = use_backdrop().expect("Must be nested under a BackdropViewer component");
+///   html!{
+///     <div>
+///       <button onclick={move |_| backdropper.open(Backdrop::new(
+///         html! {
+///             <Bullseye>
+///                 <Modal
+///                     title = {"Example modal"}
+///                     variant = { ModalVariant::Medium }
+///                     description = {"A description is used when you want to provide more info about the modal than the title is able to describe."}
+///                 >
+///                     <p>{"The modal body can contain text, a form, any nested html will work."}</p>
+///                 </Modal>
+///             </Bullseye>
+///         }))
+///       }>
+///         { "Click me" }  
+///       </button>
+///     </div>
+///   }
+/// }
+/// ```
+#[derive(Clone, Debug)]
 pub struct Backdrop {
     pub content: Html,
+}
+
+impl Backdrop {
+    pub fn new<F>(content: Html) -> Self {
+        Self { content }
+    }
+}
+
+impl Default for Backdrop {
+    fn default() -> Self {
+        Self { content: html!() }
+    }
+}
+
+impl From<Html> for Backdrop {
+    fn from(content: Html) -> Self {
+        Self { content }
+    }
 }
 
 /// A context for displaying backdrops.
@@ -16,7 +78,10 @@ pub struct Backdropper {
 
 impl Backdropper {
     /// Request a backdrop from the backdrop agent.
-    pub fn open(&self, backdrop: Backdrop) {
+    pub fn open<B>(&self, backdrop: B)
+    where
+        B: Into<Backdrop>,
+    {
         self.callback.emit(Msg::Open(Rc::new(backdrop)));
     }
 
