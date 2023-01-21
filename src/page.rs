@@ -11,6 +11,8 @@ pub struct Props {
     pub tools: Children,
     #[prop_or_default]
     pub logo: Children,
+    #[prop_or_default]
+    pub nav: Children,
     #[prop_or(true)]
     pub open: bool,
 }
@@ -48,7 +50,6 @@ impl Component for Page {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let click_callback = ctx.link().callback(|_| Msg::ToggleSidebar);
-
         html! {
             <div class="pf-c-page">
                 <header class="pf-c-page__header">
@@ -72,6 +73,7 @@ impl Component for Page {
                         } </a>
 
                     </div>
+                    <div class="pf-c-page__header-nav">{for ctx.props().nav.iter()}</div>
                     <div class="pf-c-page__header-tools"> { for ctx.props().tools.iter() }</div>
                 </header>
 
