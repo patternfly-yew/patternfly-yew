@@ -50,6 +50,7 @@ impl Component for Page {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let click_callback = ctx.link().callback(|_| Msg::ToggleSidebar);
+
         html! {
             <div class="pf-c-page">
                 <header class="pf-c-page__header">
