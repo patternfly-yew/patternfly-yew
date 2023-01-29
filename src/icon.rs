@@ -84,6 +84,7 @@ icons! {
     Pause => fas("fa-pause"),
     Play => fas("fa-play"),
     PlusCircleIcon => fas("fa-plus-circle"),
+    PowerOffIcon => fas("fa-power-off"),
 
     QuestionCircle => fas("fa-question-circle"),
 
@@ -91,7 +92,7 @@ icons! {
     Th => fas("fa-th"),
 
     Help => pf("pf-icon-help"),
-    Pending => pf("pf-icon-pending")
+    Pending => pf("pf-icon-pending"),
 }
 
 impl Icon {
