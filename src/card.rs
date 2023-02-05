@@ -1,6 +1,16 @@
 use crate::Icon;
 use yew::prelude::*;
 
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub enum CardSelection {
+    #[default]
+    None,
+    Disabled,
+    Selectable {
+        selected: bool,
+    },
+}
+
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub children: Children,
@@ -13,17 +23,17 @@ pub struct Props {
     #[prop_or_default]
     pub flat: bool,
     #[prop_or_default]
-    pub hoverable: bool,
-    #[prop_or_default]
-    pub selectable: bool,
-    #[prop_or_default]
-    pub selected: bool,
-    #[prop_or_default]
     pub onclick: Callback<yew::MouseEvent>,
     #[prop_or_default]
     pub expandable: bool,
     #[prop_or_default]
     pub large: bool,
+    #[prop_or_default]
+    pub full_height: bool,
+    #[prop_or_default]
+    pub rounded: bool,
+    #[prop_or_default]
+    pub selection: CardSelection,
 }
 
 pub struct Card {
@@ -71,16 +81,25 @@ impl Component for Card {
             classes.push("pf-m-flat");
         }
 
-        if ctx.props().hoverable {
-            classes.push("pf-m-hoverable");
+        match ctx.props().selection {
+            CardSelection::None => {}
+            CardSelection::Disabled => {
+                classes.push("pf-m-non-selectable-raised");
+            }
+            CardSelection::Selectable { selected } => {
+                classes.push("pf-m-selectable-raised");
+                if selected {
+                    classes.push("pf-m-selected-raised");
+                }
+            }
         }
 
-        if ctx.props().selectable {
-            classes.push("pf-m-selectable");
+        if ctx.props().full_height {
+            classes.push("pf-m-full-height");
         }
 
-        if ctx.props().selected {
-            classes.push("pf-m-selected");
+        if ctx.props().rounded {
+            classes.push("pf-m-rounded");
         }
 
         html! {
