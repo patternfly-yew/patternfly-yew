@@ -18,8 +18,7 @@ jobs:
       matrix:
         toolchain:
           - stable
-          # minimum version for Yew
-          - "1.60"
+          - "1.62"
 
     steps:
       - uses: actions/checkout@v3
