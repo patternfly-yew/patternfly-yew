@@ -45,6 +45,10 @@ web-sys = { version = "0.3", features = [
 default = ["router"]
 router = ["yew-nested-router"]
 
+# Enable FontAwesome regular (FAR) and/or brand (FAB) icons, remember to import the font in your application
+icons-far = []
+icons-fab = []
+
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
