@@ -1,3 +1,4 @@
+use crate::ExtendClasses;
 use yew::prelude::*;
 
 use crate::Size;
@@ -30,28 +31,25 @@ pub struct Props {
 
 #[function_component(Title)]
 pub fn title(props: &Props) -> Html {
-    let mut classes = Classes::from("pf-c-title");
+    let mut class = Classes::from("pf-c-title");
 
-    if let Some(size) = props.size {
-        classes.push(size.as_class());
-    } else {
-        match props.level {
-            Level::H1 => classes.push(Size::XXLarge.as_class()),
-            Level::H2 => classes.push(Size::XLarge.as_class()),
-            Level::H3 => classes.push(Size::Large.as_class()),
-            Level::H4 => classes.push(Size::Medium.as_class()),
-            Level::H5 => classes.push(Size::Medium.as_class()),
-            Level::H6 => classes.push(Size::Medium.as_class()),
-        }
-    }
+    class.extend_from(&props.size.unwrap_or_else(|| match props.level {
+        Level::H1 => Size::XXLarge,
+        Level::H2 => Size::XLarge,
+        Level::H3 => Size::Large,
+        Level::H4 => Size::Medium,
+        Level::H5 => Size::Medium,
+        Level::H6 => Size::Medium,
+    }));
 
-    let heading = match props.level {
-        Level::H1 => html! {<h1>{ for props.children.iter() }</h1>},
-        Level::H2 => html! {<h2>{ for props.children.iter() }</h2>},
-        Level::H3 => html! {<h3>{ for props.children.iter() }</h3>},
-        Level::H4 => html! {<h4>{ for props.children.iter() }</h4>},
-        Level::H5 => html! {<h5>{ for props.children.iter() }</h5>},
-        Level::H6 => html! {<h6>{ for props.children.iter() }</h6>},
+    let element = match props.level {
+        Level::H1 => "h1",
+        Level::H2 => "h2",
+        Level::H3 => "h3",
+        Level::H4 => "h4",
+        Level::H5 => "h5",
+        Level::H6 => "h6",
     };
-    html! { <div class={classes}>{heading}</div> }
+
+    html! { <@{element} {class}>{ for props.children.iter() }</@> }
 }
