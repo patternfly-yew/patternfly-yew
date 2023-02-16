@@ -1,5 +1,6 @@
 use crate::utils::ExtendClasses;
 use crate::{AsClasses, WithBreakpoints};
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
@@ -54,7 +55,7 @@ pub struct PageSectionProps {
     #[prop_or_default]
     pub variant: PageSectionVariant,
     #[prop_or_default]
-    pub fill: Option<PageSectionFill>,
+    pub fill: PageSectionFill,
     #[prop_or_default]
     pub limit_width: bool,
     #[prop_or_default]
@@ -107,8 +108,10 @@ impl AsClasses for PageSectionSticky {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum PageSectionFill {
+    #[default]
+    Default,
     Fill,
     NoFill,
 }
@@ -116,8 +119,18 @@ pub enum PageSectionFill {
 impl AsClasses for PageSectionFill {
     fn extend(&self, classes: &mut Classes) {
         match self {
+            Self::Default => {}
             Self::Fill => classes.push("pf-m-fill"),
             Self::NoFill => classes.push("pf-m-no-fill"),
+        }
+    }
+}
+
+impl IntoPropValue<PageSectionFill> for bool {
+    fn into_prop_value(self) -> PageSectionFill {
+        match self {
+            true => PageSectionFill::Fill,
+            false => PageSectionFill::NoFill,
         }
     }
 }
