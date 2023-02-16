@@ -138,6 +138,13 @@ impl std::fmt::Display for Insets {
     }
 }
 
+impl AsClasses for Insets {
+    fn extend(&self, classes: &mut Classes) {
+        // relies on the `Display` implementation above
+        classes.push(self.to_string())
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Inset {
     Inset(WithBreakpoints<Insets>),

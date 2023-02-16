@@ -11,9 +11,9 @@ macro_rules! spacer {
             XXLarge,
         }
 
-        impl $name {
-            pub fn as_class(&self) -> &str {
-                match self {
+        impl $crate::utils::classes::AsClasses for $name {
+            fn extend(&self, classes: &mut yew::prelude::Classes) {
+                let name = match self {
                     Self::None => concat!($prefix, "-none"),
                     Self::XSmall => concat!($prefix, "-xs"),
                     Self::Small => concat!($prefix, "-sm"),
@@ -21,13 +21,8 @@ macro_rules! spacer {
                     Self::Large => concat!($prefix, "-lg"),
                     Self::XLarge => concat!($prefix, "-xl"),
                     Self::XXLarge => concat!($prefix, "-2xl"),
-                }
-            }
-        }
-
-        impl ToString for $name {
-            fn to_string(&self) -> String {
-                self.as_class().into()
+                };
+                classes.push(name);
             }
         }
     };

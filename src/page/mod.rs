@@ -1,6 +1,11 @@
-use crate::pagesidebar::PageSidebar;
 use std::rc::Rc;
 use yew::prelude::*;
+
+mod section;
+mod sidebar;
+
+pub use section::*;
+pub use sidebar::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

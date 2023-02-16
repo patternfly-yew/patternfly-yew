@@ -1,4 +1,4 @@
-use crate::WithBreakpoints;
+use crate::{ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
@@ -19,7 +19,7 @@ pub fn grid(props: &Props) -> Html {
         classes.push("pf-m-gutter");
     }
 
-    classes.extend(props.cols.mapped(|cols| format!("pf-m-all-{}-col", cols)));
+    classes.extend_from(&props.cols.mapped(|cols| format!("pf-m-all-{}-col", cols)));
 
     html! {
         <div class={classes}>
@@ -45,10 +45,10 @@ pub struct GridItemProps {
 pub fn grid_item(props: &GridItemProps) -> Html {
     let mut classes = Classes::from("pf-l-grid__item");
 
-    classes.extend(props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
-    classes.extend(props.rows.mapped(|cols| format!("pf-m-{}-row", cols)));
-    classes.extend(
-        props
+    classes.extend_from(&props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
+    classes.extend_from(&props.rows.mapped(|cols| format!("pf-m-{}-row", cols)));
+    classes.extend_from(
+        &props
             .offset
             .mapped(|cols| format!("pf-m-offset-{}-col", cols)),
     );

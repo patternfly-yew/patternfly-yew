@@ -1,4 +1,4 @@
-use crate::{AsClasses, SpaceItems, Spacer, WithBreakpoints};
+use crate::{AsClasses, ExtendClasses, SpaceItems, Spacer, WithBreakpoints};
 use std::fmt::Debug;
 use std::rc::Rc;
 use yew::{
@@ -20,7 +20,7 @@ pub enum FlexModifier {
     None,
     Column,
     Justify(Justify),
-    Align(Alignement),
+    Align(Alignment),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -31,7 +31,7 @@ pub enum Justify {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub enum Alignement {
+pub enum Alignment {
     Right,
     Left,
     Start,
@@ -41,35 +41,34 @@ pub enum Alignement {
     Stretch,
 }
 
-impl ToString for FlexModifier {
-    fn to_string(&self) -> String {
+impl AsClasses for FlexModifier {
+    fn extend(&self, classes: &mut Classes) {
         match self {
-            FlexModifier::Grow => "pf-m-grow",
-            FlexModifier::Shrink => "pf-m-shrink",
-            FlexModifier::Flex1 => "pf-m-flex-1",
-            FlexModifier::Flex2 => "pf-m-flex-2",
-            FlexModifier::Flex3 => "pf-m-flex-3",
-            FlexModifier::Flex4 => "pf-m-flex-4",
-            FlexModifier::FullWidth => "pf-m-full-width",
-            FlexModifier::Default => "pf-m-default",
-            FlexModifier::None => "pf-m-none",
-            FlexModifier::Column => "pf-m-column",
+            FlexModifier::Grow => classes.push("pf-m-grow"),
+            FlexModifier::Shrink => classes.push("pf-m-shrink"),
+            FlexModifier::Flex1 => classes.push("pf-m-flex-1"),
+            FlexModifier::Flex2 => classes.push("pf-m-flex-2"),
+            FlexModifier::Flex3 => classes.push("pf-m-flex-3"),
+            FlexModifier::Flex4 => classes.push("pf-m-flex-4"),
+            FlexModifier::FullWidth => classes.push("pf-m-full-width"),
+            FlexModifier::Default => classes.push("pf-m-default"),
+            FlexModifier::None => classes.push("pf-m-none"),
+            FlexModifier::Column => classes.push("pf-m-column"),
             FlexModifier::Justify(layout) => match layout {
-                Justify::Start => "pf-m-justify-content-flex-start",
-                Justify::End => "pf-m-justify-content-flex-end",
-                Justify::SpaceBetween => "pf-m-justify-content-space-between",
+                Justify::Start => classes.push("pf-m-justify-content-flex-start"),
+                Justify::End => classes.push("pf-m-justify-content-flex-end"),
+                Justify::SpaceBetween => classes.push("pf-m-justify-content-space-between"),
             },
             FlexModifier::Align(alignement) => match alignement {
-                Alignement::Right => "pf-m-align-right",
-                Alignement::Left => "pf-m-align-left",
-                Alignement::Start => "pf-m-align-self-flex-start",
-                Alignement::Center => "pf-m-align-self-flex-center",
-                Alignement::End => "pf-m-align-self-flex-end",
-                Alignement::Baseline => "pf-m-align-self-flex-baseline",
-                Alignement::Stretch => "pf-m-align-self-flex-stretch",
+                Alignment::Right => classes.push("pf-m-align-right"),
+                Alignment::Left => classes.push("pf-m-align-left"),
+                Alignment::Start => classes.push("pf-m-align-self-flex-start"),
+                Alignment::Center => classes.push("pf-m-align-self-flex-center"),
+                Alignment::End => classes.push("pf-m-align-self-flex-end"),
+                Alignment::Baseline => classes.push("pf-m-align-self-flex-baseline"),
+                Alignment::Stretch => classes.push("pf-m-align-self-flex-stretch"),
             },
         }
-        .to_string()
     }
 }
 
@@ -145,9 +144,9 @@ pub struct FlexProps {
 pub fn flex(props: &FlexProps) -> Html {
     let mut classes = Classes::from("pf-l-flex");
 
-    classes.extend(props.modifiers.as_classes());
-    classes.extend(props.space_items.as_classes());
-    classes.extend(props.spacer.as_classes());
+    classes.extend_from(&props.modifiers);
+    classes.extend_from(&props.space_items);
+    classes.extend_from(&props.spacer);
 
     html! {
         <div class={classes}>
@@ -172,8 +171,8 @@ pub struct FlexItemProps {
 pub fn flex_item(props: &FlexItemProps) -> Html {
     let mut classes = Classes::from("pf-l-flex__item");
 
-    classes.extend(props.modifiers.as_classes());
-    classes.extend(props.spacer.as_classes());
+    classes.extend_from(&props.modifiers);
+    classes.extend_from(&props.spacer);
 
     html! {
         <div class={classes}>

@@ -6,6 +6,7 @@ pub use child::*;
 pub use group::*;
 pub use item::*;
 
+use crate::AsClasses;
 use yew::{html::ChildrenRenderer, prelude::*};
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
@@ -16,14 +17,14 @@ pub enum ToolbarElementModifier {
     Right,
 }
 
-impl ToString for ToolbarElementModifier {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Hidden => "pf-m-hidden".into(),
-            Self::Visible => "pf-m-visible".into(),
-            Self::Left => "pf-m-align-left".into(),
-            Self::Right => "pf-m-align-right".into(),
-        }
+impl AsClasses for ToolbarElementModifier {
+    fn extend(&self, classes: &mut Classes) {
+        classes.push(match self {
+            Self::Hidden => "pf-m-hidden",
+            Self::Visible => "pf-m-visible",
+            Self::Left => "pf-m-align-left",
+            Self::Right => "pf-m-align-right",
+        });
     }
 }
 

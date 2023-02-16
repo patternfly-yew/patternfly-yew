@@ -66,10 +66,25 @@ where
 
 impl<T> AsClasses for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn extend(&self, classes: &mut Classes) {
-        AsClasses::extend(&self.0, classes);
+        AsClasses::extend(&self.0, classes)
+    }
+}
+
+impl<T> AsClasses for WithBreakpoint<T>
+where
+    T: Clone + Debug + PartialEq + AsClasses,
+{
+    fn extend(&self, classes: &mut Classes) {
+        // get as classes, but then extend but the breakpoint rules
+        classes.extend(
+            self.modifier
+                .as_classes()
+                .into_iter()
+                .map(|c| format!("{}{}", c, self.on.to_string())),
+        )
     }
 }
 
@@ -141,7 +156,7 @@ impl ToString for Breakpoint {
 
 pub trait WithBreakpointExt<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn on(&self, breakpoint: Breakpoint) -> WithBreakpoint<T>;
 
@@ -168,7 +183,7 @@ where
 
 impl<T> WithBreakpointExt<T> for T
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn on(&self, breakpoint: Breakpoint) -> WithBreakpoint<T> {
         WithBreakpoint {
@@ -178,48 +193,9 @@ where
     }
 }
 
-impl<T> ToString for WithBreakpoint<T>
-where
-    T: Clone + Debug + PartialEq + ToString,
-{
-    fn to_string(&self) -> String {
-        format!("{}{}", self.modifier.to_string(), self.on.to_string())
-    }
-}
-
-impl<T> Into<Classes> for WithBreakpoint<T>
-where
-    T: Clone + Debug + PartialEq + ToString,
-{
-    fn into(self) -> Classes {
-        Classes::from(self.to_string())
-    }
-}
-
-impl<T> AsClasses for Vec<WithBreakpoint<T>>
-where
-    T: Clone + Debug + PartialEq + ToString,
-{
-    fn extend(&self, classes: &mut Classes) {
-        for b in self {
-            classes.push(b.to_string())
-        }
-    }
-}
-
-impl<T> From<WithBreakpoints<T>> for Classes
-where
-    T: Clone + Debug + PartialEq + ToString,
-{
-    fn from(modifiers: WithBreakpoints<T>) -> Self {
-        let mods: Vec<_> = modifiers.0.into_iter().map(|b| b.to_string()).collect();
-        Classes::from(mods)
-    }
-}
-
 impl<T> IntoPropValue<Vec<WithBreakpoint<T>>> for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn into_prop_value(self) -> Vec<WithBreakpoint<T>> {
         vec![self]
@@ -228,7 +204,7 @@ where
 
 impl<T> Deref for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     type Target = Vec<WithBreakpoint<T>>;
 
@@ -239,7 +215,7 @@ where
 
 impl<T> From<T> for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn from(modifier: T) -> Self {
         Self::new(modifier)
@@ -248,7 +224,7 @@ where
 
 impl<T> From<WithBreakpoint<T>> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn from(modifier: WithBreakpoint<T>) -> Self {
         WithBreakpoints(vec![modifier])
@@ -257,16 +233,25 @@ where
 
 impl<T> From<T> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn from(modifier: T) -> Self {
         WithBreakpoints(vec![modifier.into()])
     }
 }
 
+impl<T> IntoPropValue<WithBreakpoints<T>> for WithBreakpoint<T>
+where
+    T: Clone + Debug + PartialEq + AsClasses,
+{
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        vec![self].into()
+    }
+}
+
 impl<T> IntoPropValue<WithBreakpoints<T>> for Vec<WithBreakpoint<T>>
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -275,7 +260,7 @@ where
 
 impl<T> IntoPropValue<WithBreakpoints<T>> for &[WithBreakpoint<T>]
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -284,7 +269,7 @@ where
 
 impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [WithBreakpoint<T>; N]
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -293,7 +278,7 @@ where
 
 impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [T; N]
 where
-    T: Clone + Debug + PartialEq + ToString,
+    T: Clone + Debug + PartialEq + AsClasses,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into_iter()
@@ -322,3 +307,65 @@ where
     }
 }
 */
+
+#[cfg(test)]
+mod test {
+    use crate::{AsClasses, WithBreakpoints};
+    use yew::Classes;
+
+    use super::*;
+
+    #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+    pub enum MockVariant {
+        Foo,
+        Bar,
+        Baz,
+    }
+
+    impl AsClasses for MockVariant {
+        fn extend(&self, classes: &mut Classes) {
+            match self {
+                Self::Foo => {}
+                Self::Bar => classes.push("bar"),
+                Self::Baz => classes.push("foo bar"),
+            }
+        }
+    }
+
+    #[test]
+    fn test_empty_string() {
+        let prop: WithBreakpoints<String> = [].into();
+        assert_eq!(prop.as_classes(), Classes::from(""));
+    }
+
+    #[test]
+    fn test_single_string() {
+        let prop: WithBreakpoints<String> = "foo".to_string().into();
+        assert_eq!(prop.as_classes(), Classes::from("foo"));
+    }
+
+    #[test]
+    fn test_single_with_string() {
+        let prop: WithBreakpoints<String> = "foo".to_string().xxl().into();
+        assert_eq!(prop.as_classes(), Classes::from("foo-on-2xl"));
+    }
+
+    #[test]
+    fn test_some_string() {
+        let prop: WithBreakpoints<String> =
+            ["one".to_string().all(), "two".to_string().xxl()].into();
+        assert_eq!(prop.as_classes(), Classes::from("one two-on-2xl"));
+    }
+
+    #[test]
+    fn test_some_variant() {
+        let prop: WithBreakpoints<MockVariant> = [MockVariant::Foo.all()].into();
+        assert_eq!(prop.as_classes(), Classes::from(""));
+
+        let prop: WithBreakpoints<MockVariant> = [MockVariant::Bar.all()].into();
+        assert_eq!(prop.as_classes(), Classes::from("bar"));
+
+        let prop: WithBreakpoints<MockVariant> = [MockVariant::Baz.all()].into();
+        assert_eq!(prop.as_classes(), Classes::from("foo bar"));
+    }
+}

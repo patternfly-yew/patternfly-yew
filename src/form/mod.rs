@@ -13,16 +13,15 @@ pub use select::*;
 use std::collections::BTreeMap;
 pub use validation::*;
 
-use crate::{Alert, Button, Type, WithBreakpoints};
-use std::fmt::{Display, Formatter};
+use crate::{Alert, AsClasses, Button, ExtendClasses, Type, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FormHorizontal;
 
-impl Display for FormHorizontal {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str("pf-m-horizontal")
+impl AsClasses for FormHorizontal {
+    fn extend(&self, classes: &mut Classes) {
+        classes.push("pf-m-horizontal")
     }
 }
 
@@ -168,7 +167,7 @@ impl Component for Form {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-form");
 
-        classes.extend(ctx.props().horizontal.clone());
+        classes.extend_from(&ctx.props().horizontal);
 
         if ctx.props().limit_width {
             classes.push("pf-m-limit-width");
