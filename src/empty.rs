@@ -33,7 +33,7 @@ impl EmptyStateProps {
 }
 
 #[function_component(EmptyState)]
-fn empty_state(props: &EmptyStateProps) -> Html {
+pub fn empty_state(props: &EmptyStateProps) -> Html {
     let mut classes = Classes::from("pf-c-empty-state");
 
     if props.full_height {
