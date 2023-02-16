@@ -185,6 +185,7 @@ pub fn page_section(props: &PageSectionProps) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct PageSectionGroupProps {
     pub children: Children,
+    #[prop_or_default]
     pub shadow: PageSectionShadow,
     #[prop_or_default]
     pub sticky: WithBreakpoints<PageSectionSticky>,
