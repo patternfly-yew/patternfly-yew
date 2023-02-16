@@ -1,3 +1,6 @@
+use crate::AsClasses;
+use yew::Classes;
+
 #[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
 pub enum Size {
     XSmall,
@@ -10,9 +13,9 @@ pub enum Size {
     XXXXLarge,
 }
 
-impl Size {
-    pub fn as_class(&self) -> &'static str {
-        match self {
+impl AsClasses for Size {
+    fn extend(&self, classes: &mut Classes) {
+        classes.push(match self {
             Size::XSmall => "pf-m-xs",
             Size::Small => "pf-m-sm",
             Size::Medium => "pf-m-md",
@@ -21,6 +24,6 @@ impl Size {
             Size::XXLarge => "pf-m-2xl",
             Size::XXXLarge => "pf-m-3xl",
             Size::XXXXLarge => "pf-m-4xl",
-        }
+        });
     }
 }
