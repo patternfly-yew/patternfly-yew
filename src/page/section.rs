@@ -28,7 +28,7 @@ pub enum PageSectionType {
     Default,
     Navigation,
     SubNavigation,
-    Breadcrumb,
+    Breadcrumbs,
     Tabs,
     Wizard,
 }
@@ -39,7 +39,7 @@ impl AsClasses for PageSectionType {
             Self::Default => classes.push("pf-c-page__main-section"),
             Self::Navigation => classes.push("pf-c-page__main-nav"),
             Self::SubNavigation => classes.push("pf-c-page__main-subnav"),
-            Self::Breadcrumb => classes.push("pf-c-page__main-breadcrumb"),
+            Self::Breadcrumbs => classes.push("pf-c-page__main-breadcrumb"),
             Self::Tabs => classes.push("pf-c-page__main-tabs"),
             Self::Wizard => classes.push("pf-c-page__main-wizard"),
         }
