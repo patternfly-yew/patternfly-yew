@@ -1,9 +1,9 @@
 use yew::prelude::*;
 
-use crate::{Action, Button, Icon, Size, Title, Variant};
+use crate::{Action, Button, ExtendClasses, Icon, Size, Title, Variant};
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct EmptyStateProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -20,47 +20,9 @@ pub struct Props {
     pub full_height: bool,
 }
 
-#[derive(Clone, PartialEq)]
-pub struct EmptyState {}
-
-impl Component for EmptyState {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-empty-state");
-
-        if ctx.props().full_height {
-            classes.push("pf-m-full-height");
-        }
-
-        if let Some(size) = ctx.props().size {
-            classes.push(size.as_class());
-        }
-
-        return html! {
-            <div class={classes}>
-                <div class="pf-c-empty-state__content">
-                    { self.render_icon(ctx) }
-                    <Title size={ self.title_size(ctx) }>{&ctx.props().title}</Title>
-                    <div class="pf-c-empty-state__body">
-                        { for ctx.props().children.iter() }
-                    </div>
-                    { self.render_primary_action(ctx) }
-                    { self.render_secondary_actions(ctx) }
-                </div>
-            </div>
-        };
-    }
-}
-
-impl EmptyState {
-    fn title_size(&self, ctx: &Context<Self>) -> Size {
-        match ctx.props().size {
+impl EmptyStateProps {
+    fn title_size(&self) -> Size {
+        match self.size {
             Some(Size::XLarge)
             | Some(Size::XXLarge)
             | Some(Size::XXXLarge)
@@ -68,36 +30,43 @@ impl EmptyState {
             _ => Size::Large,
         }
     }
+}
 
-    fn render_icon(&self, ctx: &Context<Self>) -> Html {
-        match ctx.props().icon {
-            Some(icon) => html! {icon.with_classes(Classes::from("pf-c-empty-state__icon"))},
-            None => html! {},
-        }
+#[function_component(EmptyState)]
+fn empty_state(props: &EmptyStateProps) -> Html {
+    let mut classes = Classes::from("pf-c-empty-state");
+
+    if props.full_height {
+        classes.push("pf-m-full-height");
     }
 
-    fn render_primary_action(&self, ctx: &Context<Self>) -> Html {
-        match &ctx.props().primary {
-            Some(action) => html! {
-                <Button label={action.label.clone()} variant={Variant::Primary} onclick={action.callback.reform(|_|{})}/>
-            },
-            None => html! {},
-        }
-    }
+    classes.extend_from(&props.size);
 
-    fn render_secondary_actions(&self, ctx: &Context<Self>) -> Html {
-        if !ctx.props().secondaries.is_empty() {
-            html! {
-                <div class="pf-c-empty-state__secondary">
-                    { for ctx.props().secondaries.iter().map(|action|{
-                        html!{
-                            <Button label={action.label.clone()} variant={Variant::Link} onclick={action.callback.reform(|_|{})}/>
-                        }
-                    }) }
+    html! (
+        <div class={classes}>
+            <div class="pf-c-empty-state__content">
+                if let Some(icon) = &props.icon {
+                    { icon.with_classes(Classes::from("pf-c-empty-state__icon")) }
+                }
+                <Title size={ props.title_size() }>{&props.title}</Title>
+                <div class="pf-c-empty-state__body">
+                    { for props.children.iter() }
                 </div>
-            }
-        } else {
-            html! {}
-        }
-    }
+
+                if let Some(action) = &props.primary {
+                    <Button label={action.label.clone()} variant={Variant::Primary} onclick={action.callback.reform(|_|{})}/>
+                }
+
+                if !props.secondaries.is_empty() {
+                    <div class="pf-c-empty-state__secondary">
+                        { for props.secondaries.iter().map(|action|{
+                            html!{
+                                <Button label={action.label.clone()} variant={Variant::Link} onclick={action.callback.reform(|_|{})}/>
+                            }
+                        }) }
+                    </div>
+                }
+            </div>
+        </div>
+    )
 }
