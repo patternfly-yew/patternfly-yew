@@ -49,6 +49,9 @@ macro_rules! icons {
 }
 
 icons! {
+
+    // fas icons
+
     AngleDown => fas("fa-angle-down"),
     AngleLeft => fas("fa-angle-left"),
     AngleDoubleLeft => fas("fa-angle-double-left"),
@@ -91,6 +94,9 @@ icons! {
     Times => fas("fa-times"),
     Th => fas("fa-th"),
 
+    // pf icons
+
+    Catalog => pf("pf-icon-catalog"),
     Help => pf("pf-icon-help"),
     Pending => pf("pf-icon-pending"),
 }
