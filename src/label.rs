@@ -56,7 +56,11 @@ pub struct LabelProps {
 ///
 /// > The **label** component allows users to add specific element captions for user clarity and convenience.
 ///
-/// Also see: https://www.patternfly.org/v4/components/label/html
+/// See: https://www.patternfly.org/v4/components/label/html
+///
+/// # Properties
+///
+/// Defined in [`LabelProps`].
 #[function_component(Label)]
 pub fn label(props: &LabelProps) -> Html {
     let mut classes = Classes::from("pf-c-label");
