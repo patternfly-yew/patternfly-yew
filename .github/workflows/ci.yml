@@ -28,17 +28,6 @@ jobs:
           rustup toolchain install ${{ matrix.toolchain }} --component rustfmt,clippy --target wasm32-unknown-unknown
           rustup default ${{ matrix.toolchain }}
 
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/.crates.toml
-            ~/.cargo/.crates2.json
-            target/
-          key: ${{ runner.os }}-cargo-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.toml') }}
-
       - name: Check rustfmt
         run:
           cargo fmt --all -- --check
