@@ -14,10 +14,10 @@ class Generator {
       return;
     }
 
-    if (this.#known.has(icon.Name)) {
+    if (this.#known.has(icon.React_name)) {
       return;
     }
-    this.#known.add(icon.Name);
+    this.#known.add(icon.React_name);
 
     // fix up style
 

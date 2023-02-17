@@ -175,6 +175,8 @@ pub enum Icon {
     /// Indicates the availability of contextual help
     #[cfg(feature = "icons-far")]
     OutlinedQuestionCircle,
+    /// Indicates the availability of a help system in the masthead
+    QuestionCircle,
     /// Indicates the ability to refresh. Please use the animated spinner to indicate that something is “loading” or in the middle of processing
     Redo,
     /// Indicates that that user may perform a search
@@ -484,6 +486,7 @@ impl crate::utils::AsClasses for Icon {
             Self::Print => classes.extend(super::fas("fa-print")),
             #[cfg(feature = "icons-far")]
             Self::OutlinedQuestionCircle => classes.extend(super::far("fa-question-circle")),
+            Self::QuestionCircle => classes.extend(super::fas("fa-question-circle")),
             Self::Redo => classes.extend(super::fas("fa-redo")),
             Self::Search => classes.extend(super::fas("fa-search")),
             Self::SearchMinus => classes.extend(super::fas("fa-search-minus")),
