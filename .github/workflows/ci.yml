@@ -54,4 +54,5 @@ jobs:
       - run: cargo install cargo-all-features
 
       - name: Check all features
+        run: |
           check-all-features --target wasm32-unknown-unknown
