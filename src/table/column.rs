@@ -15,11 +15,9 @@ pub struct TableColumnProperties {
 #[function_component(TableColumn)]
 pub fn table_column(props: &TableColumnProperties) -> Html {
     match &props.label {
-        None => html! {},
-        Some(label) => {
-            html! {
-                <th role="columnheader">{ &label }</th>
-            }
-        }
+        None => html! (<td></td>),
+        Some(label) => html! (
+            <th role="columnheader">{ &label }</th>
+        ),
     }
 }
