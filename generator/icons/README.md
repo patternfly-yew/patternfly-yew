@@ -17,3 +17,9 @@ Source: https://github.com/patternfly/patternfly-org/blob/main/packages/v4/patte
   ```shell
   node ./generate.mjs > ../../src/icon/generated.rs
   ```
+
+* `rustfmt` the file
+
+  ```shell
+  rustfmt ../../src/icon/generated.rs
+  ```
