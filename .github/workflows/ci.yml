@@ -34,6 +34,8 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
@@ -41,10 +43,15 @@ jobs:
         run:
           cargo fmt --all -- --check
 
-      - name: Build
+      - name: Check
         run: |
-          cargo build --release
+          cargo check --release
 
       - name: Test
         run: |
           cargo test --release
+
+      - run: cargo install cargo-all-features
+
+      - name: Check all features
+          check-all-features --target wasm32-unknown-unknown
