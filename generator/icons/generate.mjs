@@ -26,10 +26,10 @@ class Generator {
         // as is
         break;
       case "fab":
-        icon.Feature = "fab";
+        icon.Feature = "icons-fab";
         break;
       case "far":
-        icon.Feature = "far";
+        icon.Feature = "icons-far";
         break;
       case "":
         icon.Style = "plain";

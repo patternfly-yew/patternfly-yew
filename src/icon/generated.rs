@@ -35,7 +35,7 @@ pub enum Icon {
     /// Represents status: there is a bug present
     Bug,
     /// Indicates a date picker function is available
-    #[cfg(feature = "far")]
+    #[cfg(feature = "icons-far")]
     OutlinedCalendarAlt,
     /// Indicates the ability to acces option panels for components like drop-downs, filters and page ranges
     CaretDown,
@@ -46,7 +46,7 @@ pub enum Icon {
     /// Represents orders or tasks
     ClipboardCheck,
     /// Represents a time interval
-    #[cfg(feature = "far")]
+    #[cfg(feature = "icons-far")]
     OutlinedClock,
     /// Represents code
     Code,
@@ -57,7 +57,7 @@ pub enum Icon {
     /// Indicates the ability to manage columns for a table view
     Columns,
     /// Indicates availability of commenting
-    #[cfg(feature = "far")]
+    #[cfg(feature = "icons-far")]
     OutlinedComments,
     /// Indicates the ability to compress an item. Should toggle with fa-expand
     Compress,
@@ -164,7 +164,7 @@ pub enum Icon {
     /// Indicates the availability of a print function
     Print,
     /// Indicates the availability of contextual help
-    #[cfg(feature = "far")]
+    #[cfg(feature = "icons-far")]
     OutlinedQuestionCircle,
     /// Indicates the ability to refresh. Please use the animated spinner to indicate that something is “loading” or in the middle of processing
     Redo,
@@ -209,45 +209,45 @@ pub enum Icon {
     /// Represents multiple users, a user grouping or project
     Users,
     /// Indicates the ability to open link in a new window
-    #[cfg(feature = "far")]
+    #[cfg(feature = "icons-far")]
     OutlinedWindowRestore,
     /// Represents status: in preparation for maintenance
     Wrench,
     /// Represents brand: GitHub
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Github,
     /// Represents brand: GitLab
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Gitlab,
     /// Represents brand: Google
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Google,
     /// Represents brand: Stack Overflow
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     StackOverflow,
     /// Represents brand: Facebook
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     FacebookSquare,
     /// Represents brand: Twitter
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Twitter,
     /// Represents brand: Windows
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Windows,
     /// Represents brand: LinkedIn
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Linkedin,
     /// Represents brand: Linux
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Linux,
     /// Represents brand: Dropbox
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Dropbox,
     /// Represents brand: Drupal
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Drupal,
     /// Represents brand: js
-    #[cfg(feature = "fab")]
+    #[cfg(feature = "icons-fab")]
     Js,
     /// Represents an item is asleep or in power suspended mode
     Asleep,
@@ -407,19 +407,19 @@ impl crate::utils::AsClasses for Icon {
             Self::Bell => classes.extend(super::fas("fa-bell")),
             Self::AttentionBell => classes.extend(super::pf("pf-icon-attention-bell")),
             Self::Bug => classes.extend(super::fas("fa-bug")),
-            #[cfg(feature = "far")]
+            #[cfg(feature = "icons-far")]
             Self::OutlinedCalendarAlt => classes.extend(super::far("fa-calendar-alt")),
             Self::CaretDown => classes.extend(super::fas("fa-caret-down")),
             Self::Check => classes.extend(super::fas("fa-check")),
             Self::CheckCircle => classes.extend(super::fas("fa-check-circle")),
             Self::ClipboardCheck => classes.extend(super::fas("fa-clipboard-check")),
-            #[cfg(feature = "far")]
+            #[cfg(feature = "icons-far")]
             Self::OutlinedClock => classes.extend(super::far("fa-clock")),
             Self::Code => classes.extend(super::fas("fa-code")),
             Self::CodeBranch => classes.extend(super::fas("fa-code-branch")),
             Self::Cog => classes.extend(super::fas("fa-cog")),
             Self::Columns => classes.extend(super::fas("fa-columns")),
-            #[cfg(feature = "far")]
+            #[cfg(feature = "icons-far")]
             Self::OutlinedComments => classes.extend(super::far("fa-comments")),
             Self::Compress => classes.extend(super::fas("fa-compress")),
             Self::CompressArrowsAlt => classes.extend(super::fas("fa-compress-arrows-alt")),
@@ -473,7 +473,7 @@ impl crate::utils::AsClasses for Icon {
             Self::Openstack => classes.extend(super::pf("pf-icon-openstack")),
             Self::Play => classes.extend(super::fas("fa-play")),
             Self::Print => classes.extend(super::fas("fa-print")),
-            #[cfg(feature = "far")]
+            #[cfg(feature = "icons-far")]
             Self::OutlinedQuestionCircle => classes.extend(super::far("fa-question-circle")),
             Self::Redo => classes.extend(super::fas("fa-redo")),
             Self::Search => classes.extend(super::fas("fa-search")),
@@ -496,32 +496,32 @@ impl crate::utils::AsClasses for Icon {
             Self::Upload => classes.extend(super::fas("fa-upload")),
             Self::User => classes.extend(super::fas("fa-user")),
             Self::Users => classes.extend(super::fas("fa-users")),
-            #[cfg(feature = "far")]
+            #[cfg(feature = "icons-far")]
             Self::OutlinedWindowRestore => classes.extend(super::far("fa-window-restore")),
             Self::Wrench => classes.extend(super::fas("fa-wrench")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Github => classes.extend(super::fab("fa-github")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Gitlab => classes.extend(super::fab("fa-gitlab")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Google => classes.extend(super::fab("fa-google")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::StackOverflow => classes.extend(super::fab("fa-stack-overflow")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::FacebookSquare => classes.extend(super::fab("fa-facebook-square")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Twitter => classes.extend(super::fab("fa-twitter")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Windows => classes.extend(super::fab("fa-windows")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Linkedin => classes.extend(super::fab("fa-linkedin")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Linux => classes.extend(super::fab("fa-linux")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Dropbox => classes.extend(super::fab("fa-dropbox")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Drupal => classes.extend(super::fab("fa-drupal")),
-            #[cfg(feature = "fab")]
+            #[cfg(feature = "icons-fab")]
             Self::Js => classes.extend(super::fab("fa-js")),
             Self::Asleep => classes.extend(super::pf("pf-icon-asleep")),
             Self::Automation => classes.extend(super::pf("pf-icon-automation")),
