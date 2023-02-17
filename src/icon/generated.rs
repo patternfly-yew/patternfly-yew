@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, strum_macros::EnumIter, strum_macros::EnumMessage)]
 pub enum Icon {
     /// Indicates the ability to navigate to the first page of a multi-page data set
     AngleDoubleLeft,
