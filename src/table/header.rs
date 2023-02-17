@@ -4,7 +4,7 @@ use yew::prelude::*;
 use super::column::TableColumn;
 
 #[derive(Debug, PartialEq, Clone, Properties)]
-pub struct TableHeaderProps {
+pub struct TableHeaderProperties {
     #[prop_or_default]
     pub sticky: bool,
     #[prop_or_default]
@@ -15,38 +15,30 @@ pub struct TableHeaderProps {
     pub hide_actions: bool,
 }
 
-#[derive(Clone, PartialEq, Debug)]
-pub struct TableHeader {}
+/// The Table Header component.
+///
+/// ## Properties
+///
+/// Defined by [`TableHeaderProperties`].
+#[function_component(TableHeader)]
+pub fn table_header(props: &TableHeaderProperties) -> Html {
+    html! (
+        <thead>
 
-impl Component for TableHeader {
-    type Message = ();
-    type Properties = TableHeaderProps;
+            <tr role="row">
 
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
-    }
+                if props.expandable {
+                    <td></td>
+                }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        return html! {
-            <thead>
+                { for props.children.iter() }
 
-                <tr role="row">
+                { if props.hide_actions {html!{}} else {html!{
+                    <td></td>
+                }}}
 
-                    { if ctx.props().expandable {
-                        html!{<td></td>}
-                    } else {
-                        html!{}
-                    }}
+            </tr>
 
-                    { for ctx.props().children.iter() }
-
-                    { if ctx.props().hide_actions {html!{}} else {html!{
-                        <td></td>
-                    }}}
-
-                </tr>
-
-            </thead>
-        };
-    }
+        </thead>
+    )
 }

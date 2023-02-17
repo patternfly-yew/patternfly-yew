@@ -31,7 +31,7 @@ impl Default for TableMode {
 }
 
 #[derive(Debug, PartialEq, Clone, Properties)]
-pub struct TableProps<M>
+pub struct TableProperties<M>
 where
     M: TableModel + 'static,
 {
@@ -47,7 +47,58 @@ where
     pub entries: M,
 }
 
-#[derive(Clone, Debug)]
+/// The Table component.
+///
+/// > A **table** is used to display large data sets that can be easily laid out in a simple grid with column headers.
+///
+/// See: https://www.patternfly.org/v4/components/table
+///
+/// ## Properties
+///
+/// Defined by [`TableProperties`].
+///
+/// ## Example
+///
+/// ```rust
+/// use patternfly_yew::prelude::*;
+/// use yew::prelude::*;
+///
+/// #[derive(Clone, PartialEq)]
+/// pub struct Item {
+///     string: String,
+///     number: u32,
+/// }
+///
+/// impl TableRenderer for Item {
+///     fn render(&self, column: ColumnIndex) -> Html {
+///         match column.index {
+///             0 => html!(&self.string),
+///             1 => html!(&self.number),
+///             _ => html!(),
+///         }
+///     }
+/// }
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   let header = html_nested!(
+///     <TableHeader>
+///       <TableColumn/>
+///       <TableColumn label="Number"/>
+///     </TableHeader>
+///   );
+///   let entries = SharedTableModel::new(vec![
+///     Item { string: "Foo".to_string(), number: 23 },
+///     Item { string: "Bar".to_string(), number: 42 },
+///     Item { string: "Baz".to_string(), number: 0 },
+///   ]);
+///   html!(
+///     <Table<SharedTableModel<Item>> {header}/>
+///   )
+/// }
+/// ```
+///
+#[derive(Clone)]
 pub struct Table<M>
 where
     M: TableModel + 'static,
@@ -103,13 +154,24 @@ impl Span {
 
 /// Render table entries
 pub trait TableRenderer {
+    /// Render the requested column.
     fn render(&self, column: ColumnIndex) -> Html;
+
+    /// Control if the details section is spans the full width.
     fn is_full_width_details(&self) -> Option<bool> {
         None
     }
+
+    /// Render the details section.
+    ///
+    /// Defaults to not having details.
     fn render_details(&self) -> Vec<Span> {
         vec![]
     }
+
+    /// Render the row actions.
+    ///
+    /// Defaults to no actions.
     fn actions(&self) -> Vec<DropdownChildVariant> {
         vec![]
     }
@@ -126,7 +188,7 @@ where
     M: TableModel + 'static,
 {
     type Message = Msg;
-    type Properties = TableProps<M>;
+    type Properties = TableProperties<M>;
 
     fn create(_: &Context<Self>) -> Self {
         Self {
@@ -173,13 +235,13 @@ where
             TableMode::Default => {}
         };
 
-        return html! {
+        html! (
             <table class={classes} role="grid">
                 { self.render_caption(ctx) }
                 { self.render_header(ctx) }
                 { self.render_entries(ctx) }
             </table>
-        };
+        )
     }
 }
 

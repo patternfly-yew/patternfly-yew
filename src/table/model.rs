@@ -1,6 +1,6 @@
 use super::TableRenderer;
 use std::{
-    fmt::Debug,
+    fmt::{Debug, Formatter},
     sync::{
         atomic::{AtomicUsize, Ordering},
         Arc, RwLock,
@@ -8,7 +8,7 @@ use std::{
 };
 
 /// A model providing data for a table.
-pub trait TableModel: Debug + Default + PartialEq + Clone {
+pub trait TableModel: Default + PartialEq + Clone {
     type Item: TableRenderer;
 
     /// Get the number of items
@@ -30,11 +30,21 @@ pub trait TableModel: Debug + Default + PartialEq + Clone {
         F: Fn(&TableModelEntry<Self::Item>) -> R;
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct TableModelEntry<T> {
     pub value: T,
     pub expanded: bool,
     pub(crate) index: usize,
+}
+
+impl<T> Debug for TableModelEntry<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TableModelEntry")
+            .field("value", &"[..]")
+            .field("expanded", &self.expanded)
+            .field("index", &self.index)
+            .finish()
+    }
 }
 
 impl<T> TableModelEntry<T> {
@@ -47,7 +57,7 @@ impl<T> TableModelEntry<T> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct SharedTableModel<T> {
     entries: Arc<RwLock<Vec<TableModelEntry<T>>>>,
     generation: usize,
@@ -77,8 +87,8 @@ impl<T> From<Vec<T>> for SharedTableModel<T> {
 }
 
 impl<T> SharedTableModel<T> {
-    pub fn new() -> Self {
-        vec![].into()
+    pub fn new(entries: Vec<T>) -> Self {
+        entries.into()
     }
 
     fn new_entry(entry: T, index: usize) -> TableModelEntry<T> {
@@ -143,7 +153,7 @@ where
 
 impl<T> TableModel for SharedTableModel<T>
 where
-    T: TableRenderer + Clone + Debug + PartialEq + 'static,
+    T: TableRenderer + Clone + PartialEq + 'static,
 {
     type Item = T;
 
@@ -198,24 +208,24 @@ mod test {
     #[test]
     fn test() {
         // create two linked models
-        let mut m1 = SharedTableModel::<String>::new();
+        let mut m1 = SharedTableModel::<String>::default();
         let m2 = m1.clone();
 
         // push data
         m1.push("Foo".into());
 
         // the models must not be equal, as one of them was modified
-        assert_ne!(m1, m2);
+        assert!(m1 != m2);
 
         // when we clone it again, they must be equal
         let m3 = m1.clone();
-        assert_eq!(m1, m3);
+        assert!(m1 == m3);
     }
 
     #[test]
     fn test_different_models() {
-        let m1 = SharedTableModel::<String>::new();
-        let m2 = SharedTableModel::<String>::new();
-        assert_ne!(m1, m2);
+        let m1 = SharedTableModel::<String>::default();
+        let m2 = SharedTableModel::<String>::default();
+        assert!(m1 != m2);
     }
 }
