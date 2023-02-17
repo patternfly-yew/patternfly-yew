@@ -1,20 +1,31 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct AvatarProperties {
+    /// The source of the image.
     #[prop_or_default]
-    pub src: String,
+    pub src: AttrValue,
+    /// The image "alt" text.
     #[prop_or("Avatar image".into())]
-    pub alt: String,
+    pub alt: AttrValue,
 }
 
+/// The avatar component.
+///
+/// > An **avatar** is a visual used to represent a user. It may contain an image or a placeholder graphic.
+///
+/// See: https://www.patternfly.org/v4/components/avatar
+///
+/// ## Properties
+///
+/// Defined by [`AvatarProperties`].
 #[function_component(Avatar)]
-pub fn avatar(props: &Props) -> Html {
+pub fn avatar(props: &AvatarProperties) -> Html {
     html! {
         <img
             class="pf-c-avatar"
-            src={props.src.clone()}
-            alt={props.alt.clone()}
-            />
+            src={&props.src}
+            alt={&props.alt}
+        />
     }
 }

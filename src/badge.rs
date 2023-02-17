@@ -1,14 +1,23 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct BadgeProperties {
     pub children: Children,
     #[prop_or_default]
     pub read: bool,
 }
 
+/// The Badge component.
+///
+/// > A **badge** is used to annotate other information like a label or an object name.
+///
+/// See: https://www.patternfly.org/v4/components/badge
+///
+/// ## Properties
+///
+/// Defined by [`BadgeProperties`].
 #[function_component(Badge)]
-pub fn badge(props: &Props) -> Html {
+pub fn badge(props: &BadgeProperties) -> Html {
     let mut classes = Classes::from("pf-c-badge");
 
     if props.read {

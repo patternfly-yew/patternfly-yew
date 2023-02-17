@@ -12,7 +12,7 @@ pub enum CardSelection {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct CardProperties {
     pub children: Children,
     #[prop_or_default]
     pub title: Option<Html>,
@@ -36,6 +36,15 @@ pub struct Props {
     pub selection: CardSelection,
 }
 
+/// The Card component.
+///
+/// > A **card** is a square or rectangular container that can contain any kind of content. Cards symbolize units of information, and each one acts as an entry point for users to access more details. For example, in dashboards and catalog views, cards function as a preview of a detailed page. Cards may also be used in data displays like card views, or for positioning content on a page.
+///
+/// See: https://www.patternfly.org/v4/components/card
+///
+/// ## Properties
+///
+/// Defined by [`CardProperties`].
 pub struct Card {
     expanded: bool,
 }
@@ -47,7 +56,7 @@ pub enum Msg {
 
 impl Component for Card {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = CardProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self { expanded: false }

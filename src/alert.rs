@@ -50,7 +50,7 @@ impl Type {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct AlertProperties {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -68,11 +68,20 @@ pub struct Props {
     pub onclose: Option<Callback<()>>,
 }
 
+/// The Alert component.
+///
+/// > An **alert** is a notification that provides brief information to the user without blocking their workflow.
+///
+/// See: https://www.patternfly.org/v4/components/alert
+///
+/// ## Properties
+///
+/// Define by [`AlertProperties`].
 pub struct Alert {}
 
 impl Component for Alert {
     type Message = ();
-    type Properties = Props;
+    type Properties = AlertProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}

@@ -20,7 +20,7 @@ impl Default for Level {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props {
+pub struct TitleProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -29,8 +29,17 @@ pub struct Props {
     pub size: Option<Size>,
 }
 
+/// The Title component.
+///
+/// > A **title** component applies top and bottom margins, font-weight, font-size, and line-height to titles. The most common usage for a title is to define headings within a page. For more information about the relationship between title component sizes and HTML heading levels, see the [Typography guidelines](https://www.patternfly.org/v4/guidelines/typography#customizing-heading-levels).
+///
+/// See: https://www.patternfly.org/v4/components/title
+///
+/// ## Properties
+///
+/// Defined by [`TitleProperties`].
 #[function_component(Title)]
-pub fn title(props: &Props) -> Html {
+pub fn title(props: &TitleProperties) -> Html {
     let mut class = Classes::from("pf-c-title");
 
     class.extend_from(&props.size.unwrap_or_else(|| match props.level {

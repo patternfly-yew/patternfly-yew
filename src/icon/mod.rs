@@ -24,19 +24,19 @@ impl Icon {
             .map(|v| format!("color: var({});", v))
             .unwrap_or_default();
 
-        html! {
+        html! (
             <span style={style}>
                 { self.as_html() }
             </span>
-        }
+        )
     }
 
     pub fn with_classes(&self, mut classes: Classes) -> Html {
         self.extend(&mut classes);
 
-        html! {
+        html! (
             <i class={classes} aria-hidden="true"></i>
-        }
+        )
     }
 }
 

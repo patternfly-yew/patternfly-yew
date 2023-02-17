@@ -87,7 +87,7 @@ impl IntoPropValue<Option<AttrValue>> for ButtonType {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct ButtonProperties {
     #[prop_or_default]
     pub id: Option<String>,
     #[prop_or_default]
@@ -136,6 +136,15 @@ pub struct Props {
     pub children: Children,
 }
 
+/// The Button component.
+///
+/// > A **button** is a box area or text that communicates and triggers user actions when clicked or selected. Buttons can be used to communicate and immediately trigger actions a user can take in an application, like submitting a form, canceling a process, or creating a new object. Buttons can also be used to take a user to a new location, like another page inside of a web application, or an external site such as help or documentation.
+///
+/// See: https://www.patternfly.org/v4/components/button
+///
+/// ## Properties
+///
+/// Defined by [`ButtonProperties`].
 pub struct Button {
     node_ref: NodeRef,
 }
@@ -146,7 +155,7 @@ pub enum Msg {
 
 impl Component for Button {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = ButtonProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {

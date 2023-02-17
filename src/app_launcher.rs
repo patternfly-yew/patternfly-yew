@@ -7,7 +7,7 @@ use yew::{
 };
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct AppLauncherProperties {
     #[prop_or_default]
     pub toggle: Option<Html>,
     #[prop_or_default]
@@ -30,7 +30,7 @@ pub struct AppLauncher {
 
 impl Component for AppLauncher {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = AppLauncherProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let global_close =
@@ -97,7 +97,7 @@ impl Component for AppLauncher {
 }
 
 impl AppLauncher {
-    fn render_trigger(&self, props: &Props) -> Html {
+    fn render_trigger(&self, props: &<AppLauncher as Component>::Properties) -> Html {
         if let Some(toggle) = &props.toggle {
             toggle.clone()
         } else {

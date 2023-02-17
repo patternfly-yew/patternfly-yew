@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props {
+pub struct ChipProperties {
     #[prop_or_default]
     pub text: String,
     #[prop_or_default]
@@ -18,11 +18,20 @@ pub struct Props {
     pub icon: Option<Icon>,
 }
 
+/// The Chip component.
+///
+/// > A **chip** is used to communicate a value or a set of attribute-value pairs within workflows that involve filtering a set of objects.
+///
+/// See: https://www.patternfly.org/v4/components/chip
+///
+/// ## Properties
+///
+/// Defined by [`ChipProperties`].
 pub struct Chip {}
 
 impl Component for Chip {
     type Message = ();
-    type Properties = Props;
+    type Properties = ChipProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}
