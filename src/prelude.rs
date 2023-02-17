@@ -5,6 +5,7 @@ pub use crate::avatar::*;
 pub use crate::backdrop::*;
 pub use crate::background::*;
 pub use crate::badge::*;
+pub use crate::breadcrumb::*;
 pub use crate::bullseye::*;
 pub use crate::button::*;
 pub use crate::card::*;

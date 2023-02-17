@@ -6,6 +6,7 @@ mod avatar;
 mod backdrop;
 mod background;
 mod badge;
+mod breadcrumb;
 mod bullseye;
 mod button;
 mod card;
