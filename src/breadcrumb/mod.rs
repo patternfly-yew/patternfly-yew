@@ -25,6 +25,7 @@ pub struct BreadcrumbProps {
 /// ## Properties
 ///
 /// Defined by [`BreadcrumbProps`].
+///
 #[function_component(Breadcrumb)]
 pub fn breadcrumb(props: &BreadcrumbProps) -> Html {
     let last = props.children.len() - 1;

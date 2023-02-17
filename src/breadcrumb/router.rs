@@ -29,6 +29,7 @@ impl<T: Target> super::variant::BreadcrumbItemCreator for BreadcrumbRouterItemPr
     }
 }
 
+/// A breadcrumb item component based on [`yew_nested_router`].
 #[function_component(BreadcrumbRouterItem)]
 pub fn breadcrumb_router_item<T: Target>(props: &BreadcrumbRouterItemProps<T>) -> Html {
     let mut class = Classes::from("pf-c-breadcrumb__link");
