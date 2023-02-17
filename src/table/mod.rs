@@ -93,7 +93,7 @@ where
 ///     Item { string: "Baz".to_string(), number: 0 },
 ///   ]);
 ///   html!(
-///     <Table<SharedTableModel<Item>> {header}/>
+///     <Table<SharedTableModel<Item>> {header} {entries} />
 ///   )
 /// }
 /// ```
