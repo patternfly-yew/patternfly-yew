@@ -34,6 +34,8 @@ pub struct CardProperties {
     pub rounded: bool,
     #[prop_or_default]
     pub selection: CardSelection,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 /// The Card component.
@@ -111,11 +113,13 @@ impl Component for Card {
             classes.push("pf-m-rounded");
         }
 
+        classes.extend(ctx.props().class.clone());
+
         html! {
             <div
                 class={classes}
                 onclick={&ctx.props().onclick}
-                >
+            >
                 { self.header(ctx) }
                 if self.expanded || !ctx.props().expandable {
                     { self.body(ctx) }
