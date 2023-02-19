@@ -64,6 +64,9 @@ pub struct Props {
 
     pub validation_warning_title: Option<String>,
     pub validation_error_title: Option<String>,
+
+    #[prop_or_default]
+    pub onsubmit: Callback<SubmitEvent>,
 }
 
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -214,6 +217,7 @@ impl Component for Form {
                     id={ctx.props().id.clone()}
                     action={ctx.props().action.clone()}
                     method={ctx.props().method.clone()}
+                    onsubmit={ctx.props().onsubmit.clone()}
                 >
 
                     if let Some(alert) = alert {
