@@ -1,0 +1,98 @@
+use yew::prelude::*;
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct CodeBlockProperties {
+    #[prop_or_default]
+    pub expandable: bool,
+    #[prop_or_default]
+    pub children: Children,
+    #[prop_or_default]
+    pub actions: ChildrenWithProps<CodeBlockAction>,
+}
+
+/// The Code Block Component
+///
+/// > A **code block** is a component that contains 2 or more lines of read-only code. The code in a code block can be copied to the clipboard.
+///
+/// See: https://www.patternfly.org/v4/components/code-block
+///
+/// ## Properties
+///
+/// Defined by [`CodeBlockProperties`].
+///
+/// ## Children
+///
+/// A code block can contain any children, but is expected to contain a [`CodeBlockCode`] component.
+///
+/// It may also be wrapped with a detached [`crate::prelude::ExpandableSection`] component. The
+/// [`crate::prelude::ExpandableSectionToggle`] would then be a child of this component, but stay outside the nested
+/// code component.
+///
+/// ## Example
+///
+/// A simple example would be:
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   html!(
+///     <CodeBlock>
+///       <CodeBlockCode>{r#"some code"#}</CodeBlockCode>
+///     </CodeBlock>
+///   )
+/// }
+/// ```
+#[function_component(CodeBlock)]
+pub fn code_block(props: &CodeBlockProperties) -> Html {
+    html!(
+        <div class="pf-c-code-block">
+            if !props.actions.is_empty() {
+                <div class="pf-c-code-block__header">
+                    { for props.actions.iter() }
+                </div>
+            }
+
+            <div class="pf-c-code-block__content">
+                { for props.children.iter() }
+            </div>
+        </div>
+    )
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct CodeBlockCodeProperties {
+    #[prop_or_default]
+    pub children: Children,
+}
+
+/// The actual code component of the Code Block component.
+///
+/// ## Properties
+///
+/// Defined by [`CodeBlockCodeProperties`].
+#[function_component(CodeBlockCode)]
+pub fn code_block_code(props: &CodeBlockCodeProperties) -> Html {
+    html!(
+        <pre class="pf-c-code-block__pre">
+            <code class="pf-c-code-block__code">{ for props.children.iter() }</code>
+        </pre>
+    )
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct CodeBlockActionProperties {
+    #[prop_or_default]
+    pub children: Children,
+}
+
+#[function_component(CodeBlockAction)]
+pub fn code_block_action(props: &CodeBlockActionProperties) -> Html {
+    html!(
+        <div class="pf-c-code-block__actions-item">
+            { for props.children.iter() }
+        </div>
+    )
+}

@@ -18,6 +18,7 @@ pub use position::*;
 pub use size::*;
 pub use space::*;
 use std::fmt::{Debug, Display, Formatter};
+use yew::use_memo;
 
 pub fn random_id() -> String {
     uuid::Uuid::new_v4().to_string()
@@ -39,7 +40,17 @@ impl Display for Id {
     }
 }
 
+/// Use a random ID
 #[yew::hook]
-pub fn use_id() -> yew::UseStateHandle<Id> {
+pub fn use_random_id() -> yew::UseStateHandle<Id> {
     yew::use_state_eq(Id::new)
+}
+
+/// Use an ID from properties, or random if none was provided
+#[yew::hook]
+pub fn use_prop_id<I>(id: I) -> std::rc::Rc<String>
+where
+    I: Into<Option<String>>,
+{
+    use_memo(|id| id.clone().unwrap_or_else(|| random_id()), id.into())
 }

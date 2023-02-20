@@ -1,5 +1,5 @@
 use super::*;
-use crate::utils::use_id;
+use crate::utils::use_random_id;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};
 
@@ -30,7 +30,7 @@ where
 
     let active = router.is_active(&props.to, props.predicate.as_ref());
 
-    let id = use_id();
+    let id = use_random_id();
 
     let expandable = use_expandable();
     use_effect_with_deps(
