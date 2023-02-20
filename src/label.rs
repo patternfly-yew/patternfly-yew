@@ -35,7 +35,7 @@ impl AsClasses for Color {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LabelProps {
+pub struct LabelProperties {
     #[prop_or_default]
     pub label: String,
     #[prop_or_default]
@@ -60,9 +60,9 @@ pub struct LabelProps {
 ///
 /// # Properties
 ///
-/// Defined in [`LabelProps`].
+/// Defined in [`LabelProperties`].
 #[function_component(Label)]
-pub fn label(props: &LabelProps) -> Html {
+pub fn label(props: &LabelProperties) -> Html {
     let mut classes = Classes::from("pf-c-label");
 
     classes.extend_from(&props.color);
@@ -86,14 +86,14 @@ pub fn label(props: &LabelProps) -> Html {
     html! (
         <span class={classes}>
             { content (
-                html!{
+                html!(
                     <>
                         if let Some(icon) = &props.icon {
                             <span class="pf-c-label__icon"> { icon.as_html() } </span>
                         }
                         { &props.label }
                     </>
-                }
+                )
             )}
             if let Some(onclose) = &props.onclose {
                 <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>

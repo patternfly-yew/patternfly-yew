@@ -22,7 +22,7 @@ impl Default for TextVariant {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props {
+pub struct TextProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -32,7 +32,7 @@ pub struct Props {
 }
 
 #[function_component(Text)]
-pub fn text(props: &Props) -> Html {
+pub fn text(props: &TextProperties) -> Html {
     let mut classes = Classes::from("pf-c-content");
 
     if props.visited {

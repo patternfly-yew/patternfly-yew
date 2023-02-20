@@ -115,7 +115,7 @@ impl Component for Card {
 
         classes.extend(ctx.props().class.clone());
 
-        html! {
+        html! (
             <div
                 class={classes}
                 onclick={&ctx.props().onclick}
@@ -126,7 +126,7 @@ impl Component for Card {
                 }
                 { self.footer(ctx) }
             </div>
-        }
+        )
     }
 }
 

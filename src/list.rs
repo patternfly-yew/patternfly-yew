@@ -50,14 +50,23 @@ impl IntoPropValue<Option<AttrValue>> for ListOrder {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct ListProperties {
     pub children: Children,
     #[prop_or_default]
     pub r#type: ListType,
 }
 
+/// The List component.
+///
+/// > A **list** component embeds a formatted list (bulleted or numbered list) into page content.
+///
+/// See: https://www.patternfly.org/v4/components/list
+///
+/// ## Properties
+///
+/// Defined by [`ListProperties`].
 #[function_component(List)]
-pub fn list(props: &Props) -> Html {
+pub fn list(props: &ListProperties) -> Html {
     let mut classes = Classes::from("pf-c-list");
 
     if let ListType::Inline = props.r#type {

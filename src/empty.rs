@@ -3,7 +3,7 @@ use yew::prelude::*;
 use crate::{Action, Button, ExtendClasses, Icon, Size, Title, Variant};
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct EmptyStateProps {
+pub struct EmptyStateProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -20,7 +20,7 @@ pub struct EmptyStateProps {
     pub full_height: bool,
 }
 
-impl EmptyStateProps {
+impl EmptyStateProperties {
     fn title_size(&self) -> Size {
         match self.size {
             Some(Size::XLarge)
@@ -32,8 +32,17 @@ impl EmptyStateProps {
     }
 }
 
+/// The Empty State component.
+///
+/// > An **empty state** is a screen that is not yet populated with data or information. Empty states typically contain a short message and next steps for the user.
+///
+/// See: https://www.patternfly.org/v4/components/empty-state
+///
+/// ## Properties
+///
+/// Define by [`EmptyStateProperties`].
 #[function_component(EmptyState)]
-pub fn empty_state(props: &EmptyStateProps) -> Html {
+pub fn empty_state(props: &EmptyStateProperties) -> Html {
     let mut classes = Classes::from("pf-c-empty-state");
 
     if props.full_height {

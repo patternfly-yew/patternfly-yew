@@ -1,32 +1,32 @@
 use yew::prelude::*;
 
 #[derive(Properties, Clone, Debug, PartialEq)]
-pub struct DescriptionListProps {
+pub struct DescriptionListProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(DescriptionList)]
-pub fn dl(props: &DescriptionListProps) -> Html {
+pub fn dl(props: &DescriptionListProperties) -> Html {
     let classes = Classes::from("pf-c-description-list");
 
-    return html! {
+    html! (
         <dl class={classes}>
             { for props.children.iter() }
         </dl>
-    };
+    )
 }
 
 #[derive(Properties, Clone, Debug, PartialEq)]
-pub struct DescriptionGroupProps {
+pub struct DescriptionGroupProperties {
     pub term: String,
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(DescriptionGroup)]
-pub fn desc_group(props: &DescriptionGroupProps) -> Html {
-    html! {
+pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
+    html! (
         <div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">{ &props.term }</dt>
             <dd class="pf-c-description-list__description">
@@ -35,5 +35,5 @@ pub fn desc_group(props: &DescriptionGroupProps) -> Html {
                 </div>
             </dd>
         </div>
-    }
+    )
 }
