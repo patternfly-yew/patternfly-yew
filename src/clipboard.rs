@@ -8,7 +8,7 @@ use web_sys::{Element, HtmlInputElement};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct ClipboardProperties {
     #[prop_or_default]
     pub value: String,
     #[prop_or_default]
@@ -68,6 +68,11 @@ const DEFAULT_MESSAGE: &'static str = "Copy to clipboard";
 const FAILED_MESSAGE: &'static str = "Failed to copy";
 const OK_MESSAGE: &'static str = "Copied!";
 
+/// The Clipboard copy component.
+///
+/// > The **clipboard copy** component allows users to quickly and easily copy content to their clipboard.
+///
+/// See: https://www.patternfly.org/v4/components/clipboard-copy
 pub struct Clipboard {
     message: &'static str,
     task: Option<Timeout>,
@@ -80,7 +85,7 @@ pub struct Clipboard {
 
 impl Component for Clipboard {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = ClipboardProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let expanded = match ctx.props().variant {

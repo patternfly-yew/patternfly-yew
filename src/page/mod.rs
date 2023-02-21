@@ -8,7 +8,7 @@ pub use section::*;
 pub use sidebar::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct PageProps {
+pub struct PageProperties {
     pub children: Children,
     #[prop_or_default]
     pub sidebar: ChildrenWithProps<PageSidebar>,
@@ -26,6 +26,14 @@ pub struct PageProps {
 
 /// A full page
 ///
+/// > The page component is used to define the basic layout of a page with either vertical or horizontal navigation.
+///
+/// See: https://www.patternfly.org/v4/components/page
+///
+/// ## Properties
+///
+/// Defined by [`PageProperties`].
+///
 /// ## Elements
 ///
 /// * **Sidebar**: Contains a single [`PageSidebar`], hosting the main navigation.
@@ -34,7 +42,6 @@ pub struct PageProps {
 /// * **Logo**: A logo, show in the navigation header section.
 /// * **Children**: The actual page content, probably wrapped into [`PageSection`] components.
 ///
-/// Also see: https://www.patternfly.org/v4/components/page/html
 pub struct Page {
     open: bool,
 }
@@ -45,7 +52,7 @@ pub enum Msg {
 
 impl Component for Page {
     type Message = Msg;
-    type Properties = PageProps;
+    type Properties = PageProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {

@@ -4,7 +4,7 @@ use crate::{
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct PaginationProperties {
     #[prop_or_default]
     pub total_entries: Option<u32>,
     #[prop_or_default]
@@ -50,7 +50,7 @@ pub enum Msg {
 
 impl Component for Pagination {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = PaginationProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {

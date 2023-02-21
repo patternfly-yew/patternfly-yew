@@ -3,7 +3,7 @@ use std::rc::Rc;
 use yew::prelude::*;
 
 #[derive(Properties, Debug, Clone, PartialEq)]
-pub struct Props {
+pub struct ContextSelectorProperties {
     #[prop_or_default]
     pub selected: String,
     #[prop_or_default]
@@ -19,6 +19,15 @@ pub enum Msg {
     Search(String),
 }
 
+/// The Context Selector component.
+///
+/// > A **context selector** can be used in addition to global navigation when the data or resources you show in the interface need to change depending on the user's context.
+///
+/// See: https://www.patternfly.org/v4/components/context-selector
+///
+/// ## Properties
+///
+/// Defined by [`ContextSelectorProperties`].
 pub struct ContextSelector {
     expanded: bool,
     global_close: GlobalClose,
@@ -26,7 +35,7 @@ pub struct ContextSelector {
 
 impl Component for ContextSelector {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = ContextSelectorProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let global_close =

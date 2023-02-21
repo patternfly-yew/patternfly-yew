@@ -1,7 +1,7 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct SplitProperties {
     pub children: ChildrenWithProps<SplitItem>,
     #[prop_or_default]
     pub gutter: bool,
@@ -9,8 +9,11 @@ pub struct Props {
     pub wrap: bool,
 }
 
+/// The Split layout.
+///
+/// See: https://www.patternfly.org/v4/layouts/split
 #[function_component(Split)]
-pub fn split(props: &Props) -> Html {
+pub fn split(props: &SplitProperties) -> Html {
     let mut classes = Classes::from("pf-l-split");
 
     if props.gutter {
@@ -21,17 +24,15 @@ pub fn split(props: &Props) -> Html {
         classes.push("pf-m-wrap");
     }
 
-    html! {
+    html! (
         <div class={classes}>
-        { for props.children.iter().map(|child|{
-            html!{ {child} }
-        }) }
+        { for props.children.iter() }
         </div>
-    }
+    )
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct SplitItemProps {
+pub struct SplitItemProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -39,16 +40,16 @@ pub struct SplitItemProps {
 }
 
 #[function_component(SplitItem)]
-pub fn split_item(props: &SplitItemProps) -> Html {
+pub fn split_item(props: &SplitItemProperties) -> Html {
     let mut classes = Classes::from("pf-l-split__item");
 
     if props.fill {
         classes.push("pf-m-fill");
     }
 
-    return html! {
+    html!(
         <div class={classes}>
             { props.children.clone() }
         </div>
-    };
+    )
 }

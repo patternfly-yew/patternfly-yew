@@ -46,18 +46,29 @@ impl Display for Step {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct SliderProperties {
+    /// The minimum value.
     pub min: Step,
+    /// The maximum value.
     pub max: Step,
+
+    /// The initial value.
     #[prop_or_default]
     pub value: Option<f64>,
+
+    /// Flag to hide the label.
     #[prop_or_default]
     pub hide_labels: bool,
+
+    /// The precision of the value label.
     #[prop_or(2)]
     pub label_precision: usize,
 
+    /// An option to suppress reporting the initial value as change.
     #[prop_or_default]
     pub suppress_initial_change: bool,
+
+    /// A callback reporting changes.
     #[prop_or_default]
     pub onchange: Callback<f64>,
 }
@@ -76,6 +87,15 @@ pub enum Input {
     Touch,
 }
 
+/// The Slider component.
+///
+/// > A **slider** provides a quick and effective way for users to set and adjust a numeric value from a defined range of values.
+///
+/// See: https://www.patternfly.org/v4/components/slider
+///
+/// ## Properties
+///
+/// Defined by [`SliderProperties`].
 pub struct Slider {
     // value in percent (0..=1)
     value: f64,
@@ -96,7 +116,7 @@ struct Refs {
 
 impl Component for Slider {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = SliderProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let (percent, value) = match ctx.props().value {
@@ -308,18 +328,18 @@ impl Slider {
         }
     }
 
-    fn calc_percent(value: f64, props: &Props) -> f64 {
+    fn calc_percent(value: f64, props: &SliderProperties) -> f64 {
         let delta = props.max.value - props.min.value;
         let p = (value - props.min.value) / delta;
         p.clamp(0f64, 1f64)
     }
 
-    fn calc_value(p: f64, props: &Props) -> f64 {
+    fn calc_value(p: f64, props: &SliderProperties) -> f64 {
         let delta = props.max.value - props.min.value;
         props.min.value + delta * p
     }
 
-    fn render_step(&self, step: &Step, props: &Props) -> Html {
+    fn render_step(&self, step: &Step, props: &SliderProperties) -> Html {
         let position = Self::calc_percent(step.value, props);
         let active = position <= self.value;
 

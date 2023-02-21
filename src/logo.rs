@@ -1,14 +1,19 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
-    pub src: String,
-    pub alt: String,
+pub struct LogoProperties {
+    pub src: AttrValue,
+    pub alt: AttrValue,
 }
 
+/// The Logo component using in the header navigation section.
 #[function_component(Logo)]
-pub fn logo(props: &Props) -> Html {
-    html! {
-        <img class="pf-c-brand" src={props.src.clone()} alt={props.alt.clone()} />
-    }
+pub fn logo(props: &LogoProperties) -> Html {
+    html! (
+        <img
+            class="pf-c-brand"
+            src={&props.src}
+            alt={&props.alt}
+        />
+    )
 }

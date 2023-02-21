@@ -3,7 +3,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct SwitchProperties {
     #[prop_or_default]
     pub id: Option<String>,
 
@@ -24,6 +24,15 @@ pub struct Props {
     pub aria_label: String,
 }
 
+/// The Switch component.
+///
+/// > A **switch** toggles the state of a setting (between on and off). Switches and checkboxes can often be used interchangeably, but the switch provides a more explicit, visible representation on a setting.
+///
+/// See: https://www.patternfly.org/v4/components/switch
+///
+/// ## Properties
+///
+/// Defined by [`SwitchProperties`].
 pub struct Switch {
     id: String,
     input_ref: NodeRef,
@@ -35,7 +44,7 @@ pub enum Msg {
 
 impl Component for Switch {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = SwitchProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let id = ctx

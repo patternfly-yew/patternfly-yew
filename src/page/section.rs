@@ -48,7 +48,7 @@ impl AsClasses for PageSectionType {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct PageSectionProps {
+pub struct PageSectionProperties {
     pub children: Children,
     #[prop_or_default]
     pub r#type: PageSectionType,
@@ -137,6 +137,10 @@ impl IntoPropValue<PageSectionFill> for bool {
 
 /// A page section, a child of a [`Page`] component.
 ///
+/// ## Properties
+///
+/// Defined by [`PageSectionProperties`].
+///
 /// ## Example
 ///
 /// ```rust
@@ -153,7 +157,7 @@ impl IntoPropValue<PageSectionFill> for bool {
 /// }
 /// ```
 #[function_component(PageSection)]
-pub fn page_section(props: &PageSectionProps) -> Html {
+pub fn page_section(props: &PageSectionProperties) -> Html {
     // start with the main type
 
     let mut class = props.r#type.as_classes();
