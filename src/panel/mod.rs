@@ -1,0 +1,117 @@
+use crate::{AsClasses, ExtendClasses};
+use yew::prelude::*;
+
+/// A properties structures which only has children.
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct ChildrenProperties {
+    pub children: Children,
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct PanelProperties {
+    pub children: Children,
+
+    #[prop_or_default]
+    pub variant: PanelVariant,
+    #[prop_or_default]
+    pub scrollable: bool,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum PanelVariant {
+    #[default]
+    Default,
+    Bordered,
+    Raised,
+}
+
+impl AsClasses for PanelVariant {
+    fn extend(&self, classes: &mut Classes) {
+        match self {
+            Self::Default => {}
+            Self::Bordered => classes.push(classes!("pf-m-bordered")),
+            Self::Raised => classes.push(classes!("pf-m-raised")),
+        }
+    }
+}
+
+/// The Panel component.
+///
+/// > The **panel** component is a container that supports flexible content layouts. It can be used to house other components such as fields, forms, videos, buttons, and more. The panel should not be confused with the drawer component, which allows you to surface information via a collapsable container.
+///
+/// See: https://www.patternfly.org/v4/components/panel
+///
+/// ## Example
+///
+/// ```rust
+/// use patternfly_yew::prelude::*;
+/// use yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// pub fn example() -> Html {
+///   html!(
+///     <Panel>
+///       <PanelHeader>{"Header"}</PanelHeader>
+///       <Divider/>
+///       <PanelMain>
+///         <PanelMainBody>
+///             {"Main body"}
+///         </PanelMainBody>
+///       </PanelMain>
+///       <PanelFooter>{"Footer"}</PanelFooter>
+///     </Panel>
+///   )
+/// }
+/// ```
+#[function_component(Panel)]
+pub fn panel(props: &PanelProperties) -> Html {
+    let mut class = classes!("pf-c-panel");
+
+    class.extend_from(&props.variant);
+
+    if props.scrollable {
+        class.push(classes!("pf-m-scrollable"));
+    }
+
+    html!(
+        <div {class}>
+            { for props.children.iter() }
+        </div>
+    )
+}
+
+#[function_component(PanelMain)]
+pub fn panel_main(props: &ChildrenProperties) -> Html {
+    html!(
+        <div class="pf-c-panel__main">
+            { for props.children.iter() }
+        </div>
+    )
+}
+
+#[function_component(PanelMainBody)]
+pub fn panel_main_body(props: &ChildrenProperties) -> Html {
+    html!(
+        <div class="pf-c-panel__main-body">
+            { for props.children.iter() }
+        </div>
+    )
+}
+
+#[function_component(PanelHeader)]
+pub fn panel_main_body(props: &ChildrenProperties) -> Html {
+    html!(
+        <div class="pf-c-panel__header">
+            { for props.children.iter() }
+        </div>
+    )
+}
+
+#[function_component(PanelFooter)]
+pub fn panel_main_body(props: &ChildrenProperties) -> Html {
+    html!(
+        <div class="pf-c-panel__footer">
+            { for props.children.iter() }
+        </div>
+    )
+}

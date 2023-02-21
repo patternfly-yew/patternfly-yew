@@ -32,6 +32,7 @@ pub use crate::modal::*;
 pub use crate::nav::*;
 pub use crate::page::*;
 pub use crate::pagination::*;
+pub use crate::panel::*;
 pub use crate::popover::*;
 pub use crate::popper::*;
 pub use crate::select::*;

@@ -34,6 +34,7 @@ mod modal;
 mod nav;
 mod page;
 mod pagination;
+mod panel;
 mod popover;
 mod popper;
 mod select;
