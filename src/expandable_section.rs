@@ -202,7 +202,7 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
             <span class={toggle_icon_class}>
                 { Icon::AngleRight }
             </span>
-            <span class="pf-c-expandable-section__toggle-text">{ if props.expanded { &props.toggle_text_hidden } else { &props.toggle_text_expanded } }</span>
+            <span class="pf-c-expandable-section__toggle-text">{ if props.expanded { &props.toggle_text_expanded } else { &props.toggle_text_hidden } }</span>
         </button>
     );
 
