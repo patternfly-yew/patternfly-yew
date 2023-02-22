@@ -47,12 +47,7 @@ impl Component for Switch {
     type Properties = SwitchProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let id = ctx
-            .props()
-            .id
-            .as_ref()
-            .cloned()
-            .unwrap_or_else(|| random_id());
+        let id = ctx.props().id.as_ref().cloned().unwrap_or_else(random_id);
         Self {
             id,
             input_ref: Default::default(),
@@ -63,7 +58,7 @@ impl Component for Switch {
         match msg {
             Msg::Changed => {
                 ctx.props().onchange.emit(self.current_state());
-                return false;
+                false
             }
         }
     }
@@ -79,7 +74,7 @@ impl Component for Switch {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        html! {
+        html! (
             <label class="pf-c-switch" for={self.id.clone()}>
                 <input
                     ref={self.input_ref.clone()}
@@ -101,11 +96,11 @@ impl Component for Switch {
                 if let Some(ref label) = ctx.props().label {
                     <>
                     <span class="pf-c-switch__label pf-m-on">{ label }</span>
-                    <span class="pf-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or_else(||label) }</span>
+                    <span class="pf-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
                     </>
                 }
             </label>
-        }
+        )
     }
 }
 

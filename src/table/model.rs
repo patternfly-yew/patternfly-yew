@@ -69,11 +69,9 @@ static ID: AtomicUsize = AtomicUsize::new(0);
 impl<T> From<Vec<T>> for SharedTableModel<T> {
     fn from(initial_entries: Vec<T>) -> Self {
         let mut entries = Vec::with_capacity(initial_entries.len());
-        let mut index = 0;
 
-        for entry in initial_entries {
+        for (index, entry) in initial_entries.into_iter().enumerate() {
             entries.push(Self::new_entry(entry, index));
-            index += 1;
         }
 
         let id = ID.fetch_add(1, Ordering::SeqCst);

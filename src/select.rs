@@ -127,7 +127,7 @@ where
             false => Variant::None,
         };
 
-        return html! {
+        html! (
             <div class={classes}
                 ref={self.global_close.clone()}
             >
@@ -159,7 +159,7 @@ where
                     }
                 </div>
             </div>
-        };
+        )
     }
 }
 
@@ -175,46 +175,40 @@ where
 
         match &ctx.props().variant {
             SelectVariant::Single(_) => {
-                return html! {<span class="pf-c-select__toggle-text">{ &selection[0] }</span>};
+                html! (<span class="pf-c-select__toggle-text">{ &selection[0] }</span>)
             }
             SelectVariant::Checkbox(_) | SelectVariant::Multiple(_) => {
-                return html! {
+                html! (
                     <>
                         <span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>
-                            { match &ctx.props().chip {
-                                ChipVariant::None => html!{},
-                                ChipVariant::Count => {
-                                  html! {
+                        { match &ctx.props().chip {
+                            ChipVariant::None => html!(),
+                            ChipVariant::Count => {
+                                html! (
                                     <div class="pf-c-select__toggle_badge">
-                                      <Chip text={selection.len().to_string()}/>
+                                        <Chip text={selection.len().to_string()} />
                                     </div>
-                                  }
-                                },
-                                ChipVariant::Values => {
-                                  html!{ <>
-                                      { selection.iter().map(|b| {
-                                         let link = {
-                                            let b = b.clone();
-                                            ctx.link().callback(move |()|Msg::Clicked(b.clone()))
-                                          };
-                                          html!{<Chip
-                                                  text={b.to_string()}
-                                                  onclose={link}
-                                                 />}
-                                        }).collect::<Html>()
-                                      }
-                                  </>}
-                               }
-                            }}
-
+                                )
+                            },
+                            ChipVariant::Values => {
+                                selection.iter().map(|b| {
+                                    let link = {
+                                        let b = b.clone();
+                                        ctx.link().callback(move |()|Msg::Clicked(b.clone()))
+                                    };
+                                    html!(<Chip text={b.to_string()} onclose={link} />)
+                                })
+                                .collect()
+                           }
+                        }}
                     </>
-                };
+                )
             }
         }
     }
 
     fn render_button(&self, ctx: &Context<Self>) -> Html {
-        return html! {
+        html! (
             <ul>
                 { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
@@ -224,11 +218,11 @@ where
                     c
                 }) }
             </ul>
-        };
+        )
     }
 
     fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
-        return html! {
+        html! (
             <fieldset class="pf-c-select__menu-fieldset" aria-label="Select input">
                 { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
@@ -238,7 +232,7 @@ where
                     c
                 }) }
             </fieldset>
-        };
+        )
     }
 
     fn clicked(&mut self, ctx: &Context<Self>, key: K) {
@@ -491,7 +485,7 @@ where
             classes.push("pf-m-description");
         }
 
-        return html! {
+        html! (
             <li role="presentation">
                 <button
                     class={classes}
@@ -516,7 +510,7 @@ where
                 }}
                 </button>
             </li>
-        };
+        )
     }
 
     fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
@@ -531,7 +525,7 @@ where
             id
         });
 
-        return html! {
+        html! (
             <label
                 class={classes}
                 for={id.clone()}
@@ -556,17 +550,15 @@ where
                         html! {}
                 }}
             </label>
-        };
+        )
     }
 
     fn render_selected(&self, _: &Context<Self>) -> Html {
-        return if self.selected {
-            html! {
+        html! (
+            if self.selected {
                 <span class="pf-c-select__menu-item-icon">{ Icon::Check }</span>
             }
-        } else {
-            html! {}
-        };
+        )
     }
 }
 
@@ -624,7 +616,7 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        html! {
+        html! (
             <>
                 <div class="pf-c-select__menu-group">
                     <div class="pf-c-select__menu-group-title" aria-hidden="true">
@@ -638,6 +630,6 @@ where
                     })}
                 </div>
             </>
-        }
+        )
     }
 }

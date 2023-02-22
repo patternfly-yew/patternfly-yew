@@ -21,10 +21,7 @@ pub enum Validator<T, S> {
 
 impl<T, S> Validator<T, S> {
     pub fn is_custom(&self) -> bool {
-        match self {
-            Self::Custom(_) => true,
-            _ => false,
-        }
+        matches!(self, Self::Custom(_))
     }
 
     /// Convert into the context and run

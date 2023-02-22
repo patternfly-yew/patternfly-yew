@@ -132,7 +132,7 @@ impl Component for TextArea {
                 if let Some(value) = self.extract_value() {
                     self.value = value.clone();
                     ctx.props().onchange.emit(value.clone());
-                    ctx.props().onvalidate.emit(value.clone().into());
+                    ctx.props().onvalidate.emit(value.into());
                 }
                 false
             }

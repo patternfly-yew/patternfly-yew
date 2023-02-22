@@ -37,11 +37,9 @@ pub enum ClipboardVariant {
 
 impl ClipboardVariant {
     pub fn is_expandable(&self) -> bool {
-        match self {
-            Self::Expandable | Self::Expanded => true,
-            _ => false,
-        }
+        matches!(self, Self::Expandable | Self::Expanded)
     }
+
     pub fn is_inline(&self) -> bool {
         matches!(self, Self::Inline)
     }
@@ -64,9 +62,9 @@ pub enum Msg {
     Sync,
 }
 
-const DEFAULT_MESSAGE: &'static str = "Copy to clipboard";
-const FAILED_MESSAGE: &'static str = "Failed to copy";
-const OK_MESSAGE: &'static str = "Copied!";
+const DEFAULT_MESSAGE: &str = "Copy to clipboard";
+const FAILED_MESSAGE: &str = "Failed to copy";
+const OK_MESSAGE: &str = "Copied!";
 
 /// The Clipboard copy component.
 ///
@@ -88,10 +86,7 @@ impl Component for Clipboard {
     type Properties = ClipboardProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let expanded = match ctx.props().variant {
-            ClipboardVariant::Expanded => true,
-            _ => false,
-        };
+        let expanded = matches!(ctx.props().variant, ClipboardVariant::Expanded);
 
         Self {
             message: DEFAULT_MESSAGE,
@@ -207,10 +202,10 @@ impl Clipboard {
     }
 
     fn do_copy(&self, ctx: &Context<Self>) {
-        let s = self.value(&ctx);
+        let s = self.value(ctx);
 
         let ok: Callback<()> = ctx.link().callback(|_| Msg::Copied);
-        let err: Callback<&'static str> = ctx.link().callback(|s| Msg::Failed(s));
+        let err: Callback<&'static str> = ctx.link().callback(Msg::Failed);
 
         wasm_bindgen_futures::spawn_local(async move {
             match copy_to_clipboard(s).await {
@@ -227,7 +222,7 @@ impl Clipboard {
 
         let onclick = ctx.link().callback(|_| Msg::ToggleExpand);
 
-        return html! {
+        html! (
             <Button
                 expanded={self.expanded}
                 variant={Variant::Control}
@@ -236,7 +231,7 @@ impl Clipboard {
                     { Icon::AngleRight }
                 </div>
             </Button>
-        };
+        )
     }
 
     fn expanded(&self, ctx: &Context<Self>) -> Html {

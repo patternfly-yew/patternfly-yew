@@ -54,7 +54,7 @@ impl Component for Tooltip {
         let enter = ctx.link().callback(|_| TooltipMsg::Enter);
         let leave = ctx.link().callback(|_| TooltipMsg::Leave);
 
-        return html! {
+        html! (
             <>
                 <Popper<Tooltip> active={self.active} content={ctx.props().clone()}>
                     <span onmouseenter={enter.clone()} onmouseleave={leave.clone()} ref={self.node.clone()}>
@@ -62,7 +62,7 @@ impl Component for Tooltip {
                     </span>
                 </Popper<Tooltip>>
             </>
-        };
+        )
     }
 }
 

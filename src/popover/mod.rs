@@ -193,7 +193,7 @@ impl Component for PopoverPopup {
 
         let onclose = ctx.link().callback(|_| PopoverPopupMsg::Close);
 
-        return html! {
+        html! (
             <div
                 ref={&ctx.props().r#ref}
                 style={style}
@@ -229,6 +229,6 @@ impl Component for PopoverPopup {
 
                 </div>
             </div>
-        };
+        )
     }
 }

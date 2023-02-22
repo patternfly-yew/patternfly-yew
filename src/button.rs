@@ -191,30 +191,30 @@ impl Component for Button {
             classes.push("pf-m-progress pf-m-in-progress")
         }
 
-        return html! {
-            <button
-                ref={self.node_ref.clone()}
-                id={ctx.props().id.clone()}
-                class={classes}
-                style={ctx.props().style.clone()}
-                disabled={ctx.props().disabled}
-                type={ctx.props().r#type.clone()}
-                onclick={ctx.link().callback(Msg::Clicked)}
-                role={ctx.props().role.clone()}
-                form={ctx.props().form.clone()}
-                formaction={ctx.props().formaction.clone()}
-            >
-                if ctx.props().loading {
-                    <span class="pf-c-button__progress">
-                        <Spinner size={SpinnerSize::Md} />
-                    </span>
-                }
+        html! (
+             <button
+                 ref={self.node_ref.clone()}
+                 id={ctx.props().id.clone()}
+                 class={classes}
+                 style={ctx.props().style.clone()}
+                 disabled={ctx.props().disabled}
+                 type={ctx.props().r#type}
+                 onclick={ctx.link().callback(Msg::Clicked)}
+                 role={ctx.props().role.clone()}
+                 form={ctx.props().form.clone()}
+                 formaction={ctx.props().formaction.clone()}
+             >
+                 if ctx.props().loading {
+                     <span class="pf-c-button__progress">
+                         <Spinner size={SpinnerSize::Md} />
+                     </span>
+                 }
 
-                { self.label(ctx) }
-                { for ctx.props().children.iter() }
+                 { self.label(ctx) }
+                 { for ctx.props().children.iter() }
 
-            </button>
-        };
+             </button>
+        )
     }
 }
 

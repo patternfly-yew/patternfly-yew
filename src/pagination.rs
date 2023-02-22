@@ -141,121 +141,113 @@ impl Component for Pagination {
             })
         };
 
-        return html! {
+        html! (
 
-          <div class="pf-c-pagination" ref={self.global_close.clone()} >
+            <div class="pf-c-pagination" ref={self.global_close.clone()} >
 
-              // the selector of how many entries per page to display
-              <div class="pf-c-pagination__total-items">
-                  <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
-                  <b>{ total_entries.clone() }</b>
-              </div>
-              <div class={ menu_classes }>
-                  <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
-                      <span class="pf-c-options-menu__toggle-text">
-                           <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
-                          <b>{ total_entries }</b>
-                      </span>
-                  <Button
-                      class="pf-c-options-menu__toggle-button"
-                      id="pagination-options-menu-top-toggle"
-                      //aria-haspopup="listbox"
-                      aria_label="Items per page"
-                      onclick={ctx.link().callback(|_|Msg::ToggleMenu)}
-                      >
-                          <span class="pf-c-options-menu__toggle-button-icon">
-                              { Icon::CaretDown }
-                          </span>
-                  </Button>
-          </div>
-          {{ if self.expanded {
-              html! {
-              <ul class="pf-c-options-menu__menu" >
-                  { for limit_choices.into_iter().map(|limit|  { html!{
-                        <li>
-                          <Button
-                              class="pf-c-options-menu__menu-item"
-                                      onclick={link.callback(move |_|Msg::SetLimit(limit))}>
-                                  {limit} {" per page"}
-                                  {{ if ctx.props().selected_choice == limit {
-                                       html!{
-                                      <div class="pf-c-options-menu__menu-item-icon">
-                                         { Icon::Check }
-                                      </div>
-                                          }
-                                  } else {
-                                      html!{}
-                                  } }}
-                          </Button>
-                        </li>
-                  }})}
-              </ul>
-              }
-          } else { html! {} }
-          }}
-        </div>
+                // the selector of how many entries per page to display
+                <div class="pf-c-pagination__total-items">
+                    <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
+                    <b>{ total_entries.clone() }</b>
+                </div>
 
+                <div class={ menu_classes }>
+                    <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
+                        <span class="pf-c-options-menu__toggle-text">
+                            <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
+                            <b>{ total_entries }</b>
+                        </span>
+                        <Button
+                            class="pf-c-options-menu__toggle-button"
+                            id="pagination-options-menu-top-toggle"
+                            //aria-haspopup="listbox"
+                            aria_label="Items per page"
+                            onclick={ctx.link().callback(|_|Msg::ToggleMenu)}
+                            >
+                                <span class="pf-c-options-menu__toggle-button-icon">
+                                    { Icon::CaretDown }
+                                </span>
+                        </Button>
+                    </div>
 
-              // the navigation buttons
+                if self.expanded {
+                    <ul class="pf-c-options-menu__menu" >
+                        { for limit_choices.into_iter().map(|limit|  { html!{
+                              <li>
+                                  <Button
+                                      class="pf-c-options-menu__menu-item"
+                                      onclick={link.callback(move |_|Msg::SetLimit(limit))}
+                                  >
+                                      {limit} {" per page"}
+                                      if ctx.props().selected_choice == limit {
+                                          <div class="pf-c-options-menu__menu-item-icon">
+                                             { Icon::Check }
+                                          </div>
+                                      }
+                                  </Button>
+                              </li>
+                        }})}
+                    </ul>
+                }
+                </div>
 
-              <nav class="pf-c-pagination__nav" aria-label="Pagination">
-                  <div class="pf-c-pagination__nav-control pf-m-first">
-                    <Button
-                      variant={Variant::Plain}
-                      onclick={ctx.link().callback(|_|Msg::First)}
-                      disabled={ ctx.props().offset == 0 }
-                      aria_label="Go to first page"
-                    >
-                      { Icon::AngleDoubleLeft }
-                    </Button>
-                  </div>
-                  <div class="pf-c-pagination__nav-control pf-m-prev">
-                      <Button
-                          aria_label="Go to previous page"
-                          variant={Variant::Plain}
-                          onclick={ctx.link().callback(|_|Msg::Previous)}
-                          disabled= { ctx.props().offset == 0 }
-                      >
-                             { Icon::AngleLeft }
-                      </Button>
-                  </div>
-                  <div class="pf-c-pagination__nav-page-select">
-                    <TextInput
-                      r#type="number"
-                      validator={page_number_field_validator}
-                      onchange={onchange_callback}
-                      value = {(current_page+1).to_string()}
-                    />
-                  {{
-                      if let Some(max_page) = max_page {
-                          html!{<span aria-hidden="true">{ "of "} { max_page }</span>}
-                      } else {
-                          html!{}
-                      }
-                  }}
-                  </div>
-                  <div class="pf-c-pagination__nav-control pf-m-next">
-                    <Button
-                      aria_label="Go to next page"
-                      variant={Variant::Plain}
-                      onclick={ctx.link().callback(|_|Msg::Next)}
-                      disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
-                    >
-                      { Icon::AngleRight }
-                    </Button>
-                  </div>
-                  <div class="pf-c-pagination__nav-control pf-m-last">
-                    <Button
-                      aria_label="Go to last page"
-                      variant={Variant::Plain}
-                      onclick={ctx.link().callback(|_|Msg::Last)}
-                      disabled={is_last_page}
-                    >
-                      { Icon::AngleDoubleRight }
-                    </Button>
-                  </div>
-              </nav>
-          </div>
-              };
+                // the navigation buttons
+
+                <nav class="pf-c-pagination__nav" aria-label="Pagination">
+                    <div class="pf-c-pagination__nav-control pf-m-first">
+                        <Button
+                            variant={Variant::Plain}
+                            onclick={ctx.link().callback(|_|Msg::First)}
+                            disabled={ ctx.props().offset == 0 }
+                            aria_label="Go to first page"
+                        >
+                          { Icon::AngleDoubleLeft }
+                        </Button>
+                    </div>
+                    <div class="pf-c-pagination__nav-control pf-m-prev">
+                        <Button
+                            aria_label="Go to previous page"
+                            variant={Variant::Plain}
+                            onclick={ctx.link().callback(|_|Msg::Previous)}
+                            disabled= { ctx.props().offset == 0 }
+                        >
+                           { Icon::AngleLeft }
+                        </Button>
+                    </div>
+                    <div class="pf-c-pagination__nav-page-select">
+                        <TextInput
+                            r#type="number"
+                            validator={page_number_field_validator}
+                            onchange={onchange_callback}
+                            value = {(current_page+1).to_string()}
+                          />
+                    if let Some(max_page) = max_page {
+                        <span aria-hidden="true">{ "of "} { max_page }</span>
+                    }
+                    </div>
+
+                    <div class="pf-c-pagination__nav-control pf-m-next">
+                        <Button
+                            aria_label="Go to next page"
+                            variant={Variant::Plain}
+                            onclick={ctx.link().callback(|_|Msg::Next)}
+                            disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
+                        >
+                            { Icon::AngleRight }
+                        </Button>
+                    </div>
+                    <div class="pf-c-pagination__nav-control pf-m-last">
+                        <Button
+                            aria_label="Go to last page"
+                            variant={Variant::Plain}
+                            onclick={ctx.link().callback(|_|Msg::Last)}
+                            disabled={is_last_page}
+                        >
+                            { Icon::AngleDoubleRight }
+                        </Button>
+                    </div>
+                </nav>
+            </div>
+        )
     }
 }

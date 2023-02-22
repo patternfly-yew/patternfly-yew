@@ -29,8 +29,14 @@ pub struct Id(uuid::Uuid);
 
 impl Id {
     /// Get a new, random ID
-    pub fn new() -> Id {
+    pub fn new() -> Self {
         Id(uuid::Uuid::new_v4())
+    }
+}
+
+impl Default for Id {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

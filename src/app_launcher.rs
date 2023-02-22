@@ -78,7 +78,7 @@ impl Component for AppLauncher {
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     >
-                    { self.render_trigger(&ctx.props()) }
+                    { self.render_trigger(ctx.props()) }
                 </button>
                 <ul
                     class={menu_classes}

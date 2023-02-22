@@ -148,7 +148,7 @@ where
             .get()
             .ok_or_else(|| JsValue::from("Missing content"))?;
 
-        let update = ctx.link().callback(|state| Msg::State(state));
+        let update = ctx.link().callback(Msg::State);
         let update = Closure::wrap(Box::new(move |this: &Instance| {
             // web_sys::console::debug_2(&JsValue::from("apply: "), this);
             let msg = from_popper(this).unwrap();

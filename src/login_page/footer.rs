@@ -56,7 +56,7 @@ pub fn login_main_footer(props: &LoginMainFooterProps) -> Html {
         <footer class="pf-c-login__main-footer">
             { for props.children.iter() }
 
-            if props.links.len() > 0 {
+            if !props.links.is_empty() {
                 <ul class="pf-c-login__main-footer-links">
                 { for props.links.iter().map(|item|{
                     html!{ <li class="pf-c-login__main-footer-links-item">{item}</li> }
@@ -64,7 +64,7 @@ pub fn login_main_footer(props: &LoginMainFooterProps) -> Html {
                 </ul>
             }
 
-            if props.band.len() > 0 {
+            if !props.band.is_empty() {
                 <div class="pf-c-login__main-footer-band">
                 { for props.band.iter().map(|item|{
                     html!{ <p class="pf-c-login__main-footer-band-item">{item}</p> }

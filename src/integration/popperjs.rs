@@ -63,7 +63,7 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
     let mut styles: String = js_sys::Object::entries(&popper)
         .to_vec()
         .iter()
-        .map(|field| js_sys::Array::from(&field))
+        .map(js_sys::Array::from)
         .map(|field| {
             let key = js_sys::Array::get(&field, 0);
             let value = js_sys::Array::get(&field, 1);

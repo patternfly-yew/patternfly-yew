@@ -206,7 +206,7 @@ impl Component for Tab {
             classes.push("pf-m-current");
         }
 
-        return html! {
+        html! (
             <li class={classes}>
                 <button class="pf-c-tabs__link" onclick={ctx.link().callback(|_|TabMsg::Clicked)}>
                     if let Some(icon) = ctx.props().icon {
@@ -215,6 +215,6 @@ impl Component for Tab {
                     <span class="pf-c-tabs__item-text"> { &ctx.props().label } </span>
                 </button>
             </li>
-        };
+        )
     }
 }

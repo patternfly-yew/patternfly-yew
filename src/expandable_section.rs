@@ -104,7 +104,7 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
                 expanded.set(new_state);
                 ontoggle.emit(new_state);
             },
-            (props.ontoggle.clone(), expanded.clone()),
+            (props.ontoggle.clone(), expanded),
         )
     };
 

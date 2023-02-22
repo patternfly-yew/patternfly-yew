@@ -120,7 +120,7 @@ impl Component for Alert {
             }
         };
 
-        return html! {
+        html! (
             <div id={ctx.props().id.clone()} class={classes} aria_label={t.aria_label()}>
                 <div class="pf-c-alert__icon">{ t.icon() }</div>
                 <div class="pf-c-alert__title">
@@ -130,34 +130,24 @@ impl Component for Alert {
                     </strong>
                 </div>
 
-                {
-                    if let Some(onclose) = ctx.props().onclose.as_ref() {
-                        html!{
-                            <div class="pf-c-alert__action">
-                                <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
-                            </div>
-                        }
-                    } else {
-                        html!{}
-                    }
+
+                if let Some(onclose) = ctx.props().onclose.as_ref() {
+                    <div class="pf-c-alert__action">
+                        <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
+                    </div>
                 }
 
-                {
-                    if ctx.props().children.len() > 0 {
-                        html!{
-                            <div class="pf-c-alert__description">
-                                { for ctx.props().children.iter() }
-                            </div>
-                        }
-                    } else {
-                        html!{}
-                    }
+
+                if !ctx.props().children.is_empty() {
+                    <div class="pf-c-alert__description">
+                        { for ctx.props().children.iter() }
+                    </div>
                 }
 
                 { actions }
 
             </div>
-        };
+        )
     }
 }
 
@@ -188,7 +178,7 @@ impl Component for AlertGroup {
             classes.push("pf-m-toast");
         }
 
-        return html! {
+        html! (
             <ul class={classes}>
                 { for ctx.props().children.iter().map(|child|html!{
                     <li class="pf-c-alert-group__item">
@@ -196,6 +186,6 @@ impl Component for AlertGroup {
                     </li>
                 })}
             </ul>
-        };
+        )
     }
 }

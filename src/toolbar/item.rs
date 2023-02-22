@@ -55,9 +55,9 @@ pub fn toolbar_item(props: &ToolbarItemProps) -> Html {
     classes.extend(props.r#type.as_classes());
     classes.extend(props.modifiers.as_classes());
 
-    return html! {
+    html! (
         <div class={classes}>
             { for props.children.iter() }
         </div>
-    };
+    )
 }

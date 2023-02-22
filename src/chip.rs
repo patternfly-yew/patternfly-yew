@@ -27,76 +27,55 @@ pub struct ChipProperties {
 /// ## Properties
 ///
 /// Defined by [`ChipProperties`].
-pub struct Chip {}
+#[function_component(Chip)]
+pub fn chip(props: &ChipProperties) -> Html {
+    let mut classes = Classes::from("pf-c-chip");
 
-impl Component for Chip {
-    type Message = ();
-    type Properties = ChipProperties;
-
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
+    if props.draggable {
+        classes.push("pf-m-draggable");
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-chip");
+    // this is only used in the chip group component
+    if props.overflow {
+        classes.push("pf-m-overflow");
+    }
 
-        if ctx.props().draggable {
-            classes.push("pf-m-draggable");
-        }
+    let body = html! {
+        <>
+            { render_icon(props) }
+            <span class="pf-c-chip__text">{props.text.clone()}</span>
+            { render_badge(props) }
+            { render_close(props) }
+        </>
+    };
 
-        // this is only used in the chip group component
-        if ctx.props().overflow {
-            classes.push("pf-m-overflow");
-        }
-
-        let body = html! {
-            <>
-                { self.render_icon(ctx) }
-                <span class="pf-c-chip__text">{ctx.props().text.clone()}</span>
-                { self.render_badge(ctx) }
-                { self.render_close(ctx) }
-            </>
-        };
-
-        if ctx.props().overflow {
-            html! {<button class={classes}>{body}</button>}
-        } else {
-            html! {<div class={classes}>{body}</div>}
-        }
+    if props.overflow {
+        html! {<button class={classes}>{body}</button>}
+    } else {
+        html! {<div class={classes}>{body}</div>}
     }
 }
 
-impl Chip {
-    fn render_icon(&self, ctx: &Context<Self>) -> Html {
-        if let Some(icon) = &ctx.props().icon {
-            html! {
-                <span class="pf-c-chip__icon">
-                    { icon.as_html() }
-                </span>
-            }
-        } else {
-            html! {}
+fn render_icon(props: &ChipProperties) -> Html {
+    html! (
+        if let Some(icon) = &props.icon {
+            <span class="pf-c-chip__icon"> { icon.as_html() } </span>
         }
-    }
+    )
+}
 
-    fn render_badge(&self, ctx: &Context<Self>) -> Html {
-        if let Some(badge) = &ctx.props().badge {
-            return html! {
-                <span class="pf-c-badge pf-m-read">{badge}</span>
-            };
-        } else {
-            return html! {};
+fn render_badge(props: &ChipProperties) -> Html {
+    html! (
+        if let Some(badge) = &props.badge {
+            <span class="pf-c-badge pf-m-read"> {badge} </span>
         }
-    }
+    )
+}
 
-    fn render_close(&self, ctx: &Context<Self>) -> Html {
-        if let Some(onclose) = &ctx.props().onclose {
-            let onclose = onclose.reform(|_| {});
-            return html! {
-                <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose}/>
-            };
-        } else {
-            return html! {};
+fn render_close(props: &ChipProperties) -> Html {
+    html! (
+        if let Some(onclose) = &props.onclose {
+            <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})} />
         }
-    }
+    )
 }

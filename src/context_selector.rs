@@ -69,7 +69,7 @@ impl Component for ContextSelector {
             classes.push("pf-m-expanded");
         }
 
-        return html! {
+        html! (
             <div
                 class={classes}
                 ref={self.global_close.clone()}
@@ -89,7 +89,7 @@ impl Component for ContextSelector {
                     <div class="pf-c-context-selector__menu-search">
                         <InputGroup>
                             <TextInput
-                                onchange={ctx.link().callback(|v|Msg::Search(v))}
+                                onchange={ctx.link().callback(Msg::Search)}
                                 icon={TextInputIcon::Search}
                                 r#type="search"/>
                         </InputGroup>
@@ -103,7 +103,7 @@ impl Component for ContextSelector {
                     </ul>
                 </div>
             </div>
-        };
+        )
     }
 }
 
@@ -148,7 +148,7 @@ impl Component for ContextSelectorItem {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-context-selector__menu-list-item");
 
-        return html! {
+        html!(
             <li>
                 <button
                     class={classes}
@@ -159,6 +159,6 @@ impl Component for ContextSelectorItem {
                     { &ctx.props().label }
                 </button>
             </li>
-        };
+        )
     }
 }

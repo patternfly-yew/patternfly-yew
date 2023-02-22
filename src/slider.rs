@@ -39,7 +39,7 @@ where
 impl Display for Step {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match &self.label {
-            Some(label) => f.write_str(&label),
+            Some(label) => f.write_str(label),
             None => write!(f, "{}", self.value),
         }
     }
@@ -231,11 +231,11 @@ impl Component for Slider {
 
 impl Slider {
     fn start_mouse(&mut self, ctx: &Context<Self>) {
-        let onmove = ctx.link().callback(|e: i32| Msg::Move(e));
+        let onmove = ctx.link().callback(Msg::Move);
         let onstop = ctx.link().callback(|_: ()| Msg::Stop);
 
         let mousemove = {
-            let onmove = onmove.clone();
+            let onmove = onmove;
             EventListener::new_with_options(
                 &document(),
                 "mousemove",
@@ -263,7 +263,7 @@ impl Slider {
     }
 
     fn start_touch(&mut self, ctx: &Context<Self>) {
-        let onmove = ctx.link().callback(|e: i32| Msg::Move(e));
+        let onmove = ctx.link().callback(Msg::Move);
         let onstop = ctx.link().callback(|_: ()| Msg::Stop);
 
         let touchmove = EventListener::new_with_options(

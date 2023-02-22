@@ -67,7 +67,7 @@ impl Component for About {
             (None, true) => "".into(),
         };
 
-        return html! {
+        html!(
             <div class="pf-c-about-modal-box" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
                 { if !ctx.props().brand_src.is_empty() {html!{
                     <div class="pf-c-about-modal-box__brand">
@@ -101,6 +101,6 @@ impl Component for About {
               </div>
 
             </div>
-        };
+        )
     }
 }

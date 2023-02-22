@@ -13,7 +13,7 @@ use std::rc::Rc;
 use yew::prelude::*;
 use yew::virtual_dom::{vnode::VNode::VComp, VChild};
 
-const LOG_TARGET: &'static str = "table";
+const LOG_TARGET: &str = "table";
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum TableMode {
@@ -274,8 +274,8 @@ where
         let expandable = self.is_expandable(ctx);
 
         let result = ctx.props().entries.map(|entry| match expandable {
-            true => self.render_expandable_entry(ctx, &entry),
-            false => self.render_normal_entry(ctx, &entry),
+            true => self.render_expandable_entry(ctx, entry),
+            false => self.render_normal_entry(ctx, entry),
         });
 
         if expandable {
@@ -290,11 +290,11 @@ where
     }
 
     fn render_normal_entry(&self, ctx: &Context<Self>, entry: &TableModelEntry<M::Item>) -> Html {
-        return html! {
+        html!(
             <tr role="row">
                 { self.render_row(ctx, &entry.value)}
             </tr>
-        };
+        )
     }
 
     fn render_expandable_entry(
@@ -373,7 +373,7 @@ where
         let mut tr_classes = classes!("pf-c-table__expandable-row");
         tr_classes.extend(expanded_class.clone());
 
-        return html! {
+        html! (
             <tbody role="rowgroup" class={expanded_class}>
                 <tr role="row">
                     <td class="pf-c-table__toggle" role="cell">
@@ -391,7 +391,7 @@ where
                     { cells }
                 </tr>
             </tbody>
-        };
+        )
     }
 
     fn set_expanded(&mut self, ctx: &Context<Self>, idx: usize, state: bool) -> bool {
@@ -407,12 +407,12 @@ where
 
         let mut cells: Vec<Html> = Vec::with_capacity(len);
 
-        let mut index = 0;
-        for col in ctx
+        for (index, col) in ctx
             .props()
             .header
             .iter()
             .flat_map(|header| header.props.children.iter())
+            .enumerate()
         {
             let cell = entry.render(ColumnIndex { index });
             let label = col.props.label.clone();
@@ -421,8 +421,6 @@ where
                     {cell}
                 </td>
             });
-
-            index += 1;
         }
 
         let toggle = html! {<KebabToggle/>};
@@ -444,9 +442,9 @@ where
     }
 
     fn is_expandable(&self, ctx: &Context<Self>) -> bool {
-        match ctx.props().mode {
-            TableMode::Expandable | TableMode::CompactExpandable => true,
-            _ => false,
-        }
+        matches!(
+            ctx.props().mode,
+            TableMode::Expandable | TableMode::CompactExpandable
+        )
     }
 }

@@ -93,7 +93,7 @@ pub fn nav_item(props: &NavItemProps) -> Html {
         props.to.clone()
     };
 
-    return html! {
+    html! (
         <li class="pf-c-nav__item">
             <a
                 href={href}
@@ -106,7 +106,7 @@ pub fn nav_item(props: &NavItemProps) -> Html {
                 }
             </a>
         </li>
-    };
+    )
 }
 
 #[derive(Clone, PartialEq)]
@@ -243,14 +243,12 @@ impl Component for NavExpandable {
 impl NavExpandable {
     fn is_expanded(&self, ctx: &Context<Self>) -> bool {
         // if we have a current state, that will always override.
-        let expanded = self.expanded.unwrap_or_else(|| {
+        self.expanded.unwrap_or_else(|| {
             // if any child is currently active.
             let active = !self.active.is_empty();
 
             ctx.props().expanded || active
-        });
-
-        expanded
+        })
     }
 }
 

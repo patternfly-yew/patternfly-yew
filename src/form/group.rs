@@ -130,7 +130,7 @@ impl<'a> FormGroupHelpText<'a> {}
 
 impl<'a> From<FormGroupHelpText<'a>> for VNode {
     fn from(text: FormGroupHelpText<'a>) -> Self {
-        let mut classes = Classes::from_iter(&["pf-c-form__helper-text".to_string()]);
+        let mut classes = classes!("pf-c-form__helper-text");
 
         classes.extend(text.0.input_state.as_classes());
 
