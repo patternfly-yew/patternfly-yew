@@ -150,7 +150,7 @@ impl Component for Clipboard {
                             <span class="pf-c-clipboard-copy__actions">
                                 <span class="pf-c-clipboard-copy__actions-item">
                                     <Tooltip text={self.message}>
-                                        <Button aria_label="Copy to clipboard" variant={Variant::Plain} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
+                                        <Button aria_label="Copy to clipboard" variant={ButtonVariant::Plain} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                     </Tooltip>
                                 </span>
                             </span>
@@ -171,7 +171,7 @@ impl Component for Clipboard {
                                     oninput={ctx.link().callback(|_|Msg::Sync)}
                                 />
                                 <Tooltip text={self.message}>
-                                    <Button aria_label="Copy to clipboard" variant={Variant::Control} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
+                                    <Button aria_label="Copy to clipboard" variant={ButtonVariant::Control} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                 </Tooltip>
                             </div>
                             { self.expanded(ctx) }
@@ -225,7 +225,7 @@ impl Clipboard {
         html! (
             <Button
                 expanded={self.expanded}
-                variant={Variant::Control}
+                variant={ButtonVariant::Control}
                 onclick={onclick}>
                 <div class="pf-c-clipboard-copy__toggle-icon">
                     { Icon::AngleRight }

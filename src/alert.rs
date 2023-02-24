@@ -1,4 +1,4 @@
-use crate::{Action, Button, Icon, Variant};
+use crate::{Action, Button, ButtonVariant, Icon};
 
 use yew::prelude::*;
 
@@ -110,7 +110,7 @@ impl Component for Alert {
                     {for ctx.props().actions.iter().map(|action|{
                         html!{
                             <Button
-                                variant={Variant::InlineLink}
+                                variant={ButtonVariant::InlineLink}
                                 label={action.label.clone()}
                                 onclick={action.callback.reform(|_|())}
                             />
@@ -133,7 +133,7 @@ impl Component for Alert {
 
                 if let Some(onclose) = ctx.props().onclose.as_ref() {
                     <div class="pf-c-alert__action">
-                        <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
+                        <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
                     </div>
                 }
 

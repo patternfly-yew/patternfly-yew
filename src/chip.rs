@@ -1,4 +1,4 @@
-use crate::{Button, Icon, Variant};
+use crate::{Button, ButtonVariant, Icon};
 use std::fmt::Debug;
 use yew::prelude::*;
 
@@ -75,7 +75,7 @@ fn render_badge(props: &ChipProperties) -> Html {
 fn render_close(props: &ChipProperties) -> Html {
     html! (
         if let Some(onclose) = &props.onclose {
-            <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})} />
+            <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})} />
         }
     )
 }

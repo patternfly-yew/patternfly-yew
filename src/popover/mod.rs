@@ -1,4 +1,4 @@
-use crate::{Button, Icon, Orientation, Popper, PopperContent, Variant};
+use crate::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
 
 use yew::prelude::*;
 
@@ -205,7 +205,7 @@ impl Component for PopoverPopup {
                 <div class="pf-c-popover__content">
 
                     <Button
-                        variant={Variant::Plain}
+                        variant={ButtonVariant::Plain}
                         icon={Icon::Times}
                         aria_label="Close"
                         onclick={onclose}

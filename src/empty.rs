@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::{Action, Button, ExtendClasses, Icon, Size, Title, Variant};
+use crate::{Action, Button, ButtonVariant, ExtendClasses, Icon, Size, Title};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct EmptyStateProperties {
@@ -63,14 +63,14 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
                 </div>
 
                 if let Some(action) = &props.primary {
-                    <Button label={action.label.clone()} variant={Variant::Primary} onclick={action.callback.reform(|_|{})}/>
+                    <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
                 }
 
                 if !props.secondaries.is_empty() {
                     <div class="pf-c-empty-state__secondary">
                         { for props.secondaries.iter().map(|action|{
                             html!{
-                                <Button label={action.label.clone()} variant={Variant::Link} onclick={action.callback.reform(|_|{})}/>
+                                <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
                             }
                         }) }
                     </div>

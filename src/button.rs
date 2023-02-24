@@ -4,8 +4,12 @@ use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Variant {
+#[deprecated(since = "0.4.0", note = "Got renamed to 'ButtonVariant'")]
+pub type Variant = ButtonVariant;
+
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
+pub enum ButtonVariant {
+    #[default]
     None,
     Primary,
     Secondary,
@@ -19,27 +23,21 @@ pub enum Variant {
     Plain,
 }
 
-impl Variant {
+impl ButtonVariant {
     pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
-            Variant::None => vec![],
-            Variant::Primary => vec!["pf-m-primary"],
-            Variant::Secondary => vec!["pf-m-secondary"],
-            Variant::Tertiary => vec!["pf-m-tertiary"],
-            Variant::Warning => vec!["pf-m-warning"],
-            Variant::Danger => vec!["pf-m-danger"],
-            Variant::DangerSecondary => vec!["pf-m-danger", "pf-m-secondary"],
-            Variant::Link => vec!["pf-m-link"],
-            Variant::InlineLink => vec!["pf-m-link", "pf-m-inline"],
-            Variant::Control => vec!["pf-m-control"],
-            Variant::Plain => vec!["pf-m-plain"],
+            Self::None => vec![],
+            Self::Primary => vec!["pf-m-primary"],
+            Self::Secondary => vec!["pf-m-secondary"],
+            Self::Tertiary => vec!["pf-m-tertiary"],
+            Self::Warning => vec!["pf-m-warning"],
+            Self::Danger => vec!["pf-m-danger"],
+            Self::DangerSecondary => vec!["pf-m-danger", "pf-m-secondary"],
+            Self::Link => vec!["pf-m-link"],
+            Self::InlineLink => vec!["pf-m-link", "pf-m-inline"],
+            Self::Control => vec!["pf-m-control"],
+            Self::Plain => vec!["pf-m-plain"],
         }
-    }
-}
-
-impl Default for Variant {
-    fn default() -> Self {
-        Variant::None
     }
 }
 
@@ -100,7 +98,7 @@ pub struct ButtonProperties {
     #[prop_or_default]
     pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
-    pub variant: Variant,
+    pub variant: ButtonVariant,
     #[prop_or_default]
     pub icon: Option<Icon>,
     #[prop_or_default]

@@ -1,4 +1,4 @@
-use crate::{AsClasses, Button, ExtendClasses, Icon, Variant};
+use crate::{AsClasses, Button, ButtonVariant, ExtendClasses, Icon};
 use yew::prelude::*;
 
 use strum_macros::{Display, EnumIter, EnumString};
@@ -102,7 +102,7 @@ pub fn label(props: &LabelProperties) -> Html {
                 )
             )}
             if let Some(onclose) = &props.onclose {
-                <Button variant={Variant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>
+                <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>
             }
         </span>
     )

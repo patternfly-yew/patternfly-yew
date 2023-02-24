@@ -1,4 +1,4 @@
-use crate::{Avatar, Button, ButtonType, Divider, GlobalClose, Icon, Position, Variant};
+use crate::{Avatar, Button, ButtonType, ButtonVariant, Divider, GlobalClose, Icon, Position};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -78,8 +78,8 @@ impl Component for Dropdown {
         let onclick = ctx.link().callback(|_| Msg::Toggle);
 
         let variant = match ctx.props().plain {
-            true => Variant::Plain,
-            false => Variant::None,
+            true => ButtonVariant::Plain,
+            false => ButtonVariant::None,
         };
 
         html! {

@@ -1,4 +1,4 @@
-use crate::{utils::ContextWrapper, Backdropper, Button, Icon, Variant};
+use crate::{utils::ContextWrapper, Backdropper, Button, ButtonVariant, Icon};
 use std::ops::Deref;
 use yew::prelude::*;
 
@@ -81,7 +81,7 @@ impl Component for About {
 
                 <div class="pf-c-about-modal-box__close">
                   <Button
-                    variant={Variant::Plain}
+                    variant={ButtonVariant::Plain}
                     aria_label="Close dialog"
                     onclick={ctx.link().callback(|_|Msg::Close)}>
                     { Icon::Times }

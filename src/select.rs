@@ -1,4 +1,4 @@
-use crate::{Button, ButtonType, Chip, Divider, GlobalClose, Icon, Variant};
+use crate::{Button, ButtonType, ButtonVariant, Chip, Divider, GlobalClose, Icon};
 use std::cell::Cell;
 use std::fmt::{Debug, Display};
 use std::marker::PhantomData;
@@ -123,8 +123,8 @@ where
         let onclick = ctx.link().callback(|_| Msg::Toggle);
 
         let variant = match ctx.props().plain {
-            true => Variant::Plain,
-            false => Variant::None,
+            true => ButtonVariant::Plain,
+            false => ButtonVariant::None,
         };
 
         html! (

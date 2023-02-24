@@ -1,5 +1,5 @@
 use crate::{
-    Button, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator, Variant,
+    Button, ButtonVariant, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator,
 };
 use yew::prelude::*;
 
@@ -196,7 +196,7 @@ impl Component for Pagination {
                 <nav class="pf-c-pagination__nav" aria-label="Pagination">
                     <div class="pf-c-pagination__nav-control pf-m-first">
                         <Button
-                            variant={Variant::Plain}
+                            variant={ButtonVariant::Plain}
                             onclick={ctx.link().callback(|_|Msg::First)}
                             disabled={ ctx.props().offset == 0 }
                             aria_label="Go to first page"
@@ -207,7 +207,7 @@ impl Component for Pagination {
                     <div class="pf-c-pagination__nav-control pf-m-prev">
                         <Button
                             aria_label="Go to previous page"
-                            variant={Variant::Plain}
+                            variant={ButtonVariant::Plain}
                             onclick={ctx.link().callback(|_|Msg::Previous)}
                             disabled= { ctx.props().offset == 0 }
                         >
@@ -229,7 +229,7 @@ impl Component for Pagination {
                     <div class="pf-c-pagination__nav-control pf-m-next">
                         <Button
                             aria_label="Go to next page"
-                            variant={Variant::Plain}
+                            variant={ButtonVariant::Plain}
                             onclick={ctx.link().callback(|_|Msg::Next)}
                             disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
                         >
@@ -239,7 +239,7 @@ impl Component for Pagination {
                     <div class="pf-c-pagination__nav-control pf-m-last">
                         <Button
                             aria_label="Go to last page"
-                            variant={Variant::Plain}
+                            variant={ButtonVariant::Plain}
                             onclick={ctx.link().callback(|_|Msg::Last)}
                             disabled={is_last_page}
                         >
