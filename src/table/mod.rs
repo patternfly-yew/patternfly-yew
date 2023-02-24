@@ -97,7 +97,7 @@ where
 /// }
 ///
 /// impl TableEntryRenderer for Item {
-///     fn render_cell(&self, context: CellContext) -> Cell {
+///     fn render_cell(&self, context: &CellContext) -> Cell {
 ///         match context.column {
 ///             0 => html!(&self.string),
 ///             1 => html!(&self.number),
