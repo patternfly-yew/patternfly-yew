@@ -33,9 +33,9 @@ pub fn table_header(props: &TableHeaderProperties) -> Html {
 
                 { for props.children.iter() }
 
-                { if props.hide_actions {html!{}} else {html!{
+                if !props.hide_actions {
                     <td></td>
-                }}}
+                }
 
             </tr>
 
