@@ -1,12 +1,16 @@
+mod cell;
 mod column;
 mod header;
 mod model;
+mod render;
 
+pub use cell::*;
 pub use column::*;
 pub use header::*;
 pub use model::*;
+pub use render::*;
 
-use crate::{icon::Icon, AsClasses, Dropdown, DropdownChildVariant, KebabToggle};
+use crate::{icon::Icon, AsClasses, Dropdown, KebabToggle};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -69,13 +73,13 @@ where
 ///     number: u32,
 /// }
 ///
-/// impl TableRenderer for Item {
-///     fn render(&self, column: ColumnIndex) -> Html {
-///         match column.index {
+/// impl TableEntryRenderer for Item {
+///     fn render_cell(&self, context: CellContext) -> Cell {
+///         match context.column {
 ///             0 => html!(&self.string),
 ///             1 => html!(&self.number),
 ///             _ => html!(),
-///         }
+///         }.into()
 ///     }
 /// }
 ///
@@ -104,11 +108,6 @@ where
     M: TableModel + 'static,
 {
     _marker: PhantomData<M>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
-pub struct ColumnIndex {
-    pub index: usize,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -149,31 +148,6 @@ impl Span {
     pub fn truncate(mut self) -> Self {
         self.modifiers.push(SpanModifiers::Truncate);
         self
-    }
-}
-
-/// Render table entries
-pub trait TableRenderer {
-    /// Render the requested column.
-    fn render(&self, column: ColumnIndex) -> Html;
-
-    /// Control if the details section is spans the full width.
-    fn is_full_width_details(&self) -> Option<bool> {
-        None
-    }
-
-    /// Render the details section.
-    ///
-    /// Defaults to not having details.
-    fn render_details(&self) -> Vec<Span> {
-        vec![]
-    }
-
-    /// Render the row actions.
-    ///
-    /// Defaults to no actions.
-    fn actions(&self) -> Vec<DropdownChildVariant> {
-        vec![]
     }
 }
 
@@ -407,35 +381,38 @@ where
 
         let mut cells: Vec<Html> = Vec::with_capacity(len);
 
-        for (index, col) in ctx
+        for (column, col) in ctx
             .props()
             .header
             .iter()
             .flat_map(|header| header.props.children.iter())
             .enumerate()
         {
-            let cell = entry.render(ColumnIndex { index });
+            let cell = entry.render_cell(&CellContext { column });
+            let class = match cell.center {
+                true => classes!("pf-m-center"),
+                false => Classes::new(),
+            };
             let label = col.props.label.clone();
-            cells.push(html! {
-                <td role="cell" data-label={label.unwrap_or_default()}>
-                    {cell}
+            cells.push(html!(
+                <td {class} role="cell" data-label={label.unwrap_or_default()}>
+                    {cell.content}
                 </td>
-            });
+            ));
         }
 
-        let toggle = html! {<KebabToggle/>};
         let actions = entry.actions();
         if !actions.is_empty() {
-            cells.push(html! {
+            cells.push(html!(
                 <td class="pf-c-table__action">
                     <Dropdown
                         plain=true
-                        toggle={toggle}
-                        >
+                        toggle={html!(<KebabToggle/>)}
+                    >
                         { actions }
                     </Dropdown>
                 </td>
-            });
+            ));
         }
 
         cells

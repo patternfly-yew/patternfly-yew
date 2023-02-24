@@ -1,4 +1,4 @@
-use super::TableRenderer;
+use super::TableEntryRenderer;
 use std::{
     fmt::{Debug, Formatter},
     sync::{
@@ -8,8 +8,8 @@ use std::{
 };
 
 /// A model providing data for a table.
-pub trait TableModel: Default + PartialEq + Clone {
-    type Item: TableRenderer;
+pub trait TableModel: Default + PartialEq {
+    type Item: TableEntryRenderer;
 
     /// Get the number of items
     fn len(&self) -> usize;
@@ -142,7 +142,7 @@ impl<T> Default for SharedTableModel<T> {
 /// as the content only exists once in memory.
 impl<T> PartialEq for SharedTableModel<T>
 where
-    T: Clone + PartialEq,
+    T: PartialEq,
 {
     fn eq(&self, other: &Self) -> bool {
         self.generation == other.generation && self.id == other.id
@@ -151,7 +151,7 @@ where
 
 impl<T> TableModel for SharedTableModel<T>
 where
-    T: TableRenderer + Clone + PartialEq + 'static,
+    T: TableEntryRenderer + PartialEq + 'static,
 {
     type Item = T;
 
