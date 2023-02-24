@@ -21,7 +21,7 @@ pub enum Breakpoint {
 #[derive(Clone, Debug, PartialEq)]
 pub struct WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     pub modifier: T,
     pub on: Breakpoint,
@@ -29,7 +29,7 @@ where
 
 impl<T> WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     pub fn new(modifier: T) -> Self {
         Self {
@@ -38,14 +38,14 @@ where
         }
     }
 
-    pub fn map<R, F>(&self, f: F) -> WithBreakpoint<R>
+    pub fn map<R, F>(self, f: F) -> WithBreakpoint<R>
     where
-        R: Clone + Debug + PartialEq,
-        F: Fn(&T) -> R,
+        R: PartialEq,
+        F: Fn(T) -> R,
     {
         WithBreakpoint {
             on: self.on,
-            modifier: f(&self.modifier),
+            modifier: f(self.modifier),
         }
     }
 }
@@ -53,11 +53,11 @@ where
 #[derive(Clone, Debug, PartialEq)]
 pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
 where
-    T: Clone + Debug + PartialEq;
+    T: PartialEq;
 
 impl<T> Default for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     fn default() -> Self {
         Self(vec![])
@@ -66,7 +66,7 @@ where
 
 impl<T> AsClasses for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq + AsClasses,
 {
     fn extend(&self, classes: &mut Classes) {
         AsClasses::extend(&self.0, classes)
@@ -75,7 +75,7 @@ where
 
 impl<T> AsClasses for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq + AsClasses,
 {
     fn extend(&self, classes: &mut Classes) {
         // get as classes, but then extend but the breakpoint rules
@@ -90,20 +90,26 @@ where
 
 impl<T> WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: Clone + PartialEq,
 {
     pub fn mapped<R, F>(&self, f: F) -> WithBreakpoints<R>
     where
-        R: Clone + Debug + PartialEq,
-        F: Fn(&T) -> R,
+        R: PartialEq,
+        F: Fn(T) -> R,
     {
-        WithBreakpoints(self.0.iter().map(|i| i.map(|m| f(m))).collect::<Vec<_>>())
+        WithBreakpoints(
+            self.0
+                .clone()
+                .into_iter()
+                .map(|i| i.map(|m| f(m)))
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
 impl<T> From<Vec<WithBreakpoint<T>>> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     fn from(value: Vec<WithBreakpoint<T>>) -> Self {
         Self(value)
@@ -112,7 +118,7 @@ where
 
 impl<T> From<&[WithBreakpoint<T>]> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: Clone + PartialEq,
 {
     fn from(value: &[WithBreakpoint<T>]) -> Self {
         Self(Vec::from(value))
@@ -121,7 +127,7 @@ where
 
 impl<T, const N: usize> From<[WithBreakpoint<T>; N]> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     fn from(value: [WithBreakpoint<T>; N]) -> Self {
         Self(Vec::from(value))
@@ -130,7 +136,7 @@ where
 
 impl<T> IntoIterator for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq,
+    T: PartialEq,
 {
     type Item = WithBreakpoint<T>;
     type IntoIter = std::vec::IntoIter<WithBreakpoint<T>>;
@@ -154,40 +160,39 @@ impl ToString for Breakpoint {
     }
 }
 
-pub trait WithBreakpointExt<T>
+pub trait WithBreakpointExt<T>: Sized
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
-    fn on(&self, breakpoint: Breakpoint) -> WithBreakpoint<T>;
+    fn on(self, breakpoint: Breakpoint) -> WithBreakpoint<T>;
 
-    fn all(&self) -> WithBreakpoint<T> {
+    fn all(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::None)
     }
-
-    fn sm(&self) -> WithBreakpoint<T> {
+    fn sm(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Small)
     }
-    fn md(&self) -> WithBreakpoint<T> {
+    fn md(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Medium)
     }
-    fn lg(&self) -> WithBreakpoint<T> {
+    fn lg(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Large)
     }
-    fn xl(&self) -> WithBreakpoint<T> {
+    fn xl(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::XLarge)
     }
-    fn xxl(&self) -> WithBreakpoint<T> {
+    fn xxl(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::XXLarge)
     }
 }
 
 impl<T> WithBreakpointExt<T> for T
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
-    fn on(&self, breakpoint: Breakpoint) -> WithBreakpoint<T> {
+    fn on(self, breakpoint: Breakpoint) -> WithBreakpoint<T> {
         WithBreakpoint {
-            modifier: self.clone(),
+            modifier: self,
             on: breakpoint,
         }
     }
@@ -195,7 +200,7 @@ where
 
 impl<T> IntoPropValue<Vec<WithBreakpoint<T>>> for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn into_prop_value(self) -> Vec<WithBreakpoint<T>> {
         vec![self]
@@ -204,7 +209,7 @@ where
 
 impl<T> Deref for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     type Target = Vec<WithBreakpoint<T>>;
 
@@ -215,7 +220,7 @@ where
 
 impl<T> From<T> for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn from(modifier: T) -> Self {
         Self::new(modifier)
@@ -224,7 +229,7 @@ where
 
 impl<T> From<WithBreakpoint<T>> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn from(modifier: WithBreakpoint<T>) -> Self {
         WithBreakpoints(vec![modifier])
@@ -233,7 +238,7 @@ where
 
 impl<T> From<T> for WithBreakpoints<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn from(modifier: T) -> Self {
         WithBreakpoints(vec![modifier.into()])
@@ -242,7 +247,7 @@ where
 
 impl<T> IntoPropValue<WithBreakpoints<T>> for WithBreakpoint<T>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         vec![self].into()
@@ -251,7 +256,7 @@ where
 
 impl<T> IntoPropValue<WithBreakpoints<T>> for Vec<WithBreakpoint<T>>
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -260,7 +265,7 @@ where
 
 impl<T> IntoPropValue<WithBreakpoints<T>> for &[WithBreakpoint<T>]
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: Clone + PartialEq,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -269,7 +274,7 @@ where
 
 impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [WithBreakpoint<T>; N]
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into()
@@ -278,7 +283,7 @@ where
 
 impl<T, const N: usize> IntoPropValue<WithBreakpoints<T>> for [T; N]
 where
-    T: Clone + Debug + PartialEq + AsClasses,
+    T: PartialEq,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into_iter()
