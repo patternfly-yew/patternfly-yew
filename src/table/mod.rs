@@ -10,7 +10,7 @@ pub use header::*;
 pub use model::*;
 pub use render::*;
 
-use crate::{icon::Icon, AsClasses, Dropdown, KebabToggle};
+use crate::{icon::Icon, AsClasses, Dropdown, ExtendClasses, KebabToggle};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -34,6 +34,25 @@ impl Default for TableMode {
     }
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum TableGridMode {
+    Medium,
+    Large,
+    XLarge,
+    XXLarge,
+}
+
+impl AsClasses for TableGridMode {
+    fn extend(&self, classes: &mut Classes) {
+        match self {
+            Self::Medium => classes.push(classes!("pf-m-grid-md")),
+            Self::Large => classes.push(classes!("pf-m-grid-lg")),
+            Self::XLarge => classes.push(classes!("pf-m-grid-xl")),
+            Self::XXLarge => classes.push(classes!("pf-m-grid-2xl")),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Clone, Properties)]
 pub struct TableProperties<M>
 where
@@ -49,6 +68,10 @@ where
     pub full_width_details: bool,
     #[prop_or_default]
     pub entries: M,
+
+    /// When to switch to grid mode
+    #[prop_or_default]
+    pub grid: Option<TableGridMode>,
 }
 
 /// The Table component.
@@ -180,7 +203,7 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-table");
+        let mut class = classes!("pf-c-table");
 
         if ctx
             .props()
@@ -188,29 +211,29 @@ where
             .as_ref()
             .map_or(false, |header| header.props.sticky)
         {
-            classes.push("pf-m-sticky-header");
+            class.push(classes!("pf-m-sticky-header"));
         }
+
+        class.extend_from(&ctx.props().grid);
 
         match ctx.props().mode {
             TableMode::Compact => {
-                classes.push("pf-m-compact");
+                class.push(classes!("pf-m-compact"));
             }
             TableMode::CompactNoBorders => {
-                classes.push("pf-m-compact");
-                classes.push("pf-m-no-border-rows");
+                class.push(classes!("pf-m-compact", "pf-m-no-border-rows"));
             }
             TableMode::CompactExpandable => {
-                classes.push("pf-m-compact");
-                classes.push("pf-m-expandable");
+                class.push(classes!("pf-m-compact", "pf-m-expandable"));
             }
             TableMode::Expandable => {
-                classes.push("pf-m-expandable");
+                class.push(classes!("pf-m-expandable"));
             }
             TableMode::Default => {}
         };
 
         html! (
-            <table class={classes} role="grid">
+            <table {class} role="grid">
                 { self.render_caption(ctx) }
                 { self.render_header(ctx) }
                 { self.render_entries(ctx) }
