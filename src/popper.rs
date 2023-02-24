@@ -11,7 +11,7 @@ use yew::prelude::*;
 // popper
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props<T>
+pub struct PopperProperties<T>
 where
     T: Clone + PartialEq + Debug,
 {
@@ -55,7 +55,7 @@ where
     C::Properties: Clone + PartialEq + Debug,
 {
     type Message = Msg;
-    type Properties = Props<C::Properties>;
+    type Properties = PopperProperties<C::Properties>;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {

@@ -38,7 +38,7 @@ impl Default for ChipVariant {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props<K: 'static + Clone + PartialEq + Display + Debug> {
+pub struct SelectProperties<K: 'static + Clone + PartialEq + Display + Debug> {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -88,7 +88,7 @@ where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     type Message = Msg<K>;
-    type Properties = Props<K>;
+    type Properties = SelectProperties<K>;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {
@@ -236,7 +236,6 @@ where
     }
 
     fn clicked(&mut self, ctx: &Context<Self>, key: K) {
-        log::info!("Clicked: {}", key);
         match &ctx.props().variant {
             SelectVariant::Single(on) => {
                 self.selection = vec![key.clone()];
@@ -272,11 +271,11 @@ where
     Group(Rc<<SelectGroup<K> as Component>::Properties>),
 }
 
-impl<K> From<SelectOptionProps<K>> for SelectChild<K>
+impl<K> From<SelectOptionProperties<K>> for SelectChild<K>
 where
     K: Clone + PartialEq + Display + Debug,
 {
-    fn from(props: SelectOptionProps<K>) -> Self {
+    fn from(props: SelectOptionProperties<K>) -> Self {
         SelectChild::Option(Rc::new(props))
     }
 }
@@ -290,11 +289,11 @@ where
     }
 }
 
-impl<K> From<SelectGroupProps<K>> for SelectChild<K>
+impl<K> From<SelectGroupProperties<K>> for SelectChild<K>
 where
     K: Clone + PartialEq + Display + Debug,
 {
-    fn from(props: SelectGroupProps<K>) -> Self {
+    fn from(props: SelectGroupProperties<K>) -> Self {
         SelectChild::Group(Rc::new(props))
     }
 }
@@ -386,7 +385,7 @@ where
 // Item
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct SelectOptionProps<K>
+pub struct SelectOptionProperties<K>
 where
     K: Clone + PartialEq + Display + Debug,
 {
@@ -430,7 +429,7 @@ where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
     type Message = SelectOptionMsg;
-    type Properties = SelectOptionProps<K>;
+    type Properties = SelectOptionProperties<K>;
 
     fn create(_: &Context<Self>) -> Self {
         Self {
@@ -565,7 +564,7 @@ where
 // Group
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct SelectGroupProps<K>
+pub struct SelectGroupProperties<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
@@ -599,7 +598,7 @@ where
     K: Clone + PartialEq + Display + Debug,
 {
     type Message = SelectGroupMsg<K>;
-    type Properties = SelectGroupProps<K>;
+    type Properties = SelectGroupProperties<K>;
 
     fn create(_: &Context<Self>) -> Self {
         Self {

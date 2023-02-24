@@ -71,6 +71,10 @@ const OK_MESSAGE: &str = "Copied!";
 /// > The **clipboard copy** component allows users to quickly and easily copy content to their clipboard.
 ///
 /// See: https://www.patternfly.org/v4/components/clipboard-copy
+///
+/// ## Properties
+///
+/// Defined by [`ClipboardProperties`].
 pub struct Clipboard {
     message: &'static str,
     task: Option<Timeout>,

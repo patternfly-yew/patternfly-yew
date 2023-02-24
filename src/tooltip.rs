@@ -5,14 +5,21 @@ use yew::prelude::*;
 
 use crate::integration::popperjs;
 
-// tooltip
-
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct TooltipProps {
+pub struct TooltipProperties {
     pub children: Children,
     pub text: String,
 }
 
+/// The Tooltip component.
+///
+/// > A **tooltip** is in-app messaging used to identify elements on a page with short, clarifying text.
+///
+/// See: https://www.patternfly.org/v4/components/tooltip
+///
+/// ## Properties
+///
+/// Defined by [`TooltipProperties`].
 pub struct Tooltip {
     node: NodeRef,
     active: bool,
@@ -26,7 +33,7 @@ pub enum TooltipMsg {
 
 impl Component for Tooltip {
     type Message = TooltipMsg;
-    type Properties = TooltipProps;
+    type Properties = TooltipProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {
@@ -68,7 +75,7 @@ impl Component for Tooltip {
 
 impl PopperContent for Tooltip {
     fn view(
-        props: &TooltipProps,
+        props: &TooltipProperties,
         _onclose: Callback<()>,
         r#ref: NodeRef,
         state: Option<popperjs::State>,
@@ -97,7 +104,7 @@ impl PopperContent for Tooltip {
 // tooltip popup
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct TooltipPopupProps {
+pub struct TooltipPopupProperties {
     pub text: String,
     pub orientation: Orientation,
     #[prop_or_default]
@@ -108,8 +115,13 @@ pub struct TooltipPopupProps {
     pub r#ref: NodeRef,
 }
 
+/// The content shown when the tooltip pops up.
+///
+/// ## Properties
+///
+/// Defined by [`TooltipPopupProperties`].
 #[function_component(TooltipPopup)]
-pub fn tooltip_popup(props: &TooltipPopupProps) -> Html {
+pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
     let mut classes = Classes::from("pf-c-tooltip");
 
     classes.extend(props.orientation.as_classes());

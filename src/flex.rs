@@ -9,15 +9,23 @@ use yew::{
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum FlexModifier {
+    /// Can grow beyond required size
     Grow,
+    /// Try to minimize size
     Shrink,
+    /// Weight of 1
     Flex1,
+    /// Weight of 2
     Flex2,
+    /// Weight of 3
     Flex3,
+    /// Weight of 4
     Flex4,
+    /// Full width item
     FullWidth,
     Default,
     None,
+    /// Column ordering
     Column,
     Justify(Justify),
     Align(Alignment),
@@ -78,14 +86,14 @@ pub enum FlexChild {
     FlexItem(Rc<<FlexItem as BaseComponent>::Properties>),
 }
 
-impl From<FlexProps> for FlexChild {
-    fn from(props: FlexProps) -> Self {
+impl From<FlexProperties> for FlexChild {
+    fn from(props: FlexProperties) -> Self {
         FlexChild::Flex(Rc::new(props))
     }
 }
 
-impl From<FlexItemProps> for FlexChild {
-    fn from(props: FlexItemProps) -> Self {
+impl From<FlexItemProperties> for FlexChild {
+    fn from(props: FlexItemProperties) -> Self {
         FlexChild::FlexItem(Rc::new(props))
     }
 }
@@ -129,7 +137,7 @@ impl ToFlexItems for Vec<Html> {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct FlexProps {
+pub struct FlexProperties {
     #[prop_or_default]
     pub children: ChildrenRenderer<FlexChildVariant>,
     #[prop_or_default]
@@ -140,25 +148,38 @@ pub struct FlexProps {
     pub space_items: WithBreakpoints<SpaceItems>,
 }
 
+/// The Flex layout.
+///
+/// > The Flex layout is a tool to build your own custom layout that builds-in the PatternFly spacer and breakpoint systems.
+///
+/// See: https://www.patternfly.org/v4/layouts/flex
+///
+/// ## Properties
+///
+/// Defined by [`FlexProperties`].
+///
+/// ## Children
+///
+/// The Flex layout contains either [`FlexItem`] children, or nested [`Flex`] layouts.
 #[function_component(Flex)]
-pub fn flex(props: &FlexProps) -> Html {
+pub fn flex(props: &FlexProperties) -> Html {
     let mut classes = Classes::from("pf-l-flex");
 
     classes.extend_from(&props.modifiers);
     classes.extend_from(&props.space_items);
     classes.extend_from(&props.spacer);
 
-    html! {
+    html! (
         <div class={classes}>
             { for props.children.iter() }
         </div>
-    }
+    )
 }
 
 // flex item
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct FlexItemProps {
+pub struct FlexItemProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -167,16 +188,21 @@ pub struct FlexItemProps {
     pub spacer: WithBreakpoints<Spacer>,
 }
 
+/// An item of the [`Flex`] layout.
+///
+/// ## Properties
+///
+/// Defined by [`FlexItemProperties`].
 #[function_component(FlexItem)]
-pub fn flex_item(props: &FlexItemProps) -> Html {
+pub fn flex_item(props: &FlexItemProperties) -> Html {
     let mut classes = Classes::from("pf-l-flex__item");
 
     classes.extend_from(&props.modifiers);
     classes.extend_from(&props.spacer);
 
-    html! {
+    html! (
         <div class={classes}>
             { for props.children.iter() }
         </div>
-    }
+    )
 }

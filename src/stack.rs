@@ -10,7 +10,18 @@ pub struct StackProperties {
 
 /// The Stack layout.
 ///
+/// > Use a Stack layout to position items vertically in a container, with one item filling the available vertical space.
+///
 /// See: https://www.patternfly.org/v4/layouts/stack
+///
+/// ## Properties
+///
+/// Defined by [`StackProperties`].
+///
+/// ## Children
+///
+/// The stack layout is supposed to contain [`StackItem`] children. However, there is no restriction
+/// through component types on that.
 #[function_component(Stack)]
 pub fn stack(props: &StackProperties) -> Html {
     let mut classes = Classes::from("pf-l-stack");
@@ -34,6 +45,11 @@ pub struct StackItemProperties {
     pub fill: bool,
 }
 
+/// An item in the [`Stack`] layout.
+///
+/// ## Properties
+///
+/// Defined by [`StackItemProperties`].
 #[function_component(StackItem)]
 pub fn stack_item(props: &StackItemProperties) -> Html {
     let mut classes = Classes::from("pf-l-stack__item");

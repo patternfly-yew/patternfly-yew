@@ -11,7 +11,18 @@ pub struct SplitProperties {
 
 /// The Split layout.
 ///
+/// > Use a **Split** layout to position items horizontally in a container, with one item filling the remaining horizontal space as the viewport is resized.
+///
 /// See: https://www.patternfly.org/v4/layouts/split
+///
+/// ## Properties
+///
+/// Defined by [`SplitProperties`].
+///
+/// ## Children
+///
+/// The grid layout is supposed to contain [`GridItem`] children. However, there is no restriction
+/// through component types on that.
 #[function_component(Split)]
 pub fn split(props: &SplitProperties) -> Html {
     let mut classes = Classes::from("pf-l-split");
@@ -39,6 +50,11 @@ pub struct SplitItemProperties {
     pub fill: bool,
 }
 
+/// An item in the [`Split`] layout.
+///
+/// ## Properties
+///
+/// Defined by [`SplitItemProperties`].
 #[function_component(SplitItem)]
 pub fn split_item(props: &SplitItemProperties) -> Html {
     let mut classes = Classes::from("pf-l-split__item");

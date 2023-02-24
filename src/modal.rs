@@ -28,7 +28,7 @@ impl Default for ModalVariant {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct ModalProperties {
     #[prop_or_default]
     pub title: String,
     #[prop_or_default]
@@ -48,7 +48,15 @@ pub enum Msg {
     SetBackdrop(Backdropper),
 }
 
-/// A modal dialog.
+/// The Modal component.
+///
+/// > A **modal** displays important information to a user without requiring them to navigate to a new page.
+///
+/// See: https://www.patternfly.org/v4/components/modal
+///
+/// ## Properties
+///
+/// Defined by [`ModalProperties`].
 ///
 /// ## Contexts
 ///
@@ -61,7 +69,7 @@ pub struct Modal {
 
 impl Component for Modal {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = ModalProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {

@@ -2,7 +2,7 @@ use crate::{ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct GridProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -11,8 +11,20 @@ pub struct Props {
     pub cols: WithBreakpoints<usize>,
 }
 
+/// The Grid layout.
+///
+/// See: https://www.patternfly.org/v4/layouts/grid
+///
+/// ## Properties
+///
+/// Define by [`GridProperties`].
+///
+/// ## Children
+///
+/// The grid layout is supposed to contain [`GridItem`] children. However, there is no restriction
+/// through component types on that.
 #[function_component(Grid)]
-pub fn grid(props: &Props) -> Html {
+pub fn grid(props: &GridProperties) -> Html {
     let mut classes = Classes::from("pf-l-grid");
 
     if props.gutter {
@@ -29,7 +41,7 @@ pub fn grid(props: &Props) -> Html {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct GridItemProps {
+pub struct GridItemProperties {
     #[prop_or_default]
     pub children: Children,
 
@@ -41,8 +53,13 @@ pub struct GridItemProps {
     pub offset: WithBreakpoints<u16>,
 }
 
+/// An item in the [`Grid`] layout.
+///
+/// ## Properties
+///
+/// Defined by [`GridItemProperties`].
 #[function_component(GridItem)]
-pub fn grid_item(props: &GridItemProps) -> Html {
+pub fn grid_item(props: &GridItemProperties) -> Html {
     let mut classes = Classes::from("pf-l-grid__item");
 
     classes.extend_from(&props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
