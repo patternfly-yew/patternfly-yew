@@ -50,6 +50,8 @@ pub struct LabelProperties {
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
     pub href: String,
+    #[prop_or_default]
+    pub compact: bool,
 }
 
 /// A Label component
@@ -73,6 +75,10 @@ pub fn label(props: &LabelProperties) -> Html {
 
     if props.overflow {
         classes.push("pf-m-overflow");
+    }
+
+    if props.compact {
+        classes.push("pf-m-compact");
     }
 
     let content = |content: Html| {
