@@ -7,7 +7,7 @@ use yew::{
 };
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct DropdownProperties {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -29,6 +29,15 @@ pub struct Props {
     pub children: ChildrenRenderer<DropdownChildVariant>,
 }
 
+/// The Dropdown component.
+///
+/// > A dropdown presents a menu of actions or links in a constrained space that will trigger a process or navigate to a new location.
+///
+/// See: https://www.patternfly.org/v4/components/dropdown
+///
+/// ## Properties
+///
+/// Defined by [`DropdownProperties`].
 pub struct Dropdown {
     expanded: bool,
     global_close: GlobalClose,
@@ -42,7 +51,7 @@ pub enum Msg {
 
 impl Component for Dropdown {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = DropdownProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {
@@ -82,7 +91,7 @@ impl Component for Dropdown {
             false => ButtonVariant::None,
         };
 
-        html! {
+        html! (
             <div class={classes}
                 ref={self.global_close.clone()}
             >
@@ -110,7 +119,7 @@ impl Component for Dropdown {
                     </ul>
                 </div>
             </div>
-        }
+        )
     }
 }
 
@@ -128,7 +137,7 @@ pub struct DropdownToggleProps {
 
 #[function_component(DropdownToggle)]
 pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
-    html! {
+    html! (
         <>
             if let Some(image) = &props.image {
                 <span class="pf-c-dropdown__toggle-image">
@@ -146,7 +155,7 @@ pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
                 }
             </span>
         </>
-    }
+    )
 }
 
 // child
