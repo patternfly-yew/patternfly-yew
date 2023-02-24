@@ -1,7 +1,7 @@
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct BullseyeProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -14,9 +14,9 @@ pub struct Props {
 
 /// Bullseye layout.
 ///
-/// https://www.patternfly.org/v4/layouts/bullseye
+/// See: https://www.patternfly.org/v4/layouts/bullseye
 #[function_component(Bullseye)]
-pub fn bullseye(props: &Props) -> Html {
+pub fn bullseye(props: &BullseyeProperties) -> Html {
     html! {
         <div class="pf-l-bullseye">
             { for props.children.iter().map(|c|{
