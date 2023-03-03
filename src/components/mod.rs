@@ -37,6 +37,10 @@ pub mod spinner;
 pub mod switch;
 pub mod table;
 pub mod tabs;
+#[deprecated(
+    since = "0.4.0",
+    note = "Use the `Content` component as a wrapper to standard HTML elements instead"
+)]
 pub mod text;
 pub mod title;
 pub mod toast;
