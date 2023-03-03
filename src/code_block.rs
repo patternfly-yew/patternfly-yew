@@ -10,11 +10,11 @@ pub struct CodeBlockProperties {
     pub actions: ChildrenWithProps<CodeBlockAction>,
 }
 
-/// The Code Block Component
+/// Code Block component
 ///
 /// > A **code block** is a component that contains 2 or more lines of read-only code. The code in a code block can be copied to the clipboard.
 ///
-/// See: https://www.patternfly.org/v4/components/code-block
+/// See: <https://www.patternfly.org/v4/components/code-block>
 ///
 /// ## Properties
 ///

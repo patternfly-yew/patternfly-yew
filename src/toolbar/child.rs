@@ -5,20 +5,21 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
+/// Child of a toolbar component
 #[derive(Clone, PartialEq)]
 pub enum ToolbarChild {
     Item(Rc<<ToolbarItem as BaseComponent>::Properties>),
     Group(Rc<<ToolbarGroup as BaseComponent>::Properties>),
 }
 
-impl From<ToolbarItemProps> for ToolbarChild {
-    fn from(props: ToolbarItemProps) -> Self {
+impl From<ToolbarItemProperties> for ToolbarChild {
+    fn from(props: ToolbarItemProperties) -> Self {
         ToolbarChild::Item(Rc::new(props))
     }
 }
 
-impl From<ToolbarGroupProps> for ToolbarChild {
-    fn from(props: ToolbarGroupProps) -> Self {
+impl From<ToolbarGroupProperties> for ToolbarChild {
+    fn from(props: ToolbarGroupProperties) -> Self {
         ToolbarChild::Group(Rc::new(props))
     }
 }

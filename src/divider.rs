@@ -1,10 +1,13 @@
 use yew::prelude::*;
 
-/// The Divider component.
+/// Divider component
 ///
 /// > A **divider** is a horizontal or vertical line that is placed between screen elements to create visual divisions and content groupings.
 ///
-/// See: https://www.patternfly.org/v4/components/divider
+/// See: <https://www.patternfly.org/v4/components/divider>
+///
+/// This component is normally used as part of a list of items, like as part of the
+/// [`AppLauncher`](crate::prelude::AppLauncher).
 ///
 /// ## Properties
 ///

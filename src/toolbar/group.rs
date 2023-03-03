@@ -2,15 +2,16 @@ use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct ToolbarGroupProps {
+pub struct ToolbarGroupProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub modifiers: WithBreakpoints<ToolbarElementModifier>,
 }
 
+/// A group item for a toolbar
 #[function_component(ToolbarGroup)]
-pub fn toolbar_group(props: &ToolbarGroupProps) -> Html {
+pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
     let mut classes = Classes::from("pf-c-toolbar__group");
 
     classes.extend(props.modifiers.as_classes());

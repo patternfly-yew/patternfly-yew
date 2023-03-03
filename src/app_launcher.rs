@@ -23,6 +23,20 @@ pub enum Msg {
     Close,
 }
 
+/// Application launcher component
+///
+/// > An **application launcher** is an option menu that allows a user to launch a separate web application in a new browser window.
+///
+/// See: <https://www.patternfly.org/v4/components/application-launcher>
+///
+/// ## Properties
+///
+/// Defined by [`AppLauncherProperties`].
+///
+/// ## Children
+///
+/// Children of the application launcher are [`AppLauncherItem`]s. It is also possible use
+/// [`crate::prelude::Divider`] to group entries.
 pub struct AppLauncher {
     expanded: bool,
     global_close: GlobalClose,
@@ -112,8 +126,8 @@ pub enum AppLauncherChild {
     Divider(Rc<<Divider as BaseComponent>::Properties>),
 }
 
-impl From<AppLauncherItemProps> for AppLauncherChild {
-    fn from(props: AppLauncherItemProps) -> Self {
+impl From<AppLauncherItemProperties> for AppLauncherChild {
+    fn from(props: AppLauncherItemProperties) -> Self {
         AppLauncherChild::Item(Rc::new(props))
     }
 }
@@ -166,7 +180,7 @@ impl Into<Html> for AppLauncherChildVariant {
 // Item
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct AppLauncherItemProps {
+pub struct AppLauncherItemProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -184,12 +198,17 @@ pub enum AppLauncherItemMsg {
     Clicked,
 }
 
+/// An item of an [`AppLauncher`] component.
+///
+/// ## Properties
+///
+/// Defined by [`AppLauncherItemProperties`].
 #[derive(Clone)]
 pub struct AppLauncherItem {}
 
 impl Component for AppLauncherItem {
     type Message = AppLauncherItemMsg;
-    type Properties = AppLauncherItemProps;
+    type Properties = AppLauncherItemProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}
@@ -210,7 +229,7 @@ impl Component for AppLauncherItem {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let action = if ctx.props().onclick.is_some() {
-            html! {
+            html! (
                 <button
                     class="pf-c-app-launcher__menu-item"
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
@@ -219,7 +238,7 @@ impl Component for AppLauncherItem {
                     >
                     { for ctx.props().children.iter() }
                 </button>
-            }
+            )
         } else {
             let mut classes = Classes::from("pf-c-app-launcher__menu-item");
 
@@ -230,7 +249,7 @@ impl Component for AppLauncherItem {
                 ""
             };
 
-            html! {
+            html! (
                 <a
                     class={classes}
                     target={target}
@@ -247,11 +266,11 @@ impl Component for AppLauncherItem {
                 }
 
                 </a>
-            }
+            )
         };
 
-        html! {
+        html! (
             <li>{action}</li>
-        }
+        )
     }
 }

@@ -8,7 +8,7 @@ pub struct PageSidebarProperties {
     pub open: bool,
 }
 
-/// The sidebar component of a [`Page`].
+/// The sidebar component of a [`Page`](crate::prelude::Page).
 ///
 /// ## Properties
 ///

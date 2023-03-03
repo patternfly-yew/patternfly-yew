@@ -3,7 +3,7 @@ use std::{fmt::Formatter, rc::Rc};
 use yew::{prelude::*, virtual_dom::VChild};
 
 #[derive(Clone, Debug, Properties, PartialEq)]
-pub struct Props {
+pub struct TabsProperties {
     #[prop_or_default]
     pub children: ChildrenWithProps<Tab>,
 
@@ -20,6 +20,15 @@ pub struct Props {
     pub inset: Option<Inset>,
 }
 
+/// Tabs component
+///
+/// > **Tabs** allow users to navigate between views within the same page or context.
+///
+/// See: <https://www.patternfly.org/v4/components/tabs>
+///
+/// ## Properties
+///
+/// Defined by [`TabsProperties`].
 pub struct Tabs {
     active: usize,
 }
@@ -30,7 +39,7 @@ pub enum Msg {
 
 impl Component for Tabs {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = TabsProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self { active: 0 }

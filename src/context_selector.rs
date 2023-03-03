@@ -19,11 +19,11 @@ pub enum Msg {
     Search(String),
 }
 
-/// The Context Selector component.
+/// Context Selector component
 ///
 /// > A **context selector** can be used in addition to global navigation when the data or resources you show in the interface need to change depending on the user's context.
 ///
-/// See: https://www.patternfly.org/v4/components/context-selector
+/// See: <https://www.patternfly.org/v4/components/context-selector>
 ///
 /// ## Properties
 ///

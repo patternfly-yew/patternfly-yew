@@ -2,7 +2,7 @@ use crate::Tooltip;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainFooterLinkProps {
+pub struct LoginMainFooterLinkProperties {
     #[prop_or_default]
     pub href: Option<String>,
     #[prop_or_default]
@@ -16,7 +16,7 @@ pub struct LoginMainFooterLinkProps {
 }
 
 #[function_component(LoginMainFooterLink)]
-pub fn login_main_footer_link(props: &LoginMainFooterLinkProps) -> Html {
+pub fn login_main_footer_link(props: &LoginMainFooterLinkProperties) -> Html {
     let link = html! (
         <a
             class="pf-c-login__main-footer-links-item-link"

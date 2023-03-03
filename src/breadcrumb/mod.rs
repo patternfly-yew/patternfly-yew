@@ -20,7 +20,7 @@ pub struct BreadcrumbProps {
 ///
 /// > A **breadcrumb** provides page context to help users navigate more efficiently and understand where they are in the application hierarchy.
 ///
-/// See: https://www.patternfly.org/v4/components/breadcrumb
+/// See: <https://www.patternfly.org/v4/components/breadcrumb>
 ///
 /// ## Properties
 ///

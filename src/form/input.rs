@@ -4,6 +4,7 @@ use crate::{
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
+/// Icons as part of a [`TextInput`] component.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TextInputIcon {
     None,
@@ -20,7 +21,7 @@ impl Default for TextInputIcon {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct TextInputProps {
+pub struct TextInputProperties {
     #[prop_or_default]
     pub name: String,
     #[prop_or_default]
@@ -70,7 +71,7 @@ impl ValidatingComponent for TextInput {
     type Value = String;
 }
 
-impl ValidatingComponentProperties<String> for TextInputProps {
+impl ValidatingComponentProperties<String> for TextInputProperties {
     fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
         self.onvalidate = onvalidate;
     }
@@ -98,7 +99,7 @@ pub enum TextInputMsg {
 
 impl Component for TextInput {
     type Message = TextInputMsg;
-    type Properties = TextInputProps;
+    type Properties = TextInputProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         ctx.link().send_message(Self::Message::Init);

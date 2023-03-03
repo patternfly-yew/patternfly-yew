@@ -6,7 +6,7 @@ use crate::Title;
 use yew::{prelude::*, virtual_dom::VChild};
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props {
+pub struct LoginProperties {
     #[prop_or_default]
     pub header: Children,
     #[prop_or_default]
@@ -15,8 +15,9 @@ pub struct Props {
     pub footer: Children,
 }
 
+/// Login page component
 #[function_component(Login)]
-pub fn login(props: &Props) -> Html {
+pub fn login(props: &LoginProperties) -> Html {
     html! {
         <div class="pf-c-login">
             <div class="pf-c-login__container">
@@ -33,13 +34,13 @@ pub fn login(props: &Props) -> Html {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainProps {
+pub struct LoginMainProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(LoginMain)]
-pub fn login_main(props: &LoginMainProps) -> Html {
+pub fn login_main(props: &LoginMainProperties) -> Html {
     html! {
         <main class="pf-c-login__main">
             { for props.children.iter() }
@@ -48,14 +49,14 @@ pub fn login_main(props: &LoginMainProps) -> Html {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainHeaderProps {
+pub struct LoginMainHeaderProperties {
     pub title: VChild<Title>,
     #[prop_or_default]
     pub description: String,
 }
 
 #[function_component(LoginMainHeader)]
-pub fn login_main_header(props: &LoginMainHeaderProps) -> Html {
+pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
     html! {
         <header class="pf-c-login__main-header">
             { props.title.clone() }
@@ -67,13 +68,13 @@ pub fn login_main_header(props: &LoginMainHeaderProps) -> Html {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainBodyProps {
+pub struct LoginMainBodyProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(LoginMainBody)]
-pub fn login_main_body(props: &LoginMainBodyProps) -> Html {
+pub fn login_main_body(props: &LoginMainBodyProperties) -> Html {
     html! {
         <div class="pf-c-login__main-body">
             { for props.children.iter() }

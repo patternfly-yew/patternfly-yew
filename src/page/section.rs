@@ -3,6 +3,10 @@ use crate::{AsClasses, WithBreakpoints};
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
+// for the docs
+#[allow(unused)]
+use crate::prelude::Page;
+
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
 pub enum PageSectionVariant {
     #[default]

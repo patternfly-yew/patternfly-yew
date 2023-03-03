@@ -29,11 +29,11 @@ pub struct TitleProperties {
     pub size: Option<Size>,
 }
 
-/// The Title component.
+/// Title component
 ///
 /// > A **title** component applies top and bottom margins, font-weight, font-size, and line-height to titles. The most common usage for a title is to define headings within a page. For more information about the relationship between title component sizes and HTML heading levels, see the [Typography guidelines](https://www.patternfly.org/v4/guidelines/typography#customizing-heading-levels).
 ///
-/// See: https://www.patternfly.org/v4/components/title
+/// See: <https://www.patternfly.org/v4/components/title>
 ///
 /// ## Properties
 ///

@@ -12,7 +12,8 @@ use yew::prelude::*;
 ///
 /// The [`BackdropViewer`] must be wrapped by all contexts which the backdrop content might use,
 /// as the content is injected as a child into the backdrop element. So if you can to send toasts
-/// from a modal dialog, the [`ToastViewer`] must be wrapping the [`BackdropViewer`].
+/// from a modal dialog, the [`ToastViewer`](crate::prelude::ToastViewer) must be wrapping the
+/// [`BackdropViewer`].
 ///
 /// ## Example
 ///

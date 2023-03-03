@@ -29,11 +29,11 @@ pub struct DropdownProperties {
     pub children: ChildrenRenderer<DropdownChildVariant>,
 }
 
-/// The Dropdown component.
+/// Dropdown component
 ///
 /// > A dropdown presents a menu of actions or links in a constrained space that will trigger a process or navigate to a new location.
 ///
-/// See: https://www.patternfly.org/v4/components/dropdown
+/// See: <https://www.patternfly.org/v4/components/dropdown>
 ///
 /// ## Properties
 ///

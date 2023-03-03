@@ -1,3 +1,4 @@
+/// Definition for orientations
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Orientation {
     Left,

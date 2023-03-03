@@ -27,6 +27,7 @@ where
     pub onclose: Callback<()>,
 }
 
+/// Support component for popper.js.
 pub struct Popper<C>
 where
     C: PopperContent + 'static,

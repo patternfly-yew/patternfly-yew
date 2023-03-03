@@ -12,14 +12,14 @@ use yew::prelude::*;
 // nav
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct NavProps {
+pub struct NavProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
 /// A navigation component.
 #[function_component(Nav)]
-pub fn nav(props: &NavProps) -> Html {
+pub fn nav(props: &NavProperties) -> Html {
     html! {
         <nav class="pf-c-nav" aria-label="Global">
             { for props.children.iter() }
@@ -30,13 +30,13 @@ pub fn nav(props: &NavProps) -> Html {
 // nav list
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavListProps {
+pub struct NavListProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
 #[function_component(NavList)]
-pub fn nav_list(props: &NavListProps) -> Html {
+pub fn nav_list(props: &NavListProperties) -> Html {
     html! {
         <ul class="pf-c-nav__list">
             { for props.children.iter() }
@@ -47,7 +47,7 @@ pub fn nav_list(props: &NavListProps) -> Html {
 // nav group
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavGroupProps {
+pub struct NavGroupProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -55,7 +55,7 @@ pub struct NavGroupProps {
 }
 
 #[function_component(NavGroup)]
-pub fn nav_group(props: &NavGroupProps) -> Html {
+pub fn nav_group(props: &NavGroupProperties) -> Html {
     html! {
         <section class="pf-c-nav__section">
             <h2 class="pf-c-nav__section-title">{ props.title.clone() }</h2>
@@ -69,7 +69,7 @@ pub fn nav_group(props: &NavGroupProps) -> Html {
 // nav item
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavItemProps {
+pub struct NavItemProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -81,7 +81,7 @@ pub struct NavItemProps {
 }
 
 #[function_component(NavItem)]
-pub fn nav_item(props: &NavItemProps) -> Html {
+pub fn nav_item(props: &NavItemProperties) -> Html {
     let mut target = props.target.to_string();
     if target.is_empty() && props.external {
         target = "_blank".to_string();
@@ -252,6 +252,7 @@ impl NavExpandable {
     }
 }
 
+/// Access a wrapping [`Expandable`] content.
 #[hook]
 pub fn use_expandable() -> Option<Expandable> {
     use_context::<Expandable>()

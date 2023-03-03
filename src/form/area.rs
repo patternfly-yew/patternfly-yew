@@ -46,7 +46,7 @@ impl Display for Wrap {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct TextAreaProps {
+pub struct TextAreaProperties {
     #[prop_or_default]
     pub name: String,
     #[prop_or_default]
@@ -100,7 +100,7 @@ pub enum TextAreaMsg {
 
 impl Component for TextArea {
     type Message = TextAreaMsg;
-    type Properties = TextAreaProps;
+    type Properties = TextAreaProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let value = ctx.props().value.clone();
@@ -208,7 +208,7 @@ impl ValidatingComponent for TextArea {
     type Value = String;
 }
 
-impl ValidatingComponentProperties<String> for TextAreaProps {
+impl ValidatingComponentProperties<String> for TextAreaProperties {
     fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
         self.onvalidate = onvalidate;
     }

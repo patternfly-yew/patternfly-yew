@@ -12,7 +12,7 @@ use yew::{
 };
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props<K: 'static + Clone + PartialEq + Display + Debug + FromStr> {
+pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + Debug + FromStr> {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -49,7 +49,7 @@ where
     K: 'static + Clone + PartialEq + Display + Debug + FromStr,
 {
     type Message = Msg;
-    type Properties = Props<K>;
+    type Properties = FormSelectProperties<K>;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {

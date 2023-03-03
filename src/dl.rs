@@ -10,7 +10,7 @@ pub struct DescriptionListProperties {
 ///
 /// > A **description list** contains terms and their corresponding descriptions.
 ///
-/// See: https://www.patternfly.org/v4/components/description-list
+/// See: <https://www.patternfly.org/v4/components/description-list>
 ///
 /// ## Properties
 ///

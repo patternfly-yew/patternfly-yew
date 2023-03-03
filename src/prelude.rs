@@ -1,3 +1,4 @@
+//! The prelude
 pub use crate::about::*;
 pub use crate::alert::*;
 pub use crate::app_launcher::*;
@@ -5,6 +6,8 @@ pub use crate::avatar::*;
 pub use crate::backdrop::*;
 pub use crate::background::*;
 pub use crate::badge::*;
+pub use crate::brand::*;
+pub use crate::brand::*;
 pub use crate::breadcrumb::*;
 pub use crate::bullseye::*;
 pub use crate::button::*;
@@ -27,7 +30,6 @@ pub use crate::icon::*;
 pub use crate::label::*;
 pub use crate::list::*;
 pub use crate::login_page::*;
-pub use crate::logo::*;
 pub use crate::modal::*;
 pub use crate::nav::*;
 pub use crate::page::*;

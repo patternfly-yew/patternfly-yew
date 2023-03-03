@@ -11,13 +11,13 @@ pub struct GridProperties {
     pub cols: WithBreakpoints<usize>,
 }
 
-/// The Grid layout.
+/// Grid layout
 ///
-/// See: https://www.patternfly.org/v4/layouts/grid
+/// See: <https://www.patternfly.org/v4/layouts/grid>
 ///
 /// ## Properties
 ///
-/// Define by [`GridProperties`].
+/// Defined by [`GridProperties`].
 ///
 /// ## Children
 ///

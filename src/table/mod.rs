@@ -78,7 +78,7 @@ where
 ///
 /// > A **table** is used to display large data sets that can be easily laid out in a simple grid with column headers.
 ///
-/// See: https://www.patternfly.org/v4/components/table
+/// See: <https://www.patternfly.org/v4/components/table>
 ///
 /// ## Properties
 ///

@@ -2,13 +2,13 @@ use uuid::Uuid;
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct FormSectionProperties {
     pub title: Option<String>,
     pub children: Children,
 }
 
 #[function_component(FormSection)]
-pub fn section(props: &Props) -> Html {
+pub fn section(props: &FormSectionProperties) -> Html {
     let id = use_state(|| match props.title.is_some() {
         true => Some(Uuid::new_v4().to_string()),
         false => None,

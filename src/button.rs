@@ -53,7 +53,9 @@ impl Default for Align {
     }
 }
 
-/// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type
+/// Button Type.
+///
+/// See: <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type>
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub enum ButtonType {
     Submit,
@@ -134,11 +136,11 @@ pub struct ButtonProperties {
     pub children: Children,
 }
 
-/// The Button component.
+/// Button component
 ///
 /// > A **button** is a box area or text that communicates and triggers user actions when clicked or selected. Buttons can be used to communicate and immediately trigger actions a user can take in an application, like submitting a form, canceling a process, or creating a new object. Buttons can also be used to take a user to a new location, like another page inside of a web application, or an external site such as help or documentation.
 ///
-/// See: https://www.patternfly.org/v4/components/button
+/// See: <https://www.patternfly.org/v4/components/button>
 ///
 /// ## Properties
 ///

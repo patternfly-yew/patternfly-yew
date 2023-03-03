@@ -6,11 +6,11 @@ pub struct BackgroundProperties {
     pub filter: Option<String>,
 }
 
-/// The Background image component.
+/// Background image component
 ///
 /// > A **background image** allows you to place an image in the background of your page or area of a page.
 ///
-/// See: https://www.patternfly.org/v4/components/background-image
+/// See: <https://www.patternfly.org/v4/components/background-image>
 ///
 /// ## Properties
 ///

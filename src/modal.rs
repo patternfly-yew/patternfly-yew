@@ -48,11 +48,11 @@ pub enum Msg {
     SetBackdrop(Backdropper),
 }
 
-/// The Modal component.
+/// Modal component
 ///
 /// > A **modal** displays important information to a user without requiring them to navigate to a new page.
 ///
-/// See: https://www.patternfly.org/v4/components/modal
+/// See: <https://www.patternfly.org/v4/components/modal>
 ///
 /// ## Properties
 ///
@@ -60,8 +60,9 @@ pub enum Msg {
 ///
 /// ## Contexts
 ///
-/// If the modal dialog is wrapped by a [`BackdropViewer`] component and no `onclose` callback is
-/// set, then it will automatically close the backdrop when the modal dialog gets closed.
+/// If the modal dialog is wrapped by a [`crate::prelude::BackdropViewer`] component and no
+/// `onclose` callback is set, then it will automatically close the backdrop when the modal dialog
+/// gets closed.
 ///
 pub struct Modal {
     backdrop: ContextWrapper<Backdropper>,

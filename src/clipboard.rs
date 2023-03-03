@@ -66,11 +66,11 @@ const DEFAULT_MESSAGE: &str = "Copy to clipboard";
 const FAILED_MESSAGE: &str = "Failed to copy";
 const OK_MESSAGE: &str = "Copied!";
 
-/// The Clipboard copy component.
+/// Clipboard copy component
 ///
 /// > The **clipboard copy** component allows users to quickly and easily copy content to their clipboard.
 ///
-/// See: https://www.patternfly.org/v4/components/clipboard-copy
+/// See: <https://www.patternfly.org/v4/components/clipboard-copy>
 ///
 /// ## Properties
 ///

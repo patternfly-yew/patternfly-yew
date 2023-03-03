@@ -1,6 +1,7 @@
 use crate::AsClasses;
 use yew::Classes;
 
+/// Definition for sizes
 #[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
 pub enum Size {
     XSmall,

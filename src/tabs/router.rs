@@ -6,7 +6,7 @@ use yew_nested_router::{components::Link, prelude::*};
 // tab router
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props<T>
+pub struct TabsRouterProperties<T>
 where
     T: Target + 'static,
 {
@@ -25,11 +25,11 @@ where
 }
 
 #[function_component(TabsRouter)]
-pub fn tabs_router<T>(props: &Props<T>) -> Html
+pub fn tabs_router<T>(props: &TabsRouterProperties<T>) -> Html
 where
     T: Target,
 {
-    let mut classes = Classes::from("pf-c-tabs");
+    let mut classes = classes!("pf-c-tabs");
 
     if props.r#box {
         classes.push("pf-m-box");
@@ -47,19 +47,19 @@ where
         inset.extend(&mut classes);
     }
 
-    html! {
+    html! (
         <div class={classes}>
             <ul class="pf-c-tabs__list">
                 { for props.children.iter() }
             </ul>
         </div>
-    }
+    )
 }
 
 // tab router item
 
 #[derive(Properties, Clone, Debug, PartialEq)]
-pub struct TabRouterItemProps<T>
+pub struct TabRouterItemProperties<T>
 where
     T: Target,
 {
@@ -70,7 +70,7 @@ where
 }
 
 #[function_component(TabRouterItem)]
-pub fn tab_router_item<T>(props: &TabRouterItemProps<T>) -> Html
+pub fn tab_router_item<T>(props: &TabRouterItemProperties<T>) -> Html
 where
     T: Target,
 {
@@ -82,11 +82,11 @@ where
         classes.push("pf-m-current");
     }
 
-    html! {
+    html! (
         <li class={classes}>
             <Link<T> element="button" class="pf-c-tabs__link" target={props.to.clone()}>
                 <span class="pf-c-tabs__item-text"> { &props.label } </span>
             </Link<T>>
         </li>
-    }
+    )
 }

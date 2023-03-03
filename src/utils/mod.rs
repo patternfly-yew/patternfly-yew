@@ -20,6 +20,9 @@ pub use space::*;
 use std::fmt::{Debug, Display, Formatter};
 use yew::use_memo;
 
+/// Create a random ID.
+///
+/// This is creating a random ID, using a v4 UUID.
 pub fn random_id() -> String {
     uuid::Uuid::new_v4().to_string()
 }
@@ -53,6 +56,8 @@ pub fn use_random_id() -> yew::UseStateHandle<Id> {
 }
 
 /// Use an ID from properties, or random if none was provided
+///
+/// This value will not change when re-rendering.
 #[yew::hook]
 pub fn use_prop_id<I>(id: I) -> std::rc::Rc<String>
 where

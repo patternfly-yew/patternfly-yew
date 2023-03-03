@@ -10,11 +10,11 @@ pub struct AvatarProperties {
     pub alt: AttrValue,
 }
 
-/// The avatar component.
+/// Avatar component
 ///
 /// > An **avatar** is a visual used to represent a user. It may contain an image or a placeholder graphic.
 ///
-/// See: https://www.patternfly.org/v4/components/avatar
+/// See: <https://www.patternfly.org/v4/components/avatar>
 ///
 /// ## Properties
 ///

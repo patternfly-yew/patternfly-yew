@@ -10,7 +10,7 @@ use yew::{prelude::*, virtual_dom::VNode};
 // form group
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct FormGroupProps {
+pub struct FormGroupProperties {
     pub children: Children,
     #[prop_or_default]
     pub label: String,
@@ -80,7 +80,7 @@ pub struct FormGroup {}
 
 impl Component for FormGroup {
     type Message = ();
-    type Properties = FormGroupProps;
+    type Properties = FormGroupProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}

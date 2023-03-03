@@ -66,6 +66,15 @@ pub struct SelectProperties<K: 'static + Clone + PartialEq + Display + Debug> {
     pub children: ChildrenRenderer<SelectChildVariant<K>>,
 }
 
+/// Select component
+///
+/// > A **select** list enables users to select one or more items from a list. Use a select list when options are dynamic or variable.
+///
+/// See: <https://www.patternfly.org/v4/components/select>
+///
+/// ## Properties
+///
+/// Defined by [`SelectProperties`].
 pub struct Select<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,

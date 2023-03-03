@@ -5,13 +5,13 @@ pub struct ContentProperties {
     pub children: Children,
 }
 
-/// The Content wrapper component.
+/// Content wrapper component
 ///
 /// *NOTE:* In PatternFly, this is documented as "Text".
 ///
 /// > A **text** component can wrap any static HTML content you want to place on your page to provide correct formatting when using standard HTML tags.
 ///
-/// See: https://www.patternfly.org/v4/components/text/html
+/// See: <https://www.patternfly.org/v4/components/text/html>
 ///
 /// ## Properties
 ///

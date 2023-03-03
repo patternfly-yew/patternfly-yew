@@ -68,11 +68,11 @@ pub struct AlertProperties {
     pub onclose: Option<Callback<()>>,
 }
 
-/// The Alert component.
+/// Alert component
 ///
 /// > An **alert** is a notification that provides brief information to the user without blocking their workflow.
 ///
-/// See: https://www.patternfly.org/v4/components/alert
+/// See: <https://www.patternfly.org/v4/components/alert>
 ///
 /// ## Properties
 ///

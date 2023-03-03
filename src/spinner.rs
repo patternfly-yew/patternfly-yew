@@ -1,3 +1,4 @@
+use crate::ExtendClasses;
 use yew::prelude::*;
 
 #[derive(PartialEq)]
@@ -30,18 +31,27 @@ impl SpinnerSize {
 }
 
 #[derive(PartialEq, Properties)]
-pub struct Props {
+pub struct SpinnerProperties {
     #[prop_or_default]
     pub size: SpinnerSize,
     #[prop_or(String::from("Loading..."))]
     pub aria_label: String,
 }
 
+/// Spinner component
+///
+/// > A **spinner** is used to indicate to users that an action is in progress. For actions that may take a long time, use a progress bar instead.
+///
+/// See: <https://www.patternfly.org/v4/components/spinner>
+///
+/// ## Properties
+///
+/// Defined by [`SpinnerProperties`].
 pub struct Spinner;
 
 impl Component for Spinner {
     type Message = ();
-    type Properties = Props;
+    type Properties = SpinnerProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}
@@ -49,7 +59,8 @@ impl Component for Spinner {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-spinner");
-        classes.extend(ctx.props().size.as_classes());
+
+        classes.extend_from(&ctx.props().size);
 
         let style = if let SpinnerSize::Custom(diameter) = &ctx.props().size {
             format!("--pf-c-spinner--diameter: {};", diameter)
@@ -57,7 +68,7 @@ impl Component for Spinner {
             String::new()
         };
 
-        html! {
+        html! (
             <svg
                 class={classes}
                 role="progressbar"
@@ -67,6 +78,6 @@ impl Component for Spinner {
             >
                 <circle class="pf-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
             </svg>
-        }
+        )
     }
 }

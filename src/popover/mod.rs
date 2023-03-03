@@ -7,7 +7,7 @@ use crate::integration::popperjs;
 // tooltip
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct PopoverProps {
+pub struct PopoverProperties {
     /// The target, rendered by the component, to which the popover will be aligned to.
     #[prop_or_default]
     pub target: Html,
@@ -26,6 +26,15 @@ pub struct PopoverProps {
     pub toggle_by_onclick: bool,
 }
 
+/// Popover component
+///
+/// > A **popover** is in-app messaging that provides more information on specific product areas. Popovers display content in a new window that overlays the current page. Unlike modals, popovers don't block the current page.
+///
+/// See: <https://www.patternfly.org/v4/components/popover>
+///
+/// ## Properties
+///
+/// Defined by [`PopoverProperties`].
 pub struct Popover {
     node: NodeRef,
     active: bool,
@@ -39,7 +48,7 @@ pub enum PopoverMsg {
 
 impl Component for Popover {
     type Message = PopoverMsg;
-    type Properties = PopoverProps;
+    type Properties = PopoverProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
@@ -101,7 +110,7 @@ impl Component for Popover {
 
 impl PopperContent for Popover {
     fn view(
-        props: &PopoverProps,
+        props: &PopoverProperties,
         onclose: Callback<()>,
         r#ref: NodeRef,
         state: Option<popperjs::State>,
@@ -134,7 +143,7 @@ impl PopperContent for Popover {
 // popover popup
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct PopoverPopupProps {
+pub struct PopoverPopupProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -155,6 +164,7 @@ pub struct PopoverPopupProps {
     pub r#ref: NodeRef,
 }
 
+/// The actual popover content component.
 #[derive(Clone)]
 pub struct PopoverPopup {}
 
@@ -165,7 +175,7 @@ pub enum PopoverPopupMsg {
 
 impl Component for PopoverPopup {
     type Message = PopoverPopupMsg;
-    type Properties = PopoverPopupProps;
+    type Properties = PopoverPopupProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {}

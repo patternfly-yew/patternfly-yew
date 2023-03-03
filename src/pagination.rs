@@ -30,6 +30,15 @@ pub enum Navigation {
     Page(u32),
 }
 
+/// Pagination component.
+///
+/// > A **pagination** component gives users more navigational capability on pages with content views.
+///
+/// See: <https://www.patternfly.org/v4/components/pagination>
+///
+/// ## Properties
+///
+/// Defined by [`PaginationProperties`].
 pub struct Pagination {
     expanded: bool,
     global_close: GlobalClose,

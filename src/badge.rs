@@ -7,11 +7,11 @@ pub struct BadgeProperties {
     pub read: bool,
 }
 
-/// The Badge component.
+/// Badge component
 ///
 /// > A **badge** is used to annotate other information like a label or an object name.
 ///
-/// See: https://www.patternfly.org/v4/components/badge
+/// See: <https://www.patternfly.org/v4/components/badge>
 ///
 /// ## Properties
 ///

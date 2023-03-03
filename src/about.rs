@@ -3,20 +3,27 @@ use std::ops::Deref;
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct AboutProperties {
+    /// Id of the outermost element
     #[prop_or_default]
-    pub brand_src: String,
+    pub id: AttrValue,
     #[prop_or_default]
-    pub brand_alt: String,
+    pub brand_src: AttrValue,
+    #[prop_or_default]
+    pub brand_alt: AttrValue,
     pub title: String,
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub strapline: Html,
+    /// A simple way to style the hero section with a logo.
+    ///
+    /// Will be ignored if `hero_style` is being used.
     #[prop_or_default]
-    pub logo: String,
+    pub logo: AttrValue,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
+    /// Allows to directly set the style of the hero element.
     #[prop_or_default]
     pub hero_style: Option<String>,
 }
@@ -26,13 +33,30 @@ pub enum Msg {
     SetBackdrop(Backdropper),
 }
 
+/// About modal component
+///
+/// > An **about modal** displays information about an application like product version number(s), as well as any appropriate legal text.
+///
+/// See: <https://www.patternfly.org/v4/components/about-modal>
+///
+/// The about modal just renders the dialog and can interact with a wrapping
+/// [`Backdropper`](crate::prelude::Backdropper) context. It is intended to be spawned using a
+/// [`Backdropper`]:
+///
+/// For a complete example, see the PatternFly Yew quickstart.
+///
+/// ## Properties
+///
+/// Defined by [`AboutProperties`].
+///
+///
 pub struct About {
     backdrop: ContextWrapper<Backdropper>,
 }
 
 impl Component for About {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = AboutProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let backdrop = ContextWrapper::from((ctx, Msg::SetBackdrop));
@@ -68,7 +92,10 @@ impl Component for About {
         };
 
         html!(
-            <div class="pf-c-about-modal-box" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+            <div
+                id={&ctx.props().id}
+                class="pf-c-about-modal-box" role="dialog" aria-modal="true" aria-labelledby="about-modal-title"
+            >
                 { if !ctx.props().brand_src.is_empty() {html!{
                     <div class="pf-c-about-modal-box__brand">
                         <img
