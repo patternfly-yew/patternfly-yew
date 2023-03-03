@@ -32,12 +32,12 @@ pub struct TextProperties {
     pub visited: bool,
 }
 
+#[function_component(Text)]
 #[deprecated(
     since = "0.4.0",
     note = "Use the `Content` component as a wrapper to standard HTML elements instead"
 )]
 #[allow(deprecated)]
-#[function_component(Text)]
 pub fn text(props: &TextProperties) -> Html {
     let mut classes = Classes::from("pf-c-content");
 

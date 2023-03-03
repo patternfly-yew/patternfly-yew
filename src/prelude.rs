@@ -42,6 +42,7 @@ pub use crate::components::spinner::*;
 pub use crate::components::switch::*;
 pub use crate::components::table::*;
 pub use crate::components::tabs::*;
+#[allow(deprecated)]
 pub use crate::components::text::*;
 pub use crate::components::title::*;
 pub use crate::components::toast::*;
