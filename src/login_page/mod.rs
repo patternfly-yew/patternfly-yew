@@ -1,9 +1,9 @@
-pub mod footer;
+mod footer;
+
+pub use footer::*;
 
 use crate::Title;
-pub use footer::*;
-use yew::prelude::*;
-use yew::virtual_dom::VChild;
+use yew::{prelude::*, virtual_dom::VChild};
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct Props {
