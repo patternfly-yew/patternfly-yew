@@ -1,4 +1,3 @@
-use crate::ExtendClasses;
 use yew::prelude::*;
 
 #[derive(PartialEq)]
@@ -59,8 +58,7 @@ impl Component for Spinner {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-spinner");
-
-        classes.extend_from(&ctx.props().size);
+        classes.extend(ctx.props().size.as_classes());
 
         let style = if let SpinnerSize::Custom(diameter) = &ctx.props().size {
             format!("--pf-c-spinner--diameter: {};", diameter)
