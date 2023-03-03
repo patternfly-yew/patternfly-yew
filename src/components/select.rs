@@ -223,6 +223,7 @@ where
                     c.set_need_close(ctx.link().callback(|_|Msg::Close));
                     c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
                     c.set_variant(ctx.props().variant.clone());
+                    c.set_selection(&self.selection);
                     c
                 }) }
             </ul>
@@ -237,6 +238,7 @@ where
                     c.set_need_close(ctx.link().callback(|_|Msg::Close));
                     c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
                     c.set_variant(ctx.props().variant.clone());
+                    c.set_selection(&self.selection);
                     c
                 }) }
             </fieldset>
@@ -331,7 +333,7 @@ where
                 let props = Rc::make_mut(props);
                 props.want_close = callback;
             }
-            _ => {}
+            SelectChild::Divider(_) => {}
         }
     }
 
@@ -345,7 +347,7 @@ where
                 let props = Rc::make_mut(props);
                 props.want_clicked = callback;
             }
-            _ => {}
+            SelectChild::Divider(_) => {}
         }
     }
 
@@ -359,7 +361,21 @@ where
                 let props = Rc::make_mut(props);
                 props.variant = variant;
             }
-            _ => {}
+            SelectChild::Divider(_) => {}
+        }
+    }
+
+    fn set_selection(&mut self, selection: &[K]) {
+        match &mut self.props {
+            SelectChild::Option(props) => {
+                let props = Rc::make_mut(props);
+                props.selected = selection.contains(&props.value);
+            }
+            SelectChild::Group(props) => {
+                let props = Rc::make_mut(props);
+                props.selection = selection.to_vec();
+            }
+            SelectChild::Divider(_) => {}
         }
     }
 }
@@ -416,8 +432,12 @@ where
 
     #[prop_or_default]
     pub(crate) variant: SelectVariant<K>,
+
+    #[prop_or_default]
+    pub(crate) selected: bool,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug)]
 pub enum SelectOptionMsg {
     Clicked,
@@ -429,7 +449,6 @@ where
 {
     default_id: Cell<Option<String>>,
     _marker: PhantomData<K>,
-    selected: bool,
 }
 
 impl<K> Component for SelectOption<K>
@@ -443,15 +462,12 @@ where
         Self {
             default_id: Default::default(),
             _marker: Default::default(),
-            selected: false,
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::Clicked => {
-                log::info!("Clicked on: {:?}", ctx.props().value);
-                self.selected = !self.selected;
                 if let Some(onclick) = &ctx.props().onclick {
                     // if we have a click handler, we don't send the default handling
                     onclick.emit(ctx.props().value.clone());
@@ -484,7 +500,7 @@ where
     fn render_button(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-select__menu-item");
 
-        if self.selected {
+        if ctx.props().selected {
             classes.push("pf-m-selected");
         }
 
@@ -541,7 +557,7 @@ where
                     id={id}
                     class="pf-c-check__input"
                     type="checkbox"
-                    checked={self.selected}
+                    checked={ctx.props().selected}
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     />
                 <span class="pf-c-check__label">{ &ctx.props().value }</span>
@@ -560,9 +576,9 @@ where
         )
     }
 
-    fn render_selected(&self, _: &Context<Self>) -> Html {
+    fn render_selected(&self, ctx: &Context<Self>) -> Html {
         html! (
-            if self.selected {
+            if ctx.props().selected {
                 <span class="pf-c-select__menu-item-icon">{ Icon::Check }</span>
             }
         )
@@ -579,6 +595,8 @@ where
     pub label: String,
     #[prop_or_default]
     pub children: ChildrenRenderer<SelectChildVariant<K>>,
+    #[prop_or_default]
+    pub(crate) selection: Vec<K>,
     #[prop_or_default]
     pub(crate) want_close: Callback<()>,
     #[prop_or_default]
@@ -633,6 +651,7 @@ where
                         c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
                         c.set_need_clicked(ctx.link().callback(|k|Self::Message::Clicked(k)));
                         c.set_variant(ctx.props().variant.clone());
+                        c.set_selection(&ctx.props().selection);
                         c
                     })}
                 </div>
