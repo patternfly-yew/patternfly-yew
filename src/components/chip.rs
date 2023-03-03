@@ -77,7 +77,10 @@ fn render_badge(props: &ChipProperties) -> Html {
 fn render_close(props: &ChipProperties) -> Html {
     html! (
         if let Some(onclose) = &props.onclose {
-            <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})} />
+            <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|e: MouseEvent| {
+                // This should work, but right now doesn't due to yewstack/yew#3041
+                e.stop_propagation();
+            })} />
         }
     )
 }
