@@ -1,7 +1,9 @@
+//! Empty state
 use yew::prelude::*;
 
 use crate::{Action, Button, ButtonVariant, ExtendClasses, Icon, Size, Title};
 
+/// Properties for [`EmptyState`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct EmptyStateProperties {
     #[prop_or_default]

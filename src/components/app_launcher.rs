@@ -1,3 +1,5 @@
+//! Application launcher menu
+
 use crate::{Divider, GlobalClose, Icon, Position};
 use std::rc::Rc;
 use yew::{
@@ -6,6 +8,7 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
+/// Properties for [`AppLauncher`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AppLauncherProperties {
     #[prop_or_default]
@@ -18,6 +21,7 @@ pub struct AppLauncherProperties {
     pub position: Position,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Toggle,
     Close,
@@ -120,6 +124,7 @@ impl AppLauncher {
     }
 }
 
+/// Child for an [`AppLauncher`]
 #[derive(Clone, PartialEq)]
 pub enum AppLauncherChild {
     Item(Rc<<AppLauncherItem as Component>::Properties>),
@@ -179,6 +184,7 @@ impl Into<Html> for AppLauncherChildVariant {
 
 // Item
 
+/// Properties for [`AppLauncherItem`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AppLauncherItemProperties {
     #[prop_or_default]
@@ -193,6 +199,7 @@ pub struct AppLauncherItemProperties {
     pub external: bool,
 }
 
+#[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum AppLauncherItemMsg {
     Clicked,
@@ -203,7 +210,6 @@ pub enum AppLauncherItemMsg {
 /// ## Properties
 ///
 /// Defined by [`AppLauncherItemProperties`].
-#[derive(Clone)]
 pub struct AppLauncherItem {}
 
 impl Component for AppLauncherItem {

@@ -11,6 +11,7 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
+/// Properties for [`FormSelect`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + Debug + FromStr> {
     #[prop_or_default]
@@ -31,6 +32,7 @@ pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + Debug
     pub onvalidate: Callback<ValidationContext<Vec<K>>>,
 }
 
+/// A select component in a [`Form`](crate::prelude::Form)
 pub struct FormSelect<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug + FromStr,
@@ -39,6 +41,7 @@ where
     node_ref: NodeRef,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     Changed,

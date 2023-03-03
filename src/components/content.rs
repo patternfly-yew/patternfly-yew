@@ -1,5 +1,7 @@
+//! Content wrapper
 use yew::prelude::*;
 
+/// Properties for [`Content`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ContentProperties {
     pub children: Children,

@@ -1,8 +1,11 @@
+//! Select control
 use crate::{Button, ButtonType, ButtonVariant, Chip, Divider, GlobalClose, Icon};
-use std::cell::Cell;
-use std::fmt::{Debug, Display};
-use std::marker::PhantomData;
-use std::rc::Rc;
+use std::{
+    cell::Cell,
+    fmt::{Debug, Display},
+    marker::PhantomData,
+    rc::Rc,
+};
 use uuid::Uuid;
 use yew::{
     html::ChildrenRenderer,
@@ -24,19 +27,15 @@ impl<K> Default for SelectVariant<K> {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub enum ChipVariant {
+    #[default]
     None,
     Count,
     Values,
 }
 
-impl Default for ChipVariant {
-    fn default() -> Self {
-        Self::None
-    }
-}
-
+/// Properties for [`Select`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct SelectProperties<K: 'static + Clone + PartialEq + Display + Debug> {
     #[prop_or_default]

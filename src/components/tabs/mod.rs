@@ -1,3 +1,4 @@
+//! Tabs control
 #[cfg(feature = "yew-nested-router")]
 mod router;
 mod simple;

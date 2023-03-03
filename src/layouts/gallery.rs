@@ -1,3 +1,5 @@
+//! Gallery
+
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]

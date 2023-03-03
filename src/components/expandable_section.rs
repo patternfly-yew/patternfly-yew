@@ -1,6 +1,8 @@
+//! Expandable section
 use crate::{icon::Icon, AsClasses, ExtendClasses};
 use yew::prelude::*;
 
+/// Properties for [`ExpandableSection`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ExpandableSectionProperties {
     #[prop_or_default]
@@ -133,6 +135,7 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
     )
 }
 
+/// Properties for [`ExpandableSectionToggle`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ExpandableSectionToggleProperties {
     #[prop_or("Show more".into())]

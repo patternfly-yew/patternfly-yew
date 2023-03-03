@@ -1,5 +1,8 @@
 macro_rules! spacer {
-    ($name:ident, $prefix:literal) => {
+    ($(#[$outer:meta])*
+    $name:ident, $prefix:literal) => {
+
+        $(#[$outer])*
         #[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
         pub enum $name {
             None,
@@ -28,5 +31,14 @@ macro_rules! spacer {
     };
 }
 
-spacer!(Spacer, "pf-m-spacer");
-spacer!(SpaceItems, "pf-m-space-items");
+spacer!(
+    /// Spacer definition
+    Spacer,
+    "pf-m-spacer"
+);
+
+spacer!(
+    /// Spacer definition for items
+    SpaceItems,
+    "pf-m-space-items"
+);

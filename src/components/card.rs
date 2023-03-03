@@ -1,3 +1,4 @@
+//! Card
 use crate::Icon;
 use yew::prelude::*;
 
@@ -11,6 +12,7 @@ pub enum CardSelection {
     },
 }
 
+/// Properties for [`Card`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardProperties {
     pub children: Children,
@@ -51,6 +53,7 @@ pub struct Card {
     expanded: bool,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug)]
 pub enum Msg {
     Toggle,

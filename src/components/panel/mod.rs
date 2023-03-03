@@ -1,3 +1,4 @@
+//! Panel
 use crate::{AsClasses, ExtendClasses};
 use yew::prelude::*;
 
@@ -7,6 +8,7 @@ pub struct ChildrenProperties {
     pub children: Children,
 }
 
+/// Properties for [`Panel`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PanelProperties {
     pub children: Children,

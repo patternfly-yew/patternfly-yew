@@ -1,3 +1,4 @@
+//! General purpose text
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]

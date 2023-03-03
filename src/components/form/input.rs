@@ -20,6 +20,7 @@ impl Default for TextInputIcon {
     }
 }
 
+/// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextInputProperties {
     #[prop_or_default]
@@ -81,6 +82,7 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
     }
 }
 
+/// A text input component
 pub struct TextInput {
     value: Option<String>,
     refs: Refs,
@@ -91,6 +93,7 @@ struct Refs {
     input: NodeRef,
 }
 
+#[doc(hidden)]
 pub enum TextInputMsg {
     Init,
     Changed(String),

@@ -1,3 +1,4 @@
+//! Label
 use crate::{AsClasses, Button, ButtonVariant, ExtendClasses, Icon};
 use yew::prelude::*;
 
@@ -34,6 +35,7 @@ impl AsClasses for Color {
     }
 }
 
+/// Properties for [`Label`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LabelProperties {
     #[prop_or_default]

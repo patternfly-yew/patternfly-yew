@@ -1,6 +1,5 @@
-use yew::html::IntoPropValue;
-use yew::prelude::*;
-use yew::virtual_dom::AttrValue;
+//! List
+use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum ListType {
@@ -15,19 +14,14 @@ impl Default for ListType {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Default, PartialEq, Eq)]
 pub enum ListOrder {
+    #[default]
     Number,
     LowercaseLetter,
     UppercaseLetter,
     LowercaseRomanNumber,
     UppercaseRomanNumber,
-}
-
-impl Default for ListOrder {
-    fn default() -> Self {
-        Self::Number
-    }
 }
 
 impl ToString for ListOrder {
@@ -49,6 +43,7 @@ impl IntoPropValue<Option<AttrValue>> for ListOrder {
     }
 }
 
+/// Properties for [`List`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ListProperties {
     pub children: Children,

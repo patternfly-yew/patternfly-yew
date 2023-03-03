@@ -1,8 +1,10 @@
+//! Pagination controls
 use crate::{
     Button, ButtonVariant, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator,
 };
 use yew::prelude::*;
 
+/// Properties for [`Pagination`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct PaginationProperties {
     #[prop_or_default]
@@ -22,6 +24,7 @@ pub struct PaginationProperties {
     pub limit_callback: Callback<u32>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Navigation {
     First,
     Previous,
@@ -44,6 +47,7 @@ pub struct Pagination {
     global_close: GlobalClose,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     ToggleMenu,

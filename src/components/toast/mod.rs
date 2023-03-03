@@ -1,3 +1,4 @@
+//! Toast notifications
 use crate::{Action, Alert, AlertGroup, Type};
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;

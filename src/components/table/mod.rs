@@ -1,3 +1,4 @@
+//! Tables
 mod cell;
 mod column;
 mod header;
@@ -53,6 +54,7 @@ impl AsClasses for TableGridMode {
     }
 }
 
+/// Properties for [`Table`]
 #[derive(Debug, PartialEq, Clone, Properties)]
 pub struct TableProperties<M>
 where
@@ -174,6 +176,7 @@ impl Span {
     }
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     Collapse(usize),

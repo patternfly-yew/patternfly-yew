@@ -1,3 +1,4 @@
+//! Popover
 use crate::prelude::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
 
 use yew::prelude::*;
@@ -6,6 +7,7 @@ use crate::integration::popperjs;
 
 // tooltip
 
+/// Properties for [`Popover`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PopoverProperties {
     /// The target, rendered by the component, to which the popover will be aligned to.
@@ -40,6 +42,7 @@ pub struct Popover {
     active: bool,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum PopoverMsg {
     Open,

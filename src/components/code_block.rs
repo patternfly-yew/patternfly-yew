@@ -1,5 +1,7 @@
+//! Code block
 use yew::prelude::*;
 
+/// Properties for [`CodeBlock`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct CodeBlockProperties {
     #[prop_or_default]
@@ -62,6 +64,7 @@ pub fn code_block(props: &CodeBlockProperties) -> Html {
     )
 }
 
+/// Properties for [`CodeBlockCode`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct CodeBlockCodeProperties {
     #[prop_or_default]
@@ -82,12 +85,14 @@ pub fn code_block_code(props: &CodeBlockCodeProperties) -> Html {
     )
 }
 
+/// Properties for [`CodeBlockAction`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct CodeBlockActionProperties {
     #[prop_or_default]
     pub children: Children,
 }
 
+/// An action of a [`CodeBlock`]
 #[function_component(CodeBlockAction)]
 pub fn code_block_action(props: &CodeBlockActionProperties) -> Html {
     html!(

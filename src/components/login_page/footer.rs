@@ -1,6 +1,7 @@
 use crate::Tooltip;
 use yew::prelude::*;
 
+/// Properties for [`LoginMainFooterLink`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginMainFooterLinkProperties {
     #[prop_or_default]
@@ -40,8 +41,9 @@ pub fn login_main_footer_link(props: &LoginMainFooterLinkProperties) -> Html {
     }
 }
 
+/// Properties for [`LoginMainFooter`]
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct LoginMainFooterProps {
+pub struct LoginMainFooterProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -51,7 +53,7 @@ pub struct LoginMainFooterProps {
 }
 
 #[function_component(LoginMainFooter)]
-pub fn login_main_footer(props: &LoginMainFooterProps) -> Html {
+pub fn login_main_footer(props: &LoginMainFooterProperties) -> Html {
     html! (
         <footer class="pf-c-login__main-footer">
             { for props.children.iter() }

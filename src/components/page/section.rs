@@ -2,10 +2,7 @@ use crate::core::{AsClasses, ExtendClasses, WithBreakpoints};
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
-// for the docs
-#[allow(unused)]
-use crate::prelude::Page;
-
+/// Properties for [`PageSection`]
 #[derive(Copy, Clone, Default, Eq, PartialEq)]
 pub enum PageSectionVariant {
     #[default]
@@ -138,7 +135,7 @@ impl IntoPropValue<PageSectionFill> for bool {
     }
 }
 
-/// A page section, a child of a [`Page`] component.
+/// A page section, a child of a [`Page`](crate::prelude::Page) component.
 ///
 /// ## Properties
 ///
@@ -203,8 +200,9 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     )
 }
 
+/// Properties for [`PageSectionGroup`]
 #[derive(PartialEq, Properties)]
-pub struct PageSectionGroupProps {
+pub struct PageSectionGroupProperties {
     pub children: Children,
     #[prop_or_default]
     pub shadow: PageSectionShadow,
@@ -215,7 +213,7 @@ pub struct PageSectionGroupProps {
 }
 
 #[function_component(PageSectionGroup)]
-pub fn page_section_group(props: &PageSectionGroupProps) -> Html {
+pub fn page_section_group(props: &PageSectionGroupProperties) -> Html {
     let mut class = Classes::from("pf-c-page__main-group");
 
     class.extend_from(&props.shadow);

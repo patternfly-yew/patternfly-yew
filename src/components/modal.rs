@@ -1,3 +1,4 @@
+//! Modal
 use crate::{utils::ContextWrapper, Backdropper};
 use std::ops::Deref;
 use yew::prelude::*;
@@ -27,6 +28,7 @@ impl Default for ModalVariant {
     }
 }
 
+/// Properties for [`Modal`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ModalProperties {
     #[prop_or_default]
@@ -43,6 +45,7 @@ pub struct ModalProperties {
     pub onclose: Option<Callback<()>>,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Close,
     SetBackdrop(Backdropper),

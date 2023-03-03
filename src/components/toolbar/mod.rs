@@ -1,3 +1,4 @@
+//! Toolbar
 mod child;
 mod group;
 mod item;
@@ -29,6 +30,7 @@ impl AsClasses for ToolbarElementModifier {
     }
 }
 
+/// Properties for [`Toolbar`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarProperties {
     #[prop_or_default]

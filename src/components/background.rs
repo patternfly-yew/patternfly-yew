@@ -1,5 +1,7 @@
+//! Background image
 use yew::prelude::*;
 
+/// Properties for [`Background`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BackgroundProperties {
     #[prop_or_default]

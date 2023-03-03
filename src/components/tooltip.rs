@@ -1,9 +1,11 @@
+//! Tooltip
 use crate::prelude::{Orientation, Popper, PopperContent};
 
 use yew::prelude::*;
 
 use crate::integration::popperjs;
 
+/// Properties for [`Tooltip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TooltipProperties {
     pub children: Children,
@@ -24,6 +26,7 @@ pub struct Tooltip {
     active: bool,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum TooltipMsg {
     Enter,
@@ -100,8 +103,7 @@ impl PopperContent for Tooltip {
     }
 }
 
-// tooltip popup
-
+/// Properties for [`TooltipPopup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct TooltipPopupProperties {
     pub text: String,

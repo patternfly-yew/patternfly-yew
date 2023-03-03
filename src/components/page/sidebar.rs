@@ -1,5 +1,6 @@
 use yew::prelude::*;
 
+/// Properties for [`PageSidebar`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageSidebarProperties {
     #[prop_or_default]

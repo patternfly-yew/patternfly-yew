@@ -1,19 +1,16 @@
+//! Spinner indicator
 use yew::prelude::*;
 
-#[derive(PartialEq)]
+/// Size of the [`Spinner`] component
+#[derive(Clone, Default, Debug, PartialEq)]
 pub enum SpinnerSize {
+    #[default]
     None,
     Sm,
     Md,
     Lg,
     Xl,
     Custom(String),
-}
-
-impl Default for SpinnerSize {
-    fn default() -> Self {
-        Self::None
-    }
 }
 
 impl SpinnerSize {
@@ -29,6 +26,7 @@ impl SpinnerSize {
     }
 }
 
+/// Properties for [`Spinner`]
 #[derive(PartialEq, Properties)]
 pub struct SpinnerProperties {
     #[prop_or_default]

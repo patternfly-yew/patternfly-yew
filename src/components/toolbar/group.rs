@@ -1,6 +1,7 @@
 use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
+/// Properties for [`ToolbarGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarGroupProperties {
     #[prop_or_default]

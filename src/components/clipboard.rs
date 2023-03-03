@@ -1,3 +1,4 @@
+//! Copy clipboard
 use crate::icon::*;
 use crate::prelude::*;
 use gloo_timers::callback::Timeout;
@@ -5,6 +6,7 @@ use wasm_bindgen::prelude::*;
 use web_sys::{Element, HtmlInputElement};
 use yew::prelude::*;
 
+/// Properties for [``Clipboard]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ClipboardProperties {
     #[prop_or_default]
@@ -21,9 +23,10 @@ pub struct ClipboardProperties {
     pub id: String,
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, Default, PartialEq, Eq, Debug)]
 pub enum ClipboardVariant {
     // default
+    #[default]
     Default,
     // inline
     Inline,
@@ -43,12 +46,7 @@ impl ClipboardVariant {
     }
 }
 
-impl Default for ClipboardVariant {
-    fn default() -> Self {
-        Self::Default
-    }
-}
-
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     Copy,

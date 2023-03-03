@@ -1,3 +1,4 @@
+//! Backdrop visual
 use gloo_utils::document;
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
@@ -98,19 +99,20 @@ impl Backdropper {
     }
 }
 
-// component
-
+/// Properties for [``BackdropViewer]
 #[derive(Clone, PartialEq, Properties)]
-pub struct Props {
+pub struct BackdropProperties {
     pub children: Children,
 }
 
+/// The component showing backdrop content
 pub struct BackdropViewer {
     content: Rc<Backdrop>,
     open: bool,
     ctx: Backdropper,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Open(Rc<Backdrop>),
     Close,
@@ -118,7 +120,7 @@ pub enum Msg {
 
 impl Component for BackdropViewer {
     type Message = Msg;
-    type Properties = Props;
+    type Properties = BackdropProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let ctx = Backdropper {

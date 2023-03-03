@@ -45,6 +45,7 @@ impl Display for Wrap {
     }
 }
 
+/// Properties for [`TextArea`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextAreaProperties {
     #[prop_or_default]
@@ -92,6 +93,7 @@ pub struct TextArea {
     input_ref: NodeRef,
 }
 
+#[doc(hidden)]
 pub enum TextAreaMsg {
     Init,
     Changed(String),

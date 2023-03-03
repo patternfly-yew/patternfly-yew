@@ -9,6 +9,7 @@ use yew::{prelude::*, virtual_dom::VNode};
 
 // form group
 
+/// Properties for [`FormGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormGroupProperties {
     pub children: Children,
@@ -20,6 +21,7 @@ pub struct FormGroupProperties {
     pub helper_text: Option<HelperText>,
 }
 
+/// Helper text information for a [`FormGroup`]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HelperText {
     pub input_state: InputState,
@@ -76,6 +78,7 @@ impl From<(&str, InputState)> for HelperText {
     }
 }
 
+/// A group of components building a field in a [`Form`](crate::prelude::Form)
 pub struct FormGroup {}
 
 impl Component for FormGroup {
@@ -161,8 +164,9 @@ impl<'a> From<FormGroupHelpText<'a>> for VNode {
 
 // with validation
 
+/// Properties for [`FormGroupValidated`]
 #[derive(Clone, Properties)]
-pub struct FormGroupValidatedProps<C>
+pub struct FormGroupValidatedProperties<C>
 where
     C: Component + ValidatingComponent,
 {
@@ -178,6 +182,7 @@ where
     pub onvalidated: Callback<ValidationResult>,
 }
 
+#[doc(hidden)]
 pub enum FormGroupValidatedMsg<C>
 where
     C: ValidatingComponent,
@@ -185,7 +190,7 @@ where
     Validate(ValidationContext<C::Value>),
 }
 
-impl<C> PartialEq for FormGroupValidatedProps<C>
+impl<C> PartialEq for FormGroupValidatedProperties<C>
 where
     C: Component + ValidatingComponent,
 {
@@ -212,7 +217,7 @@ where
     <C as Component>::Properties: ValidatingComponentProperties<C::Value> + Clone,
 {
     type Message = FormGroupValidatedMsg<C>;
-    type Properties = FormGroupValidatedProps<C>;
+    type Properties = FormGroupValidatedProperties<C>;
 
     fn create(_: &Context<Self>) -> Self {
         Self {

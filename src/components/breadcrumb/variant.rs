@@ -4,13 +4,13 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
-use super::{BreadcrumbItem, BreadcrumbItemProps};
+use super::{BreadcrumbItem, BreadcrumbItemProperties};
 
 pub trait BreadcrumbItemCreator {
     fn create(self: Rc<Self>, current: bool) -> Html;
 }
 
-impl BreadcrumbItemCreator for BreadcrumbItemProps {
+impl BreadcrumbItemCreator for BreadcrumbItemProperties {
     fn create(mut self: Rc<Self>, current: bool) -> Html {
         let props = Rc::make_mut(&mut self);
         props.current = current;
@@ -29,8 +29,8 @@ impl PartialEq for BreadcrumbChild {
     }
 }
 
-impl From<BreadcrumbItemProps> for BreadcrumbChild {
-    fn from(props: BreadcrumbItemProps) -> Self {
+impl From<BreadcrumbItemProperties> for BreadcrumbChild {
+    fn from(props: BreadcrumbItemProperties) -> Self {
         Self {
             creator: Rc::new(props),
         }

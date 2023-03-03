@@ -1,3 +1,4 @@
+//! Button
 use crate::{Icon, Spinner, SpinnerSize};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
@@ -86,6 +87,7 @@ impl IntoPropValue<Option<AttrValue>> for ButtonType {
     }
 }
 
+/// Properties for [`Button`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ButtonProperties {
     #[prop_or_default]
@@ -149,6 +151,7 @@ pub struct Button {
     node_ref: NodeRef,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Clicked(MouseEvent),
 }

@@ -1,3 +1,4 @@
+//! Slider control
 use gloo_events::{EventListener, EventListenerOptions};
 use gloo_utils::document;
 use std::fmt::{Display, Formatter};
@@ -45,6 +46,7 @@ impl Display for Step {
     }
 }
 
+/// Properties for [`Slider`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct SliderProperties {
     /// The minimum value.
@@ -73,6 +75,7 @@ pub struct SliderProperties {
     pub onchange: Callback<f64>,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     // set the value in percent
     SetPercent(f64),

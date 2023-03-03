@@ -1,7 +1,9 @@
+//! Context selector
 use crate::{GlobalClose, Icon, InputGroup, TextInput, TextInputIcon};
 use std::rc::Rc;
 use yew::prelude::*;
 
+/// Properties for [`ContextSelector`]
 #[derive(Properties, Debug, Clone, PartialEq)]
 pub struct ContextSelectorProperties {
     #[prop_or_default]
@@ -12,6 +14,7 @@ pub struct ContextSelectorProperties {
     pub children: ChildrenWithProps<ContextSelectorItem>,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     Toggle,
@@ -109,8 +112,9 @@ impl Component for ContextSelector {
 
 // item
 
+/// Properties for [`ContextSelectorItem`]
 #[derive(Properties, Debug, Clone, PartialEq)]
-pub struct ItemProps {
+pub struct ItemProperties {
     pub label: String,
     #[prop_or_default]
     pub onclick: Callback<()>,
@@ -120,16 +124,18 @@ pub struct ItemProps {
     pub(crate) need_close: Callback<()>,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug)]
 pub enum ItemMsg {
     Clicked,
 }
 
+/// An item of a [`ContextSelector`]
 pub struct ContextSelectorItem {}
 
 impl Component for ContextSelectorItem {
     type Message = ItemMsg;
-    type Properties = ItemProps;
+    type Properties = ItemProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {}

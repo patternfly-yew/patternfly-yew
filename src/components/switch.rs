@@ -1,7 +1,9 @@
+//! Switch control
 use crate::{random_id, Icon};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
+/// Properties for [`Switch`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct SwitchProperties {
     #[prop_or_default]

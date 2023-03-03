@@ -1,5 +1,7 @@
+//! Description list
 use yew::prelude::*;
 
+/// Properties for [`DescriptionList`]
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct DescriptionListProperties {
     #[prop_or_default]
@@ -42,14 +44,17 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
     )
 }
 
-/// A [`DescriptionList`] entry.
+/// Properties for [`DescriptionGroup`]
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct DescriptionGroupProperties {
+    /// The term to describe
     pub term: String,
+    /// The definition
     #[prop_or_default]
     pub children: Children,
 }
 
+/// A [`DescriptionList`] entry.
 #[function_component(DescriptionGroup)]
 pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
     html! (

@@ -1,3 +1,4 @@
+//! Navigation controls
 #[cfg(feature = "yew-nested-router")]
 mod router;
 
@@ -11,6 +12,7 @@ use yew::prelude::*;
 
 // nav
 
+/// Properties for [`Nav`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct NavProperties {
     #[prop_or_default]
@@ -29,6 +31,7 @@ pub fn nav(props: &NavProperties) -> Html {
 
 // nav list
 
+/// Properties for [`NavList`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavListProperties {
     #[prop_or_default]
@@ -46,6 +49,7 @@ pub fn nav_list(props: &NavListProperties) -> Html {
 
 // nav group
 
+/// Properties for [`NavGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavGroupProperties {
     #[prop_or_default]
@@ -68,6 +72,7 @@ pub fn nav_group(props: &NavGroupProperties) -> Html {
 
 // nav item
 
+/// Properties for [`NavItem`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavItemProperties {
     #[prop_or_default]
@@ -122,8 +127,9 @@ impl Expandable {
 
 // nav expandable
 
+/// Properties for [`NavExpandable`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavExpandableProps {
+pub struct NavExpandableProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -139,6 +145,7 @@ pub struct NavExpandable {
     active: HashSet<Id>,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum MsgExpandable {
     Toggle,
@@ -147,7 +154,7 @@ pub enum MsgExpandable {
 
 impl Component for NavExpandable {
     type Message = MsgExpandable;
-    type Properties = NavExpandableProps;
+    type Properties = NavExpandableProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         let expanded = match ctx.props().expanded {

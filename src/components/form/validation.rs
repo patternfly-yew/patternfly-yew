@@ -1,6 +1,7 @@
 use crate::{AsClasses, HelperText, Icon, ValidationContext};
 use yew::{Callback, Classes};
 
+/// State of an input from validation
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub enum InputState {
     Default,
@@ -48,6 +49,7 @@ impl InputState {
     }
 }
 
+/// Result of the validation
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ValidationResult {
     pub message: Option<String>,
@@ -109,10 +111,12 @@ impl ValidationResult {
     }
 }
 
+/// A component supporting validation.
 pub trait ValidatingComponent {
     type Value;
 }
 
+/// A trait which components supporting validatio must implement.
 pub trait ValidatingComponentProperties<T> {
     fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<T>>);
     fn set_input_state(&mut self, state: InputState);

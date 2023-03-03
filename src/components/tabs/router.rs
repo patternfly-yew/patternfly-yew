@@ -5,6 +5,7 @@ use yew_nested_router::{components::Link, prelude::*};
 
 // tab router
 
+/// Properties for [`TabsRouter`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TabsRouterProperties<T>
 where
@@ -58,6 +59,7 @@ where
 
 // tab router item
 
+/// Properties for [`TabRouterItem`]
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct TabRouterItemProperties<T>
 where

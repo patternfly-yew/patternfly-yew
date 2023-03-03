@@ -1,6 +1,7 @@
 use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
+/// Properties for [`ToolbarItem`]
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub enum ToolbarItemType {
     None,

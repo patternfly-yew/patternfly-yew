@@ -5,8 +5,9 @@ use yew_nested_router::{components::Link, prelude::*};
 
 // nav router item
 
+/// Properties for [`NavRouterItem`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct NavRouterItemProps<R>
+pub struct NavRouterItemProperties<R>
 where
     R: Target,
 {
@@ -20,7 +21,7 @@ where
 
 /// A navigation item, using the Router.
 #[function_component(NavRouterItem)]
-pub fn nav_router_item<R>(props: &NavRouterItemProps<R>) -> Html
+pub fn nav_router_item<R>(props: &NavRouterItemProperties<R>) -> Html
 where
     R: Target,
 {

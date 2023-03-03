@@ -1,3 +1,4 @@
+//! Login page controls
 mod footer;
 
 pub use footer::*;
@@ -5,6 +6,7 @@ pub use footer::*;
 use crate::Title;
 use yew::{prelude::*, virtual_dom::VChild};
 
+/// Properties for [`Login`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginProperties {
     #[prop_or_default]
@@ -16,6 +18,19 @@ pub struct LoginProperties {
 }
 
 /// Login page component
+///
+/// > A **login page** allows a user to gain access to an application by entering their username and password or by authenticating using a social media login.
+///
+/// See: <https://www.patternfly.org/v4/components/login-page>
+///
+/// ## Properties
+///
+/// Defined by [`LoginProperties`]
+///
+/// ## Children
+///
+/// The login page component requires a more complex structure using [`LoginMain`] components. See
+/// the Quickstart project for an example.
 #[function_component(Login)]
 pub fn login(props: &LoginProperties) -> Html {
     html! {
@@ -33,6 +48,7 @@ pub fn login(props: &LoginProperties) -> Html {
     }
 }
 
+/// Properties for [`LoginMain`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginMainProperties {
     #[prop_or_default]
@@ -48,6 +64,7 @@ pub fn login_main(props: &LoginMainProperties) -> Html {
     }
 }
 
+/// Properties for [`LoginMainHeader`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginMainHeaderProperties {
     pub title: VChild<Title>,
@@ -67,6 +84,7 @@ pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
     }
 }
 
+/// Properties for [`LoginMainBody`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginMainBodyProperties {
     #[prop_or_default]

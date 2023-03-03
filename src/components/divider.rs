@@ -1,3 +1,5 @@
+//! General purpose divider
+
 use yew::prelude::*;
 
 /// Divider component

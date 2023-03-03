@@ -1,5 +1,7 @@
+//! Badge
 use yew::prelude::*;
 
+/// Properties for [`Badge`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BadgeProperties {
     pub children: Children,

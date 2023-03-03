@@ -1,3 +1,4 @@
+//! Full Page components
 use std::rc::Rc;
 use yew::prelude::*;
 
@@ -7,6 +8,7 @@ mod sidebar;
 pub use section::*;
 pub use sidebar::*;
 
+/// Properties for [`Page`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageProperties {
     pub children: Children,
@@ -46,6 +48,7 @@ pub struct Page {
     open: bool,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     ToggleSidebar,
 }

@@ -1,8 +1,10 @@
+//! Brand visual
 use yew::prelude::*;
 
 #[deprecated(since = "0.4.0", note = "Was renamed to `Brand` component")]
 pub type Logo = Brand;
 
+/// Properties for [`Brand`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BrandProperties {
     pub src: AttrValue,

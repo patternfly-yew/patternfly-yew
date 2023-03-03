@@ -1,10 +1,13 @@
+//! Title
 use crate::ExtendClasses;
 use yew::prelude::*;
 
 use crate::Size;
 
-#[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
+/// Title level
+#[derive(Clone, Default, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
 pub enum Level {
+    #[default]
     H1,
     H2,
     H3,
@@ -13,12 +16,7 @@ pub enum Level {
     H6,
 }
 
-impl Default for Level {
-    fn default() -> Self {
-        Level::H1
-    }
-}
-
+/// Properties for [`Title`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TitleProperties {
     #[prop_or_default]

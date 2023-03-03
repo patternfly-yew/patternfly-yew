@@ -1,3 +1,4 @@
+//! Drop down menu
 use crate::{Avatar, Button, ButtonType, ButtonVariant, Divider, GlobalClose, Icon, Position};
 use std::rc::Rc;
 use yew::{
@@ -6,6 +7,7 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
+/// Properties for [`Dropdown`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct DropdownProperties {
     #[prop_or_default]
@@ -43,6 +45,7 @@ pub struct Dropdown {
     global_close: GlobalClose,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Debug)]
 pub enum Msg {
     Toggle,

@@ -1,7 +1,9 @@
+//! Chip
 use crate::{Button, ButtonVariant, Icon};
 use std::fmt::Debug;
 use yew::prelude::*;
 
+/// Properties for [`Chip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ChipProperties {
     #[prop_or_default]

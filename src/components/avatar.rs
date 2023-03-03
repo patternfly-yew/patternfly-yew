@@ -1,5 +1,7 @@
+//! Avatar grapic
 use yew::prelude::*;
 
+/// Properties for [`Avatar`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AvatarProperties {
     /// The source of the image.

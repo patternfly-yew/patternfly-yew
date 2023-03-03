@@ -1,4 +1,4 @@
-//! [PatterFly](https://patternfly.org) components implemented for [Yew](https://yew.rs).
+//! [PatternFly](https://patternfly.org) components implemented for [Yew](https://yew.rs).
 //!
 //! ## Goals
 //!

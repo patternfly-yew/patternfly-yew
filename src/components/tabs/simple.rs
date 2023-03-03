@@ -2,6 +2,7 @@ use crate::{AsClasses, Icon, WithBreakpoints};
 use std::{fmt::Formatter, rc::Rc};
 use yew::{prelude::*, virtual_dom::VChild};
 
+/// Properties for [`Tabs`]
 #[derive(Clone, Debug, Properties, PartialEq)]
 pub struct TabsProperties {
     #[prop_or_default]
@@ -33,6 +34,7 @@ pub struct Tabs {
     active: usize,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Select(usize),
 }
@@ -171,8 +173,9 @@ impl AsClasses for Inset {
     }
 }
 
+/// Properties for [`Tab`]
 #[derive(Clone, Debug, Properties, PartialEq)]
-pub struct TabProps {
+pub struct TabProperties {
     pub label: String,
     #[prop_or_default]
     pub icon: Option<Icon>,
@@ -186,16 +189,18 @@ pub struct TabProps {
     pub children: Children,
 }
 
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug)]
 pub enum TabMsg {
     Clicked,
 }
 
+/// A tab in a [`Tabs`] component
 pub struct Tab {}
 
 impl Component for Tab {
     type Message = TabMsg;
-    type Properties = TabProps;
+    type Properties = TabProperties;
 
     fn create(_: &Context<Self>) -> Self {
         Self {}

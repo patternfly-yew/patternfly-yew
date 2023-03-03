@@ -8,6 +8,7 @@ use std::ops::Deref;
 use yew::html::IntoPropValue;
 use yew::Classes;
 
+/// Breakpoint definitions
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Breakpoint {
     None,
@@ -18,6 +19,7 @@ pub enum Breakpoint {
     XXLarge,
 }
 
+/// A combination of a style/variant for a specific [`Breakpoint`].
 #[derive(Clone, Debug, PartialEq)]
 pub struct WithBreakpoint<T>
 where
@@ -50,6 +52,10 @@ where
     }
 }
 
+/// A set of variants for breakpoints.
+///
+/// This is typically used by components which support different variants for different breakpoints,
+/// including a default one.
 #[derive(Clone, Debug, PartialEq)]
 pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
 where
@@ -160,6 +166,26 @@ impl ToString for Breakpoint {
     }
 }
 
+/// Helps creating [`WithBreakpoint`] instances.
+///
+/// ## Example
+///
+/// The following example populates the `cols` attribute of a `GridItem`. I requires a number of
+/// columns to span, which can be specified for the different breakpoints.
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   html!(
+///     <Grid>
+///         <GridItem cols={[4.all(), 8.lg()]}>{"cell"}</GridItem>
+///     </Grid>
+///   )
+/// }
+/// ```
 pub trait WithBreakpointExt<T>: Sized
 where
     T: PartialEq,
@@ -169,18 +195,23 @@ where
     fn all(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::None)
     }
+
     fn sm(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Small)
     }
+
     fn md(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Medium)
     }
+
     fn lg(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::Large)
     }
+
     fn xl(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::XLarge)
     }
+
     fn xxl(self) -> WithBreakpoint<T> {
         self.on(Breakpoint::XXLarge)
     }

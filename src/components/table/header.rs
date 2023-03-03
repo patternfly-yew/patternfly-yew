@@ -3,6 +3,7 @@ use yew::prelude::*;
 
 use super::column::TableColumn;
 
+/// Properties for [`TableHeader`]
 #[derive(Debug, PartialEq, Clone, Properties)]
 pub struct TableHeaderProperties {
     #[prop_or_default]

@@ -1,6 +1,7 @@
+//! Flex
+
 use crate::{AsClasses, ExtendClasses, SpaceItems, Spacer, WithBreakpoints};
-use std::fmt::Debug;
-use std::rc::Rc;
+use std::{fmt::Debug, rc::Rc};
 use yew::{
     html::ChildrenRenderer,
     prelude::*,

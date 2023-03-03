@@ -1,20 +1,17 @@
+//! Alert popup
+
 use crate::{Action, Button, ButtonVariant, Icon};
 
 use yew::prelude::*;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Type {
+    #[default]
     Default,
     Info,
     Success,
     Warning,
     Danger,
-}
-
-impl Default for Type {
-    fn default() -> Self {
-        Self::Default
-    }
 }
 
 impl Type {
@@ -49,6 +46,7 @@ impl Type {
     }
 }
 
+/// Properties for [`Alert`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AlertProperties {
     #[prop_or_default]
@@ -76,116 +74,97 @@ pub struct AlertProperties {
 ///
 /// ## Properties
 ///
-/// Define by [`AlertProperties`].
-pub struct Alert {}
+/// Defined by [`AlertProperties`].
+#[function_component(Alert)]
+pub fn alert(props: &AlertProperties) -> Html {
+    let mut classes = classes!("pf-c-alert");
 
-impl Component for Alert {
-    type Message = ();
-    type Properties = AlertProperties;
+    classes.extend(props.r#type.as_classes());
 
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
+    if props.inline {
+        classes.push("pf-m-inline");
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-alert");
+    if props.truncate {
+        classes.push("pf-m-truncate");
+    }
 
-        classes.extend(ctx.props().r#type.as_classes());
+    let t = props.r#type;
 
-        if ctx.props().inline {
-            classes.push("pf-m-inline");
-        }
-
-        if ctx.props().truncate {
-            classes.push("pf-m-truncate");
-        }
-
-        let t = ctx.props().r#type;
-
-        let actions = if ctx.props().actions.is_empty() {
-            html! {}
-        } else {
-            html! {
-                <div class="pf-c-alert__action-group">
-                    {for ctx.props().actions.iter().map(|action|{
-                        html!{
-                            <Button
-                                variant={ButtonVariant::InlineLink}
-                                label={action.label.clone()}
-                                onclick={action.callback.reform(|_|())}
-                            />
-                        }
-                    })}
-                </div>
-            }
-        };
-
+    let actions = if props.actions.is_empty() {
+        html!()
+    } else {
         html! (
-            <div id={ctx.props().id.clone()} class={classes} aria_label={t.aria_label()}>
-                <div class="pf-c-alert__icon">{ t.icon() }</div>
-                <div class="pf-c-alert__title">
-                    <strong>
-                        <span class="pf-screen-reader">{ t.aria_label() }{":"}</span>
-                        { &ctx.props().title }
-                    </strong>
-                </div>
-
-
-                if let Some(onclose) = ctx.props().onclose.as_ref() {
-                    <div class="pf-c-alert__action">
-                        <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
-                    </div>
-                }
-
-
-                if !ctx.props().children.is_empty() {
-                    <div class="pf-c-alert__description">
-                        { for ctx.props().children.iter() }
-                    </div>
-                }
-
-                { actions }
-
+            <div class="pf-c-alert__action-group">
+                {for props.actions.iter().map(|action|{
+                    html!{
+                        <Button
+                            variant={ButtonVariant::InlineLink}
+                            label={action.label.clone()}
+                            onclick={action.callback.reform(|_|())}
+                        />
+                    }
+                })}
             </div>
         )
-    }
+    };
+
+    html! (
+        <div id={props.id.clone()} class={classes} aria_label={t.aria_label()}>
+            <div class="pf-c-alert__icon">{ t.icon() }</div>
+            <div class="pf-c-alert__title">
+                <strong>
+                    <span class="pf-screen-reader">{ t.aria_label() }{":"}</span>
+                    { &props.title }
+                </strong>
+            </div>
+
+
+            if let Some(onclose) = props.onclose.as_ref() {
+                <div class="pf-c-alert__action">
+                    <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
+                </div>
+            }
+
+
+            if !props.children.is_empty() {
+                <div class="pf-c-alert__description">
+                    { for props.children.iter() }
+                </div>
+            }
+
+            { actions }
+
+        </div>
+    )
 }
 
 // alert group
 
+/// A group for [`Alert`]s
 #[derive(Clone, PartialEq, Properties)]
-pub struct GroupProps {
+pub struct GroupProperties {
     #[prop_or_default]
     pub children: ChildrenWithProps<Alert>,
     #[prop_or_default]
     pub toast: bool,
 }
 
-pub struct AlertGroup {}
+#[function_component(AlertGroup)]
+pub fn view(props: &GroupProperties) -> Html {
+    let mut classes = classes!("pf-c-alert-group");
 
-impl Component for AlertGroup {
-    type Message = ();
-    type Properties = GroupProps;
-
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
+    if props.toast {
+        classes.push(classes!("pf-m-toast"));
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-alert-group");
-
-        if ctx.props().toast {
-            classes.push("pf-m-toast");
-        }
-
-        html! (
-            <ul class={classes}>
-                { for ctx.props().children.iter().map(|child|html!{
-                    <li class="pf-c-alert-group__item">
-                        { child }
-                    </li>
-                })}
-            </ul>
-        )
-    }
+    html! (
+        <ul class={classes}>
+            { for props.children.iter().map(|child|html!{
+                <li class="pf-c-alert-group__item">
+                    { child }
+                </li>
+            })}
+        </ul>
+    )
 }

@@ -1,7 +1,10 @@
+//! About modal
+
 use crate::{utils::ContextWrapper, Backdropper, Button, ButtonVariant, Icon};
 use std::ops::Deref;
 use yew::prelude::*;
 
+/// Properties for [`About`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AboutProperties {
     /// Id of the outermost element
@@ -28,6 +31,7 @@ pub struct AboutProperties {
     pub hero_style: Option<String>,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     Close,
     SetBackdrop(Backdropper),

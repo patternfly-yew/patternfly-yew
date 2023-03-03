@@ -1,12 +1,14 @@
 use uuid::Uuid;
 use yew::prelude::*;
 
+/// Properties for [`FormSection`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormSectionProperties {
     pub title: Option<String>,
     pub children: Children,
 }
 
+/// A group of fields on a [`Form`](crate::prelude::Form)
 #[function_component(FormSection)]
 pub fn section(props: &FormSectionProperties) -> Html {
     let id = use_state(|| match props.title.is_some() {

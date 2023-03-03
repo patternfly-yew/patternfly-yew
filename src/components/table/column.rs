@@ -2,6 +2,7 @@ use crate::{AsClasses, ExtendClasses};
 use std::fmt::Debug;
 use yew::prelude::*;
 
+/// Properties for [`TableColumn`]
 #[derive(Debug, PartialEq, Eq, Clone, Properties)]
 pub struct TableColumnProperties {
     #[prop_or_default]

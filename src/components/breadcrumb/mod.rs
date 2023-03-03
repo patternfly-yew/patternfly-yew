@@ -1,3 +1,4 @@
+//! Navigation breadcrumbs
 use yew::{html::ChildrenRenderer, prelude::*};
 
 #[cfg(feature = "router")]
@@ -9,8 +10,9 @@ pub use router::*;
 
 use variant::BreadcrumbItemVariant;
 
+/// Properties for [`Breadcrumb`]
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct BreadcrumbProps {
+pub struct BreadcrumbProperties {
     #[prop_or_default]
     pub children: ChildrenRenderer<BreadcrumbItemVariant>,
 }
@@ -23,10 +25,10 @@ pub struct BreadcrumbProps {
 ///
 /// ## Properties
 ///
-/// Defined by [`BreadcrumbProps`].
+/// Defined by [`BreadcrumbProperties`].
 ///
 #[function_component(Breadcrumb)]
-pub fn breadcrumb(props: &BreadcrumbProps) -> Html {
+pub fn breadcrumb(props: &BreadcrumbProperties) -> Html {
     let last = props.children.len() - 1;
 
     html!(
@@ -53,8 +55,9 @@ fn item(mut child: BreadcrumbItemVariant, last: bool) -> Html {
     )
 }
 
+/// Properties for [`BreadcrumbItem`]
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct BreadcrumbItemProps {
+pub struct BreadcrumbItemProperties {
     #[prop_or_default]
     pub href: AttrValue,
     #[prop_or_default]
@@ -66,7 +69,7 @@ pub struct BreadcrumbItemProps {
 }
 
 #[function_component(BreadcrumbItem)]
-pub fn breadcrumb_item(props: &BreadcrumbItemProps) -> Html {
+pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
     let mut class = Classes::from("pf-c-breadcrumb__link");
 
     if props.current {

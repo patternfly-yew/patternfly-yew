@@ -1,3 +1,4 @@
+//! Form controls
 mod area;
 mod group;
 mod input;
@@ -36,6 +37,7 @@ pub struct FormAlert {
 // Form
 //
 
+/// Properties for [`Form`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormProperties {
     #[prop_or_default]
@@ -150,6 +152,7 @@ pub struct Form {
     validation: ValidationState,
 }
 
+#[doc(hidden)]
 pub enum Msg {
     GroupValidationChanged(GroupValidationResult),
 }
@@ -277,6 +280,7 @@ impl Form {
 // Action group
 //
 
+/// Properties for [`ActionGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ActionGroupProperties {
     pub children: ChildrenWithProps<Button>,
@@ -299,6 +303,7 @@ pub fn action_group(props: &ActionGroupProperties) -> Html {
 // Input group
 //
 
+/// Properties for [`InputGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct InputGroupProps {
     pub children: Children,
