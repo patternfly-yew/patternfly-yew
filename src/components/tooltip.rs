@@ -1,5 +1,4 @@
-use crate::Popper;
-use crate::{Orientation, PopperContent};
+use crate::prelude::{Orientation, Popper, PopperContent};
 
 use yew::prelude::*;
 

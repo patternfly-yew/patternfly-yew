@@ -1,5 +1,4 @@
-use yew::html::ChildrenRenderer;
-use yew::prelude::*;
+use yew::{html::ChildrenRenderer, prelude::*};
 
 #[cfg(feature = "router")]
 mod router;
@@ -8,7 +7,7 @@ mod variant;
 #[cfg(feature = "router")]
 pub use router::*;
 
-use crate::breadcrumb::variant::BreadcrumbItemVariant;
+use variant::BreadcrumbItemVariant;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct BreadcrumbProps {

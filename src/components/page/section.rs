@@ -1,5 +1,4 @@
-use crate::utils::ExtendClasses;
-use crate::{AsClasses, WithBreakpoints};
+use crate::core::{AsClasses, ExtendClasses, WithBreakpoints};
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 

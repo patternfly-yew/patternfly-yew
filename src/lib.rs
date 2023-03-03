@@ -1,57 +1,34 @@
+//! [PatterFly](https://patternfly.org) components implemented for [Yew](https://yew.rs).
+//!
+//! ## Goals
+//!
+//! This crate offers Yew components of PatternFly. The goal is to closely map functionality as
+//! it exists in the ReactJS version, but take into account that Rust can sometimes do better. If
+//! that is the case, and leads to a safer, more developer-friendly solution, it might be worth
+//! doing things differently.
+//!
+//! The focus is currently on PatternFly v4.
+//!
+//! ## Help
+//!
+//! The `rustdoc` documentation should give you some detail information of the Rust code base. It
+//! will not explain the components in detail, but offer links to the original PatternFly
+//! documentation when possible. Those links are pointers to more information, for a better
+//! understanding, but don't mean that they document PatternFly Yew in any way.
+//!
+//! Some components may offer an example section in their main component documentation. But for
+//! more complex examples, see the
+//! [PatternFly Yew Quickstart](https://github.com/ctron/patternfly-yew-quickstart) project.
+
 #![recursion_limit = "1024"]
-mod about;
-mod alert;
-mod app_launcher;
-mod avatar;
-mod backdrop;
-mod background;
-mod badge;
-mod brand;
-mod breadcrumb;
-mod bullseye;
-mod button;
-mod card;
-mod chip;
-mod clipboard;
-mod code_block;
-mod content;
-mod context_selector;
-mod divider;
-mod dl;
-mod dropdown;
-mod empty;
-mod expandable_section;
-mod flex;
-mod form;
-mod gallery;
-mod grid;
 mod icon;
 mod integration;
-mod label;
-mod list;
-mod login_page;
-mod modal;
-mod nav;
-mod page;
-mod pagination;
-mod panel;
-mod popover;
-mod popper;
-mod select;
-mod slider;
-mod spinner;
-mod split;
-mod stack;
-mod switch;
-mod table;
-mod tabs;
-mod text;
-mod title;
-mod toast;
-mod toolbar;
-mod tooltip;
-mod utils;
-mod validator;
+
+pub mod components;
+pub mod core;
+pub mod layouts;
+pub mod utils;
+pub mod validation;
 
 pub mod prelude;
 pub use prelude::*;

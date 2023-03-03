@@ -1,4 +1,4 @@
-use crate::AsClasses;
+use crate::core::AsClasses;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;

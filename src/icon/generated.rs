@@ -398,7 +398,7 @@ pub enum Icon {
     Zone,
 }
 
-impl crate::utils::AsClasses for Icon {
+impl crate::core::AsClasses for Icon {
     fn extend(&self, classes: &mut yew::prelude::Classes) {
         match self {
             Self::AngleDoubleLeft => classes.extend(super::fas("fa-angle-double-left")),

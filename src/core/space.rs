@@ -11,7 +11,7 @@ macro_rules! spacer {
             XXLarge,
         }
 
-        impl $crate::utils::classes::AsClasses for $name {
+        impl $crate::core::AsClasses for $name {
             fn extend(&self, classes: &mut yew::prelude::Classes) {
                 let name = match self {
                     Self::None => concat!($prefix, "-none"),

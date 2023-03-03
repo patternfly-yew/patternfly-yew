@@ -1,22 +1,15 @@
+//! Utilities
+
 mod action;
-mod breakpoint;
-mod classes;
 mod context;
 mod global_close;
-mod orientation;
-mod position;
-mod size;
-mod space;
+mod popper;
 
 pub use action::*;
-pub use breakpoint::*;
-pub use classes::*;
 pub use context::*;
 pub use global_close::*;
-pub use orientation::*;
-pub use position::*;
-pub use size::*;
-pub use space::*;
+pub use popper::*;
+
 use std::fmt::{Debug, Display, Formatter};
 use yew::use_memo;
 

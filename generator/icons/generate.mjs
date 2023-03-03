@@ -92,7 +92,7 @@ pub enum Icon {
 `);
 
     console.log(`
-impl crate::utils::AsClasses for Icon {
+impl crate::core::AsClasses for Icon {
     fn extend(&self, classes: &mut yew::prelude::Classes) {
         match self {
             ${this.#impl}

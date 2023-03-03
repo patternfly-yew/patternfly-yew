@@ -1,7 +1,6 @@
-use crate::breadcrumb::variant::BreadcrumbChild;
+use super::variant::BreadcrumbChild;
 use std::rc::Rc;
-use yew::prelude::*;
-use yew::virtual_dom::VComp;
+use yew::{prelude::*, virtual_dom::VComp};
 use yew_nested_router::{components::Link, prelude::*};
 
 #[derive(Clone, Debug, PartialEq, Properties)]

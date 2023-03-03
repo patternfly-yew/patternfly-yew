@@ -1,7 +1,5 @@
-use crate::button::*;
-use crate::form::*;
 use crate::icon::*;
-use crate::*;
+use crate::prelude::*;
 use gloo_timers::callback::Timeout;
 use wasm_bindgen::prelude::*;
 use web_sys::{Element, HtmlInputElement};

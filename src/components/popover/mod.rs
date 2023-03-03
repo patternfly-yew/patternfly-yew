@@ -1,4 +1,4 @@
-use crate::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
+use crate::prelude::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
 
 use yew::prelude::*;
 

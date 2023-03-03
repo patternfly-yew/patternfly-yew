@@ -1,14 +1,10 @@
-use crate::integration::popperjs;
-
-use crate::integration::popperjs::{from_popper, Instance};
-use crate::GlobalClose;
-use std::fmt::Debug;
-use std::marker::PhantomData;
-use wasm_bindgen::closure::Closure;
-use wasm_bindgen::JsValue;
+use crate::{
+    integration::popperjs::{self, from_popper, Instance},
+    GlobalClose,
+};
+use std::{fmt::Debug, marker::PhantomData};
+use wasm_bindgen::{closure::Closure, JsValue};
 use yew::prelude::*;
-
-// popper
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PopperProperties<T>

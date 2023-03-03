@@ -1,6 +1,8 @@
 use std::rc::Rc;
-use yew::prelude::*;
-use yew::virtual_dom::{VChild, VComp};
+use yew::{
+    prelude::*,
+    virtual_dom::{VChild, VComp},
+};
 
 use super::{BreadcrumbItem, BreadcrumbItemProps};
 
