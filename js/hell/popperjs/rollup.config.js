@@ -4,11 +4,19 @@ import { terser } from 'rollup-plugin-terser';
 
 export default {
     input: "main.js",
-    output: {
-        file: "../../../src/js/popperjs.js",
-        format: "esm",
-        compact: true,
-    },
+    output: [
+        {
+            file: "../../debug/popperjs.js",
+            format: "esm",
+            compact: false,
+        },
+        {
+            file: "../../release/popperjs.js",
+            format: "esm",
+            compact: true,
+            plugins: [terser()]
+        }
+    ],
     plugins: [
         nodeResolve(),
         replace({
@@ -17,6 +25,5 @@ export default {
                 "process.env.NODE_ENV": JSON.stringify('production')
             }
         }),
-        terser(),
     ]
 }

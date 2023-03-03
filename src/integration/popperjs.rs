@@ -3,7 +3,11 @@ use gloo_utils::format::JsValueSerdeExt;
 use serde_json::json;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "/src/js/popperjs.js")]
+#[cfg_attr(debug_assertions, wasm_bindgen(module = "/js/debug/popperjs.js"))]
+#[cfg_attr(
+    not(debug_assertions),
+    wasm_bindgen(module = "/js/release/popperjs.js")
+)]
 extern "C" {
 
     #[wasm_bindgen(js_name = "createPopper")]
