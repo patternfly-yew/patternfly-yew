@@ -350,11 +350,12 @@ impl Slider {
         if active {
             classes.push("pf-m-active");
         }
+        let label = format!("{:.1$}", step.value, props.label_precision);
 
         html!(
             <div class={classes} style={format!("--pf-c-slider__step--Left: {}%", position * 100f64)}>
                 <div class="pf-c-slider__step-tick"></div>
-                <div class="pf-c-slider__step-label">{ step }</div>
+                <div class="pf-c-slider__step-label">{ label }</div>
             </div>
         )
     }
