@@ -77,8 +77,8 @@ pub struct SliderProperties {
 
 #[doc(hidden)]
 pub enum Msg {
-    // set the value in percent
-    SetPercent(f64),
+    // set the value as original value
+    SetValue(f64),
     Start(Input, i32),
     Move(i32),
     Stop,
@@ -122,9 +122,9 @@ impl Component for Slider {
     type Properties = SliderProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let (percent, value) = match ctx.props().value {
-            Some(value) => (Self::calc_percent(value, ctx.props()), value),
-            None => (0f64, ctx.props().min.value),
+        let value = match ctx.props().value {
+            Some(value) => value,
+            None => ctx.props().min.value,
         };
 
         if !ctx.props().suppress_initial_change {
@@ -133,7 +133,7 @@ impl Component for Slider {
         }
 
         Self {
-            value: percent,
+            value,
             refs: Default::default(),
 
             mousemove: None,
@@ -146,12 +146,10 @@ impl Component for Slider {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::SetPercent(value) => {
+            Msg::SetValue(value) => {
                 if self.value != value {
                     self.value = value;
-                    ctx.props()
-                        .onchange
-                        .emit(Self::calc_value(self.value, ctx.props()));
+                    ctx.props().onchange.emit(self.value);
                 } else {
                     return false;
                 }
@@ -179,13 +177,26 @@ impl Component for Slider {
         true
     }
 
+    fn changed(&mut self, ctx: &Context<Self>, old_props: &Self::Properties) -> bool {
+        let props = ctx.props();
+        if old_props.min != props.min
+            || old_props.max != props.max
+            || old_props.value != props.value
+        {
+            if old_props.value != props.value {
+                if let Some(value) = props.value {
+                    ctx.link().send_message(Msg::SetValue(value));
+                }
+            };
+            true
+        } else {
+            false
+        }
+    }
+
     fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-slider");
-        let valuestr = format!(
-            "{0:.1$}",
-            Self::calc_value(self.value, ctx.props()),
-            ctx.props().label_precision
-        );
+        let valuestr = format!("{0:.1$}", self.value, ctx.props().label_precision);
         let valuestr = valuestr.trim_end_matches('0').to_string();
 
         let onmousedown = ctx.link().callback(|e: MouseEvent| {
@@ -202,9 +213,10 @@ impl Component for Slider {
                 vec![]
             }
         });
+        let percent = Self::calc_percent(self.value, ctx.props()) * 100f64;
 
         html!(
-            <div class={classes} style={format!("--pf-c-slider--value: {}%", self.value * 100f64)}>
+            <div class={classes} style={format!("--pf-c-slider--value: {}%", percent)}>
                 <div class="pf-c-slider__main">
                     <div class="pf-c-slider__rail" ref={self.refs.rail.clone()}>
                         <div class="pf-c-slider__rail-track"></div>
@@ -327,7 +339,9 @@ impl Slider {
             } else {
                 value / width
             };
-            ctx.link().send_message(Msg::SetPercent(value))
+
+            ctx.link()
+                .send_message(Msg::SetValue(Self::calc_value(value, ctx.props())))
         }
     }
 
@@ -343,17 +357,17 @@ impl Slider {
     }
 
     fn render_step(&self, step: &Step, props: &SliderProperties) -> Html {
-        let position = Self::calc_percent(step.value, props);
-        let active = position <= self.value;
+        let active = step.value <= self.value;
 
         let mut classes = Classes::from("pf-c-slider__step");
         if active {
             classes.push("pf-m-active");
         }
         let label = format!("{:.1$}", step.value, props.label_precision);
+        let position = Self::calc_percent(step.value, props) * 100f64;
 
         html!(
-            <div class={classes} style={format!("--pf-c-slider__step--Left: {}%", position * 100f64)}>
+            <div class={classes} style={format!("--pf-c-slider__step--Left: {}%", position)}>
                 <div class="pf-c-slider__step-tick"></div>
                 <div class="pf-c-slider__step-label">{ label }</div>
             </div>
