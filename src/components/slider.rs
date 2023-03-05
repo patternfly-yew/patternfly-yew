@@ -66,6 +66,9 @@ pub struct SliderProperties {
     #[prop_or(2)]
     pub label_precision: usize,
 
+    #[prop_or_default]
+    pub ticks: Vec<Step>,
+
     /// An option to suppress reporting the initial value as change.
     #[prop_or_default]
     pub suppress_initial_change: bool,
@@ -179,10 +182,7 @@ impl Component for Slider {
 
     fn changed(&mut self, ctx: &Context<Self>, old_props: &Self::Properties) -> bool {
         let props = ctx.props();
-        if old_props.min != props.min
-            || old_props.max != props.max
-            || old_props.value != props.value
-        {
+        if old_props != props {
             if old_props.value != props.value {
                 if let Some(value) = props.value {
                     ctx.link().send_message(Msg::SetValue(value));
@@ -214,6 +214,8 @@ impl Component for Slider {
             }
         });
         let percent = Self::calc_percent(self.value, ctx.props()) * 100f64;
+        let min = &ctx.props().min;
+        let max = &ctx.props().max;
 
         html!(
             <div class={classes} style={format!("--pf-c-slider--value: {}%", percent)}>
@@ -223,8 +225,11 @@ impl Component for Slider {
                     </div>
                     if !ctx.props().hide_labels {
                         <div class="pf-c-slider__steps" aria-hidden="true">
-                            { self.render_step(&ctx.props().min, ctx.props()) }
-                            { self.render_step(&ctx.props().max, ctx.props()) }
+                            { self.render_step(min, ctx.props()) }
+                            { for ctx.props().ticks.iter()
+                                .filter(|t| t.value>min.value && t.value<max.value)
+                                .map(|t| self.render_step(t,ctx.props()))}
+                            { self.render_step(max, ctx.props()) }
                         </div>
                     }
                     <div class="pf-c-slider__thumb"
@@ -363,9 +368,12 @@ impl Slider {
         if active {
             classes.push("pf-m-active");
         }
-        let label = format!("{:.1$}", step.value, props.label_precision);
+        let label = if let Some(label) = &step.label {
+            label.clone()
+        } else {
+            format!("{:.1$}", step.value, props.label_precision)
+        };
         let position = Self::calc_percent(step.value, props) * 100f64;
-
         html!(
             <div class={classes} style={format!("--pf-c-slider__step--Left: {}%", position)}>
                 <div class="pf-c-slider__step-tick"></div>
