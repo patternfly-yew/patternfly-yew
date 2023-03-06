@@ -15,7 +15,7 @@ pub struct Step {
 
 impl From<f64> for Step {
     fn from(value: f64) -> Self {
-        Step { value, label: None }
+        Self { value, label: None }
     }
 }
 
@@ -27,12 +27,24 @@ impl IntoPropValue<Step> for f64 {
 
 impl<S> IntoPropValue<Step> for (f64, S)
 where
-    S: AsRef<str>,
+    S: Into<String>,
 {
     fn into_prop_value(self) -> Step {
         Step {
             value: self.0,
-            label: Some(self.1.as_ref().into()),
+            label: Some(self.1.into()),
+        }
+    }
+}
+
+impl<S> From<(f64, S)> for Step
+where
+    S: Into<String>,
+{
+    fn from((value, label): (f64, S)) -> Self {
+        Step {
+            value,
+            label: Some(label.into()),
         }
     }
 }
@@ -76,6 +88,16 @@ pub struct SliderProperties {
     /// A callback reporting changes.
     #[prop_or_default]
     pub onchange: Callback<f64>,
+
+    #[prop_or_default]
+    pub snap_mode: SnapMode,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum SnapMode {
+    #[default]
+    None,
+    Nearest,
 }
 
 #[doc(hidden)]
@@ -113,6 +135,8 @@ pub struct Slider {
     touchcancel: Option<EventListener>,
 
     refs: Refs,
+    snap_mode: SnapMode,
+    ticks: Vec<f64>,
 }
 
 #[derive(Default)]
@@ -125,6 +149,8 @@ impl Component for Slider {
     type Properties = SliderProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
+        let ticks = Self::value_ticks(ctx.props());
+
         let value = match ctx.props().value {
             Some(value) => value,
             None => ctx.props().min.value,
@@ -135,6 +161,8 @@ impl Component for Slider {
             ctx.props().onchange.emit(value);
         }
 
+        let snap_mode = ctx.props().snap_mode;
+
         Self {
             value,
             refs: Default::default(),
@@ -144,6 +172,9 @@ impl Component for Slider {
             touchmove: None,
             touchend: None,
             touchcancel: None,
+
+            snap_mode,
+            ticks,
         }
     }
 
@@ -158,18 +189,18 @@ impl Component for Slider {
                 }
             }
             Msg::Start(input, x) => {
-                log::info!("Start: {x}");
+                log::debug!("Start: {x}");
                 match input {
                     Input::Mouse => self.start_mouse(ctx),
                     Input::Touch => self.start_touch(ctx),
                 }
             }
             Msg::Move(x) => {
-                log::info!("Move: {x}");
+                log::debug!("Move: {x}");
                 self.r#move(ctx, x);
             }
             Msg::Stop => {
-                log::info!("Stop");
+                log::debug!("Stop");
                 self.mousemove = None;
                 self.mouseup = None;
                 self.touchmove = None;
@@ -335,8 +366,6 @@ impl Slider {
 
             let value = x as f64 - left;
 
-            log::info!("Left: {left}, width: {width}, value: {value}");
-
             let value = if value <= 0f64 {
                 0f64
             } else if value >= width {
@@ -345,8 +374,10 @@ impl Slider {
                 value / width
             };
 
-            ctx.link()
-                .send_message(Msg::SetValue(Self::calc_value(value, ctx.props())))
+            let value = Self::calc_value(value, ctx.props());
+            let value = self.snap(value);
+
+            ctx.link().send_message(Msg::SetValue(value))
         }
     }
 
@@ -364,15 +395,16 @@ impl Slider {
     fn render_step(&self, step: &Step, props: &SliderProperties) -> Html {
         let active = step.value <= self.value;
 
-        let mut classes = Classes::from("pf-c-slider__step");
+        let mut classes = classes!("pf-c-slider__step");
         if active {
-            classes.push("pf-m-active");
+            classes.push(classes!("pf-m-active"));
         }
         let label = if let Some(label) = &step.label {
             label.clone()
         } else {
             format!("{:.1$}", step.value, props.label_precision)
         };
+
         let position = Self::calc_percent(step.value, props) * 100f64;
         html!(
             <div class={classes} style={format!("--pf-c-slider__step--Left: {}%", position)}>
@@ -380,5 +412,70 @@ impl Slider {
                 <div class="pf-c-slider__step-label">{ label }</div>
             </div>
         )
+    }
+
+    fn snap(&self, value: f64) -> f64 {
+        match &self.snap_mode {
+            SnapMode::None => value,
+            SnapMode::Nearest => snap_nearest(value, &self.ticks),
+        }
+    }
+
+    fn value_ticks(props: &SliderProperties) -> Vec<f64> {
+        let mut ticks = vec![props.min.value, props.max.value];
+        ticks.extend(
+            props
+                .ticks
+                .iter()
+                .map(|t| t.value)
+                .filter(|v| v.is_finite()),
+        );
+        ticks.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
+        ticks
+    }
+}
+
+fn snap_nearest(value: f64, ticks: &[f64]) -> f64 {
+    // assuming we only have a hand-full of ticks, we just scan
+    let mut best = None;
+    for t in ticks {
+        match best {
+            None => best = Some((*t, (t - value).abs())),
+            Some((_, cd)) => {
+                let nd = (t - value).abs();
+                if nd < cd {
+                    best = Some((*t, nd));
+                } else {
+                    // if it's getting bigger, there is no need to continue
+                    // as we have a sorted vec
+                    break;
+                }
+            }
+        }
+    }
+
+    // if we have normal values, we never get None, but let's be sure
+    best.map(|(value, _delta)| value).unwrap_or_default()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_snap_nearest() {
+        let ticks = [0f64, 25.0, 50.0, 100.0];
+
+        assert_eq!(snap_nearest(-1.0, &ticks), 0.0);
+
+        assert_eq!(snap_nearest(0.0, &ticks), 0.0);
+        assert_eq!(snap_nearest(25.0, &ticks), 25.0);
+        assert_eq!(snap_nearest(49.0, &ticks), 50.0);
+        assert_eq!(snap_nearest(51.0, &ticks), 50.0);
+        assert_eq!(snap_nearest(75.0, &ticks), 50.0);
+        assert_eq!(snap_nearest(75.1, &ticks), 100.0);
+        assert_eq!(snap_nearest(100.0, &ticks), 100.0);
+
+        assert_eq!(snap_nearest(101.0, &ticks), 100.0);
     }
 }
