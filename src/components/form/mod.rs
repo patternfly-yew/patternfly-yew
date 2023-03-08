@@ -305,12 +305,12 @@ pub fn action_group(props: &ActionGroupProperties) -> Html {
 
 /// Properties for [`InputGroup`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct InputGroupProps {
+pub struct InputGroupProperties {
     pub children: Children,
 }
 
 #[function_component(InputGroup)]
-pub fn input_group(props: &InputGroupProps) -> Html {
+pub fn input_group(props: &InputGroupProperties) -> Html {
     html! {
         <div class="pf-c-input-group">
             { for props.children.iter() }
