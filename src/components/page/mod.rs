@@ -11,6 +11,7 @@ pub use sidebar::*;
 /// Properties for [`Page`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageProperties {
+    #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub sidebar: ChildrenWithProps<PageSidebar>,

@@ -49,6 +49,7 @@ impl AsClasses for PageSectionType {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageSectionProperties {
+    #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub r#type: PageSectionType,
