@@ -72,7 +72,7 @@ impl AsClasses for ExpandableSectionVariant {
     }
 }
 
-/// Expandable Section componen
+/// Expandable Section component
 ///
 /// > An **expandable section** component is used to support progressive disclosure in a form or page by hiding additional content when you don't want it to be shown by default. An expandable section can contain any type of content such as plain text, form inputs, and charts.
 ///
@@ -81,6 +81,22 @@ impl AsClasses for ExpandableSectionVariant {
 /// ## Properties
 ///
 /// Defined by [`ExpandableSectionProperties`]
+///
+/// ### Detached
+///
+/// If the `detached` property is `true`, the component will neither create a
+/// [`ExpandableSectionToggle`] as part of its children, not track the state change through the
+/// toggle.
+///
+/// However, you can manually place the toggle in a different position.
+///
+/// TIP: See the quickstart project for an example.
+///
+/// ## Children
+///
+/// The section will simpl show or hide its children based on the "expanded" state. If the
+/// component is not "detached" then a [`ExpandableSectionToggle`] component will automatically
+/// be part of its children.
 #[function_component(ExpandableSection)]
 pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
     let expanded = use_state_eq(|| props.initial_state);
@@ -138,6 +154,13 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
 /// Properties for [`ExpandableSectionToggle`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ExpandableSectionToggleProperties {
+    /// Alternate children
+    ///
+    /// Setting any children will disable the automatic toggle text from the properties
+    /// `toggle_text_hidden` and `toggle_text_expanded`.
+    #[prop_or_default]
+    pub children: Children,
+
     #[prop_or("Show more".into())]
     pub toggle_text_hidden: AttrValue,
     #[prop_or("Show less".into())]
@@ -205,7 +228,13 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
             <span class={toggle_icon_class}>
                 { Icon::AngleRight }
             </span>
-            <span class="pf-c-expandable-section__toggle-text">{ if props.expanded { &props.toggle_text_expanded } else { &props.toggle_text_hidden } }</span>
+            <span class="pf-c-expandable-section__toggle-text">
+                if !props.children.is_empty() {
+                    { for props.children.iter() }
+                } else {
+                    { if props.expanded { &props.toggle_text_expanded } else { &props.toggle_text_hidden } }
+                }
+            </span>
         </button>
     );
 
