@@ -1,7 +1,7 @@
 //! Popover
 use crate::prelude::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
-
 use yew::prelude::*;
+use yew::virtual_dom::VChild;
 
 use crate::integration::popperjs;
 
@@ -12,16 +12,10 @@ use crate::integration::popperjs;
 pub struct PopoverProperties {
     /// The target, rendered by the component, to which the popover will be aligned to.
     #[prop_or_default]
-    pub target: Html,
+    pub target: Children,
 
-    /// The header content of the popover.
-    #[prop_or_default]
-    pub header: Option<Html>,
-    /// The content which will be show in the popover.
-    pub children: Children,
-    /// The footer content of the popover.
-    #[prop_or_default]
-    pub footer: Option<Html>,
+    /// The body content of the popover.
+    pub body: VChild<PopoverBody>,
 
     /// Binds the onclick handler of the target to toggle visibility.
     #[prop_or_default]
@@ -134,10 +128,8 @@ impl PopperContent for Popover {
                 r#ref={r#ref}
                 styles={styles}
                 orientation={orientation}
-                header={props.header.clone()}
-                footer={props.footer.clone()}
-                children={props.children.clone()}
                 onclose={onclose}
+                body={props.body.clone()}
             />
         )
     }
@@ -147,12 +139,8 @@ impl PopperContent for Popover {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct PopoverPopupProperties {
-    #[prop_or_default]
-    pub children: Children,
-    #[prop_or_default]
-    pub header: Option<Html>,
-    #[prop_or_default]
-    pub footer: Option<Html>,
+    pub body: VChild<PopoverBody>,
+
     pub orientation: Orientation,
     #[prop_or_default]
     pub hidden: bool,
@@ -168,80 +156,79 @@ pub struct PopoverPopupProperties {
 }
 
 /// The actual popover content component.
-#[derive(Clone)]
-pub struct PopoverPopup {}
+#[function_component(PopoverPopup)]
+pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
+    let mut classes = classes!("pf-c-popover");
 
-#[derive(Copy, Debug, Clone)]
-pub enum PopoverPopupMsg {
-    Close,
+    classes.extend(props.orientation.as_classes());
+
+    let style = if props.hidden {
+        "display: none;".to_string()
+    } else {
+        props.styles.to_string()
+    };
+
+    let onclose = {
+        let onclose = props.onclose.clone();
+        Callback::from(move |_| {
+            onclose.emit(());
+        })
+    };
+
+    html! (
+        <div
+            ref={&props.r#ref}
+            style={style}
+            class={classes}
+            role="dialog"
+            aria-model="true"
+        >
+            <div class="pf-c-popover__arrow"></div>
+            <div class="pf-c-popover__content">
+
+                <Button
+                    variant={ButtonVariant::Plain}
+                    icon={Icon::Times}
+                    aria_label="Close"
+                    onclick={onclose}
+                />
+
+                { props.body.clone() }
+
+            </div>
+        </div>
+    )
 }
 
-impl Component for PopoverPopup {
-    type Message = PopoverPopupMsg;
-    type Properties = PopoverPopupProperties;
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct PopoverBodyProperties {
+    #[prop_or_default]
+    pub children: Children,
+    #[prop_or_default]
+    pub header: Children,
+    #[prop_or_default]
+    pub footer: Children,
+}
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            PopoverPopupMsg::Close => {
-                ctx.props().onclose.emit(());
-                false
+#[function_component(PopoverBody)]
+pub fn popover_body(props: &PopoverBodyProperties) -> Html {
+    html!(
+        <>
+            if !props.header.is_empty() {
+                <h1 class="pf-c-title pf-m-md">
+                    { for props.header.iter() }
+                </h1>
             }
-        }
-    }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-popover");
-
-        classes.extend(ctx.props().orientation.as_classes());
-
-        let style = if ctx.props().hidden {
-            "display: none;".to_string()
-        } else {
-            ctx.props().styles.to_string()
-        };
-
-        let onclose = ctx.link().callback(|_| PopoverPopupMsg::Close);
-
-        html! (
-            <div
-                ref={&ctx.props().r#ref}
-                style={style}
-                class={classes}
-                role="dialog"
-                aria-model="true"
-            >
-                <div class="pf-c-popover__arrow"></div>
-                <div class="pf-c-popover__content">
-
-                    <Button
-                        variant={ButtonVariant::Plain}
-                        icon={Icon::Times}
-                        aria_label="Close"
-                        onclick={onclose}
-                    />
-
-                    if let Some(header) = &ctx.props().header {
-                        <h1 class="pf-c-title pf-m-md">
-                            { header.clone() }
-                        </h1>
-                    }
-
-                    <div class="pf-c-popover__body">
-                        { for ctx.props().children.iter() }
-                    </div>
-
-                    if let Some(footer) = &ctx.props().footer {
-                        <footer class="pf-c-popover__footer">
-                            { footer.clone() }
-                        </footer>
-                    }
-
-                </div>
+            <div class="pf-c-popover__body">
+                { for props.children.iter() }
             </div>
-        )
-    }
+
+            if !props.footer.is_empty() {
+                <footer class="pf-c-popover__footer">
+                    { for props.footer.iter() }
+                </footer>
+            }
+        </>
+    )
 }
