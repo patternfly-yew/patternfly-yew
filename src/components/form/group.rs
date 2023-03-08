@@ -1,11 +1,10 @@
-use crate::{
-    AsClasses, GroupValidationResult, Icon, InputState, ValidatingComponent,
-    ValidatingComponentProperties, ValidationContext, ValidationFormContext, ValidationResult,
-    Validator,
-};
+use crate::prelude::*;
 use std::{marker::PhantomData, rc::Rc};
 use uuid::Uuid;
-use yew::{prelude::*, virtual_dom::VNode};
+use yew::{
+    prelude::*,
+    virtual_dom::{VChild, VNode},
+};
 
 // form group
 
@@ -18,7 +17,20 @@ pub struct FormGroupProperties {
     #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
+    pub label_icon: LabelIcon,
+    #[prop_or_default]
     pub helper_text: Option<HelperText>,
+}
+
+#[derive(Clone, Default, PartialEq)]
+pub enum LabelIcon {
+    /// No label icon
+    #[default]
+    None,
+    /// Help
+    Help(VChild<PopoverBody>),
+    /// Any children
+    Children(Children),
 }
 
 /// Helper text information for a [`FormGroup`]
@@ -79,6 +91,10 @@ impl From<(&str, InputState)> for HelperText {
 }
 
 /// A group of components building a field in a [`Form`](crate::prelude::Form)
+///
+/// ## Properties
+///
+/// Defined by [`FormGroupProperties`].
 pub struct FormGroup {}
 
 impl Component for FormGroup {
@@ -92,28 +108,39 @@ impl Component for FormGroup {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let classes = Classes::from("pf-c-form__group");
 
-        html! {
+        html! (
             <div class={classes}>
                 <div class="pf-c-form__group-label">
 
-                    {if !ctx.props().label.is_empty() {
-                        html!{
-                            <div class="pf-c-form__label">
-                                <span class="pf-c-form__label-text">{&ctx.props().label}</span>
+                    if !ctx.props().label.is_empty() {
+                        <label class="pf-c-form__label">
 
-                                {if ctx.props().required {
-                                    html!{
-                                        <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
-                                    }
-                                } else {
-                                    html!{}
-                                }}
+                            <span class="pf-c-form__label-text">{&ctx.props().label}</span>
 
-                            </div>
-                        }
-                    } else {
-                        html!{}
-                    }}
+                            if ctx.props().required {
+                                {" "}
+                                <span class="pf-c-form__label-required" aria-hidden="true">{"*"}</span>
+                            }
+                            {
+                                match &ctx.props().label_icon  {
+                                    LabelIcon::None => html!(),
+                                    LabelIcon::Help(popover) => html!(
+                                        <span
+                                            class="pf-c-form__group-label-help"
+                                            role="button"
+                                            type="button"
+                                            tabindex=0
+                                        >
+                                            {" "}
+                                            <Popover toggle_by_onclick=true target={html!(Icon::QuestionCircle)} body={popover.clone()} />
+                                        </span>
+                                    ),
+                                    LabelIcon::Children(children) => children.iter().collect(),
+                                }
+                            }
+                        </label>
+                    }
+
                 </div>
 
                 <div class="pf-c-form__group-control">
@@ -123,7 +150,7 @@ impl Component for FormGroup {
                     }
                 </div>
             </div>
-        }
+        )
     }
 }
 
