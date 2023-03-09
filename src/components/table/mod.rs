@@ -20,19 +20,14 @@ use yew::virtual_dom::{vnode::VNode::VComp, VChild};
 
 const LOG_TARGET: &str = "table";
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq)]
 pub enum TableMode {
+    #[default]
     Default,
     Compact,
     CompactNoBorders,
     CompactExpandable,
     Expandable,
-}
-
-impl Default for TableMode {
-    fn default() -> Self {
-        Self::Default
-    }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]

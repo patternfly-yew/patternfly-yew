@@ -11,6 +11,10 @@ pub struct TableColumnProperties {
     pub center: bool,
     #[prop_or_default]
     pub width: ColumnWidth,
+
+    #[doc(hidden)]
+    #[prop_or_default]
+    pub(crate) first_tree_column: bool,
 }
 
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
@@ -60,6 +64,10 @@ impl AsClasses for ColumnWidth {
 pub fn table_column(props: &TableColumnProperties) -> Html {
     let mut class = Classes::new();
 
+    if props.first_tree_column {
+        class.push(classes!("pf-c-table__tree-view-title-header-cell"));
+    }
+
     if props.center {
         class.push(classes!("pf-m-center"));
     }
@@ -69,7 +77,7 @@ pub fn table_column(props: &TableColumnProperties) -> Html {
     match &props.label {
         None => html! (<td></td>),
         Some(label) => html! (
-            <th {class} role="columnheader">{ &label }</th>
+            <th {class} scope="col" role="columnheader">{ &label }</th>
         ),
     }
 }

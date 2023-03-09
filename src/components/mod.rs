@@ -46,3 +46,6 @@ pub mod title;
 pub mod toast;
 pub mod toolbar;
 pub mod tooltip;
+
+#[cfg(feature = "tree")]
+pub mod tree;

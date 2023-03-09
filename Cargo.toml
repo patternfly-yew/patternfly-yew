@@ -45,6 +45,9 @@ web-sys = { version = "0.3", features = [
 default = ["router"]
 router = ["yew-nested-router"]
 
+experimental = ["tree"]
+tree = []
+
 # Enable FontAwesome regular (FAR) and/or brand (FAB) icons, remember to import the font in your application
 icons-far = []
 icons-fab = []
