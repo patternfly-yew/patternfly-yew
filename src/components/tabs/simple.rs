@@ -1,6 +1,6 @@
 use crate::{AsClasses, Icon, WithBreakpoints};
 use std::{fmt::Formatter, rc::Rc};
-use yew::{prelude::*, virtual_dom::VChild};
+use yew::prelude::*;
 
 /// Properties for [`Tabs`]
 #[derive(Clone, Debug, Properties, PartialEq)]
@@ -79,22 +79,6 @@ impl Component for Tabs {
             inset.extend(&mut classes);
         }
 
-        let mut idx = 0;
-        let children = ctx
-            .props()
-            .children
-            .iter()
-            .map(|mut c| {
-                let props = Rc::make_mut(&mut c.props);
-                props.current = self.active == idx;
-                props.onselect = ctx.link().callback(move |_| Msg::Select(idx));
-                idx += 1;
-                c
-            })
-            .collect::<Vec<VChild<Tab>>>();
-
-        let active = children[self.active].props.children.clone();
-
         html! (
             <>
             <div class={classes} id={ctx.props().id.clone()}>
@@ -107,7 +91,14 @@ impl Component for Tabs {
                     { Icon::AngleLeft }
                 </button>
                 <ul class="pf-c-tabs__list">
-                    { for children.into_iter() }
+                    { for ctx.props().children.iter().enumerate().map(|(idx, c)|{
+                        html!(<TabHeaderItem
+                            label={c.props.label.clone()}
+                            icon={c.props.icon.clone()}
+                            current={self.active == idx}
+                            onselect={ctx.link().callback(move |_| Msg::Select(idx))}
+                        />)
+                    }) }
                 </ul>
                 <button
                     class="pf-c-tabs__scroll-button"
@@ -118,7 +109,12 @@ impl Component for Tabs {
                     { Icon::AngleRight }
                 </button>
             </div>
-            { active }
+
+            { for ctx.props().children.iter().enumerate().map(|(idx, mut c)| {
+                let props = Rc::make_mut(&mut c.props);
+                props.current = self.active == idx;
+                c
+            }) }
             </>
         )
     }
@@ -173,9 +169,8 @@ impl AsClasses for Inset {
     }
 }
 
-/// Properties for [`Tab`]
 #[derive(Clone, Debug, Properties, PartialEq)]
-pub struct TabProperties {
+struct TabHeaderItemProperties {
     pub label: String,
     #[prop_or_default]
     pub icon: Option<Icon>,
@@ -184,51 +179,49 @@ pub struct TabProperties {
     pub(crate) onselect: Callback<()>,
     #[prop_or_default]
     pub(crate) current: bool,
+}
+
+#[function_component(TabHeaderItem)]
+fn tab_header_item(props: &TabHeaderItemProperties) -> Html {
+    let mut classes = Classes::from("pf-c-tabs__item");
+
+    if props.current {
+        classes.push("pf-m-current");
+    }
+    html! (
+        <li class={classes}>
+            <button class="pf-c-tabs__link" onclick={props.onselect.reform(|_|())}>
+                if let Some(icon) = props.icon {
+                    <span class="pf-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
+                }
+                <span class="pf-c-tabs__item-text"> { &props.label } </span>
+            </button>
+        </li>
+    )
+}
+
+/// Properties for [`Tab`]
+#[derive(Clone, Debug, Properties, PartialEq)]
+pub struct TabProperties {
+    pub label: String,
+    #[prop_or_default]
+    pub icon: Option<Icon>,
 
     #[prop_or_default]
     pub children: Children,
-}
 
-#[doc(hidden)]
-#[derive(Clone, Copy, Debug)]
-pub enum TabMsg {
-    Clicked,
+    #[prop_or_default]
+    pub(crate) current: bool,
 }
 
 /// A tab in a [`Tabs`] component
-pub struct Tab {}
+#[function_component(Tab)]
+pub fn tab(props: &TabProperties) -> Html {
+    let class = Classes::from("pf-c-tab-content");
 
-impl Component for Tab {
-    type Message = TabMsg;
-    type Properties = TabProperties;
-
-    fn create(_: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            TabMsg::Clicked => ctx.props().onselect.emit(()),
-        }
-        false
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-tabs__item");
-
-        if ctx.props().current {
-            classes.push("pf-m-current");
-        }
-
-        html! (
-            <li class={classes}>
-                <button class="pf-c-tabs__link" onclick={ctx.link().callback(|_|TabMsg::Clicked)}>
-                    if let Some(icon) = ctx.props().icon {
-                        <span class="pf-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
-                    }
-                    <span class="pf-c-tabs__item-text"> { &ctx.props().label } </span>
-                </button>
-            </li>
-        )
-    }
+    html! (
+        <section {class} hidden={!props.current}>
+            { for props.children.iter() }
+        </section>
+    )
 }
