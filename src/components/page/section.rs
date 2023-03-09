@@ -70,6 +70,8 @@ pub struct PageSectionProperties {
 
     #[prop_or_default]
     pub id: AttrValue,
+    #[prop_or_default]
+    pub hidden: bool,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -187,7 +189,7 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     // render
 
     html! (
-        <section {class} id={&props.id}>
+        <section {class} id={&props.id} hidden={props.hidden}>
             {
                 match props.limit_width {
                     true => html!(
