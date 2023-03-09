@@ -19,6 +19,14 @@ pub struct TabsProperties {
 
     #[prop_or_default]
     pub inset: Option<Inset>,
+
+    /// Enable "detached" mode
+    ///
+    /// If enabled, the content of tabs will not be rendered.
+    #[prop_or_default]
+    pub detached: bool,
+    #[prop_or_default]
+    pub onselect: Callback<usize>,
 }
 
 /// Tabs component
@@ -43,15 +51,17 @@ impl Component for Tabs {
     type Message = Msg;
     type Properties = TabsProperties;
 
-    fn create(_ctx: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
+        ctx.props().onselect.emit(0);
         Self { active: 0 }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Select(idx) => {
                 if self.active != idx {
                     self.active = idx;
+                    ctx.props().onselect.emit(self.active);
                 } else {
                     return false;
                 }
@@ -110,11 +120,13 @@ impl Component for Tabs {
                 </button>
             </div>
 
-            { for ctx.props().children.iter().enumerate().map(|(idx, mut c)| {
-                let props = Rc::make_mut(&mut c.props);
-                props.current = self.active == idx;
-                c
-            }) }
+            if !ctx.props().detached {
+                { for ctx.props().children.iter().enumerate().map(|(idx, mut c)| {
+                    let props = Rc::make_mut(&mut c.props);
+                    props.current = self.active == idx;
+                    c
+                }) }
+            }
             </>
         )
     }
