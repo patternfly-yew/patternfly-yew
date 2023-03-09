@@ -25,6 +25,9 @@ pub struct PageProperties {
     pub open: bool,
     #[prop_or_default]
     pub full_height: bool,
+
+    #[prop_or_default]
+    pub id: AttrValue,
 }
 
 /// A full page
@@ -87,7 +90,7 @@ impl Component for Page {
         }
 
         html! {
-            <div {class}>
+            <div {class} id={&ctx.props().id}>
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
 

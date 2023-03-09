@@ -67,6 +67,9 @@ pub struct PageSectionProperties {
     pub overflow_scroll: bool,
     #[prop_or_default]
     pub sticky: WithBreakpoints<PageSectionSticky>,
+
+    #[prop_or_default]
+    pub id: AttrValue,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -184,7 +187,7 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     // render
 
     html! (
-        <section {class}>
+        <section {class} id={&props.id}>
             {
                 match props.limit_width {
                     true => html!(
