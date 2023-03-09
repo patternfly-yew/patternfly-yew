@@ -11,7 +11,8 @@ pub use global_close::*;
 pub use popper::*;
 
 use std::fmt::{Debug, Display, Formatter};
-use yew::use_memo;
+use yew::html::IntoPropValue;
+use yew::{use_memo, AttrValue};
 
 /// Create a random ID.
 ///
@@ -39,6 +40,18 @@ impl Default for Id {
 impl Display for Id {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)
+    }
+}
+
+impl IntoPropValue<AttrValue> for Id {
+    fn into_prop_value(self) -> AttrValue {
+        self.to_string().into()
+    }
+}
+
+impl IntoPropValue<Option<AttrValue>> for Id {
+    fn into_prop_value(self) -> Option<AttrValue> {
+        Some(self.to_string().into())
     }
 }
 
