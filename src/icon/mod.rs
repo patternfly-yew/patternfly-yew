@@ -19,13 +19,10 @@ impl Icon {
     }
 
     pub fn with_state_weight(&self, state: State, weight: usize) -> Html {
-        let style = state
-            .as_var(weight)
-            .map(|v| format!("color: var({});", v))
-            .unwrap_or_default();
+        let style = state.as_var(weight).map(|v| format!("color: var({});", v));
 
         html! (
-            <span style={style}>
+            <span {style}>
                 { self.as_html() }
             </span>
         )
