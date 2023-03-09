@@ -1,5 +1,5 @@
 //! Toast notifications
-use crate::{Action, Alert, AlertGroup, Type};
+use crate::{Action, Alert, AlertGroup, AlertType};
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
 use gloo_timers::callback::Timeout;
@@ -43,7 +43,7 @@ use yew::{prelude::*, virtual_dom::VChild};
 #[derive(Clone, Debug, Default)]
 pub struct Toast {
     pub title: String,
-    pub r#type: Type,
+    pub r#type: AlertType,
     /// The timeout when the toast will be removed automatically.
     ///
     /// If no timeout is set, the toast will get a close button.

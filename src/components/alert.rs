@@ -4,8 +4,11 @@ use crate::{Action, Button, ButtonVariant, Icon};
 
 use yew::prelude::*;
 
+#[deprecated(since = "0.4.0", note = "This type has been renamed to 'AlertType'")]
+pub type Type = AlertType;
+
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd)]
-pub enum Type {
+pub enum AlertType {
     #[default]
     Default,
     Info,
@@ -14,34 +17,34 @@ pub enum Type {
     Danger,
 }
 
-impl Type {
+impl AlertType {
     pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
-            Type::Default => vec![],
-            Type::Info => vec!["pf-m-info"],
-            Type::Success => vec!["pf-m-success"],
-            Type::Warning => vec!["pf-m-warning"],
-            Type::Danger => vec!["pf-m-danger"],
+            AlertType::Default => vec![],
+            AlertType::Info => vec!["pf-m-info"],
+            AlertType::Success => vec!["pf-m-success"],
+            AlertType::Warning => vec!["pf-m-warning"],
+            AlertType::Danger => vec!["pf-m-danger"],
         }
     }
 
     pub fn aria_label(&self) -> &'static str {
         match self {
-            Type::Default => "Default alert",
-            Type::Info => "Information alert",
-            Type::Success => "Success alert",
-            Type::Warning => "Warning alert",
-            Type::Danger => "Danger alert",
+            AlertType::Default => "Default alert",
+            AlertType::Info => "Information alert",
+            AlertType::Success => "Success alert",
+            AlertType::Warning => "Warning alert",
+            AlertType::Danger => "Danger alert",
         }
     }
 
     pub fn icon(&self) -> Icon {
         match self {
-            Type::Default => Icon::Bell,
-            Type::Info => Icon::InfoCircle,
-            Type::Success => Icon::CheckCircle,
-            Type::Warning => Icon::ExclamationTriangle,
-            Type::Danger => Icon::ExclamationCircle,
+            AlertType::Default => Icon::Bell,
+            AlertType::Info => Icon::InfoCircle,
+            AlertType::Success => Icon::CheckCircle,
+            AlertType::Warning => Icon::ExclamationTriangle,
+            AlertType::Danger => Icon::ExclamationCircle,
         }
     }
 }
@@ -52,7 +55,7 @@ pub struct AlertProperties {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
-    pub r#type: Type,
+    pub r#type: AlertType,
     pub title: String,
     #[prop_or_default]
     pub children: Children,

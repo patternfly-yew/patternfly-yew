@@ -14,7 +14,7 @@ pub use select::*;
 use std::collections::BTreeMap;
 pub use validation::*;
 
-use crate::{Alert, AsClasses, Button, ExtendClasses, Type, WithBreakpoints};
+use crate::{Alert, AlertType, AsClasses, Button, ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -28,7 +28,7 @@ impl AsClasses for FormHorizontal {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct FormAlert {
-    pub r#type: Type,
+    pub r#type: AlertType,
     pub title: String,
     pub children: Html,
 }
@@ -263,12 +263,12 @@ impl Form {
         match state {
             InputState::Default | InputState::Success => None,
             InputState::Warning => Some(FormAlert {
-                r#type: Type::Warning,
+                r#type: AlertType::Warning,
                 title: warning.0.to_string(),
                 children: warning.1.clone(),
             }),
             InputState::Error => Some(FormAlert {
-                r#type: Type::Danger,
+                r#type: AlertType::Danger,
                 title: error.0.to_string(),
                 children: error.1.clone(),
             }),
