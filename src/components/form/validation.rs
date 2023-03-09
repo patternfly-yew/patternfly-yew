@@ -1,4 +1,4 @@
-use crate::{AsClasses, HelperText, Icon, ValidationContext};
+use crate::{AsClasses, FormHelperText, Icon, ValidationContext};
 use yew::{Callback, Classes};
 
 /// State of an input from validation
@@ -56,14 +56,14 @@ pub struct ValidationResult {
     pub state: InputState,
 }
 
-impl From<ValidationResult> for Option<HelperText> {
+impl From<ValidationResult> for Option<FormHelperText> {
     fn from(result: ValidationResult) -> Self {
         if matches!(result.state, InputState::Default) && result.message.is_none() {
             // default state and no message
             None
         } else {
             // non-default state or some message
-            Some(HelperText {
+            Some(FormHelperText {
                 message: result.message.unwrap_or_default(),
                 input_state: result.state,
                 custom_icon: None,

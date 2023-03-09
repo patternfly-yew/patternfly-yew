@@ -22,6 +22,7 @@ pub mod dropdown;
 pub mod empty;
 pub mod expandable_section;
 pub mod form;
+pub mod helper_text;
 pub mod label;
 pub mod list;
 pub mod login_page;

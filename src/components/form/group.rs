@@ -19,7 +19,7 @@ pub struct FormGroupProperties {
     #[prop_or_default]
     pub label_icon: LabelIcon,
     #[prop_or_default]
-    pub helper_text: Option<HelperText>,
+    pub helper_text: Option<FormHelperText>,
 }
 
 #[derive(Clone, Default, PartialEq)]
@@ -35,7 +35,7 @@ pub enum LabelIcon {
 
 /// Helper text information for a [`FormGroup`]
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct HelperText {
+pub struct FormHelperText {
     pub input_state: InputState,
     pub custom_icon: Option<Icon>,
     pub no_icon: bool,
@@ -43,8 +43,8 @@ pub struct HelperText {
     pub message: String,
 }
 
-impl From<&HelperText> for VNode {
-    fn from(text: &HelperText) -> Self {
+impl From<&FormHelperText> for VNode {
+    fn from(text: &FormHelperText) -> Self {
         let mut classes = Classes::from("pf-c-helper-text__item");
 
         classes.extend(text.input_state.as_classes());
@@ -66,9 +66,9 @@ impl From<&HelperText> for VNode {
     }
 }
 
-impl From<&str> for HelperText {
+impl From<&str> for FormHelperText {
     fn from(text: &str) -> Self {
-        HelperText {
+        FormHelperText {
             input_state: Default::default(),
             custom_icon: None,
             no_icon: true,
@@ -78,7 +78,7 @@ impl From<&str> for HelperText {
     }
 }
 
-impl From<(&str, InputState)> for HelperText {
+impl From<(&str, InputState)> for FormHelperText {
     fn from(value: (&str, InputState)) -> Self {
         Self {
             input_state: value.1,
@@ -154,7 +154,7 @@ impl Component for FormGroup {
     }
 }
 
-pub struct FormGroupHelpText<'a>(&'a HelperText);
+pub struct FormGroupHelpText<'a>(&'a FormHelperText);
 
 impl<'a> FormGroupHelpText<'a> {}
 

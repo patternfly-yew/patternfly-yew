@@ -27,6 +27,7 @@ pub use crate::components::dropdown::*;
 pub use crate::components::empty::*;
 pub use crate::components::expandable_section::*;
 pub use crate::components::form::*;
+pub use crate::components::helper_text::*;
 pub use crate::components::label::*;
 pub use crate::components::list::*;
 pub use crate::components::login_page::*;
