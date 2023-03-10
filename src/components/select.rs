@@ -37,7 +37,10 @@ pub enum ChipVariant {
 
 /// Properties for [`Select`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct SelectProperties<K: 'static + Clone + PartialEq + Display + Debug> {
+pub struct SelectProperties<K>
+where
+    K: Clone + PartialEq + Display + 'static,
+{
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
@@ -63,6 +66,9 @@ pub struct SelectProperties<K: 'static + Clone + PartialEq + Display + Debug> {
 
     #[prop_or_default]
     pub children: ChildrenRenderer<SelectChildVariant<K>>,
+
+    #[prop_or_default]
+    pub initial_selection: Vec<K>,
 }
 
 /// Select component
@@ -102,7 +108,7 @@ where
         Self {
             expanded: false,
             global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
-            selection: Vec::new(),
+            selection: ctx.props().initial_selection.clone(),
         }
     }
 
@@ -274,7 +280,7 @@ where
 #[derive(Clone, PartialEq)]
 pub enum SelectChild<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     Option(Rc<<SelectOption<K> as Component>::Properties>),
     Divider(Rc<<Divider as BaseComponent>::Properties>),
@@ -283,7 +289,7 @@ where
 
 impl<K> From<SelectOptionProperties<K>> for SelectChild<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     fn from(props: SelectOptionProperties<K>) -> Self {
         SelectChild::Option(Rc::new(props))
@@ -292,7 +298,7 @@ where
 
 impl<K> From<()> for SelectChild<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     fn from(_: ()) -> Self {
         SelectChild::Divider(Rc::new(()))
@@ -301,7 +307,7 @@ where
 
 impl<K> From<SelectGroupProperties<K>> for SelectChild<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     fn from(props: SelectGroupProperties<K>) -> Self {
         SelectChild::Group(Rc::new(props))
@@ -313,14 +319,14 @@ where
 #[derive(PartialEq, Clone)]
 pub struct SelectChildVariant<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     props: SelectChild<K>,
 }
 
 impl<K> SelectChildVariant<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     /// Forward the need to get a close callback to the actual item
     fn set_need_close(&mut self, callback: Callback<()>) {
@@ -384,7 +390,7 @@ impl<K, CHILD> From<VChild<CHILD>> for SelectChildVariant<K>
 where
     CHILD: BaseComponent,
     CHILD::Properties: Into<SelectChild<K>> + Clone,
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     fn from(vchild: VChild<CHILD>) -> Self {
         Self {
@@ -395,7 +401,7 @@ where
 
 impl<K> Into<Html> for SelectChildVariant<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     fn into(self) -> Html {
         match self.props {
@@ -411,7 +417,7 @@ where
 #[derive(Clone, PartialEq, Properties)]
 pub struct SelectOptionProperties<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     pub value: K,
 
@@ -445,7 +451,7 @@ pub enum SelectOptionMsg {
 
 pub struct SelectOption<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     default_id: Cell<Option<String>>,
     _marker: PhantomData<K>,
@@ -453,7 +459,7 @@ where
 
 impl<K> Component for SelectOption<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     type Message = SelectOptionMsg;
     type Properties = SelectOptionProperties<K>;
@@ -495,7 +501,7 @@ where
 
 impl<K> SelectOption<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     fn render_button(&self, ctx: &Context<Self>) -> Html {
         let mut classes = Classes::from("pf-c-select__menu-item");
@@ -590,7 +596,7 @@ where
 #[derive(Clone, PartialEq, Properties)]
 pub struct SelectGroupProperties<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     pub label: String,
     #[prop_or_default]
@@ -608,7 +614,7 @@ where
 #[derive(Clone)]
 pub struct SelectGroup<K>
 where
-    K: 'static + Clone + PartialEq + Display + Debug,
+    K: 'static + Clone + PartialEq + Display,
 {
     _marker: PhantomData<K>,
 }
@@ -621,7 +627,7 @@ pub enum SelectGroupMsg<K> {
 
 impl<K> Component for SelectGroup<K>
 where
-    K: Clone + PartialEq + Display + Debug,
+    K: Clone + PartialEq + Display,
 {
     type Message = SelectGroupMsg<K>;
     type Properties = SelectGroupProperties<K>;
