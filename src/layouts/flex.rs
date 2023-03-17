@@ -150,8 +150,10 @@ pub struct FlexProperties {
     pub children: ChildrenRenderer<FlexChildVariant>,
     #[prop_or_default]
     pub modifiers: WithBreakpoints<FlexModifier>,
+    /// Individual spacing for this item, in context of its siblings.
     #[prop_or_default]
     pub spacer: WithBreakpoints<Spacer>,
+    /// Spacing for all child items.
     #[prop_or_default]
     pub space_items: WithBreakpoints<SpaceItems>,
 }
