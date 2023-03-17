@@ -68,7 +68,7 @@ impl AsClasses for FlexModifier {
                 Justify::End => classes.push("pf-m-justify-content-flex-end"),
                 Justify::SpaceBetween => classes.push("pf-m-justify-content-space-between"),
             },
-            FlexModifier::Align(alignement) => match alignement {
+            FlexModifier::Align(alignment) => match alignment {
                 Alignment::Right => classes.push("pf-m-align-right"),
                 Alignment::Left => classes.push("pf-m-align-left"),
                 Alignment::Start => classes.push("pf-m-align-self-flex-start"),
