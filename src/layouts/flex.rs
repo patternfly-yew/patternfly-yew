@@ -28,6 +28,12 @@ pub enum FlexModifier {
     None,
     /// Column ordering
     Column,
+    /// Row ordering
+    ///
+    /// This is the opposite of [`Column`] and the default. It can be used for response
+    /// modifiers in combination with [`WithBreakpoints`] to bring back the default for some
+    /// breakpoints.
+    Row,
     Justify(Justify),
     Align(Alignment),
 }
@@ -63,6 +69,7 @@ impl AsClasses for FlexModifier {
             FlexModifier::Default => classes.push("pf-m-default"),
             FlexModifier::None => classes.push("pf-m-none"),
             FlexModifier::Column => classes.push("pf-m-column"),
+            FlexModifier::Row => classes.push("pf-m-row"),
             FlexModifier::Justify(layout) => match layout {
                 Justify::Start => classes.push("pf-m-justify-content-flex-start"),
                 Justify::End => classes.push("pf-m-justify-content-flex-end"),
