@@ -14,7 +14,7 @@ pub struct ExpandableSectionProperties {
     pub toggle_text_expanded: AttrValue,
 
     #[prop_or_default]
-    pub initial_state: bool,
+    pub initially_open: bool,
     #[prop_or_default]
     pub expanded: Option<bool>,
 
@@ -99,7 +99,7 @@ impl AsClasses for ExpandableSectionVariant {
 /// be part of its children.
 #[function_component(ExpandableSection)]
 pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
-    let expanded = use_state_eq(|| props.initial_state);
+    let expanded = use_state_eq(|| props.initially_open);
 
     let mut class = classes!("pf-c-expandable-section");
 
