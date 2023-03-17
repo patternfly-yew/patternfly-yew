@@ -9,6 +9,7 @@ use yew::{
 #[derive(Clone, PartialEq)]
 pub enum ToolbarChild {
     Item(Rc<<ToolbarItem as BaseComponent>::Properties>),
+    Divider(Rc<<ToolbarDivider as BaseComponent>::Properties>),
     Group(Rc<<ToolbarGroup as BaseComponent>::Properties>),
 }
 
@@ -21,6 +22,12 @@ impl From<ToolbarItemProperties> for ToolbarChild {
 impl From<ToolbarGroupProperties> for ToolbarChild {
     fn from(props: ToolbarGroupProperties) -> Self {
         ToolbarChild::Group(Rc::new(props))
+    }
+}
+
+impl From<()> for ToolbarChild {
+    fn from(_: ()) -> Self {
+        ToolbarChild::Divider(Rc::new(()))
     }
 }
 
@@ -46,6 +53,7 @@ impl Into<Html> for ToolbarChildVariant {
         match self.props {
             ToolbarChild::Item(props) => VComp::new::<ToolbarItem>(props, None).into(),
             ToolbarChild::Group(props) => VComp::new::<ToolbarGroup>(props, None).into(),
+            ToolbarChild::Divider(props) => VComp::new::<ToolbarDivider>(props, None).into(),
         }
     }
 }

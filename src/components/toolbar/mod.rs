@@ -1,9 +1,11 @@
 //! Toolbar
 mod child;
+mod divider;
 mod group;
 mod item;
 
 pub use child::*;
+pub use divider::*;
 pub use group::*;
 pub use item::*;
 
