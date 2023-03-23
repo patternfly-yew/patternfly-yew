@@ -1,6 +1,6 @@
 //! Application launcher menu
 
-use crate::{Divider, GlobalClose, Icon, Position};
+use crate::{GlobalClose, Icon, ListDivider, Position};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -128,7 +128,7 @@ impl AppLauncher {
 #[derive(Clone, PartialEq)]
 pub enum AppLauncherChild {
     Item(Rc<<AppLauncherItem as Component>::Properties>),
-    Divider(Rc<<Divider as BaseComponent>::Properties>),
+    Divider(Rc<<ListDivider as BaseComponent>::Properties>),
 }
 
 impl From<AppLauncherItemProperties> for AppLauncherChild {
@@ -177,7 +177,7 @@ impl Into<Html> for AppLauncherChildVariant {
     fn into(self) -> Html {
         match self.props {
             AppLauncherChild::Item(props) => VComp::new::<AppLauncherItem>(props, None).into(),
-            AppLauncherChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
+            AppLauncherChild::Divider(props) => VComp::new::<ListDivider>(props, None).into(),
         }
     }
 }

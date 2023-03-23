@@ -1,5 +1,5 @@
-use crate::{AsClasses, Icon, WithBreakpoints};
-use std::{fmt::Formatter, rc::Rc};
+use crate::{AsClasses, Icon, Inset, WithBreakpoints};
+use std::rc::Rc;
 use yew::prelude::*;
 
 /// Properties for [`Tabs`]
@@ -18,7 +18,7 @@ pub struct TabsProperties {
     pub filled: bool,
 
     #[prop_or_default]
-    pub inset: Option<Inset>,
+    pub inset: Option<TabInset>,
 
     /// Enable "detached" mode
     ///
@@ -134,47 +134,17 @@ impl Component for Tabs {
 
 // tab
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Insets {
-    None,
-    Small,
-    Medium,
-    Large,
-    XLarge,
-    XXLarge,
-}
-
-impl std::fmt::Display for Insets {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::None => f.write_str("pf-m-inset-none"),
-            Self::Small => f.write_str("pf-m-inset-sm"),
-            Self::Medium => f.write_str("pf-m-inset-md"),
-            Self::Large => f.write_str("pf-m-inset-lg"),
-            Self::XLarge => f.write_str("pf-m-inset-xl"),
-            Self::XXLarge => f.write_str("pf-m-inset-2xl"),
-        }
-    }
-}
-
-impl AsClasses for Insets {
-    fn extend(&self, classes: &mut Classes) {
-        // relies on the `Display` implementation above
-        classes.push(self.to_string())
-    }
-}
-
 #[derive(Clone, Debug, PartialEq)]
-pub enum Inset {
-    Inset(WithBreakpoints<Insets>),
+pub enum TabInset {
+    Inset(WithBreakpoints<Inset>),
     Page,
 }
 
-impl AsClasses for Inset {
+impl AsClasses for TabInset {
     fn extend(&self, classes: &mut Classes) {
         match self {
-            Inset::Page => classes.push("pf-m-page-insets"),
-            Inset::Inset(insets) => {
+            Self::Page => classes.push("pf-m-page-insets"),
+            Self::Inset(insets) => {
                 insets.extend(classes);
             }
         }

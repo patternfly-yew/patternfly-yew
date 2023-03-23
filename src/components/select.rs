@@ -1,5 +1,5 @@
 //! Select control
-use crate::{Button, ButtonType, ButtonVariant, Chip, Divider, GlobalClose, Icon};
+use crate::{Button, ButtonType, ButtonVariant, Chip, GlobalClose, Icon, ListDivider};
 use std::{
     cell::Cell,
     fmt::{Debug, Display},
@@ -283,7 +283,7 @@ where
     K: 'static + Clone + PartialEq + Display,
 {
     Option(Rc<<SelectOption<K> as Component>::Properties>),
-    Divider(Rc<<Divider as BaseComponent>::Properties>),
+    Divider(Rc<<ListDivider as BaseComponent>::Properties>),
     Group(Rc<<SelectGroup<K> as Component>::Properties>),
 }
 
@@ -406,7 +406,7 @@ where
     fn into(self) -> Html {
         match self.props {
             SelectChild::Option(props) => VComp::new::<SelectOption<K>>(props, None).into(),
-            SelectChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
+            SelectChild::Divider(props) => VComp::new::<ListDivider>(props, None).into(),
             SelectChild::Group(props) => VComp::new::<SelectGroup<K>>(props, None).into(),
         }
     }

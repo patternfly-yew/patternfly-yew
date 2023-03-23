@@ -29,6 +29,8 @@ where
     pub on: Breakpoint,
 }
 
+impl<T: Eq> Eq for WithBreakpoint<T> {}
+
 impl<T> WithBreakpoint<T>
 where
     T: PartialEq,
@@ -60,6 +62,8 @@ where
 pub struct WithBreakpoints<T>(Vec<WithBreakpoint<T>>)
 where
     T: PartialEq;
+
+impl<T: Eq> Eq for WithBreakpoints<T> {}
 
 impl<T> Default for WithBreakpoints<T>
 where

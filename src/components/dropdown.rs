@@ -1,5 +1,5 @@
 //! Drop down menu
-use crate::{Avatar, Button, ButtonType, ButtonVariant, Divider, GlobalClose, Icon, Position};
+use crate::{Avatar, Button, ButtonType, ButtonVariant, GlobalClose, Icon, ListDivider, Position};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,
@@ -166,7 +166,7 @@ pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
 #[derive(Clone, PartialEq)]
 pub enum DropdownChild {
     Item(Rc<<DropdownItem as Component>::Properties>),
-    Divider(Rc<<Divider as BaseComponent>::Properties>),
+    Divider(Rc<<ListDivider as BaseComponent>::Properties>),
     Group(Rc<<DropdownItemGroup as Component>::Properties>),
     Text(Rc<<DropdownItemText as BaseComponent>::Properties>),
 }
@@ -235,7 +235,7 @@ impl Into<Html> for DropdownChildVariant {
     fn into(self) -> Html {
         match self.props {
             DropdownChild::Item(props) => VComp::new::<DropdownItem>(props, None).into(),
-            DropdownChild::Divider(props) => VComp::new::<Divider>(props, None).into(),
+            DropdownChild::Divider(props) => VComp::new::<ListDivider>(props, None).into(),
             DropdownChild::Group(props) => VComp::new::<DropdownItemGroup>(props, None).into(),
             DropdownChild::Text(props) => VComp::new::<DropdownItemText>(props, None).into(),
         }
