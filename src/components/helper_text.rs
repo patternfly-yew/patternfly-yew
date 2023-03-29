@@ -74,6 +74,9 @@ pub struct HelperTextItemProperties {
     pub children: Children,
     #[prop_or_default]
     pub state: HelperTextState,
+    /// Override default icon
+    #[prop_or_default]
+    pub icon: Option<Icon>,
     #[prop_or_default]
     pub dynamic: bool,
 }
@@ -93,10 +96,12 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
         class.push(classes!("pf-m-dynamic"));
     }
 
+    let icon = props.icon.unwrap_or_else(|| props.state.icon());
+
     html!(
         <div {class}>
             <span class="pf-c-helper-text__item-icon">
-                { props.state.icon() }
+                { icon }
             </span>
             <div class="pf-c-helper-text__item-text">
                 { for props.children.iter() }
