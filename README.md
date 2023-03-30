@@ -3,19 +3,18 @@
 [![crates.io](https://img.shields.io/crates/v/patternfly-yew.svg)](https://crates.io/crates/patternfly-yew)
 [![docs.rs](https://docs.rs/patternfly-yew/badge.svg)](https://docs.rs/patternfly-yew)
 
-[Yew](https://yew.rs/) components, based on [Patternfly](https://www.patternfly.org):
+[Yew](https://yew.rs/) components, based on [PatternFly](https://www.patternfly.org):
 
 > PatternFly is an open source design system built to drive consistency and unify teams.
 
-> Yew is a modern Rust framework for creating multi-threaded front-end web apps with WebAssembly.
+> Yew is a framework for creating reliable and efficient web applications.
 
 ![Screenshot of an example](docs/images/example.png "Screenshot of an example")
 
 ---
 
-## Example project
+## Getting starting
 
-Take a look at:
+Take a look at the demo, which shows various features of the project: https://ctron.github.io/patternfly-yew-quickstart
 
-  * https://ctron.github.io/patternfly-yew-quickstart
-  * https://github.com/ctron/patternfly-yew-quickstart
+The code of the demo is also intended to be a quickstart/template project, to get you started with just a few commands: https://github.com/ctron/patternfly-yew-quickstart
