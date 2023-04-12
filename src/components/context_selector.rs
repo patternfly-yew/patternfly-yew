@@ -1,5 +1,5 @@
 //! Context selector
-use crate::{GlobalClose, Icon, InputGroup, TextInput, TextInputIcon};
+use crate::{next::TextInput, GlobalClose, Icon, InputGroup, TextInputIcon};
 use std::rc::Rc;
 use yew::prelude::*;
 

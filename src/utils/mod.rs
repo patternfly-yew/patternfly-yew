@@ -3,13 +3,13 @@
 mod action;
 mod context;
 mod global_close;
-mod init;
+mod html;
 mod popper;
 
 pub use action::*;
 pub use context::*;
 pub use global_close::*;
-pub use init::*;
+pub use html::*;
 pub use popper::*;
 
 use std::fmt::{Debug, Display, Formatter};

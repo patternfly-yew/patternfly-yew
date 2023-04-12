@@ -1,5 +1,6 @@
 //! Copy clipboard
 use crate::icon::*;
+use crate::next::TextInput;
 use crate::prelude::*;
 use gloo_timers::callback::Timeout;
 use wasm_bindgen::prelude::*;

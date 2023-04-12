@@ -36,3 +36,5 @@ pub mod prelude;
     note = "For a wildcard import, use 'patternfly_yew::prelude::*'"
 )]
 pub use prelude::*;
+
+pub mod next;

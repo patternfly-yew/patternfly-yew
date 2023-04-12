@@ -1,6 +1,7 @@
 //! Pagination controls
 use crate::{
-    Button, ButtonVariant, GlobalClose, Icon, InputState, TextInput, ValidationContext, Validator,
+    next::TextInput, Button, ButtonVariant, GlobalClose, Icon, InputState, ValidationContext,
+    Validator,
 };
 use yew::prelude::*;
 
@@ -44,6 +45,7 @@ pub enum Navigation {
 /// Defined by [`PaginationProperties`].
 pub struct Pagination {
     expanded: bool,
+    select_state: InputState,
     global_close: GlobalClose,
 }
 
@@ -59,6 +61,9 @@ pub enum Msg {
     Next,
     Last,
     Page(u32),
+
+    /// Set the validation state of the select input
+    ValidationState(InputState),
 }
 
 impl Component for Pagination {
@@ -72,6 +77,7 @@ impl Component for Pagination {
                 NodeRef::default(),
                 ctx.link().callback(|_| Msg::CloseMenu),
             ),
+            select_state: InputState::Default,
         }
     }
 
@@ -90,6 +96,7 @@ impl Component for Pagination {
             Msg::Next => ctx.props().navigation_callback.emit(Navigation::Next),
             Msg::Last => ctx.props().navigation_callback.emit(Navigation::Last),
             Msg::Page(num) => ctx.props().navigation_callback.emit(Navigation::Page(num)),
+            Msg::ValidationState(state) => self.select_state = state,
         }
         true
     }
@@ -144,14 +151,26 @@ impl Component for Pagination {
             },
         );
 
-        let validator_clone = page_number_field_validator.clone();
         let onchange_callback = {
+            let page_number_field_validator = page_number_field_validator.clone();
             ctx.link().callback(move |input: String| {
-                match validator_clone.run(ValidationContext::from(input.clone())) {
+                match page_number_field_validator.run(ValidationContext::from(input.clone())) {
                     Some(InputState::Default) => Msg::Page(input.parse::<u32>().unwrap()),
                     _ => Msg::Page(current_page + 1),
                 }
             })
+        };
+
+        let onvalidate = {
+            let page_number_field_validator = page_number_field_validator.clone();
+            ctx.link()
+                .callback(move |input: ValidationContext<String>| {
+                    Msg::ValidationState(
+                        page_number_field_validator
+                            .run_ctx(input)
+                            .unwrap_or_default(),
+                    )
+                })
         };
 
         html! (
@@ -230,9 +249,10 @@ impl Component for Pagination {
                     <div class="pf-c-pagination__nav-page-select">
                         <TextInput
                             r#type="number"
-                            validator={page_number_field_validator}
                             onchange={onchange_callback}
-                            value = {(current_page+1).to_string()}
+                            {onvalidate}
+                            state={self.select_state}
+                            value={(current_page+1).to_string()}
                           />
                     if let Some(max_page) = max_page {
                         <span aria-hidden="true">{ "of "} { max_page }</span>

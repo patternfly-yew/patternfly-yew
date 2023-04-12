@@ -1,8 +1,7 @@
 use crate::{
-    InitialValue, InputState, ValidatingComponent, ValidatingComponentProperties,
-    ValidationContext, Validator,
+    AsClasses, InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext,
+    Validator,
 };
-use std::marker::PhantomData;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -16,6 +15,18 @@ pub enum TextInputIcon {
     Custom,
 }
 
+impl AsClasses for TextInputIcon {
+    fn extend(&self, classes: &mut Classes) {
+        match self {
+            Self::None => {}
+            Self::Search => classes.extend(classes!("pf-m-search")),
+            Self::Calendar => classes.extend(classes!("pf-m-icon", "pf-m-calendar")),
+            Self::Clock => classes.extend(classes!("pf-m-icon", "pf-m-clock")),
+            Self::Custom => classes.extend(classes!("pf-m-icon")),
+        }
+    }
+}
+
 impl Default for TextInputIcon {
     fn default() -> Self {
         Self::None
@@ -24,16 +35,13 @@ impl Default for TextInputIcon {
 
 /// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct TextInputProperties<I = String>
-where
-    I: InitialValue<String>,
-{
+pub struct TextInputProperties {
     #[prop_or_default]
-    pub name: AttrValue,
+    pub name: String,
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: String,
     #[prop_or_default]
-    pub value: I,
+    pub value: String,
     #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
@@ -47,13 +55,13 @@ where
     #[prop_or("text".into())]
     pub r#type: String,
     #[prop_or_default]
-    pub placeholder: AttrValue,
+    pub placeholder: String,
     #[prop_or_default]
     pub autofocus: bool,
     #[prop_or_default]
-    pub form: AttrValue,
+    pub form: String,
     #[prop_or_default]
-    pub autocomplete: AttrValue,
+    pub autocomplete: String,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -73,14 +81,13 @@ where
     pub r#ref: NodeRef,
 }
 
+#[allow(deprecated)]
 impl ValidatingComponent for TextInput {
     type Value = String;
 }
 
-impl<I> ValidatingComponentProperties<String> for TextInputProperties<I>
-where
-    I: InitialValue<String>,
-{
+#[allow(deprecated)]
+impl ValidatingComponentProperties<String> for TextInputProperties {
     fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
         self.onvalidate = onvalidate;
     }
@@ -90,14 +97,14 @@ where
     }
 }
 
+#[deprecated(
+    since = "0.4.0",
+    note = "Will be replaced with the implementation from `next::TextInput`"
+)]
 /// A text input component
-pub struct TextInput<I = String>
-where
-    I: InitialValue<String>,
-{
+pub struct TextInput {
     value: Option<String>,
     refs: Refs,
-    _marker: PhantomData<I>,
 }
 
 #[derive(Default)]
@@ -112,12 +119,10 @@ pub enum TextInputMsg {
     Input(String),
 }
 
-impl<I> Component for TextInput<I>
-where
-    I: InitialValue<String> + 'static,
-{
+#[allow(deprecated)]
+impl Component for TextInput {
     type Message = TextInputMsg;
-    type Properties = TextInputProperties<I>;
+    type Properties = TextInputProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         ctx.link().send_message(Self::Message::Init);
@@ -127,7 +132,6 @@ where
             refs: Refs {
                 input: ctx.props().r#ref.clone(),
             },
-            _marker: Default::default(),
         }
     }
 
@@ -162,7 +166,7 @@ where
         if ctx.props().value != old_props.value {
             // initial value has changed
             ctx.link()
-                .send_message(TextInputMsg::Changed(ctx.props().value.create()))
+                .send_message(TextInputMsg::Changed(ctx.props().value.clone()))
         }
         if ctx.props().readonly {
             self.value = None;
@@ -223,10 +227,8 @@ where
     }
 }
 
-impl<I> TextInput<I>
-where
-    I: InitialValue<String> + 'static,
-{
+#[allow(deprecated)]
+impl TextInput {
     /// Extract the current value from the input element
     fn extract_value(&self) -> Option<String> {
         self.refs
@@ -238,7 +240,7 @@ where
     fn value(&self, ctx: &Context<Self>) -> String {
         self.value
             .clone()
-            .unwrap_or_else(|| ctx.props().value.create())
+            .unwrap_or_else(|| ctx.props().value.clone())
     }
 
     fn focus(&self) {
@@ -256,5 +258,203 @@ where
             .validator
             .run_if(|| ValidationContext::from(self.value(ctx)))
             .unwrap_or_else(|| ctx.props().state)
+    }
+}
+
+/// Upcoming version of the [`TextInput`] component.
+pub mod next {
+    use super::*;
+
+    use crate::{
+        focus, value, ExtendClasses, InputState, ValidatingComponent,
+        ValidatingComponentProperties, ValidationContext,
+    };
+
+    /// Properties for [`TextInput`]
+    #[derive(Clone, PartialEq, Properties)]
+    pub struct TextInputProperties {
+        #[prop_or_default]
+        pub name: AttrValue,
+        #[prop_or_default]
+        pub id: AttrValue,
+        #[prop_or_default]
+        pub value: String,
+        #[prop_or_default]
+        pub required: bool,
+        #[prop_or_default]
+        pub disabled: bool,
+        #[prop_or_default]
+        pub readonly: bool,
+        #[prop_or_default]
+        pub state: InputState,
+        #[prop_or_default]
+        pub icon: TextInputIcon,
+        #[prop_or("text".into())]
+        pub r#type: AttrValue,
+        #[prop_or_default]
+        pub placeholder: AttrValue,
+        #[prop_or_default]
+        pub autofocus: bool,
+        #[prop_or_default]
+        pub form: AttrValue,
+        #[prop_or_default]
+        pub autocomplete: AttrValue,
+
+        /// This event is triggered when the element loses focus.
+        #[prop_or_default]
+        pub onchange: Callback<String>,
+        /// This event is similar to the onchange event.
+        ///
+        /// The difference is that the oninput event occurs immediately after the value of an element has changed.
+        ///
+        /// **NOTE:** Contrary to the HTML definition of oninput, the callback provides the full value
+        /// of the input element, not just the changed part.
+        #[prop_or_default]
+        pub oninput: Callback<String>,
+        // Called when validation should occur
+        #[prop_or_default]
+        pub onvalidate: Callback<ValidationContext<String>>,
+
+        #[prop_or_default]
+        pub r#ref: NodeRef,
+    }
+
+    impl ValidatingComponent for TextInput {
+        type Value = String;
+    }
+
+    impl ValidatingComponentProperties<String> for TextInputProperties {
+        fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
+            self.onvalidate = onvalidate;
+        }
+
+        fn set_input_state(&mut self, state: InputState) {
+            self.state = state;
+        }
+    }
+
+    /// Text input component
+    ///
+    /// > A **text input** is used to gather free-form text from a user.
+    ///
+    /// See: <https://www.patternfly.org/v4/components/text-input>
+    ///
+    /// ## Properties
+    ///
+    /// Defined by [`TextInputProperties].
+    ///
+    /// ## Change events
+    ///
+    /// The component emits changes of the input value through the `onchange` event once the
+    /// component looses the focus (same of plain HTML). It also emits the full input value via the
+    /// `oninput` event and does the same using the `onvalidate` event. This duplication is required
+    /// to support both change events as well as supporting the [`ValidatingComponent`] trait.
+    ///
+    /// If a value is provided via the `value` property, that value must be updated through the
+    /// `oninput` callback. Otherwise the value will be reset immediately and the component will
+    /// be effectively read-only:
+    ///
+    /// ```rust
+    /// use yew::prelude::*;
+    /// use patternfly_yew::next::TextInput;
+    /// use patternfly_yew::prelude::*;
+    ///
+    /// #[function_component(Example)]
+    /// fn example() -> Html {
+    ///   let value = use_state_eq(String::default);
+    ///   let onchange = {
+    ///     let value = value.clone();
+    ///     Callback::from(move |data| value.set(data))
+    ///   };
+    ///
+    ///   html!(<TextInput value={(*value).clone()}/>)
+    /// }
+    /// ```
+    #[function_component(TextInput)]
+    pub fn text_input(props: &TextInputProperties) -> Html {
+        let input_ref = props.r#ref.clone();
+        let mut classes = classes!("pf-c-form-control");
+        classes.extend_from(&props.icon);
+
+        // validation
+
+        {
+            let value = props.value.clone();
+            let onvalidate = props.onvalidate.clone();
+            use_effect_with_deps(
+                move |()| {
+                    onvalidate.emit(ValidationContext {
+                        value,
+                        initial: true,
+                    });
+                },
+                (),
+            );
+        }
+
+        let (classes, aria_invalid) = props.state.convert(classes);
+
+        // autofocus
+
+        {
+            let autofocus = props.autofocus;
+            use_effect_with_deps(
+                move |input_ref| {
+                    if autofocus {
+                        focus(input_ref)
+                    }
+                },
+                input_ref.clone(),
+            );
+        }
+
+        // change events
+
+        let onchange = use_memo(
+            |(onchange, input_ref)| {
+                let input_ref = input_ref.clone();
+                onchange.reform(move |_: Event| value(&input_ref).unwrap_or_default())
+            },
+            (props.onchange.clone(), input_ref.clone()),
+        );
+
+        let oninput = use_memo(
+            |(oninput, onvalidate, input_ref)| {
+                let input_ref = input_ref.clone();
+                let oninput = oninput.clone();
+                let onvalidate = onvalidate.clone();
+                Callback::from(move |_: InputEvent| {
+                    // get the (complete) current value
+                    let value = value(&input_ref).unwrap_or_default();
+                    oninput.emit(value.clone());
+                    onvalidate.emit(value.into());
+                })
+            },
+            (
+                props.oninput.clone(),
+                props.onvalidate.clone(),
+                input_ref.clone(),
+            ),
+        );
+
+        html! {
+            <input
+                ref={input_ref}
+                class={classes}
+                type={&props.r#type}
+                name={&props.name}
+                id={&props.id}
+                required={props.required}
+                disabled={props.disabled}
+                readonly={props.readonly}
+                aria-invalid={aria_invalid.to_string()}
+                value={props.value.clone()}
+                placeholder={&props.placeholder}
+                form={&props.form}
+                autocomplete={&props.autocomplete}
+                onchange={(*onchange).clone()}
+                oninput={(*oninput).clone()}
+            />
+        }
     }
 }
