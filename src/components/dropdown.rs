@@ -249,6 +249,8 @@ pub struct DropdownItemProps {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
+    pub description: String,
+    #[prop_or_default]
     pub href: String,
     #[prop_or_default]
     pub target: String,
@@ -288,30 +290,49 @@ impl Component for DropdownItem {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let action = if ctx.props().onclick.is_some() {
-            html! {
+        let mut class = classes!("pf-c-dropdown__menu-item");
+        if !ctx.props().description.is_empty() {
+            class.extend(classes!("pf-m-description"));
+        }
+
+        let wrapper = |children: Html| match ctx.props().onclick.is_some() {
+            true => html!(
                 <button
-                    class="pf-c-dropdown__menu-item"
+                    {class}
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
                     type="button"
-                    >
-                    { for ctx.props().children.iter() }
+                >
+                    { children }
                 </button>
-            }
-        } else {
-            html! {
+            ),
+            false => html!(
                 <a
-                    class="pf-c-dropdown__menu-item"
+                    {class}
                     target={ctx.props().target.clone()}
-                    href={ctx.props().href.clone()}>
-                { for ctx.props().children.iter() }
+                    href={ctx.props().href.clone()}
+                >
+                    { children }
                 </a>
-            }
+            ),
         };
 
-        html! {
-            <li>{action}</li>
-        }
+        html! (
+            <li> {
+                wrapper(html!(
+                    <>
+                        if !ctx.props().description.is_empty() {
+                            <div class="pf-c-dropdown__menu-item-main">
+                                { for ctx.props().children.iter() }
+                            </div>
+                            <div class="pf-c-dropdown__menu-item-description"> { &ctx.props().description } </div>
+                        } else {
+                            { for ctx.props().children.iter() }
+                        }
+
+                    </>
+                ))
+            } </li>
+        )
     }
 }
 
@@ -319,6 +340,8 @@ impl Component for DropdownItem {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct DropdownItemGroupProps {
+    #[prop_or_default]
+    pub title: AttrValue,
     #[prop_or_default]
     pub children: ChildrenRenderer<DropdownChildVariant>,
     #[prop_or_default]
@@ -349,18 +372,19 @@ impl Component for DropdownItemGroup {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        html! {
-            <>
-            { for ctx.props().children.iter().map(|mut c|{
-                c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
-                html! {
-                    <section class="pf-c-dropdown__group">
-                    { c }
-                    </section>
+        html! (
+            <section class="pf-c-dropdown__group">
+                if !ctx.props().title.is_empty() {
+                    <h1 class="pf-c-dropdown__group-title"> { &ctx.props().title } </h1>
                 }
-            })}
-            </>
-        }
+                <ul>
+                    { for ctx.props().children.iter().map(|mut c|{
+                        c.set_need_close(ctx.link().callback(|_|Self::Message::Close));
+                        c
+                    })}
+                </ul>
+            </section>
+        )
     }
 }
 
