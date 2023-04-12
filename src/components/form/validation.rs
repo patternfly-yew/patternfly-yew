@@ -1,5 +1,5 @@
 use crate::{AsClasses, FormHelperText, Icon, ValidationContext};
-use yew::{Callback, Classes};
+use yew::{classes, Callback, Classes};
 
 /// State of an input from validation
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -20,9 +20,9 @@ impl AsClasses for InputState {
     fn extend(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
-            Self::Success => classes.push("pf-m-success"),
-            Self::Warning => classes.push("pf-m-warning"),
-            Self::Error => classes.push("pf-m-error"),
+            Self::Success => classes.push(classes!("pf-m-success")),
+            Self::Warning => classes.push(classes!("pf-m-warning")),
+            Self::Error => classes.push(classes!("pf-m-error")),
         }
     }
 }
@@ -32,8 +32,8 @@ impl InputState {
         let mut aria_invalid = false;
         match self {
             InputState::Default => {}
-            InputState::Success => classes.push("pf-m-success"),
-            InputState::Warning => classes.push("pf-m-warning"),
+            InputState::Success => classes.extend(classes!("pf-m-success")),
+            InputState::Warning => classes.extend(classes!("pf-m-warning")),
             InputState::Error => aria_invalid = true,
         };
         (classes, aria_invalid)

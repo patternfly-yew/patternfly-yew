@@ -150,14 +150,14 @@ impl Component for TextInput {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-form-control");
+        let mut classes = classes!("pf-c-form-control");
 
         match ctx.props().icon {
             TextInputIcon::None => {}
-            TextInputIcon::Search => classes.push("pf-m-search"),
-            TextInputIcon::Calendar => classes.extend(vec!["pf-m-icon", "pf-m-calendar"]),
-            TextInputIcon::Clock => classes.extend(vec!["pf-m-icon", "pf-m-clock"]),
-            TextInputIcon::Custom => classes.extend(vec!["pf-m-icon"]),
+            TextInputIcon::Search => classes.extend(classes!("pf-m-search")),
+            TextInputIcon::Calendar => classes.extend(classes!("pf-m-icon", "pf-m-calendar")),
+            TextInputIcon::Clock => classes.extend(classes!("pf-m-icon", "pf-m-clock")),
+            TextInputIcon::Custom => classes.extend(classes!("pf-m-icon")),
         };
 
         let (classes, aria_invalid) = self.input_state(ctx).convert(classes);
