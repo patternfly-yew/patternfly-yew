@@ -24,9 +24,9 @@ impl Default for TextInputIcon {
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextInputProperties {
     #[prop_or_default]
-    pub name: String,
+    pub name: AttrValue,
     #[prop_or_default]
-    pub id: String,
+    pub id: AttrValue,
     #[prop_or_default]
     pub value: String,
     #[prop_or_default]
@@ -42,13 +42,13 @@ pub struct TextInputProperties {
     #[prop_or("text".into())]
     pub r#type: String,
     #[prop_or_default]
-    pub placeholder: String,
+    pub placeholder: AttrValue,
     #[prop_or_default]
     pub autofocus: bool,
     #[prop_or_default]
-    pub form: Option<String>,
+    pub form: AttrValue,
     #[prop_or_default]
-    pub autocomplete: Option<String>,
+    pub autocomplete: AttrValue,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
