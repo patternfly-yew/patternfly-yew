@@ -241,7 +241,7 @@ impl Component for AppLauncherItem {
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
                     type="button"
                     role="menuitem"
-                    >
+                >
                     { for ctx.props().children.iter() }
                 </button>
             )
