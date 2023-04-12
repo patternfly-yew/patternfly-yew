@@ -3,16 +3,17 @@
 mod action;
 mod context;
 mod global_close;
+mod init;
 mod popper;
 
 pub use action::*;
 pub use context::*;
 pub use global_close::*;
+pub use init::*;
 pub use popper::*;
 
 use std::fmt::{Debug, Display, Formatter};
-use yew::html::IntoPropValue;
-use yew::{use_memo, AttrValue};
+use yew::{html::IntoPropValue, use_memo, AttrValue};
 
 /// Create a random ID.
 ///

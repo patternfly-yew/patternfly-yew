@@ -1,6 +1,8 @@
 use crate::{
-    InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext, Validator,
+    InitialValue, InputState, ValidatingComponent, ValidatingComponentProperties,
+    ValidationContext, Validator,
 };
+use std::marker::PhantomData;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -22,13 +24,16 @@ impl Default for TextInputIcon {
 
 /// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
-pub struct TextInputProperties {
+pub struct TextInputProperties<I = String>
+where
+    I: InitialValue<String>,
+{
     #[prop_or_default]
     pub name: AttrValue,
     #[prop_or_default]
     pub id: AttrValue,
     #[prop_or_default]
-    pub value: String,
+    pub value: I,
     #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
@@ -72,7 +77,10 @@ impl ValidatingComponent for TextInput {
     type Value = String;
 }
 
-impl ValidatingComponentProperties<String> for TextInputProperties {
+impl<I> ValidatingComponentProperties<String> for TextInputProperties<I>
+where
+    I: InitialValue<String>,
+{
     fn set_onvalidate(&mut self, onvalidate: Callback<ValidationContext<String>>) {
         self.onvalidate = onvalidate;
     }
@@ -83,9 +91,13 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 }
 
 /// A text input component
-pub struct TextInput {
+pub struct TextInput<I = String>
+where
+    I: InitialValue<String>,
+{
     value: Option<String>,
     refs: Refs,
+    _marker: PhantomData<I>,
 }
 
 #[derive(Default)]
@@ -100,9 +112,12 @@ pub enum TextInputMsg {
     Input(String),
 }
 
-impl Component for TextInput {
+impl<I> Component for TextInput<I>
+where
+    I: InitialValue<String> + 'static,
+{
     type Message = TextInputMsg;
-    type Properties = TextInputProperties;
+    type Properties = TextInputProperties<I>;
 
     fn create(ctx: &Context<Self>) -> Self {
         ctx.link().send_message(Self::Message::Init);
@@ -112,6 +127,7 @@ impl Component for TextInput {
             refs: Refs {
                 input: ctx.props().r#ref.clone(),
             },
+            _marker: Default::default(),
         }
     }
 
@@ -142,7 +158,12 @@ impl Component for TextInput {
         true
     }
 
-    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
+    fn changed(&mut self, ctx: &Context<Self>, old_props: &Self::Properties) -> bool {
+        if ctx.props().value != old_props.value {
+            // initial value has changed
+            ctx.link()
+                .send_message(TextInputMsg::Changed(ctx.props().value.create()))
+        }
         if ctx.props().readonly {
             self.value = None;
         }
@@ -191,7 +212,7 @@ impl Component for TextInput {
                 autocomplete={ctx.props().autocomplete.clone()}
                 onchange={onchange}
                 oninput={oninput}
-                />
+            />
         }
     }
 
@@ -202,7 +223,10 @@ impl Component for TextInput {
     }
 }
 
-impl TextInput {
+impl<I> TextInput<I>
+where
+    I: InitialValue<String> + 'static,
+{
     /// Extract the current value from the input element
     fn extract_value(&self) -> Option<String> {
         self.refs
@@ -214,7 +238,7 @@ impl TextInput {
     fn value(&self, ctx: &Context<Self>) -> String {
         self.value
             .clone()
-            .unwrap_or_else(|| ctx.props().value.clone())
+            .unwrap_or_else(|| ctx.props().value.create())
     }
 
     fn focus(&self) {
