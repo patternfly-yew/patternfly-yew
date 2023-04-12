@@ -195,7 +195,7 @@ impl<'a> From<FormGroupHelpText<'a>> for VNode {
 #[derive(Clone, Properties)]
 pub struct FormGroupValidatedProperties<C>
 where
-    C: Component + ValidatingComponent,
+    C: BaseComponent + ValidatingComponent,
 {
     #[prop_or_default]
     pub children: ChildrenWithProps<C>,
@@ -219,7 +219,7 @@ where
 
 impl<C> PartialEq for FormGroupValidatedProperties<C>
 where
-    C: Component + ValidatingComponent,
+    C: BaseComponent + ValidatingComponent,
 {
     fn eq(&self, other: &Self) -> bool {
         self.required == other.required
@@ -230,7 +230,7 @@ where
 
 pub struct FormGroupValidated<C>
 where
-    C: Component,
+    C: BaseComponent,
 {
     _marker: PhantomData<C>,
 
@@ -240,8 +240,8 @@ where
 
 impl<C> Component for FormGroupValidated<C>
 where
-    C: Component + ValidatingComponent,
-    <C as Component>::Properties: ValidatingComponentProperties<C::Value> + Clone,
+    C: BaseComponent + ValidatingComponent,
+    <C as BaseComponent>::Properties: ValidatingComponentProperties<C::Value> + Clone,
 {
     type Message = FormGroupValidatedMsg<C>;
     type Properties = FormGroupValidatedProperties<C>;
@@ -276,15 +276,6 @@ where
         true
     }
 
-    fn destroy(&mut self, ctx: &Context<Self>) {
-        if let Some((ctx, _)) = ctx
-            .link()
-            .context::<ValidationFormContext>(Callback::noop())
-        {
-            ctx.clear_state(self.id.clone());
-        }
-    }
-
     fn view(&self, ctx: &Context<Self>) -> Html {
         let onvalidate = ctx.link().callback(|v| FormGroupValidatedMsg::Validate(v));
 
@@ -302,5 +293,14 @@ where
                 })}
             </FormGroup>
         )
+    }
+
+    fn destroy(&mut self, ctx: &Context<Self>) {
+        if let Some((ctx, _)) = ctx
+            .link()
+            .context::<ValidationFormContext>(Callback::noop())
+        {
+            ctx.clear_state(self.id.clone());
+        }
     }
 }
