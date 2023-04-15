@@ -24,7 +24,9 @@ pub struct NavProperties {
 pub fn nav(props: &NavProperties) -> Html {
     html! {
         <nav class="pf-c-nav" aria-label="Global">
-            { for props.children.iter() }
+            <ul class="pf-c-nav__list">
+                { for props.children.iter() }
+            </ul>
         </nav>
     }
 }
