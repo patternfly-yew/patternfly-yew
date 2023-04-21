@@ -13,6 +13,7 @@ pub enum Color {
     Red,
     Purple,
     Cyan,
+    Gold,
 }
 
 impl Default for Color {
@@ -31,6 +32,7 @@ impl AsClasses for Color {
             Color::Red => classes.push("pf-m-red"),
             Color::Purple => classes.push("pf-m-purple"),
             Color::Cyan => classes.push("pf-m-cyan"),
+            Color::Gold => classes.push("pf-m-gold"),
         }
     }
 }
