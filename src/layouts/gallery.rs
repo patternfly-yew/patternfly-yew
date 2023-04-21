@@ -7,6 +7,8 @@ pub struct GalleryProperties {
     pub children: Children,
     #[prop_or_default]
     pub gutter: bool,
+    #[prop_or_default]
+    pub style: AttrValue,
 }
 
 /// Gallery layout
@@ -27,7 +29,10 @@ pub fn gallery(props: &GalleryProperties) -> Html {
     }
 
     html! (
-        <div class={classes}>
+        <div
+            class={classes}
+            style={&props.style}
+        >
         { for props.children.iter().map(|child|{
             html!{
                 <div class="pf-l-gallery__item">
