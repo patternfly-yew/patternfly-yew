@@ -6,6 +6,7 @@ pub enum ListType {
     Basic,
     Inline,
     Ordered(ListOrder),
+    Plain,
 }
 
 impl Default for ListType {
@@ -64,12 +65,18 @@ pub struct ListProperties {
 pub fn list(props: &ListProperties) -> Html {
     let mut classes = Classes::from("pf-c-list");
 
-    if let ListType::Inline = props.r#type {
-        classes.push("pf-m-inline");
+    match &props.r#type {
+        ListType::Inline => {
+            classes.push("pf-m-inline");
+        }
+        ListType::Plain => {
+            classes.push("pf-m-plain");
+        }
+        _ => {}
     }
 
     let l: Box<dyn FnOnce(Html) -> Html> = match props.r#type {
-        ListType::Basic | ListType::Inline => {
+        ListType::Basic | ListType::Inline | ListType::Plain => {
             Box::new(|items| html! {<ul class={classes}>{ items }</ul>})
         }
         ListType::Ordered(n) => {
