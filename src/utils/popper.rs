@@ -97,7 +97,8 @@ where
             }
             true
         } else {
-            false
+            // only re-render when active
+            self.active
         }
     }
 
