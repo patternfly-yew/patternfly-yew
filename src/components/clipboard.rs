@@ -277,7 +277,7 @@ impl Clipboard {
             ele.map(|ele| ele.value()).unwrap_or_else(|| "".into())
         };
 
-        log::info!("New value: {}", value);
+        log::debug!("New value: {}", value);
 
         // sync back
         if self.expanded {
