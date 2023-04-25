@@ -38,6 +38,8 @@ pub struct CardProperties {
     pub selection: CardSelection,
     #[prop_or_default]
     pub class: Classes,
+    #[prop_or_default]
+    pub plain: bool,
 }
 
 /// Card component
@@ -114,6 +116,10 @@ impl Component for Card {
 
         if ctx.props().rounded {
             classes.push("pf-m-rounded");
+        }
+
+        if ctx.props().plain {
+            classes.push("pf-m-plain");
         }
 
         classes.extend(ctx.props().class.clone());
