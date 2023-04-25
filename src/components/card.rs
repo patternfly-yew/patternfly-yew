@@ -15,6 +15,7 @@ pub enum CardSelection {
 /// Properties for [`Card`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardProperties {
+    #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub title: Option<Html>,
