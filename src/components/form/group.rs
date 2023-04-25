@@ -110,9 +110,9 @@ impl Component for FormGroup {
 
         html! (
             <div class={classes}>
-                <div class="pf-c-form__group-label">
 
-                    if !ctx.props().label.is_empty() {
+                if !ctx.props().label.is_empty() {
+                    <div class="pf-c-form__group-label">
                         <label class="pf-c-form__label">
 
                             <span class="pf-c-form__label-text">{&ctx.props().label}</span>
@@ -139,9 +139,8 @@ impl Component for FormGroup {
                                 }
                             }
                         </label>
-                    }
-
-                </div>
+                    </div>
+                }
 
                 <div class="pf-c-form__group-control">
                     { for ctx.props().children.iter() }
