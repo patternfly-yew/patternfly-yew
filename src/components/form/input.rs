@@ -437,7 +437,7 @@ pub mod next {
             ),
         );
 
-        html! {
+        html! (
             <input
                 ref={input_ref}
                 class={classes}
@@ -455,6 +455,6 @@ pub mod next {
                 onchange={(*onchange).clone()}
                 oninput={(*oninput).clone()}
             />
-        }
+        )
     }
 }

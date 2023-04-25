@@ -17,6 +17,11 @@ pub use validation::*;
 use crate::{Alert, AlertType, AsClasses, Button, ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
+pub mod next {
+    pub use super::area::next::{TextArea, TextAreaProperties};
+    pub use super::input::next::{TextInput, TextInputProperties};
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FormHorizontal;
 
