@@ -44,7 +44,7 @@ pub enum ExpandableSectionSize {
 }
 
 impl AsClasses for ExpandableSectionSize {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Large => {
@@ -62,7 +62,7 @@ pub enum ExpandableSectionVariant {
 }
 
 impl AsClasses for ExpandableSectionVariant {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Truncate => {
@@ -186,7 +186,7 @@ pub enum ExpandableSectionToggleDirection {
 }
 
 impl AsClasses for ExpandableSectionToggleDirection {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Down => {}
             Self::Up => classes.push(classes!("pf-m-expand-top")),

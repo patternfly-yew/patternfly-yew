@@ -13,7 +13,7 @@ pub enum PageSectionVariant {
 }
 
 impl AsClasses for PageSectionVariant {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Darker => classes.push("pf-m-dark-100"),
@@ -35,7 +35,7 @@ pub enum PageSectionType {
 }
 
 impl AsClasses for PageSectionType {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => classes.push("pf-c-page__main-section"),
             Self::Navigation => classes.push("pf-c-page__main-nav"),
@@ -84,7 +84,7 @@ pub enum PageSectionShadow {
 }
 
 impl AsClasses for PageSectionShadow {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::None => {}
             Self::Top => classes.push("pf-m-shadow-top"),
@@ -104,7 +104,7 @@ pub enum PageSectionSticky {
 }
 
 impl AsClasses for PageSectionSticky {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::None => {}
             Self::Top => classes.push("pf-m-sticky-top"),
@@ -123,7 +123,7 @@ pub enum PageSectionFill {
 }
 
 impl AsClasses for PageSectionFill {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Fill => classes.push("pf-m-fill"),

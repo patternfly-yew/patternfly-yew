@@ -57,7 +57,7 @@ pub enum Alignment {
 }
 
 impl AsClasses for FlexModifier {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             FlexModifier::Grow => classes.push("pf-m-grow"),
             FlexModifier::Shrink => classes.push("pf-m-shrink"),

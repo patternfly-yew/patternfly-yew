@@ -25,7 +25,7 @@ pub enum TreeTableMode {
 }
 
 impl AsClasses for TreeTableMode {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Compact => {
                 classes.push(classes!("pf-m-compact"));

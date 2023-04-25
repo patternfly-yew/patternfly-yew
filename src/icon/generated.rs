@@ -399,7 +399,7 @@ pub enum Icon {
 }
 
 impl crate::core::AsClasses for Icon {
-    fn extend(&self, classes: &mut yew::prelude::Classes) {
+    fn extend_classes(&self, classes: &mut yew::prelude::Classes) {
         match self {
             Self::AngleDoubleLeft => classes.extend(super::fas("fa-angle-double-left")),
             Self::AngleDoubleRight => classes.extend(super::fas("fa-angle-double-right")),

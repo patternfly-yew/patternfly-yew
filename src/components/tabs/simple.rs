@@ -1,4 +1,4 @@
-use crate::{AsClasses, Icon, Inset, WithBreakpoints};
+use crate::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
 use std::rc::Rc;
 use yew::prelude::*;
 
@@ -71,7 +71,7 @@ impl Component for Tabs {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-tabs");
+        let mut classes = classes!("pf-c-tabs");
 
         if ctx.props().r#box {
             classes.push("pf-m-box");
@@ -85,9 +85,7 @@ impl Component for Tabs {
             classes.push("pf-m-fill");
         }
 
-        if let Some(inset) = &ctx.props().inset {
-            inset.extend(&mut classes);
-        }
+        classes.extend_from(&ctx.props().inset);
 
         html! (
             <>
@@ -141,11 +139,11 @@ pub enum TabInset {
 }
 
 impl AsClasses for TabInset {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Page => classes.push("pf-m-page-insets"),
             Self::Inset(insets) => {
-                insets.extend(classes);
+                insets.extend_classes(classes);
             }
         }
     }

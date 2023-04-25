@@ -10,7 +10,7 @@ pub enum Visibility {
 }
 
 impl AsClasses for Visibility {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Hidden => classes.push(classes!("pf-m-hidden")),
             Self::Visible => classes.push(classes!("pf-m-visible")),

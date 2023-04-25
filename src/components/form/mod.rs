@@ -21,7 +21,7 @@ use yew::prelude::*;
 pub struct FormHorizontal;
 
 impl AsClasses for FormHorizontal {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push("pf-m-horizontal")
     }
 }

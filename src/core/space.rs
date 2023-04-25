@@ -15,7 +15,7 @@ macro_rules! spacer {
         }
 
         impl $crate::core::AsClasses for $name {
-            fn extend(&self, classes: &mut yew::prelude::Classes) {
+            fn extend_classes(&self, classes: &mut yew::prelude::Classes) {
                 let name = match self {
                     Self::None => concat!($prefix, "-none"),
                     Self::XSmall => concat!($prefix, "-xs"),

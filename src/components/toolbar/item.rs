@@ -18,7 +18,7 @@ impl Default for ToolbarItemType {
 }
 
 impl AsClasses for ToolbarItemType {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::None => {}
             Self::BulkSelect => classes.push("pf-m-bulk-select"),

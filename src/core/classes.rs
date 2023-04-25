@@ -10,27 +10,35 @@ use yew::Classes;
 pub trait AsClasses {
     fn as_classes(&self) -> Classes {
         let mut classes = Classes::new();
-        self.extend(&mut classes);
+        self.extend_classes(&mut classes);
         classes
     }
 
-    fn extend(&self, classes: &mut Classes);
+    #[deprecated(
+        note = "Use `AsClasses::extend_classes` instead. Resolves the conflict with Extend::extend.",
+        since = "0.4.1"
+    )]
+    fn extend(&self, classes: &mut Classes) {
+        self.extend_classes(classes);
+    }
+
+    fn extend_classes(&self, classes: &mut Classes);
 }
 
 impl AsClasses for String {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push(self)
     }
 }
 
 impl AsClasses for &str {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push(self.to_string())
     }
 }
 
 impl AsClasses for u16 {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push(self.to_string())
     }
 }
@@ -40,15 +48,15 @@ impl AsClasses for dyn ToString {
         Classes::from(self.to_string())
     }
 
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.extend(Classes::from(self.to_string()))
     }
 }
 
 impl<T: AsClasses> AsClasses for Option<T> {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
-            Some(a) => a.extend(classes),
+            Some(a) => a.extend_classes(classes),
             None => {}
         }
     }
@@ -58,7 +66,7 @@ impl<T> AsClasses for Vec<T>
 where
     T: AsClasses,
 {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         for i in self {
             classes.extend(i.as_classes());
         }
@@ -73,6 +81,6 @@ pub trait ExtendClasses<A: AsClasses> {
 
 impl<A: AsClasses> ExtendClasses<A> for Classes {
     fn extend_from(&mut self, from: &A) {
-        from.extend(self)
+        from.extend_classes(self)
     }
 }

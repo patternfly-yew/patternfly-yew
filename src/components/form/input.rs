@@ -16,7 +16,7 @@ pub enum TextInputIcon {
 }
 
 impl AsClasses for TextInputIcon {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::None => {}
             Self::Search => classes.extend(classes!("pf-m-search")),

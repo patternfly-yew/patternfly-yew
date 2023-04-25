@@ -15,7 +15,7 @@ pub enum Size {
 }
 
 impl AsClasses for Size {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push(match self {
             Size::XSmall => "pf-m-xs",
             Size::Small => "pf-m-sm",

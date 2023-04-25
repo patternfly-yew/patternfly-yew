@@ -78,8 +78,8 @@ impl<T> AsClasses for WithBreakpoints<T>
 where
     T: PartialEq + AsClasses,
 {
-    fn extend(&self, classes: &mut Classes) {
-        AsClasses::extend(&self.0, classes)
+    fn extend_classes(&self, classes: &mut Classes) {
+        AsClasses::extend_classes(&self.0, classes)
     }
 }
 
@@ -87,7 +87,7 @@ impl<T> AsClasses for WithBreakpoint<T>
 where
     T: PartialEq + AsClasses,
 {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         // get as classes, but then extend but the breakpoint rules
         classes.extend(
             self.modifier
@@ -363,7 +363,7 @@ mod test {
     }
 
     impl AsClasses for MockVariant {
-        fn extend(&self, classes: &mut Classes) {
+        fn extend_classes(&self, classes: &mut Classes) {
             match self {
                 Self::Foo => {}
                 Self::Bar => classes.push("bar"),

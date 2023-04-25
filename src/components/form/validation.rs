@@ -17,7 +17,7 @@ impl Default for InputState {
 }
 
 impl AsClasses for InputState {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Success => classes.push(classes!("pf-m-success")),

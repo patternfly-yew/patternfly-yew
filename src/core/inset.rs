@@ -28,7 +28,7 @@ impl std::fmt::Display for Inset {
 }
 
 impl AsClasses for Inset {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         // relies on the `Display` implementation above
         classes.push(self.to_string())
     }

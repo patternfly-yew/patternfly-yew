@@ -45,7 +45,7 @@ fn round(p: u16) -> u16 {
 }
 
 impl AsClasses for ColumnWidth {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Percent(p) => classes.push(classes!(format!("pf-m-width-{}", round(*p)))),

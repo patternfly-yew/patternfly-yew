@@ -23,7 +23,7 @@ impl Default for Color {
 }
 
 impl AsClasses for Color {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Color::Grey => {}
             Color::Blue => classes.push("pf-m-blue"),

@@ -22,7 +22,7 @@ pub enum ToolbarElementModifier {
 }
 
 impl AsClasses for ToolbarElementModifier {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         classes.push(match self {
             Self::Hidden => "pf-m-hidden",
             Self::Visible => "pf-m-visible",

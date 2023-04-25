@@ -28,7 +28,7 @@ pub enum PanelVariant {
 }
 
 impl AsClasses for PanelVariant {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Bordered => classes.push(classes!("pf-m-bordered")),

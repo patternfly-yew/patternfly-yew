@@ -22,7 +22,7 @@ pub enum DividerOrientation {
 }
 
 impl AsClasses for DividerOrientation {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Horizontal => classes.push(classes!("pf-m-horizontal")),
             Self::Vertical => classes.push(classes!("pf-m-vertical")),

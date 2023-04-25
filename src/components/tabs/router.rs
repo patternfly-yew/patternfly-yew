@@ -45,7 +45,7 @@ where
     }
 
     if let Some(inset) = &props.inset {
-        inset.extend(&mut classes);
+        inset.extend_classes(&mut classes);
     }
 
     html! (

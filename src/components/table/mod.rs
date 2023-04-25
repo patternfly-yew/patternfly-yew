@@ -39,7 +39,7 @@ pub enum TableGridMode {
 }
 
 impl AsClasses for TableGridMode {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Medium => classes.push(classes!("pf-m-grid-md")),
             Self::Large => classes.push(classes!("pf-m-grid-lg")),
@@ -136,7 +136,7 @@ pub enum SpanModifiers {
 }
 
 impl AsClasses for SpanModifiers {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Truncate => classes.push("pf-m-truncate"),
         }

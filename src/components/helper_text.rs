@@ -17,7 +17,7 @@ pub enum HelperTextState {
 }
 
 impl AsClasses for HelperTextState {
-    fn extend(&self, classes: &mut Classes) {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => {}
             Self::Intermediate => classes.push(classes!("pf-m-indeterminate")),
