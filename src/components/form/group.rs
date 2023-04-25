@@ -78,14 +78,26 @@ impl From<&str> for FormHelperText {
     }
 }
 
-impl From<(&str, InputState)> for FormHelperText {
-    fn from(value: (&str, InputState)) -> Self {
+impl From<(String, InputState)> for FormHelperText {
+    fn from((message, input_state): (String, InputState)) -> Self {
         Self {
-            input_state: value.1,
+            input_state,
             custom_icon: None,
             no_icon: false,
             is_dynamic: false,
-            message: value.0.into(),
+            message,
+        }
+    }
+}
+
+impl From<(&str, InputState)> for FormHelperText {
+    fn from((message, input_state): (&str, InputState)) -> Self {
+        Self {
+            input_state,
+            custom_icon: None,
+            no_icon: false,
+            is_dynamic: false,
+            message: message.to_string(),
         }
     }
 }
