@@ -27,6 +27,10 @@ pub struct TabsProperties {
     pub detached: bool,
     #[prop_or_default]
     pub onselect: Callback<usize>,
+
+    /// Set the current active tab, overrides the internal state.
+    #[prop_or_default]
+    pub active: Option<usize>,
 }
 
 /// Tabs component
@@ -38,73 +42,54 @@ pub struct TabsProperties {
 /// ## Properties
 ///
 /// Defined by [`TabsProperties`].
-pub struct Tabs {
-    active: usize,
-}
+#[function_component(Tabs)]
+pub fn tabs(props: &TabsProperties) -> Html {
+    let active = use_state_eq(|| props.active.unwrap_or_default());
 
-#[doc(hidden)]
-pub enum Msg {
-    Select(usize),
-}
+    let mut classes = classes!("pf-c-tabs");
 
-impl Component for Tabs {
-    type Message = Msg;
-    type Properties = TabsProperties;
-
-    fn create(ctx: &Context<Self>) -> Self {
-        ctx.props().onselect.emit(0);
-        Self { active: 0 }
+    if props.r#box {
+        classes.push("pf-m-box");
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Select(idx) => {
-                if self.active != idx {
-                    self.active = idx;
-                    ctx.props().onselect.emit(self.active);
-                } else {
-                    return false;
-                }
-            }
-        }
-        true
+    if props.vertical {
+        classes.push("pf-m-vertical");
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = classes!("pf-c-tabs");
+    if props.filled {
+        classes.push("pf-m-fill");
+    }
 
-        if ctx.props().r#box {
-            classes.push("pf-m-box");
-        }
+    classes.extend_from(&props.inset);
 
-        if ctx.props().vertical {
-            classes.push("pf-m-vertical");
-        }
-
-        if ctx.props().filled {
-            classes.push("pf-m-fill");
-        }
-
-        classes.extend_from(&ctx.props().inset);
-
-        html! (
-            <>
-            <div class={classes} id={ctx.props().id.clone()}>
+    html! (
+        <>
+            <div
+                class={classes}
+                id={props.id.clone()}
+            >
                 <button
                     class="pf-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll left"
-                    >
+                >
                     { Icon::AngleLeft }
                 </button>
                 <ul class="pf-c-tabs__list">
-                    { for ctx.props().children.iter().enumerate().map(|(idx, c)|{
+                    { for props.children.iter().enumerate().map(|(idx, c)|{
+                        let current = *active == idx;
+                        let active = active.clone();
+                        let onselect = props.onselect.clone();
+                        let onselect = Callback::from(move |_| {
+                            onselect.emit(idx);
+                            active.set(idx);
+                        });
                         html!(<TabHeaderItem
                             label={c.props.label.clone()}
                             icon={c.props.icon.clone()}
-                            current={self.active == idx}
-                            onselect={ctx.link().callback(move |_| Msg::Select(idx))}
+                            {current}
+                            {onselect}
                         />)
                     }) }
                 </ul>
@@ -118,19 +103,16 @@ impl Component for Tabs {
                 </button>
             </div>
 
-            if !ctx.props().detached {
-                { for ctx.props().children.iter().enumerate().map(|(idx, mut c)| {
+            if !props.detached {
+                { for props.children.iter().enumerate().map(|(idx, mut c)| {
                     let props = Rc::make_mut(&mut c.props);
-                    props.current = self.active == idx;
+                    props.current = *active == idx;
                     c
                 }) }
             }
-            </>
-        )
-    }
+        </>
+    )
 }
-
-// tab
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TabInset {
