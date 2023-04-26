@@ -1,4 +1,5 @@
 //! Button
+
 use crate::{Icon, Spinner, SpinnerSize};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
@@ -147,111 +148,88 @@ pub struct ButtonProperties {
 /// ## Properties
 ///
 /// Defined by [`ButtonProperties`].
-pub struct Button {
-    node_ref: NodeRef,
-}
+#[function_component(Button)]
+pub fn button(props: &ButtonProperties) -> Html {
+    let node_ref = use_node_ref();
 
-#[doc(hidden)]
-pub enum Msg {
-    Clicked(MouseEvent),
-}
+    let mut classes: Classes = classes!(
+        "pf-c-button",
+        props.class.clone(),
+        props.variant.as_classes()
+    );
 
-impl Component for Button {
-    type Message = Msg;
-    type Properties = ButtonProperties;
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            node_ref: Default::default(),
-        }
+    if props.expanded {
+        classes.push("pf-m-expanded");
+    }
+    if props.block {
+        classes.push("pf-m-block");
+    }
+    if props.loading {
+        classes.push("pf-m-progress pf-m-in-progress")
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Clicked(evt) => {
-                ctx.props().onclick.emit(evt);
-                // blur the button after a click, otherwise it will continue appear hovered/pressed
-                self.blur();
+    let label = use_memo(
+        |(label, icon, align)| {
+            let mut classes = Classes::from("pf-c-button__icon");
+
+            match align {
+                Align::Start => classes.push("pf-m-start"),
+                Align::End => classes.push("pf-m-end"),
             }
-        }
-        true
-    }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes: Classes = classes!(
-            "pf-c-button",
-            ctx.props().class.clone(),
-            ctx.props().variant.as_classes()
-        );
+            let icon = match icon {
+                Some(i) => html! (
+                    <span class={classes}>
+                        { i.clone() }
+                    </span>
+                ),
+                None => html!(),
+            };
 
-        if ctx.props().expanded {
-            classes.push("pf-m-expanded");
-        }
-        if ctx.props().block {
-            classes.push("pf-m-block");
-        }
-        if ctx.props().loading {
-            classes.push("pf-m-progress pf-m-in-progress")
-        }
+            let label = html!(label);
 
-        html! (
-             <button
-                 ref={self.node_ref.clone()}
-                 id={ctx.props().id.clone()}
-                 class={classes}
-                 style={ctx.props().style.clone()}
-                 disabled={ctx.props().disabled}
-                 type={ctx.props().r#type}
-                 onclick={ctx.link().callback(Msg::Clicked)}
-                 role={ctx.props().role.clone()}
-                 form={ctx.props().form.clone()}
-                 formaction={ctx.props().formaction.clone()}
-             >
-                 if ctx.props().loading {
-                     <span class="pf-c-button__progress">
-                         <Spinner size={SpinnerSize::Md} />
-                     </span>
-                 }
+            match align {
+                Align::Start => vec![icon, label],
+                Align::End => vec![label, icon],
+            }
+        },
+        (props.label.clone(), props.icon, props.align),
+    );
 
-                 { self.label(ctx) }
-                 { for ctx.props().children.iter() }
+    let onclick = {
+        let onclick = props.onclick.clone();
+        let node_ref = node_ref.clone();
+        Callback::from(move |evt| {
+            // Blur (loose focus) on the button element, to remove the focus after clicking
+            if let Some(node) = node_ref.cast::<HtmlElement>() {
+                node.blur().ok();
+            }
+            onclick.emit(evt);
+        })
+    };
 
-             </button>
-        )
-    }
-}
+    html! (
+         <button
+             ref={node_ref}
+             id={props.id.clone()}
+             class={classes}
+             style={props.style.clone()}
+             disabled={props.disabled}
+             type={props.r#type}
+             {onclick}
+             role={props.role.clone()}
+             form={props.form.clone()}
+             formaction={props.formaction.clone()}
+         >
+             if props.loading {
+                 <span class="pf-c-button__progress">
+                     <Spinner size={SpinnerSize::Md} />
+                 </span>
+             }
 
-impl Button {
-    fn icon(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-button__icon");
+             { (*label).clone() }
+             { for props.children.iter() }
 
-        match ctx.props().align {
-            Align::Start => classes.push("pf-m-start"),
-            Align::End => classes.push("pf-m-end"),
-        }
-
-        match ctx.props().icon {
-            Some(i) => html! {
-                <span class={classes}>
-                    { i }
-                </span>
-            },
-            None => html! {},
-        }
-    }
-
-    fn label(&self, ctx: &Context<Self>) -> Vec<Html> {
-        let label = ctx.props().label.clone().into();
-        match ctx.props().align {
-            Align::Start => vec![self.icon(ctx), label],
-            Align::End => vec![label, self.icon(ctx)],
-        }
-    }
-
-    /// Blur (loose focus) on the button element
-    fn blur(&self) {
-        if let Some(node) = self.node_ref.cast::<HtmlElement>() {
-            node.blur().ok();
-        }
-    }
+         </button>
+    )
 }
