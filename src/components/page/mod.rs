@@ -48,84 +48,59 @@ pub struct PageProperties {
 /// * **Logo**: A logo, show in the navigation header section.
 /// * **Children**: The actual page content, probably wrapped into [`PageSection`] components.
 ///
-pub struct Page {
-    open: bool,
-}
+#[function_component(Page)]
+pub fn page(props: &PageProperties) -> Html {
+    let open = use_state_eq(|| true);
 
-#[doc(hidden)]
-pub enum Msg {
-    ToggleSidebar,
-}
+    let onclick = {
+        let open = open.clone();
+        Callback::from(move |_| {
+            open.set(!(*open));
+        })
+    };
 
-impl Component for Page {
-    type Message = Msg;
-    type Properties = PageProperties;
+    let mut class = classes!("pf-c-page");
 
-    fn create(ctx: &Context<Self>) -> Self {
-        Self {
-            open: ctx.props().open,
-        }
+    if props.full_height {
+        class.push("pf-m-full-height");
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::ToggleSidebar => self.open = !self.open,
-        }
+    html! (
+        <div {class} id={&props.id}>
+            <header class="pf-c-page__header">
+                <div class="pf-c-page__header-brand">
 
-        true
-    }
+                    if !props.sidebar.is_empty() {
+                        <div class="pf-c-page__header-brand-toggle">
+                            <button
+                                aria-expanded={(*open).to_string()}
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                {onclick}
+                                >
+                                <i class="fas fa-bars" aria-hidden="true"/>
+                            </button>
+                        </div>
+                    }
 
-    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
-        self.open = ctx.props().open;
-        true
-    }
+                    <a href="#" class="pf-c-page__header-brand-link"> {
+                        for props.logo.iter()
+                    } </a>
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let click_callback = ctx.link().callback(|_| Msg::ToggleSidebar);
+                </div>
+                <div class="pf-c-page__header-nav">{for props.nav.iter()}</div>
+                <div class="pf-c-page__header-tools"> { for props.tools.iter() }</div>
+            </header>
 
-        let mut class = classes!("pf-c-page");
+            { for props.sidebar.iter().map(|mut s|{
+                let props = Rc::make_mut(&mut s.props);
+                props.open = *open;
+                s
+            }) }
 
-        if ctx.props().full_height {
-            class.push("pf-m-full-height");
-        }
-
-        html! {
-            <div {class} id={&ctx.props().id}>
-                <header class="pf-c-page__header">
-                    <div class="pf-c-page__header-brand">
-
-                        if !ctx.props().sidebar.is_empty() {
-                            <div class="pf-c-page__header-brand-toggle">
-                                <button
-                                    aria-expanded={self.open.to_string()}
-                                    class="pf-c-button pf-m-plain"
-                                    type="button"
-                                    onclick={click_callback}
-                                    >
-                                    <i class="fas fa-bars" aria-hidden="true"/>
-                                </button>
-                            </div>
-                        }
-
-                        <a href="#" class="pf-c-page__header-brand-link"> {
-                            for ctx.props().logo.iter()
-                        } </a>
-
-                    </div>
-                    <div class="pf-c-page__header-nav">{for ctx.props().nav.iter()}</div>
-                    <div class="pf-c-page__header-tools"> { for ctx.props().tools.iter() }</div>
-                </header>
-
-                { for ctx.props().sidebar.iter().map(|mut s|{
-                    let props = Rc::make_mut(&mut s.props);
-                    props.open = self.open;
-                    s
-                }) }
-
-                <main class="pf-c-page__main" tabindex="-1">
-                    { for ctx.props().children.iter() }
-                </main>
-            </div>
-        }
-    }
+            <main class="pf-c-page__main" tabindex="-1">
+                { for props.children.iter() }
+            </main>
+        </div>
+    )
 }
