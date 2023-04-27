@@ -105,82 +105,63 @@ pub struct BackdropProperties {
     pub children: Children,
 }
 
-/// The component showing backdrop content
-pub struct BackdropViewer {
-    content: Rc<Backdrop>,
-    open: bool,
-    ctx: Backdropper,
-}
-
 #[doc(hidden)]
-pub enum Msg {
+enum Msg {
     Open(Rc<Backdrop>),
     Close,
 }
 
-impl Component for BackdropViewer {
-    type Message = Msg;
-    type Properties = BackdropProperties;
+#[function_component(BackdropViewer)]
+pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
+    let open = use_state::<Option<Rc<Backdrop>>, _>(|| None);
 
-    fn create(ctx: &Context<Self>) -> Self {
-        let ctx = Backdropper {
-            callback: ctx.link().callback(|msg| msg),
-        };
-
-        Self {
-            content: Default::default(),
-            open: false,
-            ctx,
-        }
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Open(content) => {
-                self.content = content;
-                self.open();
-            }
-            Msg::Close => {
-                if self.open {
-                    self.content = Default::default();
-                    self.close();
-                }
-            }
-        }
-        true
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        html!(
-            <>
-                <ContextProvider<Backdropper> context={self.ctx.clone()}>
-                    if self.open {
-                        <div class="pf-c-backdrop">
-                            { self.content.content.clone() }
-                        </div>
-                    }
-                    { for ctx.props().children.iter() }
-                </ContextProvider<Backdropper>>
-            </>
+    let ctx = {
+        let open = open.clone();
+        use_memo(
+            |()| Backdropper {
+                callback: Callback::from(move |msg| match msg {
+                    Msg::Open(backdrop) => open.set(Some(backdrop)),
+                    Msg::Close => open.set(None),
+                }),
+            },
+            (),
         )
+    };
+
+    use_effect_with_deps(
+        |open| {
+            match open {
+                true => body_open(),
+                false => body_close(),
+            }
+            || body_close()
+        },
+        open.is_some(),
+    );
+
+    html!(
+        <ContextProvider<Backdropper> context={(*ctx).clone()}>
+            if let Some(open) = &*open {
+                <div class="pf-c-backdrop">
+                    { open.content.clone() }
+                </div>
+            }
+            { for props.children.iter() }
+        </ContextProvider<Backdropper>>
+    )
+}
+
+fn body_open() {
+    if let Some(body) = document().body() {
+        let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
+        body.class_list().add(&classes).ok();
     }
 }
 
-impl BackdropViewer {
-    fn open(&mut self) {
-        if let Some(body) = document().body() {
-            let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
-            body.class_list().add(&classes).ok();
-        }
-        self.open = true;
-    }
-
-    fn close(&mut self) {
-        if let Some(body) = document().body() {
-            let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
-            body.class_list().remove(&classes).ok();
-        }
-        self.open = false;
+fn body_close() {
+    if let Some(body) = document().body() {
+        let classes = js_sys::Array::of1(&JsValue::from_str("pf-c-backdrop__open"));
+        body.class_list().remove(&classes).ok();
     }
 }
 
