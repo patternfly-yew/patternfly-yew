@@ -30,6 +30,7 @@ yew-nested-router = { version = "0.2.0", optional = true }
 
 web-sys = { version = "0.3", features = [
     "HtmlCollection",
+    "Node",
     "NodeList",
     "DomRect",
     "DomTokenList",

@@ -1,7 +1,7 @@
 //! Backdrop visual
 use gloo_utils::document;
 use std::rc::Rc;
-use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen::JsValue;
 use yew::prelude::*;
 
 /// Backdrop overlay the main content and show some new content, until it gets closed.
@@ -58,50 +58,23 @@ use yew::prelude::*;
 #[derive(Clone, Debug)]
 pub struct Backdrop {
     pub content: Html,
-    pub options: BackdropOptions,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct BackdropOptions {
-    /// Close the backdrop when the escape key is pressed.
-    pub close_on_escape: bool,
-    /// Close the backdrop when it is clicked on (outside the content).
-    pub close_on_click: bool,
-}
-
-impl Default for BackdropOptions {
-    fn default() -> Self {
-        Self {
-            close_on_escape: true,
-            close_on_click: true,
-        }
-    }
 }
 
 impl Backdrop {
     pub fn new(content: Html) -> Self {
-        Self {
-            content,
-            options: BackdropOptions::default(),
-        }
+        Self { content }
     }
 }
 
 impl Default for Backdrop {
     fn default() -> Self {
-        Self {
-            content: html!(),
-            options: BackdropOptions::default(),
-        }
+        Self { content: html!() }
     }
 }
 
 impl From<Html> for Backdrop {
     fn from(content: Html) -> Self {
-        Self {
-            content,
-            options: BackdropOptions::default(),
-        }
+        Self { content }
     }
 }
 
@@ -168,56 +141,6 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
         },
         open.is_some(),
     );
-
-    // generate the opts required for event handling
-    let opts = open
-        .as_ref()
-        .map(|open| (open.options.close_on_escape, open.options.close_on_click))
-        .unwrap_or_default();
-
-    // handle events on the backdrop
-    {
-        let ctx = ctx.clone();
-        use_effect_with_deps(
-            move |opts| {
-                let mut listeners = vec![];
-
-                if let Some(body) = document().body() {
-                    // on escape
-                    if opts.0 {
-                        let ctx = ctx.clone();
-                        listeners.push(gloo_events::EventListener::new(
-                            &body,
-                            "keyup",
-                            move |evt| {
-                                if let Some(evt) = evt.dyn_ref::<web_sys::KeyboardEvent>() {
-                                    if evt.key() == "Escape" {
-                                        ctx.callback.emit(Msg::Close);
-                                    }
-                                }
-                            },
-                        ));
-                    }
-                    // on click
-                    if opts.1 {
-                        let ctx = ctx.clone();
-                        listeners.push(gloo_events::EventListener::new(
-                            &body,
-                            "mousedown",
-                            move |_| {
-                                ctx.callback.emit(Msg::Close);
-                            },
-                        ));
-                    }
-                }
-
-                move || {
-                    drop(listeners);
-                }
-            },
-            opts,
-        );
-    }
 
     // render
     html!(

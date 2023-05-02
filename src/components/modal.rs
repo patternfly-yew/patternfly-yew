@@ -1,6 +1,7 @@
 //! Modal
-use crate::{utils::ContextWrapper, Backdropper};
-use std::ops::Deref;
+use crate::use_backdrop;
+use wasm_bindgen::JsCast;
+use web_sys::Node;
 use yew::prelude::*;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -41,14 +42,16 @@ pub struct ModalProperties {
     pub children: Children,
     #[prop_or_default]
     pub footer: Option<Html>,
+
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
-}
 
-#[doc(hidden)]
-pub enum Msg {
-    Close,
-    SetBackdrop(Backdropper),
+    /// Disable closing the modal when the escape key is pressed
+    #[prop_or_default]
+    pub disable_close_escape: bool,
+    /// Disable closing the modal when the user clicks outside the modal
+    #[prop_or_default]
+    pub disable_close_click_outside: bool,
 }
 
 /// Modal component
@@ -67,81 +70,137 @@ pub enum Msg {
 /// `onclose` callback is set, then it will automatically close the backdrop when the modal dialog
 /// gets closed.
 ///
-pub struct Modal {
-    backdrop: ContextWrapper<Backdropper>,
-}
+#[function_component(Modal)]
+pub fn modal(props: &ModalProperties) -> Html {
+    let mut classes = props.variant.as_classes();
+    classes.push("pf-c-modal-box");
 
-impl Component for Modal {
-    type Message = Msg;
-    type Properties = ModalProperties;
+    let backdrop = use_backdrop();
 
-    fn create(ctx: &Context<Self>) -> Self {
-        Self {
-            backdrop: ContextWrapper::from((ctx, Msg::SetBackdrop)),
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Close => {
-                if let Some(onclose) = &ctx.props().onclose {
+    let onclose = use_memo(
+        |(onclose, backdrop)| {
+            let onclose = onclose.clone();
+            let backdrop = backdrop.clone();
+            Callback::from(move |()| {
+                if let Some(onclose) = &onclose {
                     onclose.emit(());
-                } else if let Some(backdrop) = self.backdrop.deref() {
+                } else if let Some(backdrop) = &backdrop {
                     backdrop.close();
                 }
+            })
+        },
+        (props.onclose.clone(), backdrop.clone()),
+    );
+
+    // escape key
+
+    use_effect_with_deps(
+        |(disabled, onclose)| {
+            let listener = match *disabled {
+                true => None,
+                false => {
+                    let onclose = onclose.clone();
+                    Some(gloo_events::EventListener::new(
+                        &gloo_utils::body(),
+                        "keyup",
+                        move |evt| {
+                            if let Some(evt) = evt.dyn_ref::<KeyboardEvent>() {
+                                if evt.key() == "Escape" {
+                                    onclose.emit(());
+                                }
+                            }
+                        },
+                    ))
+                }
+            };
+            move || {
+                drop(listener);
             }
-            Msg::SetBackdrop(backdrop) => {
-                self.backdrop.set(backdrop);
-            }
-        }
-        true
+        },
+        (props.disable_close_escape, onclose.clone()),
+    );
+
+    // outside click
+
+    let node_ref = use_node_ref();
+
+    {
+        let node_ref = node_ref.clone();
+        use_effect_with_deps(
+            move |(disabled, onclose)| {
+                let mut listeners = vec![];
+                if !*disabled {
+                    let mut register = |name: &'static str, node_ref: NodeRef| {
+                        let onclose = onclose.clone();
+                        listeners.push(gloo_events::EventListener::new(
+                            &gloo_utils::body(),
+                            name,
+                            move |evt| {
+                                if let Some(node) = node_ref.get() {
+                                    if let Some(target_node) = evt.target_dyn_into::<Node>() {
+                                        if !node.contains(Some(&target_node)) {
+                                            onclose.emit(());
+                                        }
+                                    }
+                                }
+                            },
+                        ));
+                    };
+
+                    register("mousedown", node_ref.clone());
+                    register("touchstart", node_ref);
+                }
+                move || {
+                    drop(listeners);
+                }
+            },
+            (props.disable_close_click_outside, onclose.clone()),
+        );
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = ctx.props().variant.as_classes();
-        classes.push("pf-c-modal-box");
+    html! (
+        <div
+            class={classes}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+            ref={node_ref}
+        >
+            <button
+                class="pf-c-button pf-m-plain"
+                type="button"
+                aria-label="Close dialog"
+                onclick={onclose.reform(|_|())}
+            >
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
 
-        html! {
-            <div class={classes}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
-                    aria-describedby="modal-description">
-                <button
-                    class="pf-c-button pf-m-plain"
-                    type="button"
-                    aria-label="Close dialog"
-                    onclick={ctx.link().callback(|_|Msg::Close)}
-                >
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-
-                <header class="pf-c-modal-box__header">
-                    <h1
-                        class="pf-c-modal-box__title"
-                        id="modal-title-modal-with-form"
-                    >{ &ctx.props().title }</h1>
-                </header>
+            <header class="pf-c-modal-box__header">
+                <h1
+                    class="pf-c-modal-box__title"
+                    id="modal-title-modal-with-form"
+                >{ &props.title }</h1>
+            </header>
 
 
-                if !&ctx.props().description.is_empty() {
-                    <div class="pf-c-modal-box__body">
-                        <p>{ &ctx.props().description }</p>
-                    </div>
-                }
+            if !&props.description.is_empty() {
+                <div class="pf-c-modal-box__body">
+                    <p>{ &props.description }</p>
+                </div>
+            }
 
-                { for ctx.props().children.iter().map(|c|{
-                   {html!{
-                    <div class="pf-c-modal-box__body">{c}</div>
-                   }}
-                }) }
+            { for props.children.iter().map(|c|{
+               { html! (
+                <div class="pf-c-modal-box__body">{c}</div>
+               ) }
+            }) }
 
-                if let Some(footer) = &ctx.props().footer {
-                  <footer class="pf-c-modal-box__footer">
-                      { footer.clone() }
-                  </footer>
-                }
-            </div>
-        }
-    }
+            if let Some(footer) = &props.footer {
+              <footer class="pf-c-modal-box__footer">
+                  { footer.clone() }
+              </footer>
+            }
+        </div>
+    )
 }
