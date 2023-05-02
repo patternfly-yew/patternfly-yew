@@ -20,6 +20,11 @@ use yew::prelude::*;
 pub mod next {
     pub use super::area::next::{TextArea, TextAreaProperties};
     pub use super::input::next::{TextInput, TextInputProperties};
+    pub use super::select::next::{
+        FormSelect, FormSelectChild, FormSelectChildVariant, FormSelectGroup,
+        FormSelectGroupProperties, FormSelectOption, FormSelectOptionProperties,
+        FormSelectProperties,
+    };
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
