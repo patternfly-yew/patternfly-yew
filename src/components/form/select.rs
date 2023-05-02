@@ -55,6 +55,7 @@ pub enum Msg {
     Changed,
 }
 
+#[allow(deprecated)]
 impl<K> Component for FormSelect<K>
 where
     K: 'static + Clone + PartialEq + Display + FromStr,
@@ -99,6 +100,7 @@ where
     }
 }
 
+#[allow(deprecated)]
 impl<K> FormSelect<K>
 where
     K: 'static + Clone + PartialEq + Display + FromStr,
