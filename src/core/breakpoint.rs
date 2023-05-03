@@ -3,7 +3,7 @@
  */
 
 use crate::AsClasses;
-use std::fmt::Debug;
+use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use yew::html::IntoPropValue;
 use yew::Classes;
@@ -156,17 +156,16 @@ where
     }
 }
 
-impl ToString for Breakpoint {
-    fn to_string(&self) -> String {
+impl Display for Breakpoint {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Breakpoint::None => "",
-            Breakpoint::Small => "-on-sm",
-            Breakpoint::Medium => "-on-md",
-            Breakpoint::Large => "-on-lg",
-            Breakpoint::XLarge => "-on-xl",
-            Breakpoint::XXLarge => "-on-2xl",
+            Breakpoint::None => f.write_str(""),
+            Breakpoint::Small => f.write_str("-on-sm"),
+            Breakpoint::Medium => f.write_str("-on-md"),
+            Breakpoint::Large => f.write_str("-on-lg"),
+            Breakpoint::XLarge => f.write_str("-on-xl"),
+            Breakpoint::XXLarge => f.write_str("-on-2xl"),
         }
-        .to_string()
     }
 }
 
