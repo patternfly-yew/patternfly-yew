@@ -12,6 +12,7 @@ pub mod breadcrumb;
 pub mod button;
 pub mod card;
 pub mod chip;
+pub mod chip_group;
 pub mod clipboard;
 pub mod code_block;
 pub mod content;
