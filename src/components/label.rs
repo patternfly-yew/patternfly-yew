@@ -64,7 +64,7 @@ pub struct LabelProperties {
 ///
 /// See: <https://www.patternfly.org/v4/components/label/html>
 ///
-/// # Properties
+/// ## Properties
 ///
 /// Defined in [`LabelProperties`].
 #[function_component(Label)]
