@@ -56,6 +56,9 @@ where
     pub multiple: bool,
 
     #[prop_or_default]
+    pub icon: Option<Html>,
+
+    #[prop_or_default]
     pub placeholder: String,
 
     #[prop_or_default]
@@ -152,8 +155,13 @@ where
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     id={ctx.props().id.clone()}
-                    >
+                >
                     <div class="pf-c-select__toggle-wrapper">
+                        if let Some(icon) = &ctx.props().icon {
+                            <span class="pf-c-select__toggle-icon">
+                                { icon.clone() }
+                            </span>
+                        }
                         { self.render_selection(ctx) }
                     </div>
                     <div class="pf-c-select__toggle-arrow">
