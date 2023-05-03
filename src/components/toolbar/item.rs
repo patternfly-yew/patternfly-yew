@@ -1,4 +1,4 @@
-use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 /// Properties for [`ToolbarItem`]
@@ -33,21 +33,43 @@ impl AsClasses for ToolbarItemType {
 pub struct ToolbarItemProperties {
     #[prop_or_default]
     pub children: Children,
+
     #[prop_or_default]
     pub modifiers: WithBreakpoints<ToolbarElementModifier>,
+
     #[prop_or_default]
     pub r#type: ToolbarItemType,
+
+    /// Control the width of the item
+    #[prop_or_default]
+    pub width: WithBreakpoints<String>,
+
+    /// Control the minimul width of the item
+    #[prop_or_default]
+    pub min_width: WithBreakpoints<String>,
 }
 
 #[function_component(ToolbarItem)]
 pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
-    let mut classes = classes!("pf-c-toolbar__item");
+    let mut class = classes!("pf-c-toolbar__item");
 
-    classes.extend(props.r#type.as_classes());
-    classes.extend(props.modifiers.as_classes());
+    class.extend_from(&props.r#type);
+    class.extend_from(&props.modifiers);
+
+    let style = props
+        .width
+        .iter()
+        .map(|w| format!("--pf-c-toolbar__item--Width{}: {};", w.on, w.modifier))
+        .chain(
+            props
+                .min_width
+                .iter()
+                .map(|w| format!("--pf-c-toolbar__item--MinWidth{}: {};", w.on, w.modifier)),
+        )
+        .collect::<String>();
 
     html! (
-        <div class={classes}>
+        <div {class} {style}>
             { for props.children.iter() }
         </div>
     )
