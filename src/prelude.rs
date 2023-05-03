@@ -29,6 +29,7 @@ pub use crate::components::expandable_section::*;
 pub use crate::components::file_upload::*;
 pub use crate::components::form::*;
 pub use crate::components::helper_text::*;
+pub use crate::components::input_group::*;
 pub use crate::components::label::*;
 pub use crate::components::list::*;
 pub use crate::components::login_page::*;
@@ -46,6 +47,7 @@ pub use crate::components::table::*;
 pub use crate::components::tabs::*;
 #[allow(deprecated)]
 pub use crate::components::text::*;
+pub use crate::components::text_input_group::*;
 pub use crate::components::title::*;
 pub use crate::components::toast::*;
 pub use crate::components::toolbar::*;

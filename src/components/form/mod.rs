@@ -308,22 +308,3 @@ pub fn action_group(props: &ActionGroupProperties) -> Html {
         </div>
     }
 }
-
-//
-// Input group
-//
-
-/// Properties for [`InputGroup`]
-#[derive(Clone, PartialEq, Properties)]
-pub struct InputGroupProperties {
-    pub children: Children,
-}
-
-#[function_component(InputGroup)]
-pub fn input_group(props: &InputGroupProperties) -> Html {
-    html! {
-        <div class="pf-c-input-group">
-            { for props.children.iter() }
-        </div>
-    }
-}
