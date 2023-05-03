@@ -24,6 +24,7 @@ pub mod expandable_section;
 pub mod file_upload;
 pub mod form;
 pub mod helper_text;
+pub mod input_group;
 pub mod label;
 pub mod list;
 pub mod login_page;
@@ -44,6 +45,7 @@ pub mod tabs;
     note = "Use the `Content` component as a wrapper to standard HTML elements instead"
 )]
 pub mod text;
+pub mod text_input_group;
 pub mod title;
 pub mod toast;
 pub mod toolbar;
