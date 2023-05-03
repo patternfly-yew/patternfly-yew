@@ -1,5 +1,6 @@
 //! Text Input Group
 
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -51,6 +52,9 @@ pub struct TextInputGroupMainProperties {
 
     #[prop_or_default]
     pub aria_label: AttrValue,
+
+    #[prop_or_default]
+    pub oninput: Callback<String>,
 }
 
 #[function_component(TextInputGroupMain)]
@@ -60,6 +64,18 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     if props.icon.is_some() {
         class.push(classes!("pf-m-icon"));
     }
+
+    let node_ref = use_node_ref();
+
+    let oninput = {
+        let node_ref = node_ref.clone();
+        let onchange = props.oninput.clone();
+        Callback::from(move |_| {
+            if let Some(input) = node_ref.cast::<HtmlInputElement>() {
+                onchange.emit(input.value());
+            }
+        })
+    };
 
     html!(
         <div {class}>
@@ -71,7 +87,9 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                 }
                 <input
                     class="pf-c-text-input-group__text-input"
+                    ref={node_ref}
                     type="text"
+                    {oninput}
                     disabled={props.disabled}
                     placeholder={&props.placeholder}
                     value={props.value.clone()}
