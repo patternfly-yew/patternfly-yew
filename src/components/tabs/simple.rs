@@ -150,6 +150,7 @@ fn tab_header_item(props: &TabHeaderItemProperties) -> Html {
     if props.current {
         classes.push("pf-m-current");
     }
+
     html! (
         <li class={classes}>
             <button class="pf-c-tabs__link" onclick={props.onselect.reform(|_|())}>
