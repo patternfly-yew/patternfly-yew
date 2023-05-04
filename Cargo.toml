@@ -12,7 +12,7 @@ readme = "README.md"
 rust-version = "1.62"
 
 [dependencies]
-chrono = { version = "0.4", features = ["wasmbind"] }
+chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
 gloo-events = "0.1.2"
 gloo-timers = "0.2.4"
 gloo-utils = "0.1.4"
