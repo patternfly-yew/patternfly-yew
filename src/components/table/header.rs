@@ -29,13 +29,13 @@ pub fn table_header(props: &TableHeaderProperties) -> Html {
             <tr role="row">
 
                 if props.expandable {
-                    <td></td>
+                    <th></th>
                 }
 
                 { for props.children.iter() }
 
                 if !props.hide_actions {
-                    <td></td>
+                    <th></th>
                 }
 
             </tr>

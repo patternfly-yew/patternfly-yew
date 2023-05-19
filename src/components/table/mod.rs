@@ -56,6 +56,9 @@ where
     M: TableModel + 'static,
 {
     #[prop_or_default]
+    pub id: AttrValue,
+
+    #[prop_or_default]
     pub caption: Option<String>,
     #[prop_or_default]
     pub mode: TableMode,
@@ -222,7 +225,7 @@ where
                 class.push(classes!("pf-m-compact", "pf-m-no-border-rows"));
             }
             TableMode::CompactExpandable => {
-                class.push(classes!("pf-m-compact", "pf-m-expandable"));
+                class.push(classes!("pf-m-compact"));
             }
             TableMode::Expandable => {
                 class.push(classes!("pf-m-expandable"));
@@ -231,7 +234,11 @@ where
         };
 
         html! (
-            <table {class} role="grid">
+            <table
+                id={&ctx.props().id}
+                {class}
+                role="grid"
+            >
                 { self.render_caption(ctx) }
                 { self.render_header(ctx) }
                 { self.render_entries(ctx) }
@@ -249,7 +256,7 @@ where
             Some(caption) => html! {
                 <caption>{caption}</caption>
             },
-            None => html! {},
+            None => html!(),
         }
     }
 
@@ -261,7 +268,7 @@ where
                 props.expandable = self.is_expandable(ctx);
                 VComp(yew::virtual_dom::VComp::from(header))
             }
-            None => html! {},
+            None => html!(),
         }
     }
 
@@ -305,10 +312,10 @@ where
             false => ctx.link().callback(move |_: MouseEvent| Msg::Expand(idx)),
         };
 
-        let mut classes = Classes::from("pf-c-button");
-        classes.push("pf-m-plain");
+        let mut classes = classes!("pf-c-button");
+        classes.push(classes!("pf-m-plain"));
         if expanded {
-            classes.push("pf-m-expanded");
+            classes.push(classes!("pf-m-expanded"));
         }
 
         let aria_expanded = match expanded {
@@ -318,7 +325,7 @@ where
 
         let mut expanded_class = Classes::new();
         if expanded {
-            expanded_class.push("pf-m-expanded");
+            expanded_class.push(classes!("pf-m-expanded"));
         }
 
         let mut cols = ctx
@@ -343,7 +350,7 @@ where
             let mut classes = Classes::new();
             classes.extend(cell.modifiers.as_classes());
             cells.push(html! {
-                <td class={classes} role="cell" colspan={cell.cols.to_string()}>
+                <td class={classes} colspan={cell.cols.to_string()}>
                     <div class="pf-c-table__expandable-row-content">
                         { cell.content }
                     </div>
@@ -370,8 +377,8 @@ where
 
         html! (
             <tbody role="rowgroup" class={expanded_class}>
-                <tr role="row">
-                    <td class="pf-c-table__toggle" role="cell">
+                <tr>
+                    <td class="pf-c-table__toggle">
                         <button class={classes} onclick={onclick} aria-expanded={aria_expanded}>
                             <div class="pf-c-table__toggle-icon">
                                 { Icon::AngleDown }
@@ -382,7 +389,7 @@ where
                     { self.render_row(ctx, &entry.value) }
                 </tr>
 
-                <tr class={tr_classes} role="row">
+                <tr class={tr_classes}>
                     { cells }
                 </tr>
             </tbody>
@@ -416,7 +423,7 @@ where
             };
             let label = col.props.label.clone();
             cells.push(html!(
-                <td {class} role="cell" data-label={label.unwrap_or_default()}>
+                <td {class} data-label={label.unwrap_or_default()}>
                     {cell.content}
                 </td>
             ));

@@ -75,7 +75,7 @@ pub fn table_column(props: &TableColumnProperties) -> Html {
     class.extend_from(&props.width);
 
     match &props.label {
-        None => html! (<td></td>),
+        None => html! (<th></th>),
         Some(label) => html! (
             <th {class} scope="col" role="columnheader">{ &label }</th>
         ),
