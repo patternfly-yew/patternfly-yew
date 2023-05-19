@@ -173,6 +173,7 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     class.extend_from(&props.variant);
     class.extend_from(&props.fill);
     class.extend_from(&props.sticky);
+    class.extend_from(&props.shadow);
 
     if props.limit_width {
         class.push("pf-m-limit-width");
