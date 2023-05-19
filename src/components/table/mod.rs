@@ -373,8 +373,8 @@ where
                 <tr role="row">
                     <td class="pf-c-table__toggle" role="cell">
                         <button class={classes} onclick={onclick} aria-expanded={aria_expanded}>
-                            <div class="pf-c-table__toggle_icon">
-                                { if expanded { Icon::AngleDown } else { Icon::AngleRight }}
+                            <div class="pf-c-table__toggle-icon">
+                                { Icon::AngleDown }
                             </div>
                         </button>
                     </td>
