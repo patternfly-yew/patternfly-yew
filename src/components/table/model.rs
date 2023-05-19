@@ -57,7 +57,6 @@ impl<T> TableModelEntry<T> {
     }
 }
 
-#[derive(Clone)]
 pub struct SharedTableModel<T> {
     entries: Arc<RwLock<Vec<TableModelEntry<T>>>>,
     generation: usize,
@@ -74,12 +73,16 @@ impl<T> From<Vec<T>> for SharedTableModel<T> {
             entries.push(Self::new_entry(entry, index));
         }
 
-        let id = ID.fetch_add(1, Ordering::SeqCst);
+        Self::with_state(entries)
+    }
+}
 
+impl<T> Clone for SharedTableModel<T> {
+    fn clone(&self) -> Self {
         Self {
-            entries: Arc::new(RwLock::new(entries)),
-            generation: 0,
-            id,
+            entries: self.entries.clone(),
+            generation: self.generation,
+            id: self.id,
         }
     }
 }
@@ -87,6 +90,20 @@ impl<T> From<Vec<T>> for SharedTableModel<T> {
 impl<T> SharedTableModel<T> {
     pub fn new(entries: Vec<T>) -> Self {
         entries.into()
+    }
+
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self::with_state(Vec::with_capacity(capacity))
+    }
+
+    fn with_state(state: Vec<TableModelEntry<T>>) -> Self {
+        let id = ID.fetch_add(1, Ordering::SeqCst);
+
+        Self {
+            entries: Arc::new(RwLock::new(state)),
+            generation: 0,
+            id,
+        }
     }
 
     fn new_entry(entry: T, index: usize) -> TableModelEntry<T> {
