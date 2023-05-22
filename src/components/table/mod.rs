@@ -49,6 +49,26 @@ impl AsClasses for TableGridMode {
     }
 }
 
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub enum TextModifier {
+    #[default]
+    Wrap,
+    NoWrap,
+    Truncate,
+    BreakWord,
+}
+
+impl AsClasses for TextModifier {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            Self::Wrap => classes.extend(classes!("pf-m-wrap")),
+            Self::NoWrap => classes.extend(classes!("pf-m-nowrap")),
+            Self::Truncate => classes.extend(classes!("pf-m-truncate")),
+            Self::BreakWord => classes.extend(classes!("pf-m-break-word")),
+        }
+    }
+}
+
 /// Properties for [`Table`]
 #[derive(Debug, PartialEq, Clone, Properties)]
 pub struct TableProperties<M>
@@ -417,10 +437,12 @@ where
             .enumerate()
         {
             let cell = entry.render_cell(&CellContext { column });
-            let class = match cell.center {
+            let mut class = match cell.center {
                 true => classes!("pf-m-center"),
                 false => Classes::new(),
             };
+            class.extend_from(&cell.text_modifier);
+
             let label = col.props.label.clone();
             cells.push(html!(
                 <td {class} data-label={label.unwrap_or_default()}>

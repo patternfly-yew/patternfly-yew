@@ -1,3 +1,4 @@
+use crate::TextModifier;
 use yew::prelude::*;
 
 /// A rendered cell.
@@ -5,6 +6,7 @@ use yew::prelude::*;
 pub struct Cell {
     pub content: Html,
     pub center: bool,
+    pub text_modifier: Option<TextModifier>,
 }
 
 impl Cell {
@@ -17,6 +19,11 @@ impl Cell {
 
     pub fn center(mut self) -> Self {
         self.center = true;
+        self
+    }
+
+    pub fn text_modifier(mut self, text_modifier: impl Into<Option<TextModifier>>) -> Self {
+        self.text_modifier = text_modifier.into();
         self
     }
 }
