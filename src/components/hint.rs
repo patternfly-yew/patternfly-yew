@@ -7,11 +7,11 @@ use yew::virtual_dom::VNode;
 #[derive(Clone, PartialEq, Properties)]
 pub struct HintProperties {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: AttrValue,
     #[prop_or_default]
     pub actions: Option<VNode>,
     #[prop_or_default]
-    pub class: Option<String>,
+    pub class: Classes,
     #[prop_or_default]
     pub children: Children,
 }
@@ -27,10 +27,13 @@ pub struct HintProperties {
 /// Defined by [`HintProperties`].
 #[function_component(Hint)]
 pub fn hint(props: &HintProperties) -> Html {
+    let mut class = props.class.clone();
+    class.push("pf-c-hint");
+
     html! (
         <div
             id={props.id.clone()}
-            class={classes!("pf-c-hint", props.class.clone())}
+            {class}
         >
             if let Some(actions) = &props.actions {
                 <div class="pf-c-hint__actions">{ actions.clone() }</div>
@@ -46,9 +49,9 @@ pub fn hint(props: &HintProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct HintTitleProperties {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: AttrValue,
     #[prop_or_default]
-    pub class: Option<String>,
+    pub class: Classes,
     #[prop_or_default]
     pub children: Children,
 }
@@ -60,10 +63,13 @@ pub struct HintTitleProperties {
 /// Defined by [`HintTitleProperties`].
 #[function_component(HintTitle)]
 pub fn hint_title(props: &HintTitleProperties) -> Html {
+    let mut class = props.class.clone();
+    class.push("pf-c-hint__title");
+
     html! (
         <div
             id={props.id.clone()}
-            class={classes!("pf-c-hint__title", props.class.clone())}
+            {class}
         >
             if !props.children.is_empty() {
                 { for props.children.iter() }
@@ -76,9 +82,9 @@ pub fn hint_title(props: &HintTitleProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct HintBodyProperties {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: AttrValue,
     #[prop_or_default]
-    pub class: Option<String>,
+    pub class: Classes,
     #[prop_or_default]
     pub children: Children,
 }
@@ -90,10 +96,13 @@ pub struct HintBodyProperties {
 /// Defined by [`HintBodyProperties`].
 #[function_component(HintBody)]
 pub fn hint_body(props: &HintBodyProperties) -> Html {
+    let mut class = props.class.clone();
+    class.push("pf-c-hint__body");
+
     html! (
         <div
             id={props.id.clone()}
-            class={classes!("pf-c-hint__body", props.class.clone())}
+            {class}
         >
             if !props.children.is_empty() {
                 { for props.children.iter() }
@@ -106,9 +115,9 @@ pub fn hint_body(props: &HintBodyProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct HintFooterProperties {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: AttrValue,
     #[prop_or_default]
-    pub class: Option<String>,
+    pub class: Classes,
     #[prop_or_default]
     pub children: Children,
 }
@@ -120,10 +129,13 @@ pub struct HintFooterProperties {
 /// Defined by [`HintFooterProperties`].
 #[function_component(HintFooter)]
 pub fn hint_footer(props: &HintFooterProperties) -> Html {
+    let mut class = props.class.clone();
+    class.push("pf-c-hint__footer");
+
     html! (
         <div
             id={props.id.clone()}
-            class={classes!("pf-c-hint__footer", props.class.clone())}
+            {class}
         >
             if !props.children.is_empty() {
                 { for props.children.iter() }
