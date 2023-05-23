@@ -58,6 +58,10 @@ pub struct CardProperties {
 /// ## Properties
 ///
 /// Defined by [`CardProperties`].
+///
+/// ## Children
+///
+/// Cards can have any number of [`CardBody`] or [`CardDivider`] children.
 #[function_component(Card)]
 pub fn card(props: &CardProperties) -> Html {
     let expanded = use_state_eq(|| false);
@@ -174,6 +178,7 @@ fn card_title(props: &OptionalContentProperties) -> Html {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardBodyProperties {
+    #[prop_or_default]
     pub children: Children,
 }
 
