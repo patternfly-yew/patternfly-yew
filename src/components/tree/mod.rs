@@ -256,6 +256,7 @@ fn main_cell(props: &MainCellProperties) -> Html {
             if props.has_children {
                 <span class="pf-c-table__toggle">
                     <button
+                        type="button"
                         class={button_class}
                         aria-labelledby={format!("{} {}", *id_label, *id_toggle)}
                         id={ *id_toggle }
