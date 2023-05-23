@@ -1,4 +1,7 @@
 //! Card
+
+pub mod next;
+
 use crate::Icon;
 use yew::prelude::*;
 

@@ -1,12 +1,7 @@
 //! Panel
-use crate::{AsClasses, ExtendClasses};
-use yew::prelude::*;
 
-/// A properties structures which only has children.
-#[derive(Clone, Debug, PartialEq, Properties)]
-pub struct ChildrenProperties {
-    pub children: Children,
-}
+use crate::prelude::{AsClasses, ChildrenProperties, ExtendClasses};
+use yew::prelude::*;
 
 /// Properties for [`Panel`]
 #[derive(Clone, Debug, PartialEq, Properties)]
