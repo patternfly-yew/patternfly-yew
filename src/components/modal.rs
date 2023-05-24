@@ -13,12 +13,12 @@ pub enum ModalVariant {
 }
 
 impl ModalVariant {
-    pub fn as_classes(&self) -> Vec<&'static str> {
+    pub fn as_classes(&self) -> Classes {
         match self {
-            ModalVariant::None => vec![],
-            ModalVariant::Small => vec!["pf-m-sm"],
-            ModalVariant::Medium => vec!["pf-m-md"],
-            ModalVariant::Large => vec!["pf-m-lg"],
+            ModalVariant::None => classes!(),
+            ModalVariant::Small => classes!("pf-m-sm"),
+            ModalVariant::Medium => classes!("pf-m-md"),
+            ModalVariant::Large => classes!("pf-m-lg"),
         }
     }
 }
@@ -75,6 +75,95 @@ pub fn modal(props: &ModalProperties) -> Html {
     let mut classes = props.variant.as_classes();
     classes.push("pf-c-modal-box");
 
+    html! (
+        <OuterModal
+            class={classes}
+            aria_labelledby="modal-title"
+            aria_describedby="modal-description"
+        >
+            <button
+                class="pf-c-button pf-m-plain"
+                type="button"
+                aria-label="Close dialog"
+                onclick={onclose.reform(|_|())}
+            >
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+
+            <header class="pf-c-modal-box__header">
+                <h1
+                    class="pf-c-modal-box__title"
+                    id="modal-title-modal-with-form"
+                >{ &props.title }</h1>
+            </header>
+
+
+            if !&props.description.is_empty() {
+                <div class="pf-c-modal-box__body">
+                    <p>{ &props.description }</p>
+                </div>
+            }
+
+            { for props.children.iter().map(|c|{
+               { html! (
+                <div class="pf-c-modal-box__body">{c}</div>
+               ) }
+            }) }
+
+            if let Some(footer) = &props.footer {
+              <footer class="pf-c-modal-box__footer">
+                  { footer.clone() }
+              </footer>
+            }
+        </OuterModal>
+    )
+}
+
+/// Properties for [`Modal`]
+#[derive(Clone, PartialEq, Properties)]
+pub struct OuterModalProperties {
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+    #[prop_or_default]
+    pub class: Classes, // TODO: Should this be Option<T>
+    #[prop_or_default]
+    pub children: Children,
+
+    #[prop_or_default]
+    pub onclose: Option<Callback<()>>,
+
+    // Aria
+    #[prop_or_default]
+    pub aria_labelledby: Option<AttrValue>,
+    #[prop_or_default]
+    pub aria_describedby: Option<AttrValue>,
+
+    /// Disable closing the modal when the escape key is pressed
+    #[prop_or_default]
+    pub disable_close_escape: bool,
+    /// Disable closing the modal when the user clicks outside the modal
+    #[prop_or_default]
+    pub disable_close_click_outside: bool,
+}
+
+/// Modal component
+///
+/// > A **modal** displays important information to a user without requiring them to navigate to a new page.
+///
+/// See: <https://www.patternfly.org/v4/components/modal>
+///
+/// ## Properties
+///
+/// Defined by [`ModalProperties`].
+///
+/// ## Contexts
+///
+/// If the modal dialog is wrapped by a [`crate::prelude::BackdropViewer`] component and no
+/// `onclose` callback is set, then it will automatically close the backdrop when the modal dialog
+/// gets closed.
+///
+#[function_component(OuterModal)]
+pub fn outer_modal(props: &OuterModalProperties) -> Html {
     let backdrop = use_backdrop();
 
     let onclose = use_memo(
@@ -160,46 +249,15 @@ pub fn modal(props: &ModalProperties) -> Html {
 
     html! (
         <div
-            class={classes}
+            class={props.class.clone()}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
+            aria-labelledby={props.aria_labelledby.clone()}
+            aria-describedby={props.aria_describedby.clone()}
             ref={node_ref}
         >
-            <button
-                class="pf-c-button pf-m-plain"
-                type="button"
-                aria-label="Close dialog"
-                onclick={onclose.reform(|_|())}
-            >
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-
-            <header class="pf-c-modal-box__header">
-                <h1
-                    class="pf-c-modal-box__title"
-                    id="modal-title-modal-with-form"
-                >{ &props.title }</h1>
-            </header>
-
-
-            if !&props.description.is_empty() {
-                <div class="pf-c-modal-box__body">
-                    <p>{ &props.description }</p>
-                </div>
-            }
-
-            { for props.children.iter().map(|c|{
-               { html! (
-                <div class="pf-c-modal-box__body">{c}</div>
-               ) }
-            }) }
-
-            if let Some(footer) = &props.footer {
-              <footer class="pf-c-modal-box__footer">
-                  { footer.clone() }
-              </footer>
+            if !props.children.is_empty() {
+                { for props.children.iter() }
             }
         </div>
     )
