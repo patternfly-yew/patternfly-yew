@@ -62,6 +62,33 @@ pub struct CardProperties {
 /// ## Children
 ///
 /// Cards can have any number of [`CardBody`] or [`CardDivider`] children.
+///
+/// ## Example
+///
+/// ```
+/// use yew::prelude::*;
+/// use patternfly_yew::next::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   let heading = html!({"The heading"});
+///   let footer = html!({"The footer"});
+///
+///   html!(
+///     <Card
+///         {heading} {footer}
+///     >
+///       <CardBody>
+///         { "Foo" }
+///       </CardBody>
+///       <CardDivider/>
+///       <CardBody>
+///         { "Bar" }
+///       </CardBody>
+///     </Card>
+///   )
+/// }
+/// ```
 #[function_component(Card)]
 pub fn card(props: &CardProperties) -> Html {
     let expanded = use_state_eq(|| false);
