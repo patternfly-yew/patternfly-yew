@@ -38,7 +38,7 @@ where
     M::Key: Hash,
 {
     fn eq(&self, other: &Self) -> bool {
-        &self.state == &other.state && &self.model == &other.model
+        self.state == other.state && self.model == other.model
     }
 }
 

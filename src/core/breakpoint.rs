@@ -93,7 +93,7 @@ where
             self.modifier
                 .as_classes()
                 .into_iter()
-                .map(|c| format!("{}{}", c, self.on.to_string())),
+                .map(|c| format!("{}{}", c, self.on)),
         )
     }
 }
@@ -111,7 +111,7 @@ where
             self.0
                 .clone()
                 .into_iter()
-                .map(|i| i.map(|m| f(m)))
+                .map(|i| i.map(&f))
                 .collect::<Vec<_>>(),
         )
     }

@@ -137,7 +137,7 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
                 true => body_open(),
                 false => body_close(),
             }
-            || body_close()
+            body_close
         },
         open.is_some(),
     );

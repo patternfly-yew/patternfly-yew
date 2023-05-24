@@ -25,6 +25,7 @@ pub struct BreadcrumbChild {
 
 impl PartialEq for BreadcrumbChild {
     fn eq(&self, other: &Self) -> bool {
+        #[allow(clippy::vtable_address_comparisons)]
         Rc::ptr_eq(&self.creator, &other.creator)
     }
 }

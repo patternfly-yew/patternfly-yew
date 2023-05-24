@@ -178,7 +178,7 @@ pub fn outer_modal(props: &OuterModalProperties) -> Html {
                 }
             })
         },
-        (props.onclose.clone(), backdrop.clone()),
+        (props.onclose.clone(), backdrop),
     );
 
     // escape key
