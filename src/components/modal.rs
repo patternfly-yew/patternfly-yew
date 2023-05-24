@@ -89,7 +89,7 @@ pub fn modal(props: &ModalProperties) -> Html {
                 }
             })
         },
-        (props.onclose.clone(), backdrop.clone()),
+        (props.onclose.clone(), backdrop),
     );
 
     // escape key

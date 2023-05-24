@@ -72,5 +72,5 @@ pub fn use_prop_id<I>(id: I) -> std::rc::Rc<String>
 where
     I: Into<Option<String>>,
 {
-    use_memo(|id| id.clone().unwrap_or_else(|| random_id()), id.into())
+    use_memo(|id| id.clone().unwrap_or_else(random_id), id.into())
 }

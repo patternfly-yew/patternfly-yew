@@ -162,7 +162,6 @@ impl Component for Pagination {
         };
 
         let onvalidate = {
-            let page_number_field_validator = page_number_field_validator.clone();
             ctx.link()
                 .callback(move |input: ValidationContext<String>| {
                     Msg::ValidationState(
