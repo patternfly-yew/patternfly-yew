@@ -71,12 +71,12 @@ pub struct CardProperties {
 ///
 /// #[function_component(Example)]
 /// fn example() -> Html {
-///   let heading = html!({"The heading"});
+///   let title = html!({"The heading"});
 ///   let footer = html!({"The footer"});
 ///
 ///   html!(
 ///     <Card
-///         {heading} {footer}
+///         {title} {footer}
 ///     >
 ///       <CardBody>
 ///         { "Foo" }
