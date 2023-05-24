@@ -55,6 +55,10 @@ pub struct CardProperties {
 /// ## Properties
 ///
 /// Defined by [`CardProperties`].
+#[deprecated(
+    since = "0.4.0",
+    note = "Will be replaced with the implementation from `next::Card`"
+)]
 pub struct Card {
     expanded: bool,
 }
@@ -65,6 +69,7 @@ pub enum Msg {
     Toggle,
 }
 
+#[allow(deprecated)]
 impl Component for Card {
     type Message = Msg;
     type Properties = CardProperties;
@@ -143,6 +148,7 @@ impl Component for Card {
     }
 }
 
+#[allow(deprecated)]
 impl Card {
     fn body(&self, ctx: &Context<Self>) -> Html {
         html! {

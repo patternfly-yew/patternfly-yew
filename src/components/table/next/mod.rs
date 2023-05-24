@@ -147,7 +147,7 @@ where
 {
     html!(
         <tr role="row" key={entry.key}>
-            { render_row(props, &entry.value)}
+            { render_row(props, entry.value)}
         </tr>
     )
 }
@@ -247,7 +247,7 @@ where
                     </button>
                 </td>
 
-                { render_row(props, &entry.value) }
+                { render_row(props, entry.value) }
             </tr>
 
             <tr class={tr_classes}>

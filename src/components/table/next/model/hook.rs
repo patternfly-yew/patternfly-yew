@@ -12,7 +12,7 @@ where
     M: PartialEq + Clone + TableDataModel<C> + 'static,
     M::Key: Hash,
 {
-    let state = use_mut_ref(|| HashSet::<M::Key>::new());
+    let state = use_mut_ref(HashSet::<M::Key>::new);
     let model = {
         let state = state.clone();
         use_memo(
@@ -91,6 +91,6 @@ where
     M::Key: Hash,
 {
     fn eq(&self, other: &Self) -> bool {
-        &self.model == &other.model
+        self.model == other.model
     }
 }
