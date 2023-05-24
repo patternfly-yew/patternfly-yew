@@ -1,11 +1,39 @@
 //! Description list
+use crate::{AsClasses, ExtendClasses};
 use yew::prelude::*;
 
 /// Properties for [`DescriptionList`]
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct DescriptionListProperties {
     #[prop_or_default]
+    pub id: AttrValue,
+
+    #[prop_or_default]
     pub children: Children,
+
+    #[prop_or_default]
+    pub mode: DescriptionListMode,
+
+    #[prop_or_default]
+    pub compact: bool,
+}
+
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
+pub enum DescriptionListMode {
+    #[default]
+    Vertical,
+    Horizontal,
+    Fluid,
+}
+
+impl AsClasses for DescriptionListMode {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            Self::Vertical => {}
+            Self::Horizontal => classes.extend(classes!("pf-m-horizontal")),
+            Self::Fluid => classes.extend(classes!("pf-m-horizontal", "pf-m-fluid")),
+        }
+    }
 }
 
 /// The Description list component.
@@ -35,10 +63,19 @@ pub struct DescriptionListProperties {
 /// ```
 #[function_component(DescriptionList)]
 pub fn dl(props: &DescriptionListProperties) -> Html {
-    let classes = Classes::from("pf-c-description-list");
+    let mut classes = Classes::from("pf-c-description-list");
+
+    classes.extend_from(&props.mode);
+
+    if props.compact {
+        classes.extend(classes!("pf-m-compact"));
+    }
 
     html! (
-        <dl class={classes}>
+        <dl
+            id={&props.id}
+            class={classes}
+        >
             { for props.children.iter() }
         </dl>
     )
