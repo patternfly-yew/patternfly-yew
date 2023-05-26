@@ -1,24 +1,26 @@
 //! About modal
 
-use crate::{utils::ContextWrapper, Backdropper, Button, ButtonVariant, Icon};
-use std::ops::Deref;
+use crate::{utils::ContextWrapper, Button, ButtonVariant, Icon, ModalProperties, use_backdrop};
 use yew::prelude::*;
+use yew_hooks::{use_click_away, use_event_with_window};
 
 /// Properties for [`About`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct AboutProperties {
     /// Id of the outermost element
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
+    #[prop_or_default]
+    pub class: Classes,
     #[prop_or_default]
     pub brand_src: AttrValue,
     #[prop_or_default]
-    pub brand_alt: AttrValue,
-    pub title: String,
+    pub brand_alt: Option<AttrValue>,
+    pub title: AttrValue,
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub strapline: Html,
+    pub strapline: Option<Html>,
     /// A simple way to style the hero section with a logo.
     ///
     /// Will be ignored if `hero_style` is being used.
@@ -29,12 +31,14 @@ pub struct AboutProperties {
     /// Allows to directly set the style of the hero element.
     #[prop_or_default]
     pub hero_style: Option<String>,
-}
 
-#[doc(hidden)]
-pub enum Msg {
-    Close,
-    SetBackdrop(Backdropper),
+    /// Disable closing the modal when the escape key is pressed
+    #[prop_or_default]
+    pub disable_close_escape: bool,
+    /// Disable closing the modal when the user clicks outside the modal
+    #[prop_or_default]
+    pub disable_close_click_outside: bool,
+
 }
 
 /// About modal component
@@ -43,95 +47,107 @@ pub enum Msg {
 ///
 /// See: <https://www.patternfly.org/v4/components/about-modal>
 ///
-/// The about modal just renders the dialog and can interact with a wrapping
-/// [`Backdropper`](crate::prelude::Backdropper) context. It is intended to be spawned using a
-/// [`Backdropper`]:
-///
 /// For a complete example, see the PatternFly Yew quickstart.
 ///
 /// ## Properties
 ///
 /// Defined by [`AboutProperties`].
 ///
+/// ## Contexts
 ///
-pub struct About {
-    backdrop: ContextWrapper<Backdropper>,
-}
+/// If the modal dialog is wrapped by a [`crate::prelude::BackdropViewer`] component and no
+/// `onclose` callback is set, then it will automatically close the backdrop when the modal dialog
+/// gets closed.
+///
+#[function_component(About)]
+pub fn about(props: &AboutProperties) -> Html {
+    // TODO: Focus is not trapped this should be considdered when using backdrop
+    let mut class = props.class.clone();
+    class.push("pf-c-about-modal-box");
 
-impl Component for About {
-    type Message = Msg;
-    type Properties = AboutProperties;
+    let backdrop = use_backdrop();
 
-    fn create(ctx: &Context<Self>) -> Self {
-        let backdrop = ContextWrapper::from((ctx, Msg::SetBackdrop));
-        Self { backdrop }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Close => {
-                if let Some(onclose) = &ctx.props().onclose {
+    let onclose = use_memo(
+        |(onclose, backdrop)| {
+            let onclose = onclose.clone();
+            let backdrop = backdrop.clone();
+            Callback::from(move |()| {
+                if let Some(onclose) = &onclose {
                     onclose.emit(());
-                } else {
-                    if let Some(backdrop) = self.backdrop.deref() {
-                        backdrop.close();
-                    }
+                } else if let Some(backdrop) = &backdrop {
+                    backdrop.close();
                 }
+            })
+        },
+        (props.onclose.clone(), backdrop.clone()),
+    );
+
+    // escape key
+    {
+        let disabled = props.disable_close_escape.clone();
+        let onclose = onclose.clone();
+        use_event_with_window("keydown", move |e: KeyboardEvent| {
+            if !disabled && e.key() == "Escape" {
+                onclose.emit(());
             }
-            Msg::SetBackdrop(backdropper) => {
-                self.backdrop.set(backdropper);
-            }
-        }
-        true
+        });
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let hero_style = match (ctx.props().hero_style.as_ref(), ctx.props().logo.is_empty()) {
-            (Some(hero_style), _) => hero_style.into(),
-            (None, false) => format!(
-                "--pf-c-about-modal-box__hero--sm--BackgroundImage:url({url});",
-                url = ctx.props().logo
-            ),
-            (None, true) => "".into(),
-        };
+    // outside click
 
-        html!(
-            <div
-                id={&ctx.props().id}
-                class="pf-c-about-modal-box" role="dialog" aria-modal="true" aria-labelledby="about-modal-title"
-            >
-                { if !ctx.props().brand_src.is_empty() {html!{
-                    <div class="pf-c-about-modal-box__brand">
-                        <img
-                          class="pf-c-about-modal-box__brand-image"
-                          src={ctx.props().brand_src.clone()}
-                          alt={ctx.props().brand_alt.clone()}
-                        />
-                    </div>
-                }} else {html!{}}}
+    let node_ref = use_node_ref();
 
-                <div class="pf-c-about-modal-box__close">
-                  <Button
+    {
+        let disabled = props.disable_close_click_outside.clone();
+        let onclose = onclose.clone();
+        use_click_away(node_ref.clone(), move |_: Event| {
+            if !disabled {
+                onclose.emit(());
+            }
+        });
+    }
+
+    html!(
+        <div
+            id={props.id.clone()}
+            {class}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="about-modal-title"
+            ref={node_ref}
+        >
+            if !props.brand_src.is_empty() {
+                <div class="pf-c-about-modal-box__brand">
+                    <img
+                      class="pf-c-about-modal-box__brand-image"
+                      src={props.brand_src.clone()}
+                      alt={props.brand_alt.clone()}
+                    />
+                </div>
+            }
+
+            <div class="pf-c-about-modal-box__close">
+                <Button
                     variant={ButtonVariant::Plain}
                     aria_label="Close dialog"
-                    onclick={ctx.link().callback(|_|Msg::Close)}>
+                    onclick={onclose.reform(|_|())}
+                >
                     { Icon::Times }
-                  </Button>
-                </div>
-
-                <div class="pf-c-about-modal-box__header">
-                  <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ &ctx.props().title }</h1>
-                </div>
-                <div class="pf-c-about-modal-box__hero" style={hero_style}></div>
-
-              <div class="pf-c-about-modal-box__content">
-                { for ctx.props().children.iter() }
-                <p
-                  class="pf-c-about-modal-box__strapline"
-                >{ctx.props().strapline.clone()}</p>
-              </div>
-
+                </Button>
             </div>
-        )
-    }
+
+            <div class="pf-c-about-modal-box__header">
+                <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ props.title.clone() }</h1>
+            </div>
+
+            <div class="pf-c-about-modal-box__hero" /> // style={hero_style}></div>
+
+            <div class="pf-c-about-modal-box__content">
+                { for props.children.iter() }
+                if props.strapline.is_some() {
+                    <p class="pf-c-about-modal-box__strapline">{ props.strapline.clone() }</p>
+                }
+            </div>
+        </div>
+    )
 }
