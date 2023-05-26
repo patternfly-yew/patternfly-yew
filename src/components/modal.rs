@@ -1,8 +1,7 @@
 //! Modal
 use crate::use_backdrop;
-use wasm_bindgen::JsCast;
-use web_sys::Node;
 use yew::prelude::*;
+use yew_hooks::{use_click_away, use_event_with_window};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum ModalVariant {
@@ -13,12 +12,12 @@ pub enum ModalVariant {
 }
 
 impl ModalVariant {
-    pub fn as_classes(&self) -> Vec<&'static str> {
+    pub fn as_classes(&self) -> Classes {
         match self {
-            ModalVariant::None => vec![],
-            ModalVariant::Small => vec!["pf-m-sm"],
-            ModalVariant::Medium => vec!["pf-m-md"],
-            ModalVariant::Large => vec!["pf-m-lg"],
+            ModalVariant::None => classes!(),
+            ModalVariant::Small => classes!("pf-m-sm"),
+            ModalVariant::Medium => classes!("pf-m-md"),
+            ModalVariant::Large => classes!("pf-m-lg"),
         }
     }
 }
@@ -93,69 +92,28 @@ pub fn modal(props: &ModalProperties) -> Html {
     );
 
     // escape key
-
-    use_effect_with_deps(
-        |(disabled, onclose)| {
-            let listener = match *disabled {
-                true => None,
-                false => {
-                    let onclose = onclose.clone();
-                    Some(gloo_events::EventListener::new(
-                        &gloo_utils::body(),
-                        "keyup",
-                        move |evt| {
-                            if let Some(evt) = evt.dyn_ref::<KeyboardEvent>() {
-                                if evt.key() == "Escape" {
-                                    onclose.emit(());
-                                }
-                            }
-                        },
-                    ))
-                }
-            };
-            move || {
-                drop(listener);
+    {
+        let disabled = props.disable_close_escape.clone();
+        let onclose = onclose.clone();
+        use_event_with_window("keydown", move |e: KeyboardEvent| {
+            if !disabled && e.key() == "Escape" {
+                onclose.emit(());
             }
-        },
-        (props.disable_close_escape, onclose.clone()),
-    );
+        });
+    }
 
     // outside click
 
     let node_ref = use_node_ref();
 
     {
-        let node_ref = node_ref.clone();
-        use_effect_with_deps(
-            move |(disabled, onclose)| {
-                let mut listeners = vec![];
-                if !*disabled {
-                    let mut register = |name: &'static str, node_ref: NodeRef| {
-                        let onclose = onclose.clone();
-                        listeners.push(gloo_events::EventListener::new(
-                            &gloo_utils::body(),
-                            name,
-                            move |evt| {
-                                if let Some(node) = node_ref.get() {
-                                    if let Some(target_node) = evt.target_dyn_into::<Node>() {
-                                        if !node.contains(Some(&target_node)) {
-                                            onclose.emit(());
-                                        }
-                                    }
-                                }
-                            },
-                        ));
-                    };
-
-                    register("mousedown", node_ref.clone());
-                    register("touchstart", node_ref);
-                }
-                move || {
-                    drop(listeners);
-                }
-            },
-            (props.disable_close_click_outside, onclose.clone()),
-        );
+        let disabled = props.disable_close_click_outside.clone();
+        let onclose = onclose.clone();
+        use_click_away(node_ref.clone(), move |_: Event| {
+            if !disabled {
+                onclose.emit(());
+            }
+        });
     }
 
     html! (
