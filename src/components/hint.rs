@@ -1,7 +1,6 @@
 //! Hint
 
 use yew::prelude::*;
-use yew::virtual_dom::VNode;
 
 /// Properties for [`Hint`]
 #[derive(Clone, PartialEq, Properties)]
@@ -9,7 +8,7 @@ pub struct HintProperties {
     #[prop_or_default]
     pub id: AttrValue,
     #[prop_or_default]
-    pub actions: Option<VNode>,
+    pub actions: Option<Html>,
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
