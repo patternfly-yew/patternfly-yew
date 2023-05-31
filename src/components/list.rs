@@ -1,4 +1,5 @@
 //! List
+use crate::{AsClasses, ExtendClasses};
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -7,6 +8,24 @@ pub enum ListType {
     Inline,
     Ordered(ListOrder),
     Plain,
+    Bordered,
+}
+
+impl AsClasses for ListType {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            ListType::Inline => {
+                classes.push(classes!("pf-m-inline"));
+            }
+            ListType::Plain => {
+                classes.push(classes!("pf-m-plain"));
+            }
+            ListType::Bordered => {
+                classes.push(classes!("pf-m-plain", "pf-m-bordered"));
+            }
+            _ => {}
+        }
+    }
 }
 
 impl Default for ListType {
@@ -47,6 +66,7 @@ impl IntoPropValue<Option<AttrValue>> for ListOrder {
 /// Properties for [`List`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ListProperties {
+    #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub r#type: ListType,
@@ -61,33 +81,29 @@ pub struct ListProperties {
 /// ## Properties
 ///
 /// Defined by [`ListProperties`].
+///
+/// ## Children
+///
+/// Each children will be wrapped into an list item element.
 #[function_component(List)]
 pub fn list(props: &ListProperties) -> Html {
     let mut classes = Classes::from("pf-c-list");
 
-    match &props.r#type {
-        ListType::Inline => {
-            classes.push("pf-m-inline");
-        }
-        ListType::Plain => {
-            classes.push("pf-m-plain");
-        }
-        _ => {}
-    }
+    classes.extend_from(&props.r#type);
 
-    let l: Box<dyn FnOnce(Html) -> Html> = match props.r#type {
-        ListType::Basic | ListType::Inline | ListType::Plain => {
-            Box::new(|items| html! {<ul class={classes}>{ items }</ul>})
+    let l = |items| match props.r#type {
+        ListType::Basic | ListType::Inline | ListType::Plain | ListType::Bordered => {
+            html! (<ul class={classes}>{ items }</ul>)
         }
         ListType::Ordered(n) => {
-            Box::new(move |items| html! {<ol r#type={n} class={classes}>{ items }</ol>})
+            html! (<ol r#type={n} class={classes}>{ items }</ol>)
         }
     };
 
-    l(html! {
+    l(html! (
         {
          for props.children.iter()
             .map(|item|html!{<li>{item}</li>})
         }
-    })
+    ))
 }
