@@ -36,7 +36,6 @@ pub struct AboutModalProperties {
     /// Id of the outermost element
     #[prop_or_default]
     pub id: AttrValue,
-
     // TODO: Unimplemented PF React attributes:
     // * appendTo
     // * disableFocusTrap
@@ -107,31 +106,28 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         });
     }
 
-    let (aria_labeledby, aria_label, header) =
-        if props.product_name.is_empty() {
-            (
-                props.id.clone(),
-                props.aria_label.clone(),
-                html!()
-            )
-        } else {
-            (
-                AttrValue::from("about-modal-title"),
-                AttrValue::default(),
-                html!(
-                    <div class="pf-c-about-modal-box__header">
-                        <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ props.product_name.clone() }</h1>
-                    </div>
-                )
-            )
-        };
+    let (aria_labeledby, aria_label, header) = if props.product_name.is_empty() {
+        (props.id.clone(), props.aria_label.clone(), html!())
+    } else {
+        (
+            AttrValue::from("about-modal-title"),
+            AttrValue::default(),
+            html!(
+                <div class="pf-c-about-modal-box__header">
+                    <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ props.product_name.clone() }</h1>
+                </div>
+            ),
+        )
+    };
 
-    let hero_style =
-        if props.background_image_src.is_empty() {
-            AttrValue::default()
-        } else {
-            AttrValue::from(format!("--pf-c-about-modal-box__hero--sm--BackgroundImage: url( {} );", props.background_image_src))
-        };
+    let hero_style = if props.background_image_src.is_empty() {
+        AttrValue::default()
+    } else {
+        AttrValue::from(format!(
+            "--pf-c-about-modal-box__hero--sm--BackgroundImage: url( {} );",
+            props.background_image_src
+        ))
+    };
 
     html!(
         <div
