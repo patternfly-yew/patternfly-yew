@@ -1,7 +1,6 @@
 //! Pagination controls
 use crate::{
-    next::TextInput, Button, ButtonVariant, GlobalClose, Icon, InputState, ValidationContext,
-    Validator,
+    next::TextInput, Button, ButtonVariant, Icon, InputState, ValidationContext, Validator,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
@@ -25,6 +24,12 @@ pub struct PaginationProperties {
     /// Callback for change in limit
     #[prop_or_default]
     pub onlimit: Callback<usize>,
+
+    #[prop_or_default]
+    pub id: AttrValue,
+    /// additional styles
+    #[prop_or_default]
+    pub style: AttrValue,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -147,7 +152,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     html! (
 
-        <div class="pf-c-pagination" ref={node} >
+        <div
+            id={&props.id}
+            class="pf-c-pagination"
+            style={&props.style}
+            ref={node}
+        >
 
             // the selector of how many entries per page to display
             <div class="pf-c-pagination__total-items">
@@ -157,18 +167,17 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
             <div class={ menu_classes }>
                 <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
-                    <span class="pf-c-options-menu__toggle-text">
-                        <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
-                        <b>{ total_entries }</b>
-                    </span>
                     <Button
                         class="pf-c-options-menu__toggle-button"
-                        id="pagination-options-menu-top-toggle"
-                        //aria-haspopup="listbox"
+                        aria_haspopup="listbox"
                         aria_label="Items per page"
                         onclick={ontoggle}
                     >
-                        <span class="pf-c-options-menu__toggle-button-icon">
+                        <span class="pf-c-options-menu__toggle-text">
+                            <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
+                            <b>{ total_entries }</b>
+                        </span>
+                        <span class="pf-c-options-menu__toggle-icon">
                             { Icon::CaretDown }
                         </span>
                     </Button>
@@ -176,21 +185,28 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
             if *expanded {
                 <ul class="pf-c-options-menu__menu" >
-                    { for limit_choices.into_iter().map(|limit|  { html!{
-                        <li>
-                            <Button
-                                class="pf-c-options-menu__menu-item"
-                                onclick={ props.onlimit.reform(move |_| limit) }
-                            >
-                                {limit} {" per page"}
-                                if props.selected_choice == limit {
-                                    <div class="pf-c-options-menu__menu-item-icon">
-                                        { Icon::Check }
-                                    </div>
-                                }
-                            </Button>
-                        </li>
-                    }})}
+                    { for limit_choices.into_iter().map(|limit|  {
+                        let expanded = expanded.clone();
+                        let onlimit = props.onlimit.clone();
+                        let onclick = Callback::from(move |_|{
+                            onlimit.emit(limit);
+                            expanded.set(false);
+                        });
+                        html!(
+                            <li>
+                                <Button
+                                    class="pf-c-options-menu__menu-item"
+                                    {onclick}
+                                >
+                                    {limit} {" per page"}
+                                    if props.selected_choice == limit {
+                                        <div class="pf-c-options-menu__menu-item-icon">
+                                            { Icon::Check }
+                                        </div>
+                                    }
+                                </Button>
+                            </li>
+                    )})}
                 </ul>
             }
             </div>
