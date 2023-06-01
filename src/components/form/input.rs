@@ -299,6 +299,10 @@ pub mod next {
         pub form: AttrValue,
         #[prop_or_default]
         pub autocomplete: AttrValue,
+        #[prop_or_default]
+        pub inputmode: AttrValue,
+        #[prop_or_default]
+        pub enterkeyhint: AttrValue,
 
         /// This event is triggered when the element loses focus.
         #[prop_or_default]
@@ -454,6 +458,8 @@ pub mod next {
                 autocomplete={&props.autocomplete}
                 onchange={(*onchange).clone()}
                 oninput={(*oninput).clone()}
+                inputmode={&props.inputmode}
+                enterkeyhint={&props.enterkeyhint}
             />
         )
     }

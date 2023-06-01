@@ -55,6 +55,12 @@ pub struct TextInputGroupMainProperties {
 
     #[prop_or_default]
     pub oninput: Callback<String>,
+
+    #[prop_or_default]
+    pub r#type: AttrValue,
+
+    #[prop_or_default]
+    pub inputmode: AttrValue,
 }
 
 #[function_component(TextInputGroupMain)]
@@ -88,7 +94,8 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                 <input
                     class="pf-c-text-input-group__text-input"
                     ref={node_ref}
-                    type="text"
+                    type={&props.r#type}
+                    inputmode={&props.inputmode}
                     {oninput}
                     disabled={props.disabled}
                     placeholder={&props.placeholder}
