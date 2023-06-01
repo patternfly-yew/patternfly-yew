@@ -9,20 +9,20 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct PaginationProperties {
     #[prop_or_default]
-    pub total_entries: Option<u32>,
+    pub total_entries: Option<usize>,
     #[prop_or_default]
-    pub offset: u32,
+    pub offset: usize,
     #[prop_or(vec![10,20,30])]
-    pub entries_per_page_choices: Vec<u32>,
+    pub entries_per_page_choices: Vec<usize>,
     #[prop_or(20)]
-    pub selected_choice: u32,
+    pub selected_choice: usize,
 
     // callback for the buttons
     #[prop_or_default]
     pub navigation_callback: Callback<Navigation>,
 
     #[prop_or_default]
-    pub limit_callback: Callback<u32>,
+    pub limit_callback: Callback<usize>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -31,7 +31,7 @@ pub enum Navigation {
     Previous,
     Next,
     Last,
-    Page(u32),
+    Page(usize),
 }
 
 /// Pagination component.
@@ -54,13 +54,13 @@ pub struct Pagination {
 pub enum Msg {
     ToggleMenu,
     CloseMenu,
-    SetLimit(u32),
+    SetLimit(usize),
 
     First,
     Previous,
     Next,
     Last,
-    Page(u32),
+    Page(usize),
 
     /// Set the validation state of the select input
     ValidationState(InputState),
@@ -112,9 +112,9 @@ impl Component for Pagination {
         let max_page = ctx
             .props()
             .total_entries
-            .map(|m| (m as f64 / ctx.props().selected_choice as f64).ceil() as u32);
+            .map(|m| (m as f64 / ctx.props().selected_choice as f64).ceil() as usize);
         let current_page =
-            (ctx.props().offset as f64 / ctx.props().selected_choice as f64).ceil() as u32;
+            (ctx.props().offset as f64 / ctx.props().selected_choice as f64).ceil() as usize;
 
         let is_last_page = if let Some(max) = ctx.props().total_entries {
             ctx.props().offset + ctx.props().selected_choice > max
@@ -155,7 +155,7 @@ impl Component for Pagination {
             let page_number_field_validator = page_number_field_validator.clone();
             ctx.link().callback(move |input: String| {
                 match page_number_field_validator.run(ValidationContext::from(input.clone())) {
-                    Some(InputState::Default) => Msg::Page(input.parse::<u32>().unwrap()),
+                    Some(InputState::Default) => Msg::Page(input.parse().unwrap_or_default()),
                     _ => Msg::Page(current_page + 1),
                 }
             })
