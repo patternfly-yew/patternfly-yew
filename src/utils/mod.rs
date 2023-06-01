@@ -6,6 +6,7 @@ mod global_close;
 mod html;
 mod popper;
 mod props;
+mod raw;
 
 pub use action::*;
 pub use context::*;
@@ -13,6 +14,7 @@ pub use global_close::*;
 pub use html::*;
 pub use popper::*;
 pub use props::*;
+pub use raw::*;
 
 use std::fmt::{Debug, Display, Formatter};
 use yew::{html::IntoPropValue, use_memo, AttrValue};
