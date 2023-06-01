@@ -43,6 +43,10 @@ pub enum Navigation {
 /// ## Properties
 ///
 /// Defined by [`PaginationProperties`].
+///
+/// ## Example
+///
+/// See the [PatternFly Quickstart](https://github.com/ctron/patternfly-yew-quickstart) for a complete example.
 pub struct Pagination {
     expanded: bool,
     select_state: InputState,
