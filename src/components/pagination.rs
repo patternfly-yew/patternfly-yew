@@ -1,6 +1,7 @@
 //! Pagination controls
 use crate::{
-    next::TextInput, Button, ButtonVariant, Icon, InputState, ValidationContext, Validator,
+    next::TextInput, on_enter, Button, ButtonVariant, Icon, InputState, ValidationContext,
+    Validator,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
@@ -123,28 +124,61 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // page input field
 
-    let selected_state = use_state_eq(InputState::default);
+    // the state of the input
+    let input_state = use_state_eq(InputState::default);
+    // the parsed input
+    let input = use_state_eq(|| 0);
+    // the raw input of the page number field
+    let input_text = use_state_eq(|| Some((current_page + 1).to_string()));
+    if input_text.is_none() {
+        input_text.set(Some((current_page + 1).to_string()));
+    }
 
-    let onchange_callback = {
+    let onkeydown = {
+        let input = input.clone();
         let onnavigation = props.onnavigation.clone();
-        let page_number_field_validator = page_number_field_validator.clone();
-        Callback::from(move |input: String| {
-            if let Some(InputState::Default) =
-                page_number_field_validator.run(ValidationContext::from(input.clone()))
-            {
-                onnavigation.emit(Navigation::Page(input.parse().unwrap_or_default()));
-            }
+        on_enter(move || {
+            onnavigation.emit(Navigation::Page(*input));
         })
     };
 
-    let onvalidate = {
-        let selected_state = selected_state.clone();
-        Callback::from(move |input: ValidationContext<String>| {
-            selected_state.set(
-                page_number_field_validator
-                    .run_ctx(input)
-                    .unwrap_or_default(),
-            )
+    let oninput = {
+        let input = input.clone();
+        let input_text = input_text.clone();
+        let page_number_field_validator = page_number_field_validator.clone();
+        let input_state = input_state.clone();
+        Callback::from(move |text: String| {
+            input_text.set(Some(text.clone()));
+
+            let state = page_number_field_validator
+                .run(ValidationContext::from(text.clone()))
+                .unwrap_or_default();
+
+            if let InputState::Default = &state {
+                input.set(text.parse().unwrap_or_default());
+            }
+
+            input_state.set(state);
+        })
+    };
+
+    let onnavigation = {
+        let onnavigation = props.onnavigation.clone();
+        let input_text = input_text.clone();
+        Callback::from(move |nav| {
+            input_text.set(None);
+            onnavigation.emit(nav);
+        })
+    };
+
+    // on limit change
+
+    let onlimit = {
+        let onlimit = props.onlimit.clone();
+        let input_text = input_text.clone();
+        Callback::from(move |limit| {
+            input_text.set(None);
+            onlimit.emit(limit);
         })
     };
 
@@ -187,7 +221,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 <ul class="pf-c-options-menu__menu" >
                     { for limit_choices.into_iter().map(|limit|  {
                         let expanded = expanded.clone();
-                        let onlimit = props.onlimit.clone();
+                        let onlimit = onlimit.clone();
                         let onclick = Callback::from(move |_|{
                             onlimit.emit(limit);
                             expanded.set(false);
@@ -217,7 +251,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 <div class="pf-c-pagination__nav-control pf-m-first">
                     <Button
                         variant={ButtonVariant::Plain}
-                        onclick={props.onnavigation.reform(|_|Navigation::First)}
+                        onclick={onnavigation.reform(|_|Navigation::First)}
                         disabled={ props.offset == 0 }
                         aria_label="Go to first page"
                     >
@@ -228,8 +262,8 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                     <Button
                         aria_label="Go to previous page"
                         variant={ButtonVariant::Plain}
-                        onclick={props.onnavigation.reform(|_|Navigation::Previous)}
-                        disabled= { props.offset == 0 }
+                        onclick={onnavigation.reform(|_|Navigation::Previous)}
+                        disabled={ props.offset == 0 }
                     >
                        { Icon::AngleLeft }
                     </Button>
@@ -237,10 +271,10 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 <div class="pf-c-pagination__nav-page-select">
                     <TextInput
                         r#type="number"
-                        onchange={onchange_callback}
-                        {onvalidate}
-                        state={(*selected_state).clone()}
-                        value={(current_page+1).to_string()}
+                        {oninput}
+                        {onkeydown}
+                        state={(*input_state).clone()}
+                        value={(*input_text).clone().unwrap_or_default()}
                     />
                 if let Some(max_page) = max_page {
                     <span aria-hidden="true">{ "of "} { max_page }</span>
@@ -251,7 +285,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                     <Button
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
-                        onclick={props.onnavigation.reform(|_|Navigation::Next)}
+                        onclick={onnavigation.reform(|_|Navigation::Next)}
                         disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
                     >
                         { Icon::AngleRight }
@@ -261,7 +295,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                     <Button
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}
-                        onclick={props.onnavigation.reform(|_|Navigation::Last)}
+                        onclick={onnavigation.reform(|_|Navigation::Last)}
                         disabled={is_last_page}
                     >
                         { Icon::AngleDoubleRight }
