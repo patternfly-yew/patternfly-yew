@@ -320,6 +320,9 @@ pub mod next {
         pub onvalidate: Callback<ValidationContext<String>>,
 
         #[prop_or_default]
+        pub onkeydown: Callback<KeyboardEvent>,
+
+        #[prop_or_default]
         pub r#ref: NodeRef,
     }
 
@@ -458,6 +461,7 @@ pub mod next {
                 autocomplete={&props.autocomplete}
                 onchange={(*onchange).clone()}
                 oninput={(*oninput).clone()}
+                onkeydown={&props.onkeydown}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
             />

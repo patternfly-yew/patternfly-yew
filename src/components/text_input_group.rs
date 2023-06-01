@@ -61,6 +61,9 @@ pub struct TextInputGroupMainProperties {
 
     #[prop_or_default]
     pub inputmode: AttrValue,
+
+    #[prop_or_default]
+    pub onkeydown: Callback<KeyboardEvent>,
 }
 
 #[function_component(TextInputGroupMain)]
@@ -101,6 +104,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                     placeholder={&props.placeholder}
                     value={props.value.clone()}
                     aria-label={&props.aria_label}
+                    onkeydown={&props.onkeydown}
                 />
             </span>
         </div>
