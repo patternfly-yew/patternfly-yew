@@ -40,7 +40,13 @@ jobs:
         run: |
           cargo test --release
 
-      - run: cargo install cargo-all-features
+      - name: Install binstall
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+
+      - name: Install cargo-all-features
+        run: |
+          cargo binstall -y cargo-all-features
 
       - name: Check all features
         run: |
