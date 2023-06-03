@@ -1,4 +1,5 @@
 use super::{CardBody, CardBodyProperties, CardDivider};
+use crate::{ChildrenProperties, Raw};
 use std::rc::Rc;
 use yew::virtual_dom::VComp;
 use yew::{prelude::*, virtual_dom::VChild};
@@ -25,6 +26,7 @@ impl Into<Html> for CardBodyVariant {
         match self.props {
             CardBodyChild::Body(props) => VComp::new::<CardBody>(props, None).into(),
             CardBodyChild::Divider(props) => VComp::new::<CardDivider>(props, None).into(),
+            CardBodyChild::Raw(props) => VComp::new::<Raw>(props, None).into(),
         }
     }
 }
@@ -34,6 +36,7 @@ impl Into<Html> for CardBodyVariant {
 pub enum CardBodyChild {
     Body(Rc<<CardBody as BaseComponent>::Properties>),
     Divider(Rc<<CardDivider as BaseComponent>::Properties>),
+    Raw(Rc<<Raw as BaseComponent>::Properties>),
 }
 
 impl From<CardBodyProperties> for CardBodyChild {
@@ -45,5 +48,11 @@ impl From<CardBodyProperties> for CardBodyChild {
 impl From<()> for CardBodyChild {
     fn from(_: ()) -> Self {
         CardBodyChild::Divider(Rc::new(()))
+    }
+}
+
+impl From<ChildrenProperties> for CardBodyChild {
+    fn from(props: ChildrenProperties) -> Self {
+        CardBodyChild::Raw(Rc::new(props))
     }
 }

@@ -25,7 +25,7 @@ pub struct DropdownProperties {
 
     pub toggle: Html,
     #[prop_or_default]
-    pub toggle_style: Option<String>,
+    pub toggle_style: AttrValue,
 
     #[prop_or_default]
     pub children: ChildrenRenderer<DropdownChildVariant>,
@@ -100,13 +100,13 @@ impl Component for Dropdown {
             >
                 <Button
                     class="pf-c-dropdown__toggle"
-                    style={ctx.props().toggle_style.clone()}
-                    variant={variant}
+                    style={&ctx.props().toggle_style}
+                    {variant}
                     r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
-                    onclick={onclick}
+                    {onclick}
                     id={ctx.props().id.clone()}
-                    >
+                >
                     { ctx.props().toggle.clone() }
                 </Button>
                 <div
