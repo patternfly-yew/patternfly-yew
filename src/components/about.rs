@@ -59,7 +59,6 @@ pub struct AboutModalProperties {
 ///
 #[function_component(AboutModal)]
 pub fn about_modal(props: &AboutModalProperties) -> Html {
-
     let backdrop = use_backdrop();
 
     let onclose = use_memo(
