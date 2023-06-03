@@ -222,6 +222,7 @@ pub fn button(props: &ButtonProperties) -> Html {
              role={props.role.clone()}
              form={props.form.clone()}
              formaction={props.formaction.clone()}
+             aria-label={props.aria_label.clone()}
          >
              if props.loading {
                  <span class="pf-c-button__progress">
