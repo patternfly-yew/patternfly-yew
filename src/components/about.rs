@@ -11,8 +11,9 @@ pub struct AboutModalProperties {
     pub brand_image_alt: AttrValue,
     pub children: Children,
 
+    /// Optional Attributes
     #[prop_or(AttrValue::from("About Dialog"))]
-    pub aria_label: AttrValue, // FIXME: This should be set if product_name is not used.
+    pub aria_label: AttrValue,
     #[prop_or_default]
     pub background_image_src: AttrValue,
     #[prop_or_default]
@@ -36,11 +37,6 @@ pub struct AboutModalProperties {
     /// Id of the outermost element
     #[prop_or_default]
     pub id: AttrValue,
-    // TODO: Unimplemented PF React attributes:
-    // * appendTo
-    // * disableFocusTrap
-    // * hasNoContentContainer
-    // * isOpen
 }
 
 /// About modal component
@@ -63,7 +59,6 @@ pub struct AboutModalProperties {
 ///
 #[function_component(AboutModal)]
 pub fn about_modal(props: &AboutModalProperties) -> Html {
-    // TODO: Focus is not trapped implemented.
 
     let backdrop = use_backdrop();
 
@@ -152,7 +147,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             <div class="pf-c-about-modal-box__close">
                 <Button
                     variant={ButtonVariant::Plain}
-                    aria_label={props.close_button_aria_label.clone().to_string()}  // TODO: `to_string` call can be removed once button aria_label is changed to AttValue type
+                    aria_label={props.close_button_aria_label.clone()}
                     onclick={onclose.reform(|_|())}
                 >
                     { Icon::Times }
