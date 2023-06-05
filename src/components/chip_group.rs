@@ -27,7 +27,7 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
         false => (props.aria_label.clone(), None),
     };
 
-    let mut class = classes!("pf-c-chip-group");
+    let mut class = classes!("pf-v5-c-chip-group");
 
     if props.label.is_some() {
         class.push(classes!("pf-m-category"));
@@ -35,10 +35,10 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
 
     html! (
         <div {class}>
-            <div class="pf-c-chip-group__main">
+            <div class="pf-v5-c-chip-group__main">
                 if let Some(label) = &props.label {
                     <span
-                        class="pf-c-chip-group__label"
+                        class="pf-v5-c-chip-group__label"
                         aria-hidden="true"
                         id={format!("{id}-label")}
                     >
@@ -46,14 +46,14 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
                     </span>
                 }
                 <ul
-                    class="pf-c-chip-group__list"
+                    class="pf-v5-c-chip-group__list"
                     role="list"
                     aria-label={aria_label}
                     aria-labeledby={aria_labeled_by}
                 >
                     { for props.children.iter().map(|chip| {
                         html!(
-                            <li class="pf-c-chip-group__list-item">
+                            <li class="pf-v5-c-chip-group__list-item">
                                 { chip }
                             </li>
                         )

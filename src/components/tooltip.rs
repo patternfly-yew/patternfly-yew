@@ -123,7 +123,7 @@ pub struct TooltipPopupProperties {
 /// Defined by [`TooltipPopupProperties`].
 #[function_component(TooltipPopup)]
 pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
-    let mut classes = Classes::from("pf-c-tooltip");
+    let mut classes = Classes::from("pf-v5-c-tooltip");
 
     classes.extend(props.orientation.as_classes());
 
@@ -136,8 +136,8 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
 
     html! {
         <div ref={&props.r#ref} style={style} class={classes} role="tooltip">
-            <div class="pf-c-tooltip__arrow"></div>
-            <div class="pf-c-tooltip__content">
+            <div class="pf-v5-c-tooltip__arrow"></div>
+            <div class="pf-v5-c-tooltip__content">
                 { &props.text }
             </div>
         </div>

@@ -175,7 +175,7 @@ impl Component for TextInput {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = classes!("pf-c-form-control");
+        let mut classes = classes!("pf-v5-c-form-control");
 
         match ctx.props().icon {
             TextInputIcon::None => {}
@@ -380,7 +380,7 @@ pub mod next {
     #[function_component(TextInput)]
     pub fn text_input(props: &TextInputProperties) -> Html {
         let input_ref = props.r#ref.clone();
-        let mut classes = classes!("pf-c-form-control");
+        let mut classes = classes!("pf-v5-c-form-control");
         classes.extend_from(&props.icon);
 
         // validation

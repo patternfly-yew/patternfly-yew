@@ -55,9 +55,9 @@ pub struct ToolbarProperties {
 #[function_component(Toolbar)]
 pub fn toolbar(props: &ToolbarProperties) -> Html {
     html! {
-        <div id={props.id.clone()} class="pf-c-toolbar">
-            <div class="pf-c-toolbar__content">
-                <div class="pf-c-toolbar__content-section">
+        <div id={props.id.clone()} class="pf-v5-c-toolbar">
+            <div class="pf-v5-c-toolbar__content">
+                <div class="pf-v5-c-toolbar__content-section">
                     { for props.children.iter() }
                 </div>
             </div>
@@ -97,7 +97,7 @@ pub mod next {
         html! (
             <div
                 id={&props.id}
-                class="pf-c-toolbar"
+                class="pf-v5-c-toolbar"
             >
                 { for props.children.iter() }
             </div>
@@ -117,8 +117,8 @@ pub mod next {
     #[function_component(ToolbarContent)]
     pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
         html! (
-            <div class="pf-c-toolbar__content">
-                <div class="pf-c-toolbar__content-section">
+            <div class="pf-v5-c-toolbar__content">
+                <div class="pf-v5-c-toolbar__content-section">
                     { for props.children.iter() }
                 </div>
             </div>

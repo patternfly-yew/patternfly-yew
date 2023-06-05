@@ -76,7 +76,7 @@ pub struct ModalProperties {
 #[function_component(Modal)]
 pub fn modal(props: &ModalProperties) -> Html {
     let mut classes = props.variant.as_classes();
-    classes.push("pf-c-modal-box");
+    classes.push("pf-v5-c-modal-box");
 
     let backdrop = use_backdrop();
 
@@ -131,7 +131,7 @@ pub fn modal(props: &ModalProperties) -> Html {
         >
             if props.show_close {
                 <button
-                    class="pf-c-button pf-m-plain"
+                    class="pf-v5-c-button pf-m-plain"
                     type="button"
                     aria-label="Close dialog"
                     onclick={onclose.reform(|_|())}
@@ -140,28 +140,28 @@ pub fn modal(props: &ModalProperties) -> Html {
                 </button>
             }
 
-            <header class="pf-c-modal-box__header">
+            <header class="pf-v5-c-modal-box__header">
                 <h1
-                    class="pf-c-modal-box__title"
+                    class="pf-v5-c-modal-box__title"
                     id="modal-title-modal-with-form"
                 >{ &props.title }</h1>
             </header>
 
 
             if !&props.description.is_empty() {
-                <div class="pf-c-modal-box__body">
+                <div class="pf-v5-c-modal-box__body">
                     <p>{ &props.description }</p>
                 </div>
             }
 
             { for props.children.iter().map(|c|{
                { html! (
-                <div class="pf-c-modal-box__body">{c}</div>
+                <div class="pf-v5-c-modal-box__body">{c}</div>
                ) }
             }) }
 
             if let Some(footer) = &props.footer {
-              <footer class="pf-c-modal-box__footer">
+              <footer class="pf-v5-c-modal-box__footer">
                   { footer.clone() }
               </footer>
             }

@@ -101,7 +101,7 @@ impl AsClasses for ExpandableSectionVariant {
 pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
     let expanded = use_state_eq(|| props.initially_open);
 
-    let mut class = classes!("pf-c-expandable-section");
+    let mut class = classes!("pf-v5-c-expandable-section");
 
     class.extend_from(&props.variant);
     class.extend_from(&props.display_size);
@@ -145,7 +145,7 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
                 />
             }
           <div
-                class="pf-c-expandable-section__content" hidden={!expanded}
+                class="pf-v5-c-expandable-section__content" hidden={!expanded}
           >{ for props.children.iter() }</div>
         </div>
     )
@@ -196,7 +196,7 @@ impl AsClasses for ExpandableSectionToggleDirection {
 
 #[function_component(ExpandableSectionToggle)]
 pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> Html {
-    let mut class = classes!("pf-c-expandable-section");
+    let mut class = classes!("pf-v5-c-expandable-section");
 
     if props.expanded {
         class.extend(classes!("pf-m-expanded"));
@@ -215,20 +215,20 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
         )
     };
 
-    let mut toggle_icon_class = classes!("pf-c-expandable-section__toggle-icon");
+    let mut toggle_icon_class = classes!("pf-v5-c-expandable-section__toggle-icon");
     toggle_icon_class.extend_from(&props.direction);
 
     let control = html!(
         <button
             type="button"
-            class="pf-c-expandable-section__toggle"
+            class="pf-v5-c-expandable-section__toggle"
             aria-expanded={props.expanded.to_string()}
             {onclick}
         >
             <span class={toggle_icon_class}>
                 { Icon::AngleRight }
             </span>
-            <span class="pf-c-expandable-section__toggle-text">
+            <span class="pf-v5-c-expandable-section__toggle-text">
                 if !props.children.is_empty() {
                     { for props.children.iter() }
                 } else {

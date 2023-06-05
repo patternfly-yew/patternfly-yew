@@ -38,7 +38,7 @@ pub struct TitleProperties {
 /// Defined by [`TitleProperties`].
 #[function_component(Title)]
 pub fn title(props: &TitleProperties) -> Html {
-    let mut class = Classes::from("pf-c-title");
+    let mut class = Classes::from("pf-v5-c-title");
 
     class.extend_from(&props.size.unwrap_or_else(|| match props.level {
         Level::H1 => Size::XXLarge,

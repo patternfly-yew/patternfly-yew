@@ -46,7 +46,7 @@ pub struct TabsProperties {
 pub fn tabs(props: &TabsProperties) -> Html {
     let active = use_state_eq(|| props.active.unwrap_or_default());
 
-    let mut classes = classes!("pf-c-tabs");
+    let mut classes = classes!("pf-v5-c-tabs");
 
     if props.r#box {
         classes.push("pf-m-box");
@@ -69,14 +69,14 @@ pub fn tabs(props: &TabsProperties) -> Html {
                 id={props.id.clone()}
             >
                 <button
-                    class="pf-c-tabs__scroll-button"
+                    class="pf-v5-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll left"
                 >
                     { Icon::AngleLeft }
                 </button>
-                <ul class="pf-c-tabs__list">
+                <ul class="pf-v5-c-tabs__list">
                     { for props.children.iter().enumerate().map(|(idx, c)|{
                         let current = *active == idx;
                         let active = active.clone();
@@ -94,7 +94,7 @@ pub fn tabs(props: &TabsProperties) -> Html {
                     }) }
                 </ul>
                 <button
-                    class="pf-c-tabs__scroll-button"
+                    class="pf-v5-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll right"
@@ -145,7 +145,7 @@ struct TabHeaderItemProperties {
 
 #[function_component(TabHeaderItem)]
 fn tab_header_item(props: &TabHeaderItemProperties) -> Html {
-    let mut classes = Classes::from("pf-c-tabs__item");
+    let mut classes = Classes::from("pf-v5-c-tabs__item");
 
     if props.current {
         classes.push("pf-m-current");
@@ -153,11 +153,11 @@ fn tab_header_item(props: &TabHeaderItemProperties) -> Html {
 
     html! (
         <li class={classes}>
-            <button class="pf-c-tabs__link" onclick={props.onselect.reform(|_|())}>
+            <button class="pf-v5-c-tabs__link" onclick={props.onselect.reform(|_|())}>
                 if let Some(icon) = props.icon {
-                    <span class="pf-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
+                    <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
                 }
-                <span class="pf-c-tabs__item-text"> { &props.label } </span>
+                <span class="pf-v5-c-tabs__item-text"> { &props.label } </span>
             </button>
         </li>
     )
@@ -180,7 +180,7 @@ pub struct TabProperties {
 /// A tab in a [`Tabs`] component
 #[function_component(Tab)]
 pub fn tab(props: &TabProperties) -> Html {
-    let class = Classes::from("pf-c-tab-content");
+    let class = Classes::from("pf-v5-c-tab-content");
 
     html! (
         <section {class} hidden={!props.current}>

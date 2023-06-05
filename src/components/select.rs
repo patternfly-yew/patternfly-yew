@@ -127,7 +127,7 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-select");
+        let mut classes = Classes::from("pf-v5-c-select");
         if self.expanded {
             classes.push("pf-m-expanded");
         }
@@ -135,7 +135,7 @@ where
             classes.push("pf-m-top");
         }
 
-        let menu_classes = Classes::from("pf-c-select__menu");
+        let menu_classes = Classes::from("pf-v5-c-select__menu");
 
         let onclick = ctx.link().callback(|_| Msg::Toggle);
 
@@ -149,22 +149,22 @@ where
                 ref={self.global_close.clone()}
             >
                 <Button
-                    class="pf-c-select__toggle"
+                    class="pf-v5-c-select__toggle"
                     variant={variant}
                     r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     id={ctx.props().id.clone()}
                 >
-                    <div class="pf-c-select__toggle-wrapper">
+                    <div class="pf-v5-c-select__toggle-wrapper">
                         if let Some(icon) = &ctx.props().icon {
-                            <span class="pf-c-select__toggle-icon">
+                            <span class="pf-v5-c-select__toggle-icon">
                                 { icon.clone() }
                             </span>
                         }
                         { self.render_selection(ctx) }
                     </div>
-                    <div class="pf-c-select__toggle-arrow">
+                    <div class="pf-v5-c-select__toggle-arrow">
                         { Icon::CaretDown }
                     </div>
                 </Button>
@@ -192,22 +192,22 @@ where
     fn render_selection(&self, ctx: &Context<Self>) -> Html {
         let selection = self.selection.as_slice();
         if selection.is_empty() {
-            return html! {<span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>};
+            return html! {<span class="pf-v5-c-select__toggle-text">{&ctx.props().placeholder}</span>};
         }
 
         match &ctx.props().variant {
             SelectVariant::Single(_) => {
-                html! (<span class="pf-c-select__toggle-text">{ &selection[0] }</span>)
+                html! (<span class="pf-v5-c-select__toggle-text">{ &selection[0] }</span>)
             }
             SelectVariant::Checkbox(_) | SelectVariant::Multiple(_) => {
                 html! (
                     <>
-                        <span class="pf-c-select__toggle-text">{&ctx.props().placeholder}</span>
+                        <span class="pf-v5-c-select__toggle-text">{&ctx.props().placeholder}</span>
                         { match &ctx.props().chip {
                             ChipVariant::None => html!(),
                             ChipVariant::Count => {
                                 html! (
-                                    <div class="pf-c-select__toggle_badge">
+                                    <div class="pf-v5-c-select__toggle_badge">
                                         <Chip text={selection.len().to_string()} />
                                     </div>
                                 )
@@ -246,7 +246,7 @@ where
 
     fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
         html! (
-            <fieldset class="pf-c-select__menu-fieldset" aria-label="Select input">
+            <fieldset class="pf-v5-c-select__menu-fieldset" aria-label="Select input">
                 { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
                     c.set_need_close(ctx.link().callback(|_|Msg::Close));
@@ -512,7 +512,7 @@ where
     K: Clone + PartialEq + Display,
 {
     fn render_button(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-select__menu-item");
+        let mut classes = Classes::from("pf-v5-c-select__menu-item");
 
         if ctx.props().selected {
             classes.push("pf-m-selected");
@@ -532,8 +532,8 @@ where
                 { if let Some(description) = &ctx.props().description {
                     html!{
                         <>
-                        <span class="pf-c-select__menu-item-main">{ &ctx.props().value }</span>
-                        <span class="pf-c-select__menu-item-description">{ &description }</span>
+                        <span class="pf-v5-c-select__menu-item-main">{ &ctx.props().value }</span>
+                        <span class="pf-v5-c-select__menu-item-description">{ &description }</span>
                         { self.render_selected(ctx) }
                         </>
                     }
@@ -551,7 +551,7 @@ where
     }
 
     fn render_checkbox(&self, ctx: &Context<Self>) -> Html {
-        let classes = Classes::from("pf-c-check pf-c-select__menu-item");
+        let classes = Classes::from("pf-v5-c-check pf-v5-c-select__menu-item");
 
         let id = ctx.props().id.clone().unwrap_or_else(|| {
             let id = self
@@ -569,17 +569,17 @@ where
             >
                 <input
                     id={id}
-                    class="pf-c-check__input"
+                    class="pf-v5-c-check__input"
                     type="checkbox"
                     checked={ctx.props().selected}
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     />
-                <span class="pf-c-check__label">{ &ctx.props().value }</span>
+                <span class="pf-v5-c-check__label">{ &ctx.props().value }</span>
 
                 {if let Some(description) = &ctx.props().description {
                         html!{
                             <>
-                            <span class="pf-c-check__description">{&description}</span>
+                            <span class="pf-v5-c-check__description">{&description}</span>
                             </>
                         }
                     }
@@ -593,7 +593,7 @@ where
     fn render_selected(&self, ctx: &Context<Self>) -> Html {
         html! (
             if ctx.props().selected {
-                <span class="pf-c-select__menu-item-icon">{ Icon::Check }</span>
+                <span class="pf-v5-c-select__menu-item-icon">{ Icon::Check }</span>
             }
         )
     }
@@ -657,8 +657,8 @@ where
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! (
             <>
-                <div class="pf-c-select__menu-group">
-                    <div class="pf-c-select__menu-group-title" aria-hidden="true">
+                <div class="pf-v5-c-select__menu-group">
+                    <div class="pf-v5-c-select__menu-group-title" aria-hidden="true">
                         { &ctx.props().label }
                     </div>
                     { for ctx.props().children.iter().map(|mut c|{

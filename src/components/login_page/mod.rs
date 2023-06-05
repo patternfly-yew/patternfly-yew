@@ -34,14 +34,14 @@ pub struct LoginProperties {
 #[function_component(Login)]
 pub fn login(props: &LoginProperties) -> Html {
     html! {
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
+        <div class="pf-v5-c-login">
+            <div class="pf-v5-c-login__container">
                 if !props.header.is_empty() {
-                    <header class="pf-c-login__header">{for props.header.iter()}</header>
+                    <header class="pf-v5-c-login__header">{for props.header.iter()}</header>
                 }
                 { for props.children.iter() }
                 if !props.footer.is_empty() {
-                    <footer class="pf-c-login__footer">{for props.footer.iter()}</footer>
+                    <footer class="pf-v5-c-login__footer">{for props.footer.iter()}</footer>
                 }
             </div>
         </div>
@@ -58,7 +58,7 @@ pub struct LoginMainProperties {
 #[function_component(LoginMain)]
 pub fn login_main(props: &LoginMainProperties) -> Html {
     html! {
-        <main class="pf-c-login__main">
+        <main class="pf-v5-c-login__main">
             { for props.children.iter() }
         </main>
     }
@@ -75,9 +75,9 @@ pub struct LoginMainHeaderProperties {
 #[function_component(LoginMainHeader)]
 pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
     html! {
-        <header class="pf-c-login__main-header">
+        <header class="pf-v5-c-login__main-header">
             { props.title.clone() }
-            <p class="pf-c-login__main-header-desc">
+            <p class="pf-v5-c-login__main-header-desc">
                 {&props.description}
             </p>
         </header>
@@ -94,7 +94,7 @@ pub struct LoginMainBodyProperties {
 #[function_component(LoginMainBody)]
 pub fn login_main_body(props: &LoginMainBodyProperties) -> Html {
     html! {
-        <div class="pf-c-login__main-body">
+        <div class="pf-v5-c-login__main-body">
             { for props.children.iter() }
         </div>
     }

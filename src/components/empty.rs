@@ -45,7 +45,7 @@ impl EmptyStateProperties {
 /// Define by [`EmptyStateProperties`].
 #[function_component(EmptyState)]
 pub fn empty_state(props: &EmptyStateProperties) -> Html {
-    let mut classes = Classes::from("pf-c-empty-state");
+    let mut classes = Classes::from("pf-v5-c-empty-state");
 
     if props.full_height {
         classes.push("pf-m-full-height");
@@ -55,12 +55,12 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
 
     html! (
         <div class={classes}>
-            <div class="pf-c-empty-state__content">
+            <div class="pf-v5-c-empty-state__content">
                 if let Some(icon) = &props.icon {
-                    { icon.with_classes(Classes::from("pf-c-empty-state__icon")) }
+                    { icon.with_classes(Classes::from("pf-v5-c-empty-state__icon")) }
                 }
                 <Title size={ props.title_size() }>{&props.title}</Title>
-                <div class="pf-c-empty-state__body">
+                <div class="pf-v5-c-empty-state__body">
                     { for props.children.iter() }
                 </div>
 
@@ -69,7 +69,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
                 }
 
                 if !props.secondaries.is_empty() {
-                    <div class="pf-c-empty-state__secondary">
+                    <div class="pf-v5-c-empty-state__secondary">
                         { for props.secondaries.iter().map(|action|{
                             html!{
                                 <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>

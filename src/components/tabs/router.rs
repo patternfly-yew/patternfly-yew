@@ -30,7 +30,7 @@ pub fn tabs_router<T>(props: &TabsRouterProperties<T>) -> Html
 where
     T: Target,
 {
-    let mut classes = classes!("pf-c-tabs");
+    let mut classes = classes!("pf-v5-c-tabs");
 
     if props.r#box {
         classes.push("pf-m-box");
@@ -50,7 +50,7 @@ where
 
     html! (
         <div class={classes}>
-            <ul class="pf-c-tabs__list">
+            <ul class="pf-v5-c-tabs__list">
                 { for props.children.iter() }
             </ul>
         </div>
@@ -81,13 +81,13 @@ where
 {
     let router = use_router::<T>().expect("Must be used below a Router or Nested component");
 
-    let mut classes = Classes::from("pf-c-tabs__item");
+    let mut classes = Classes::from("pf-v5-c-tabs__item");
 
     if router.is_same(&props.to) {
         classes.push("pf-m-current");
     }
 
-    let mut link_classes = Classes::from("pf-c-tabs__link");
+    let mut link_classes = Classes::from("pf-v5-c-tabs__link");
 
     if props.disabled {
         link_classes.push("pf-m-disabled");
@@ -96,7 +96,7 @@ where
     html! (
         <li class={classes}>
             <Link<T> element="button" class={link_classes} target={props.to.clone()}>
-                <span class="pf-c-tabs__item-text"> { &props.label } </span>
+                <span class="pf-v5-c-tabs__item-text"> { &props.label } </span>
             </Link<T>>
         </li>
     )

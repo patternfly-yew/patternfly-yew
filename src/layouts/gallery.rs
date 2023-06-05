@@ -22,7 +22,7 @@ pub struct GalleryProperties {
 /// Defined by [`GalleryProperties`].
 #[function_component(Gallery)]
 pub fn gallery(props: &GalleryProperties) -> Html {
-    let mut classes = classes!("pf-l-gallery");
+    let mut classes = classes!("pf-v5-l-gallery");
 
     if props.gutter {
         classes.push(classes!("pf-m-gutter"));
@@ -35,7 +35,7 @@ pub fn gallery(props: &GalleryProperties) -> Html {
         >
         { for props.children.iter().map(|child|{
             html!{
-                <div class="pf-l-gallery__item">
+                <div class="pf-v5-l-gallery__item">
                     { child }
                 </div>
             }

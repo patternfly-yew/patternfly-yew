@@ -80,7 +80,7 @@ pub struct AlertProperties {
 /// Defined by [`AlertProperties`].
 #[function_component(Alert)]
 pub fn alert(props: &AlertProperties) -> Html {
-    let mut classes = classes!("pf-c-alert");
+    let mut classes = classes!("pf-v5-c-alert");
 
     classes.extend(props.r#type.as_classes());
 
@@ -98,7 +98,7 @@ pub fn alert(props: &AlertProperties) -> Html {
         html!()
     } else {
         html! (
-            <div class="pf-c-alert__action-group">
+            <div class="pf-v5-c-alert__action-group">
                 {for props.actions.iter().map(|action|{
                     html!{
                         <Button
@@ -114,24 +114,24 @@ pub fn alert(props: &AlertProperties) -> Html {
 
     html! (
         <div id={props.id.clone()} class={classes} aria_label={t.aria_label()}>
-            <div class="pf-c-alert__icon">{ t.icon() }</div>
-            <div class="pf-c-alert__title">
+            <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
+            <div class="pf-v5-c-alert__title">
                 <strong>
-                    <span class="pf-screen-reader">{ t.aria_label() }{":"}</span>
+                    <span class="pf-v5-screen-reader">{ t.aria_label() }{":"}</span>
                     { &props.title }
                 </strong>
             </div>
 
 
             if let Some(onclose) = props.onclose.as_ref() {
-                <div class="pf-c-alert__action">
+                <div class="pf-v5-c-alert__action">
                     <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
                 </div>
             }
 
 
             if !props.children.is_empty() {
-                <div class="pf-c-alert__description">
+                <div class="pf-v5-c-alert__description">
                     { for props.children.iter() }
                 </div>
             }
@@ -155,7 +155,7 @@ pub struct GroupProperties {
 
 #[function_component(AlertGroup)]
 pub fn view(props: &GroupProperties) -> Html {
-    let mut classes = classes!("pf-c-alert-group");
+    let mut classes = classes!("pf-v5-c-alert-group");
 
     if props.toast {
         classes.push(classes!("pf-m-toast"));
@@ -164,7 +164,7 @@ pub fn view(props: &GroupProperties) -> Html {
     html! (
         <ul class={classes}>
             { for props.children.iter().map(|child|html!{
-                <li class="pf-c-alert-group__item">
+                <li class="pf-v5-c-alert-group__item">
                     { child }
                 </li>
             })}

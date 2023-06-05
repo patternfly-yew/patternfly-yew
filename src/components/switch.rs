@@ -77,10 +77,10 @@ impl Component for Switch {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! (
-            <label class="pf-c-switch" for={self.id.clone()}>
+            <label class="pf-v5-c-switch" for={self.id.clone()}>
                 <input
                     ref={self.input_ref.clone()}
-                    class="pf-c-switch__input"
+                    class="pf-v5-c-switch__input"
                     type="checkbox"
                     id={self.id.clone()}
                     aria-label={ctx.props().aria_label.clone()}
@@ -88,17 +88,17 @@ impl Component for Switch {
                     disabled={ctx.props().disabled}
                     onchange={ctx.link().callback(|_|Msg::Changed)}
                     />
-                <span class="pf-c-switch__toggle">
+                <span class="pf-v5-c-switch__toggle">
                     if ctx.props().label.is_none() {
-                        <span class="pf-c-switch__toggle-icon">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             { Icon::Check }
                         </span>
                     }
                 </span>
                 if let Some(ref label) = ctx.props().label {
                     <>
-                    <span class="pf-c-switch__label pf-m-on">{ label }</span>
-                    <span class="pf-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
+                    <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
+                    <span class="pf-v5-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
                     </>
                 }
             </label>

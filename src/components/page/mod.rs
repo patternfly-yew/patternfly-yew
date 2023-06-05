@@ -59,7 +59,7 @@ pub fn page(props: &PageProperties) -> Html {
         })
     };
 
-    let mut class = classes!("pf-c-page");
+    let mut class = classes!("pf-v5-c-page");
 
     if props.full_height {
         class.push("pf-m-full-height");
@@ -67,14 +67,14 @@ pub fn page(props: &PageProperties) -> Html {
 
     html! (
         <div {class} id={&props.id}>
-            <header class="pf-c-page__header">
-                <div class="pf-c-page__header-brand">
+            <header class="pf-v5-c-page__header">
+                <div class="pf-v5-c-page__header-brand">
 
                     if !props.sidebar.is_empty() {
-                        <div class="pf-c-page__header-brand-toggle">
+                        <div class="pf-v5-c-page__header-brand-toggle">
                             <button
                                 aria-expanded={(*open).to_string()}
-                                class="pf-c-button pf-m-plain"
+                                class="pf-v5-c-button pf-m-plain"
                                 type="button"
                                 {onclick}
                                 >
@@ -83,13 +83,13 @@ pub fn page(props: &PageProperties) -> Html {
                         </div>
                     }
 
-                    <a href="#" class="pf-c-page__header-brand-link"> {
+                    <a href="#" class="pf-v5-c-page__header-brand-link"> {
                         for props.logo.iter()
                     } </a>
 
                 </div>
-                <div class="pf-c-page__header-nav">{for props.nav.iter()}</div>
-                <div class="pf-c-page__header-tools"> { for props.tools.iter() }</div>
+                <div class="pf-v5-c-page__header-nav">{for props.nav.iter()}</div>
+                <div class="pf-v5-c-page__header-tools"> { for props.tools.iter() }</div>
             </header>
 
             { for props.sidebar.iter().map(|mut s|{
@@ -98,7 +98,7 @@ pub fn page(props: &PageProperties) -> Html {
                 s
             }) }
 
-            <main class="pf-c-page__main" tabindex="-1">
+            <main class="pf-v5-c-page__main" tabindex="-1">
                 { for props.children.iter() }
             </main>
         </div>

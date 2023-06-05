@@ -24,7 +24,7 @@ pub struct BrandProperties {
 pub fn brand(props: &BrandProperties) -> Html {
     html! (
         <img
-            class="pf-c-brand"
+            class="pf-v5-c-brand"
             src={&props.src}
             alt={&props.alt}
         />

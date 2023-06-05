@@ -31,7 +31,7 @@ pub struct ChipProperties {
 /// Defined by [`ChipProperties`].
 #[function_component(Chip)]
 pub fn chip(props: &ChipProperties) -> Html {
-    let mut classes = Classes::from("pf-c-chip");
+    let mut classes = Classes::from("pf-v5-c-chip");
 
     if props.draggable {
         classes.push("pf-m-draggable");
@@ -45,7 +45,7 @@ pub fn chip(props: &ChipProperties) -> Html {
     let body = html! {
         <>
             { render_icon(props) }
-            <span class="pf-c-chip__text">{props.text.clone()}</span>
+            <span class="pf-v5-c-chip__text">{props.text.clone()}</span>
             { render_badge(props) }
             { render_close(props) }
         </>
@@ -61,7 +61,7 @@ pub fn chip(props: &ChipProperties) -> Html {
 fn render_icon(props: &ChipProperties) -> Html {
     html! (
         if let Some(icon) = &props.icon {
-            <span class="pf-c-chip__icon"> { icon.as_html() } </span>
+            <span class="pf-v5-c-chip__icon"> { icon.as_html() } </span>
         }
     )
 }
@@ -69,7 +69,7 @@ fn render_icon(props: &ChipProperties) -> Html {
 fn render_badge(props: &ChipProperties) -> Html {
     html! (
         if let Some(badge) = &props.badge {
-            <span class="pf-c-badge pf-m-read"> {badge} </span>
+            <span class="pf-v5-c-badge pf-m-read"> {badge} </span>
         }
     )
 }

@@ -20,15 +20,15 @@ pub struct BackgroundProperties {
 #[function_component(Background)]
 pub fn view(props: &BackgroundProperties) -> Html {
     if let Some(filter) = &props.filter {
-        let styles = format!("--pf-c-background-image--Filter: {};", filter);
+        let styles = format!("--pf-v5-c-background-image--Filter: {};", filter);
         html! (
-            <div class="pf-c-background-image" style={styles}></div>
+            <div class="pf-v5-c-background-image" style={styles}></div>
         )
     } else {
         // FIXME: something is still wrong here, the filter gets applied, but seems to have no effect
         html! (
-            <div class="pf-c-background-image">
-                <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
+            <div class="pf-v5-c-background-image">
+                <svg xmlns="http://www.w3.org/2000/svg" class="pf-v5-c-background-image__filter" width="0" height="0">
                     <filter id="image_overlay">
                         <feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"></feColorMatrix>
                         <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">

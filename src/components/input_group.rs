@@ -30,7 +30,7 @@ pub struct InputGroupProperties {
 /// [`InputGroupText`] component to amend the input group with additional text or icons.
 #[function_component(InputGroup)]
 pub fn input_group(props: &InputGroupProperties) -> Html {
-    let mut class = classes!("pf-c-input-group");
+    let mut class = classes!("pf-v5-c-input-group");
 
     if props.plain {
         class.push(classes!("pf-m-plain"));
@@ -59,7 +59,7 @@ pub struct InputGroupTextProperties {
 /// Input group text, as child of [`InputGroup`]
 #[function_component(InputGroupText)]
 pub fn input_group_text(props: &InputGroupTextProperties) -> Html {
-    let mut class = classes!("pf-c-input-group__text");
+    let mut class = classes!("pf-v5-c-input-group__text");
 
     if props.plain {
         class.push(classes!("pf-m-plain"));

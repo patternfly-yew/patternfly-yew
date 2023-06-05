@@ -20,7 +20,7 @@ pub struct BadgeProperties {
 /// Defined by [`BadgeProperties`].
 #[function_component(Badge)]
 pub fn badge(props: &BadgeProperties) -> Html {
-    let mut classes = Classes::from("pf-c-badge");
+    let mut classes = Classes::from("pf-v5-c-badge");
 
     if props.read {
         classes.push("pf-m-read");

@@ -148,7 +148,7 @@ impl Component for TextArea {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let classes = Classes::from("pf-c-form-control");
+        let classes = Classes::from("pf-v5-c-form-control");
         let (mut classes, aria_invalid) = self.input_state(ctx).convert(classes);
 
         match ctx.props().resize {
@@ -350,7 +350,7 @@ pub mod next {
     #[function_component(TextArea)]
     pub fn text_area(props: &TextAreaProperties) -> Html {
         let input_ref = props.r#ref.clone();
-        let mut classes = classes!("pf-c-form-control");
+        let mut classes = classes!("pf-v5-c-form-control");
 
         classes.extend_from(&props.resize);
 

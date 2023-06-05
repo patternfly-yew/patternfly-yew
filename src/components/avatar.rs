@@ -25,7 +25,7 @@ pub struct AvatarProperties {
 pub fn avatar(props: &AvatarProperties) -> Html {
     html! {
         <img
-            class="pf-c-avatar"
+            class="pf-v5-c-avatar"
             src={&props.src}
             alt={&props.alt}
         />

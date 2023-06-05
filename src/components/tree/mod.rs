@@ -59,7 +59,7 @@ pub fn tree_table<T>(props: &TreeTableProperties<T>) -> Html
 where
     T: TreeTableModel + PartialEq + 'static,
 {
-    let mut class = classes!("pf-c-table", "pf-m-tree-view");
+    let mut class = classes!("pf-v5-c-table", "pf-m-tree-view");
 
     class.extend_from(&props.mode);
 
@@ -177,7 +177,7 @@ impl PartialEq for RowProperties {
 fn row(props: &RowProperties) -> Html {
     let main = props.node.render_main();
 
-    let mut main_class = classes!("pf-c-table__tree-view-title-cell");
+    let mut main_class = classes!("pf-v5-c-table__tree-view-title-cell");
     if main.center {
         main_class.push(classes!("pf-m-center"));
     }
@@ -245,16 +245,16 @@ fn main_cell(props: &MainCellProperties) -> Html {
     let id_toggle = use_random_id();
     let id_label = use_random_id();
 
-    let mut button_class = classes!("pf-c-button", "pf-m-plain");
+    let mut button_class = classes!("pf-v5-c-button", "pf-m-plain");
 
     if props.expanded {
         button_class.push(classes!("pf-m-expanded"));
     }
 
     html!(
-        <div class="pf-c-table__tree-view-main">
+        <div class="pf-v5-c-table__tree-view-main">
             if props.has_children {
-                <span class="pf-c-table__toggle">
+                <span class="pf-v5-c-table__toggle">
                     <button
                         type="button"
                         class={button_class}
@@ -264,27 +264,27 @@ fn main_cell(props: &MainCellProperties) -> Html {
                         aria-expanded={ (props.expanded).to_string() }
                         onclick={props.ontoggle.reform(|_|())}
                     >
-                        <div class="pf-c-table__toggle-icon">
+                        <div class="pf-v5-c-table__toggle-icon">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                         </div>
                     </button>
                 </span>
             }
-            <div class="pf-c-table__tree-view-text">
+            <div class="pf-v5-c-table__tree-view-text">
                 <span
-                    class="pf-c-table__text"
+                    class="pf-v5-c-table__text"
                     id={ *id_label }
                 >
                     {props.content.clone()}
                 </span>
             </div>
             // TODO: not sure why this is needed
-            <span class="pf-c-table__tree-view-details-toggle">
+            <span class="pf-v5-c-table__tree-view-details-toggle">
                 <button
-                    class="pf-c-button pf-m-plain"
+                    class="pf-v5-c-button pf-m-plain"
                     type="button"
                 >
-                    <span class="pf-c-table__details-toggle-icon">
+                    <span class="pf-v5-c-table__details-toggle-icon">
                         <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
                     </span>
                 </button>

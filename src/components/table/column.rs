@@ -65,7 +65,7 @@ pub fn table_column(props: &TableColumnProperties) -> Html {
     let mut class = Classes::new();
 
     if props.first_tree_column {
-        class.push(classes!("pf-c-table__tree-view-title-header-cell"));
+        class.push(classes!("pf-v5-c-table__tree-view-title-header-cell"));
     }
 
     if props.center {
