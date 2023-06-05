@@ -4,6 +4,7 @@ use yew::prelude::*;
 /// Properties for [`Badge`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BadgeProperties {
+    /// Optional Attributes
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
