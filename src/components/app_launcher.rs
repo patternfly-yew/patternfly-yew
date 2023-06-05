@@ -70,8 +70,8 @@ impl Component for AppLauncher {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-app-launcher");
-        let mut menu_classes = Classes::from("pf-c-app-launcher__menu");
+        let mut classes = Classes::from("pf-v5-c-app-launcher");
+        let mut menu_classes = Classes::from("pf-v5-c-app-launcher__menu");
 
         match ctx.props().position {
             Position::Left => {}
@@ -91,7 +91,7 @@ impl Component for AppLauncher {
                 ref={self.global_close.clone()}
                 >
                 <button
-                    class="pf-c-app-launcher__toggle"
+                    class="pf-v5-c-app-launcher__toggle"
                     type="button"
                     disabled={ctx.props().disabled}
                     onclick={onclick}
@@ -237,7 +237,7 @@ impl Component for AppLauncherItem {
         let action = if ctx.props().onclick.is_some() {
             html! (
                 <button
-                    class="pf-c-app-launcher__menu-item"
+                    class="pf-v5-c-app-launcher__menu-item"
                     onclick={ctx.link().callback(|_|Self::Message::Clicked)}
                     type="button"
                     role="menuitem"
@@ -246,7 +246,7 @@ impl Component for AppLauncherItem {
                 </button>
             )
         } else {
-            let mut classes = Classes::from("pf-c-app-launcher__menu-item");
+            let mut classes = Classes::from("pf-v5-c-app-launcher__menu-item");
 
             let target = if ctx.props().external {
                 classes.push("pf-m-external");
@@ -265,10 +265,10 @@ impl Component for AppLauncherItem {
                 { for ctx.props().children.iter() }
 
                 if ctx.props().external {
-                    <span class="pf-c-app-launcher__menu-item-external-icon">
+                    <span class="pf-v5-c-app-launcher__menu-item-external-icon">
                         { Icon::ExternalLinkAlt }
                     </span>
-                    <span class="pf-screen-reader">{"(opens new window)"}</span>
+                    <span class="pf-v5-screen-reader">{"(opens new window)"}</span>
                 }
 
                 </a>

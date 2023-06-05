@@ -190,7 +190,7 @@ impl Component for Form {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-form");
+        let mut classes = Classes::from("pf-v5-c-form");
 
         classes.extend_from(&ctx.props().horizontal);
 
@@ -243,7 +243,7 @@ impl Component for Form {
                 >
 
                     if let Some(alert) = alert {
-                        <div class="pf-c-form__alert">
+                        <div class="pf-v5-c-form__alert">
                             <Alert
                                 inline=true
                                 r#type={alert.r#type}
@@ -299,9 +299,9 @@ pub struct ActionGroupProperties {
 #[function_component(ActionGroup)]
 pub fn action_group(props: &ActionGroupProperties) -> Html {
     html! {
-        <div class="pf-c-form__group pf-m-action">
-            <div class="pf-c-form__group-control">
-                <div class="pf-c-form__actions">
+        <div class="pf-v5-c-form__group pf-m-action">
+            <div class="pf-v5-c-form__group-control">
+                <div class="pf-v5-c-form__actions">
                     { for props.children.iter() }
                 </div>
             </div>

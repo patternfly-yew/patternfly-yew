@@ -62,7 +62,7 @@ impl AsClasses for PanelVariant {
 /// ```
 #[function_component(Panel)]
 pub fn panel(props: &PanelProperties) -> Html {
-    let mut class = classes!("pf-c-panel");
+    let mut class = classes!("pf-v5-c-panel");
 
     class.extend_from(&props.variant);
 
@@ -80,7 +80,7 @@ pub fn panel(props: &PanelProperties) -> Html {
 #[function_component(PanelMain)]
 pub fn panel_main(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-c-panel__main">
+        <div class="pf-v5-c-panel__main">
             { for props.children.iter() }
         </div>
     )
@@ -89,7 +89,7 @@ pub fn panel_main(props: &ChildrenProperties) -> Html {
 #[function_component(PanelMainBody)]
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-c-panel__main-body">
+        <div class="pf-v5-c-panel__main-body">
             { for props.children.iter() }
         </div>
     )
@@ -98,7 +98,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 #[function_component(PanelHeader)]
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-c-panel__header">
+        <div class="pf-v5-c-panel__header">
             { for props.children.iter() }
         </div>
     )
@@ -107,7 +107,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 #[function_component(PanelFooter)]
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-c-panel__footer">
+        <div class="pf-v5-c-panel__footer">
             { for props.children.iter() }
         </div>
     )

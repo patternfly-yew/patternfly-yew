@@ -28,7 +28,7 @@ pub struct TabContentBodyProperties {
 /// Defined by [`TabContentBodyProperties`].
 #[function_component(TabContentBody)]
 pub fn tab_content_body(props: &TabContentBodyProperties) -> Html {
-    let mut class = classes!("pf-c-tab-content__body");
+    let mut class = classes!("pf-v5-c-tab-content__body");
 
     if props.padding {
         class.push(classes!("pf-m-padding"));

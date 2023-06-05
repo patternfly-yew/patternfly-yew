@@ -74,12 +74,12 @@ impl Component for Dropdown {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-dropdown");
+        let mut classes = Classes::from("pf-v5-c-dropdown");
         if self.expanded {
             classes.push("pf-m-expanded");
         }
 
-        let mut menu_classes = Classes::from("pf-c-dropdown__menu");
+        let mut menu_classes = Classes::from("pf-v5-c-dropdown__menu");
 
         match ctx.props().position {
             Position::Left => {}
@@ -99,7 +99,7 @@ impl Component for Dropdown {
                 ref={self.global_close.clone()}
             >
                 <Button
-                    class="pf-c-dropdown__toggle"
+                    class="pf-v5-c-dropdown__toggle"
                     style={&ctx.props().toggle_style}
                     {variant}
                     r#type={ButtonType::Button}
@@ -143,14 +143,14 @@ pub fn dropdown_toggle(props: &DropdownToggleProps) -> Html {
     html! (
         <>
             if let Some(image) = &props.image {
-                <span class="pf-c-dropdown__toggle-image">
+                <span class="pf-v5-c-dropdown__toggle-image">
                     { image.clone() }
                 </span>
             }
-            <span class="pf-c-dropdown__toggle-text">
+            <span class="pf-v5-c-dropdown__toggle-text">
                 { &props.text }
             </span>
-            <span class="pf-c-dropdown__toggle-icon">
+            <span class="pf-v5-c-dropdown__toggle-icon">
                 if let Some(icon) = props.icon {
                     { icon }
                 } else {
@@ -290,7 +290,7 @@ impl Component for DropdownItem {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut class = classes!("pf-c-dropdown__menu-item");
+        let mut class = classes!("pf-v5-c-dropdown__menu-item");
         if !ctx.props().description.is_empty() {
             class.extend(classes!("pf-m-description"));
         }
@@ -321,10 +321,10 @@ impl Component for DropdownItem {
                 wrapper(html!(
                     <>
                         if !ctx.props().description.is_empty() {
-                            <div class="pf-c-dropdown__menu-item-main">
+                            <div class="pf-v5-c-dropdown__menu-item-main">
                                 { for ctx.props().children.iter() }
                             </div>
-                            <div class="pf-c-dropdown__menu-item-description"> { &ctx.props().description } </div>
+                            <div class="pf-v5-c-dropdown__menu-item-description"> { &ctx.props().description } </div>
                         } else {
                             { for ctx.props().children.iter() }
                         }
@@ -373,9 +373,9 @@ impl Component for DropdownItemGroup {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! (
-            <section class="pf-c-dropdown__group">
+            <section class="pf-v5-c-dropdown__group">
                 if !ctx.props().title.is_empty() {
-                    <h1 class="pf-c-dropdown__group-title"> { &ctx.props().title } </h1>
+                    <h1 class="pf-v5-c-dropdown__group-title"> { &ctx.props().title } </h1>
                 }
                 <ul>
                     { for ctx.props().children.iter().map(|mut c|{
@@ -399,7 +399,7 @@ pub struct DropdownItemTextProps {
 #[function_component(DropdownItemText)]
 pub fn dropwdown_item_text(props: &DropdownItemTextProps) -> Html {
     html! {
-        <div class="pf-c-dropdown__menu-item pf-m-text">
+        <div class="pf-v5-c-dropdown__menu-item pf-m-text">
             { for props.children.iter() }
         </div>
     }

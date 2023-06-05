@@ -88,7 +88,7 @@ impl Component for Card {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-card");
+        let mut classes = Classes::from("pf-v5-c-card");
 
         if ctx.props().compact {
             classes.push("pf-m-compact");
@@ -154,7 +154,7 @@ impl Card {
         html! {
             {for ctx.props().children.iter().map(|child|{
                 html_nested!{
-                    <div class="pf-c-card__body">
+                    <div class="pf-v5-c-card__body">
                         { child }
                     </div>
                 }
@@ -165,15 +165,15 @@ impl Card {
     fn header(&self, ctx: &Context<Self>) -> Html {
         if ctx.props().expandable {
             html! {
-                <div class="pf-c-card__header">
-                    <div class="pf-c-card__header-toggle">
+                <div class="pf-v5-c-card__header">
+                    <div class="pf-v5-c-card__header-toggle">
                         <button
-                            class="pf-c-button pf-m-plain"
+                            class="pf-v5-c-button pf-m-plain"
                             type="button"
                             aria-label="Details"
                             onclick={ctx.link().callback(|_|Msg::Toggle)}
                             >
-                            <span class="pf-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
+                            <span class="pf-v5-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
                         </button>
                     </div>
                     { self.title(ctx) }
@@ -187,7 +187,7 @@ impl Card {
     fn title(&self, ctx: &Context<Self>) -> Html {
         match &ctx.props().title {
             Some(t) => html! {
-                <div class="pf-c-card__title">
+                <div class="pf-v5-c-card__title">
                     { t.clone() }
                 </div>
             },
@@ -198,7 +198,7 @@ impl Card {
     fn footer(&self, ctx: &Context<Self>) -> Html {
         match &ctx.props().footer {
             Some(f) => html! {
-                <div class="pf-c-card__footer">
+                <div class="pf-v5-c-card__footer">
                     { f.clone() }
                 </div>
             },

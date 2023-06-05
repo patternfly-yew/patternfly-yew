@@ -21,7 +21,7 @@ pub struct ContentProperties {
 #[function_component(Content)]
 pub fn content(props: &ContentProperties) -> Html {
     html! {
-        <div class="pf-c-content">
+        <div class="pf-v5-c-content">
             { for props.children.iter() }
         </div>
     }

@@ -69,7 +69,7 @@ pub struct LabelProperties {
 /// Defined in [`LabelProperties`].
 #[function_component(Label)]
 pub fn label(props: &LabelProperties) -> Html {
-    let mut classes = Classes::from("pf-c-label");
+    let mut classes = Classes::from("pf-v5-c-label");
 
     classes.extend_from(&props.color);
 
@@ -87,9 +87,9 @@ pub fn label(props: &LabelProperties) -> Html {
 
     let content = |content: Html| {
         if props.href.is_empty() {
-            html! {<span class="pf-c-label__content">{content}</span>}
+            html! {<span class="pf-v5-c-label__content">{content}</span>}
         } else {
-            html! {<a class="pf-c-label__content" href={props.href.clone()}>{content}</a>}
+            html! {<a class="pf-v5-c-label__content" href={props.href.clone()}>{content}</a>}
         }
     };
 
@@ -99,7 +99,7 @@ pub fn label(props: &LabelProperties) -> Html {
                 html!(
                     <>
                         if let Some(icon) = &props.icon {
-                            <span class="pf-c-label__icon"> { icon.as_html() } </span>
+                            <span class="pf-v5-c-label__icon"> { icon.as_html() } </span>
                         }
                         { &props.label }
                     </>

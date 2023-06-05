@@ -39,7 +39,7 @@ pub struct TextProperties {
 )]
 #[allow(deprecated)]
 pub fn text(props: &TextProperties) -> Html {
-    let mut classes = Classes::from("pf-c-content");
+    let mut classes = Classes::from("pf-v5-c-content");
 
     if props.visited {
         classes.push("pf-m-visited");

@@ -93,7 +93,7 @@ pub struct CardProperties {
 pub fn card(props: &CardProperties) -> Html {
     let expanded = use_state_eq(|| false);
 
-    let mut class = classes!("pf-c-card");
+    let mut class = classes!("pf-v5-c-card");
 
     if props.compact {
         class.push(classes!("pf-m-compact"));
@@ -151,7 +151,7 @@ pub fn card(props: &CardProperties) -> Html {
             }
 
             if let Some(content) = &props.footer {
-                <div class="pf-c-card__footer">
+                <div class="pf-v5-c-card__footer">
                     { content.clone() }
                 </div>
             }
@@ -168,15 +168,15 @@ fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
 
     html!(
         if props.expandable {
-            <div class="pf-c-card__header">
-                <div class="pf-c-card__header-toggle">
+            <div class="pf-v5-c-card__header">
+                <div class="pf-v5-c-card__header-toggle">
                     <button
-                        class="pf-c-button pf-m-plain"
+                        class="pf-v5-c-button pf-m-plain"
                         type="button"
                         aria-label="Details"
                         {onclick}
                     >
-                        <span class="pf-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
+                        <span class="pf-v5-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
                     </button>
                 </div>
                 <CardTitle content={props.title.clone()} />
@@ -196,7 +196,7 @@ struct OptionalContentProperties {
 fn card_title(props: &OptionalContentProperties) -> Html {
     html!(
         if let Some(content) = &props.content {
-            <div class="pf-c-card__title">
+            <div class="pf-v5-c-card__title">
                 { content.clone() }
             </div>
         }
@@ -212,7 +212,7 @@ pub struct CardBodyProperties {
 #[function_component(CardBody)]
 pub fn card_body(props: &CardBodyProperties) -> Html {
     html!(
-        <div class="pf-c-card__body">
+        <div class="pf-v5-c-card__body">
             { props.children.clone() }
         </div>
     )

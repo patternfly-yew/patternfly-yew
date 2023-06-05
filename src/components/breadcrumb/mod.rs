@@ -32,8 +32,8 @@ pub fn breadcrumb(props: &BreadcrumbProperties) -> Html {
     let last = props.children.len() - 1;
 
     html!(
-        <nav class="pf-c-breadcrumb" aria-label={"breadcrumb"}>
-            <ol class="pf-c-breadcrumb__list">
+        <nav class="pf-v5-c-breadcrumb" aria-label={"breadcrumb"}>
+            <ol class="pf-v5-c-breadcrumb__list">
                 {
                     for props.children.iter().enumerate().map(|(n,c)|item(c, n == last))
                 }
@@ -46,8 +46,8 @@ fn item(mut child: BreadcrumbItemVariant, last: bool) -> Html {
     child.set_current(last);
 
     html!(
-        <li class="pf-c-breadcrumb__item">
-            <span class="pf-c-breadcrumb__item-divider">
+        <li class="pf-v5-c-breadcrumb__item">
+            <span class="pf-v5-c-breadcrumb__item-divider">
                 <i class="fas fa-angle-right" aria-hidden="true"></i>
             </span>
             { child }
@@ -70,7 +70,7 @@ pub struct BreadcrumbItemProperties {
 
 #[function_component(BreadcrumbItem)]
 pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
-    let mut class = Classes::from("pf-c-breadcrumb__link");
+    let mut class = Classes::from("pf-v5-c-breadcrumb__link");
 
     if props.current {
         class.push("pf-m-current");

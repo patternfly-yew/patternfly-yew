@@ -62,7 +62,7 @@ pub struct HelperTextProperties {
 #[function_component(HelperText)]
 pub fn helper_text(props: &HelperTextProperties) -> Html {
     html!(
-        <div class="pf-c-helper-text">
+        <div class="pf-v5-c-helper-text">
             { for props.children.iter() }
         </div>
     )
@@ -88,7 +88,7 @@ pub struct HelperTextItemProperties {
 /// Defined by [`HelperTextItemProperties`].
 #[function_component(HelperTextItem)]
 pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
-    let mut class = classes!("pf-c-helper-text__item");
+    let mut class = classes!("pf-v5-c-helper-text__item");
 
     class.extend_from(&props.state);
 
@@ -100,10 +100,10 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
 
     html!(
         <div {class}>
-            <span class="pf-c-helper-text__item-icon">
+            <span class="pf-v5-c-helper-text__item-icon">
                 { icon }
             </span>
-            <div class="pf-c-helper-text__item-text">
+            <div class="pf-v5-c-helper-text__item-text">
                 { for props.children.iter() }
             </div>
         </div>

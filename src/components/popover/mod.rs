@@ -158,7 +158,7 @@ pub struct PopoverPopupProperties {
 /// The actual popover content component.
 #[function_component(PopoverPopup)]
 pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
-    let mut classes = classes!("pf-c-popover");
+    let mut classes = classes!("pf-v5-c-popover");
 
     classes.extend(props.orientation.as_classes());
 
@@ -183,8 +183,8 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
             role="dialog"
             aria-model="true"
         >
-            <div class="pf-c-popover__arrow"></div>
-            <div class="pf-c-popover__content">
+            <div class="pf-v5-c-popover__arrow"></div>
+            <div class="pf-v5-c-popover__content">
 
                 <Button
                     variant={ButtonVariant::Plain}
@@ -215,17 +215,17 @@ pub fn popover_body(props: &PopoverBodyProperties) -> Html {
     html!(
         <>
             if !props.header.is_empty() {
-                <h1 class="pf-c-title pf-m-md">
+                <h1 class="pf-v5-c-title pf-m-md">
                     { for props.header.iter() }
                 </h1>
             }
 
-            <div class="pf-c-popover__body">
+            <div class="pf-v5-c-popover__body">
                 { for props.children.iter() }
             </div>
 
             if !props.footer.is_empty() {
-                <footer class="pf-c-popover__footer">
+                <footer class="pf-v5-c-popover__footer">
                     { for props.footer.iter() }
                 </footer>
             }

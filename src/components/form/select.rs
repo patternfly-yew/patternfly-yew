@@ -80,7 +80,7 @@ where
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let classes = Classes::from("pf-c-form-control");
+        let classes = Classes::from("pf-v5-c-form-control");
 
         #[allow(deprecated)]
         let multiple = !matches!(ctx.props().variant, SelectVariant::Single(_));
@@ -316,7 +316,7 @@ pub mod next {
     where
         K: 'static + Clone + PartialEq + Display + FromStr,
     {
-        let class = Classes::from("pf-c-form-control");
+        let class = Classes::from("pf-v5-c-form-control");
 
         let node_ref = use_node_ref();
 

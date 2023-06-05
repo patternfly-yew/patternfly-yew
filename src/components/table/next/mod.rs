@@ -52,7 +52,7 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let mut class = classes!("pf-c-table");
+    let mut class = classes!("pf-v5-c-table");
 
     if props
         .header
@@ -170,7 +170,7 @@ where
     };
      */
 
-    let mut classes = classes!("pf-c-button");
+    let mut classes = classes!("pf-v5-c-button");
     classes.push(classes!("pf-m-plain"));
     if expanded {
         classes.push(classes!("pf-m-expanded"));
@@ -209,7 +209,7 @@ where
 
         cells.push(html! {
             <td class={classes} colspan={cell.cols.to_string()}>
-                <div class="pf-c-table__expandable-row-content">
+                <div class="pf-v5-c-table__expandable-row-content">
                     { cell.content }
                 </div>
             </td>
@@ -231,7 +231,7 @@ where
         });
     }
 
-    let mut tr_classes = classes!("pf-c-table__expandable-row");
+    let mut tr_classes = classes!("pf-v5-c-table__expandable-row");
     tr_classes.extend(expanded_class.clone());
 
     let onclick = props.onexpand.reform(move |_| (key.clone(), !expanded));
@@ -239,9 +239,9 @@ where
     html! (
         <tbody role="rowgroup" class={expanded_class}>
             <tr>
-                <td class="pf-c-table__toggle">
+                <td class="pf-v5-c-table__toggle">
                     <button class={classes} {onclick} aria-expanded={aria_expanded}>
-                        <div class="pf-c-table__toggle-icon">
+                        <div class="pf-v5-c-table__toggle-icon">
                             { Icon::AngleDown }
                         </div>
                     </button>
@@ -294,7 +294,7 @@ where
     let actions = entry.actions();
     if !actions.is_empty() {
         cells.push(html!(
-            <td class="pf-c-table__action">
+            <td class="pf-v5-c-table__action">
                 <Dropdown
                     plain=true
                     toggle={html!(<KebabToggle/>)}

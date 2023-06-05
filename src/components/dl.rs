@@ -63,7 +63,7 @@ impl AsClasses for DescriptionListMode {
 /// ```
 #[function_component(DescriptionList)]
 pub fn dl(props: &DescriptionListProperties) -> Html {
-    let mut classes = Classes::from("pf-c-description-list");
+    let mut classes = Classes::from("pf-v5-c-description-list");
 
     classes.extend_from(&props.mode);
 
@@ -95,10 +95,10 @@ pub struct DescriptionGroupProperties {
 #[function_component(DescriptionGroup)]
 pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
     html! (
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">{ &props.term }</dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">
+        <div class="pf-v5-c-description-list__group">
+            <dt class="pf-v5-c-description-list__term">{ &props.term }</dt>
+            <dd class="pf-v5-c-description-list__description">
+                <div class="pf-v5-c-description-list__text">
                     { for props.children.iter() }
                 </div>
             </dd>

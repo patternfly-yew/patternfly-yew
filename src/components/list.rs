@@ -87,7 +87,7 @@ pub struct ListProperties {
 /// Each children will be wrapped into an list item element.
 #[function_component(List)]
 pub fn list(props: &ListProperties) -> Html {
-    let mut classes = Classes::from("pf-c-list");
+    let mut classes = Classes::from("pf-v5-c-list");
 
     classes.extend_from(&props.r#type);
 

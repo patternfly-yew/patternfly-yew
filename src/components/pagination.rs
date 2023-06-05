@@ -60,7 +60,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let expanded = use_state_eq(|| false);
 
     // The pagination menu : "1-20 of nnn"
-    let mut menu_classes = classes!("pf-c-options-menu");
+    let mut menu_classes = classes!("pf-v5-c-options-menu");
     if *expanded {
         menu_classes.push("pf-m-expanded");
     }
@@ -188,37 +188,37 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
         <div
             id={&props.id}
-            class="pf-c-pagination"
+            class="pf-v5-c-pagination"
             style={&props.style}
             ref={node}
         >
 
             // the selector of how many entries per page to display
-            <div class="pf-c-pagination__total-items">
+            <div class="pf-v5-c-pagination__total-items">
                 <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
                 <b>{ total_entries.clone() }</b>
             </div>
 
             <div class={ menu_classes }>
-                <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
+                <div class="pf-v5-c-options-menu__toggle pf-m-text pf-m-plain">
                     <Button
-                        class="pf-c-options-menu__toggle-button"
+                        class="pf-v5-c-options-menu__toggle-button"
                         aria_haspopup="listbox"
                         aria_label="Items per page"
                         onclick={ontoggle}
                     >
-                        <span class="pf-c-options-menu__toggle-text">
+                        <span class="pf-v5-c-options-menu__toggle-text">
                             <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
                             <b>{ total_entries }</b>
                         </span>
-                        <span class="pf-c-options-menu__toggle-icon">
+                        <span class="pf-v5-c-options-menu__toggle-icon">
                             { Icon::CaretDown }
                         </span>
                     </Button>
                 </div>
 
             if *expanded {
-                <ul class="pf-c-options-menu__menu" >
+                <ul class="pf-v5-c-options-menu__menu" >
                     { for limit_choices.into_iter().map(|limit|  {
                         let expanded = expanded.clone();
                         let onlimit = onlimit.clone();
@@ -229,12 +229,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         html!(
                             <li>
                                 <Button
-                                    class="pf-c-options-menu__menu-item"
+                                    class="pf-v5-c-options-menu__menu-item"
                                     {onclick}
                                 >
                                     {limit} {" per page"}
                                     if props.selected_choice == limit {
-                                        <div class="pf-c-options-menu__menu-item-icon">
+                                        <div class="pf-v5-c-options-menu__menu-item-icon">
                                             { Icon::Check }
                                         </div>
                                     }
@@ -247,8 +247,8 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
             // the navigation buttons
 
-            <nav class="pf-c-pagination__nav" aria-label="Pagination">
-                <div class="pf-c-pagination__nav-control pf-m-first">
+            <nav class="pf-v5-c-pagination__nav" aria-label="Pagination">
+                <div class="pf-v5-c-pagination__nav-control pf-m-first">
                     <Button
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::First)}
@@ -258,7 +258,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                       { Icon::AngleDoubleLeft }
                     </Button>
                 </div>
-                <div class="pf-c-pagination__nav-control pf-m-prev">
+                <div class="pf-v5-c-pagination__nav-control pf-m-prev">
                     <Button
                         aria_label="Go to previous page"
                         variant={ButtonVariant::Plain}
@@ -268,7 +268,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                        { Icon::AngleLeft }
                     </Button>
                 </div>
-                <div class="pf-c-pagination__nav-page-select">
+                <div class="pf-v5-c-pagination__nav-page-select">
                     <TextInput
                         r#type="number"
                         {oninput}
@@ -281,7 +281,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 }
                 </div>
 
-                <div class="pf-c-pagination__nav-control pf-m-next">
+                <div class="pf-v5-c-pagination__nav-control pf-m-next">
                     <Button
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
@@ -291,7 +291,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         { Icon::AngleRight }
                     </Button>
                 </div>
-                <div class="pf-c-pagination__nav-control pf-m-last">
+                <div class="pf-v5-c-pagination__nav-control pf-m-last">
                     <Button
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}

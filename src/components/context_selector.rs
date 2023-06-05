@@ -66,7 +66,7 @@ impl Component for ContextSelector {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-context-selector");
+        let mut classes = Classes::from("pf-v5-c-context-selector");
 
         if self.expanded {
             classes.push("pf-m-expanded");
@@ -78,18 +78,18 @@ impl Component for ContextSelector {
                 ref={self.global_close.clone()}
             >
                 <button
-                    class="pf-c-context-selector__toggle"
+                    class="pf-v5-c-context-selector__toggle"
                     aria-expanded={self.expanded.to_string()}
                     type="button"
                     onclick={ctx.link().callback(|_|Msg::Toggle)}
                 >
-                    <span class="pf-c-context-selector__toggle-text">{&ctx.props().selected}</span>
-                    <span class="pf-c-context-selector__toggle-icon">{Icon::CaretDown}</span>
+                    <span class="pf-v5-c-context-selector__toggle-text">{&ctx.props().selected}</span>
+                    <span class="pf-v5-c-context-selector__toggle-icon">{Icon::CaretDown}</span>
                 </button>
-                <div class="pf-c-context-selector__menu"
+                <div class="pf-v5-c-context-selector__menu"
                     hidden={!self.expanded}
                 >
-                    <div class="pf-c-context-selector__menu-search">
+                    <div class="pf-v5-c-context-selector__menu-search">
                         <InputGroup>
                             <TextInput
                                 onchange={ctx.link().callback(Msg::Search)}
@@ -97,7 +97,7 @@ impl Component for ContextSelector {
                                 r#type="search"/>
                         </InputGroup>
                     </div>
-                    <ul class="pf-c-context-selector__menu-list">
+                    <ul class="pf-v5-c-context-selector__menu-list">
                         { for ctx.props().children.iter().map(|mut item|{
                             let mut props = Rc::make_mut(&mut item.props);
                             props.need_close = ctx.link().callback(|_|Msg::Close);
@@ -152,7 +152,7 @@ impl Component for ContextSelectorItem {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let classes = Classes::from("pf-c-context-selector__menu-list-item");
+        let classes = Classes::from("pf-v5-c-context-selector__menu-list-item");
 
         html!(
             <li>

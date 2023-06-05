@@ -23,7 +23,7 @@ pub struct NavProperties {
 #[function_component(Nav)]
 pub fn nav(props: &NavProperties) -> Html {
     html! {
-        <nav class="pf-c-nav" aria-label="Global">
+        <nav class="pf-v5-c-nav" aria-label="Global">
             { for props.children.iter() }
         </nav>
     }
@@ -41,7 +41,7 @@ pub struct NavListProperties {
 #[function_component(NavList)]
 pub fn nav_list(props: &NavListProperties) -> Html {
     html! {
-        <ul class="pf-c-nav__list">
+        <ul class="pf-v5-c-nav__list">
             { for props.children.iter() }
         </ul>
     }
@@ -61,8 +61,8 @@ pub struct NavGroupProperties {
 #[function_component(NavGroup)]
 pub fn nav_group(props: &NavGroupProperties) -> Html {
     html! {
-        <section class="pf-c-nav__section">
-            <h2 class="pf-c-nav__section-title">{ props.title.clone() }</h2>
+        <section class="pf-v5-c-nav__section">
+            <h2 class="pf-v5-c-nav__section-title">{ props.title.clone() }</h2>
             <NavList>
                 { for props.children.iter() }
             </NavList>
@@ -99,10 +99,10 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
     };
 
     html! (
-        <li class="pf-c-nav__item">
+        <li class="pf-v5-c-nav__item">
             <a
                 href={href}
-                class="pf-c-nav__link"
+                class="pf-v5-c-nav__link"
                 target={target}
             >
                 { for props.children.iter() }
@@ -210,7 +210,7 @@ impl Component for NavExpandable {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-c-nav__item pf-c-expandable");
+        let mut classes = Classes::from("pf-v5-c-nav__item pf-v5-c-expandable");
 
         let expanded = self.is_expanded(ctx);
 
@@ -224,19 +224,19 @@ impl Component for NavExpandable {
             <ContextProvider<Expandable> {context}>
                 <li class={classes}>
                     <button
-                        class="pf-c-nav__link"
+                        class="pf-v5-c-nav__link"
                         aria-expanded={expanded.to_string()}
                         onclick={ctx.link().callback(|_|MsgExpandable::Toggle)}
                     >
                         { &ctx.props().title }
-                        <span class="pf-c-nav__toggle">
-                            <span class="pf-c-nav__toggle-icon">
+                        <span class="pf-v5-c-nav__toggle">
+                            <span class="pf-v5-c-nav__toggle-icon">
                                 { Icon::AngleRight }
                             </span>
                         </span>
                     </button>
 
-                    <section class="pf-c-nav__subnav" hidden={!expanded}>
+                    <section class="pf-v5-c-nav__subnav" hidden={!expanded}>
                         <NavList>
                             { for ctx.props().children.iter() }
                         </NavList>

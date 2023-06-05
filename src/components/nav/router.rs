@@ -27,7 +27,7 @@ where
 {
     let router = use_router().expect("Requires a Router or Nested router");
 
-    let mut classes = Classes::from("pf-c-nav__link");
+    let mut classes = Classes::from("pf-v5-c-nav__link");
 
     let active = router.is_active(&props.to, props.predicate.as_ref());
 
@@ -48,7 +48,7 @@ where
     }
 
     html! {
-        <li class="pf-c-nav__item">
+        <li class="pf-v5-c-nav__item">
             <Link<R> target={props.to.clone()} class={classes}>
                 { for props.children.iter() }
             </Link<R>>

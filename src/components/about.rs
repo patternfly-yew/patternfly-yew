@@ -113,8 +113,8 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             AttrValue::from("about-modal-title"),
             AttrValue::default(),
             html!(
-                <div class="pf-c-about-modal-box__header">
-                    <h1 class="pf-c-title pf-m-4xl" id="about-modal-title">{ props.product_name.clone() }</h1>
+                <div class="pf-v5-c-about-modal-box__header">
+                    <h1 class="pf-v5-c-title pf-m-4xl" id="about-modal-title">{ props.product_name.clone() }</h1>
                 </div>
             ),
         )
@@ -129,7 +129,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
                 AttrValue::default()
             } else {
                 AttrValue::from(format!(
-                    r#"--pf-c-about-modal-box__hero--sm--BackgroundImage: url( "{}" );"#,
+                    r#"--pf-v5-c-about-modal-box__hero--sm--BackgroundImage: url( "{}" );"#,
                     props.background_image_src
                 ))
             }
@@ -138,7 +138,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
     html!(
         <div
             id={props.id.clone()}
-            class={classes!("pf-c-about-modal-box", props.class.clone())}
+            class={classes!("pf-v5-c-about-modal-box", props.class.clone())}
             role="dialog"
             aria-modal="true"
             aria-labeledby={aria_labeledby}
@@ -146,16 +146,16 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             ref={node_ref}
         >
             if !props.brand_image_src.is_empty() {
-                <div class="pf-c-about-modal-box__brand">
+                <div class="pf-v5-c-about-modal-box__brand">
                     <img
-                      class="pf-c-about-modal-box__brand-image"
+                      class="pf-v5-c-about-modal-box__brand-image"
                       src={props.brand_image_src.clone()}
                       alt={props.brand_image_alt.clone()}
                     />
                 </div>
             }
 
-            <div class="pf-c-about-modal-box__close">
+            <div class="pf-v5-c-about-modal-box__close">
                 <Button
                     variant={ButtonVariant::Plain}
                     aria_label={props.close_button_aria_label.clone()}
@@ -168,16 +168,16 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             { header }
 
             <div
-                class="pf-c-about-modal-box__hero"
+                class="pf-v5-c-about-modal-box__hero"
                 style={hero_style}
             />
 
-            <div class="pf-c-about-modal-box__content">
-                <div class="pf-c-about-modal-box__body">
+            <div class="pf-v5-c-about-modal-box__content">
+                <div class="pf-v5-c-about-modal-box__body">
                     { for props.children.clone() }
                 </div>
                 if !props.trademark.is_empty() {
-                    <p class="pf-c-about-modal-box__strapline">{ props.trademark.clone() }</p>
+                    <p class="pf-v5-c-about-modal-box__strapline">{ props.trademark.clone() }</p>
                 }
             </div>
         </div>
