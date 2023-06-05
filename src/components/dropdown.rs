@@ -426,7 +426,7 @@ pub struct UserToggleProps {
 
 #[function_component(UserToggle)]
 pub fn user_toggle(props: &UserToggleProps) -> Html {
-    let image = html! { <Avatar src={props.src.clone()} /> };
+    let image = html! { <Avatar src={props.src.clone()} alt="User's avatar" /> };
     html! {
         <DropdownToggle
             image={image}
