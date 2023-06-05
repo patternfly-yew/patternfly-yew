@@ -37,6 +37,12 @@ pub struct AboutModalProperties {
     /// Id of the outermost element
     #[prop_or_default]
     pub id: AttrValue,
+
+    /// Custom style information for the "hero" section.
+    ///
+    /// NOTE: This overrides the `background_image_src` attribute.
+    #[prop_or_default]
+    pub hero_style: Option<String>,
 }
 
 /// About modal component
@@ -114,14 +120,20 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         )
     };
 
-    let hero_style = if props.background_image_src.is_empty() {
-        AttrValue::default()
-    } else {
-        AttrValue::from(format!(
-            "--pf-c-about-modal-box__hero--sm--BackgroundImage: url( {} );",
-            props.background_image_src
-        ))
-    };
+    let hero_style = props
+        .hero_style
+        .clone()
+        .map(AttrValue::from)
+        .unwrap_or_else(|| {
+            if props.background_image_src.is_empty() {
+                AttrValue::default()
+            } else {
+                AttrValue::from(format!(
+                    r#"--pf-c-about-modal-box__hero--sm--BackgroundImage: url( "{}" );"#,
+                    props.background_image_src
+                ))
+            }
+        });
 
     html!(
         <div
