@@ -268,7 +268,7 @@ impl Component for AppLauncherItem {
                     <span class="pf-v5-c-app-launcher__menu-item-external-icon">
                         { Icon::ExternalLinkAlt }
                     </span>
-                    <span class="pf-v5-screen-reader">{"(opens new window)"}</span>
+                    <span class="pf-v5-u-screen-reader">{"(opens new window)"}</span>
                 }
 
                 </a>

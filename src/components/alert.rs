@@ -117,7 +117,7 @@ pub fn alert(props: &AlertProperties) -> Html {
             <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
             <div class="pf-v5-c-alert__title">
                 <strong>
-                    <span class="pf-v5-screen-reader">{ t.aria_label() }{":"}</span>
+                    <span class="pf-v5-u-screen-reader">{ t.aria_label() }{":"}</span>
                     { &props.title }
                 </strong>
             </div>
