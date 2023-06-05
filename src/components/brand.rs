@@ -15,7 +15,9 @@ pub struct BrandProperties {
 ///
 /// > A **brand** is used to place a product logotype on a screen.
 ///
-/// See: <https://www.patternfly.org/v4/components/brand>
+/// See: <https://pf5.patternfly.org/components/brand>
+///
+/// Only the basic component is supported.
 ///
 /// ## Properties
 ///

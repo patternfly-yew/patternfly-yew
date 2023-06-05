@@ -1,6 +1,6 @@
 //! Avatar graphic
-use yew::prelude::*;
 use crate::Size;
+use yew::prelude::*;
 
 /// Border style of the [`Avatar`] component
 #[derive(Clone, Default, Debug, PartialEq)]
@@ -8,18 +8,16 @@ pub enum AvatarBorder {
     #[default]
     None,
     Dark,
-    Light
+    Light,
 }
 
 impl From<AvatarBorder> for Classes {
     fn from(value: AvatarBorder) -> Self {
-        classes!(
-            match value {
-                AvatarBorder::None => "",
-                AvatarBorder::Dark => "pf-m-dark",
-                AvatarBorder::Light => "pf-m-light",
-            }
-        )
+        classes!(match value {
+            AvatarBorder::None => "",
+            AvatarBorder::Dark => "pf-m-dark",
+            AvatarBorder::Light => "pf-m-light",
+        })
     }
 }
 
@@ -36,18 +34,15 @@ pub enum AvatarSize {
 
 impl From<AvatarSize> for Classes {
     fn from(value: AvatarSize) -> Self {
-        classes!(
-            match value {
-                AvatarSize::None => Size::None,
-                AvatarSize::Small => Size::Small,
-                AvatarSize::Medium => Size::Medium,
-                AvatarSize::Large => Size::Large,
-                AvatarSize::XLarge => Size::XLarge,
-            }
-        )
+        classes!(match value {
+            AvatarSize::None => Size::None,
+            AvatarSize::Small => Size::Small,
+            AvatarSize::Medium => Size::Medium,
+            AvatarSize::Large => Size::Large,
+            AvatarSize::XLarge => Size::XLarge,
+        })
     }
 }
-
 
 /// Properties for [`Avatar`]
 #[derive(Clone, PartialEq, Properties)]
@@ -56,6 +51,7 @@ pub struct AvatarProperties {
     /// The image "alt" text.
     pub alt: AttrValue,
 
+    /// Optional Attributes
     #[prop_or_default]
     pub border: AvatarBorder,
     #[prop_or_default]
