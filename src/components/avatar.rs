@@ -1,4 +1,4 @@
-//! Avatar grapic
+//! Avatar graphic
 use yew::prelude::*;
 use crate::Size;
 
