@@ -1,5 +1,4 @@
 //! Application launcher menu
-
 use crate::{GlobalClose, Icon, ListDivider, Position};
 use std::rc::Rc;
 use yew::{
@@ -31,7 +30,7 @@ pub enum Msg {
 ///
 /// > An **application launcher** is an option menu that allows a user to launch a separate web application in a new browser window.
 ///
-/// See: <https://www.patternfly.org/v4/components/application-launcher>
+/// See: <https://pf5.patternfly.org/components/menus/application-launcher>
 ///
 /// ## Properties
 ///
@@ -41,6 +40,8 @@ pub enum Msg {
 ///
 /// Children of the application launcher are [`AppLauncherItem`]s. It is also possible use
 /// [`crate::prelude::Divider`] to group entries.
+#[deprecated(since = "5.0.0", note = "The AppLauncher component has been depreciated by Patternfly.\
+    See https://patternfly-react-v5.surge.sh/components/menus/application-launcher for more information.")]
 pub struct AppLauncher {
     expanded: bool,
     global_close: GlobalClose,
