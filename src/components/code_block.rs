@@ -53,7 +53,9 @@ pub fn code_block(props: &CodeBlockProperties) -> Html {
         <div class="pf-v5-c-code-block">
             if !props.actions.is_empty() {
                 <div class="pf-v5-c-code-block__header">
-                    { for props.actions.iter() }
+                    <div class="pf-v5-c-code-block__actions">
+                        { for props.actions.iter() }
+                    </div>
                 </div>
             }
 
