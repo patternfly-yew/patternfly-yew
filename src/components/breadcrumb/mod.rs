@@ -33,7 +33,7 @@ pub fn breadcrumb(props: &BreadcrumbProperties) -> Html {
 
     html!(
         <nav class="pf-v5-c-breadcrumb" aria-label={"breadcrumb"}>
-            <ol class="pf-v5-c-breadcrumb__list">
+            <ol class="pf-v5-c-breadcrumb__list" role="list">
                 {
                     for props.children.iter().enumerate().map(|(n,c)|item(c, n == last))
                 }
@@ -71,9 +71,12 @@ pub struct BreadcrumbItemProperties {
 #[function_component(BreadcrumbItem)]
 pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
     let mut class = Classes::from("pf-v5-c-breadcrumb__link");
+    let mut aria_current = AttrValue::default();
 
     if props.current {
         class.push("pf-m-current");
+        aria_current = AttrValue::from("page")
+
     }
 
     if props.href.is_empty() {
@@ -86,6 +89,7 @@ pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
                 {class}
                 href={&props.href}
                 target={&props.target}
+                aria-current={aria_current}
             >
                     { for props.children.iter() }
             </a>
