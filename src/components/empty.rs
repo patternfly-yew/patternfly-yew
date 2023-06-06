@@ -56,27 +56,34 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
     html! (
         <div class={classes}>
             <div class="pf-v5-c-empty-state__content">
-                if let Some(icon) = &props.icon {
-                    { icon.with_classes(Classes::from("pf-v5-c-empty-state__icon")) }
-                }
-                <Title size={ props.title_size() }>{&props.title}</Title>
+                <div class="pf-v5-c-empty-state__header">
+                    if let Some(icon) = &props.icon {
+                        <div class="pf-v5-c-empty-state__icon">
+                            { *icon }
+                        </div>
+                    }
+                    <Title size={ props.title_size() }>{&props.title}</Title>
+                </div>
                 <div class="pf-v5-c-empty-state__body">
                     { for props.children.iter() }
                 </div>
+                <div class="pf-v5-c-empty-state__footer">
+                    if let Some(action) = &props.primary {
+                        <div class="pf-v5-c-empty-state__actions">
+                            <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
+                        </div>
+                    }
 
-                if let Some(action) = &props.primary {
-                    <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
-                }
-
-                if !props.secondaries.is_empty() {
-                    <div class="pf-v5-c-empty-state__secondary">
-                        { for props.secondaries.iter().map(|action|{
-                            html!{
-                                <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
-                            }
-                        }) }
-                    </div>
-                }
+                    if !props.secondaries.is_empty() {
+                        <div class="pf-v5-c-empty-state__actions">
+                            { for props.secondaries.iter().map(|action|{
+                                html!{
+                                    <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
+                                }
+                            }) }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     )
