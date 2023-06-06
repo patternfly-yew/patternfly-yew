@@ -1,8 +1,9 @@
-//! Card
+mod variant;
 
-pub mod next;
+pub use variant::*;
 
-use crate::Icon;
+use crate::prelude::{Divider, DividerType, Icon};
+use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -19,7 +20,9 @@ pub enum CardSelection {
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub id: AttrValue,
+    #[prop_or_default]
+    pub children: ChildrenRenderer<CardBodyVariant>,
     #[prop_or_default]
     pub title: Option<Html>,
     #[prop_or_default]
@@ -29,7 +32,7 @@ pub struct CardProperties {
     #[prop_or_default]
     pub flat: bool,
     #[prop_or_default]
-    pub onclick: Callback<yew::MouseEvent>,
+    pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
     pub expandable: bool,
     #[prop_or_default]
@@ -55,154 +58,176 @@ pub struct CardProperties {
 /// ## Properties
 ///
 /// Defined by [`CardProperties`].
-#[deprecated(
-    since = "0.4.0",
-    note = "Will be replaced with the implementation from `next::Card`"
-)]
-pub struct Card {
-    expanded: bool,
-}
+///
+/// ## Children
+///
+/// Cards can have any number of [`CardBody`] or [`CardDivider`] children.
+///
+/// ## Example
+///
+/// ```
+/// use yew::prelude::*;
+/// use patternfly_yew::next::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   let title = html!({"The heading"});
+///   let footer = html!({"The footer"});
+///
+///   html!(
+///     <Card
+///         {title} {footer}
+///     >
+///       <CardBody>
+///         { "Foo" }
+///       </CardBody>
+///       <CardDivider/>
+///       <CardBody>
+///         { "Bar" }
+///       </CardBody>
+///     </Card>
+///   )
+/// }
+/// ```
+#[function_component(Card)]
+pub fn card(props: &CardProperties) -> Html {
+    let expanded = use_state_eq(|| false);
 
-#[doc(hidden)]
-#[derive(Clone, Copy, Debug)]
-pub enum Msg {
-    Toggle,
-}
+    let mut class = classes!("pf-v5-c-card");
 
-#[allow(deprecated)]
-impl Component for Card {
-    type Message = Msg;
-    type Properties = CardProperties;
-
-    fn create(_: &Context<Self>) -> Self {
-        Self { expanded: false }
+    if props.compact {
+        class.push(classes!("pf-m-compact"));
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Toggle => {
-                self.expanded = !self.expanded;
+    if props.expandable && *expanded {
+        class.push(classes!("pf-m-expanded"));
+    }
+
+    if props.large {
+        class.push(classes!("pf-m-display-lg"));
+    }
+
+    if props.flat {
+        class.push(classes!("pf-m-flat"));
+    }
+
+    match props.selection {
+        CardSelection::None => {}
+        CardSelection::Disabled => {
+            class.push(classes!("pf-m-non-selectable-raised"));
+        }
+        CardSelection::Selectable { selected } => {
+            class.push(classes!("pf-m-selectable-raised"));
+            if selected {
+                class.push(classes!("pf-m-selected-raised"));
             }
         }
-        true
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-v5-c-card");
+    if props.full_height {
+        class.push(classes!("pf-m-full-height"));
+    }
 
-        if ctx.props().compact {
-            classes.push("pf-m-compact");
-        }
+    if props.rounded {
+        class.push(classes!("pf-m-rounded"));
+    }
 
-        if ctx.props().expandable && self.expanded {
-            classes.push("pf-m-expanded");
-        }
+    if props.plain {
+        class.push(classes!("pf-m-plain"));
+    }
 
-        if ctx.props().large {
-            classes.push("pf-m-display-lg");
-        }
+    class.extend(props.class.clone());
 
-        if ctx.props().flat {
-            classes.push("pf-m-flat");
-        }
+    html! (
+        <div
+            {class}
+            onclick={props.onclick.clone()}
+            id={&props.id}
+        >
+            { header(props, expanded.clone()) }
 
-        match ctx.props().selection {
-            CardSelection::None => {}
-            CardSelection::Disabled => {
-                classes.push("pf-m-non-selectable-raised");
+            if *expanded || !props.expandable {
+                { props.children.clone() }
             }
-            CardSelection::Selectable { selected } => {
-                classes.push("pf-m-selectable-raised");
-                if selected {
-                    classes.push("pf-m-selected-raised");
-                }
-            }
-        }
 
-        if ctx.props().full_height {
-            classes.push("pf-m-full-height");
-        }
-
-        if ctx.props().rounded {
-            classes.push("pf-m-rounded");
-        }
-
-        if ctx.props().plain {
-            classes.push("pf-m-plain");
-        }
-
-        classes.extend(ctx.props().class.clone());
-
-        html! (
-            <div
-                class={classes}
-                onclick={&ctx.props().onclick}
-            >
-                { self.header(ctx) }
-                if self.expanded || !ctx.props().expandable {
-                    { self.body(ctx) }
-                }
-                { self.footer(ctx) }
-            </div>
-        )
-    }
-}
-
-#[allow(deprecated)]
-impl Card {
-    fn body(&self, ctx: &Context<Self>) -> Html {
-        html! {
-            {for ctx.props().children.iter().map(|child|{
-                html_nested!{
-                    <div class="pf-v5-c-card__body">
-                        { child }
-                    </div>
-                }
-            })}
-        }
-    }
-
-    fn header(&self, ctx: &Context<Self>) -> Html {
-        if ctx.props().expandable {
-            html! {
-                <div class="pf-v5-c-card__header">
-                    <div class="pf-v5-c-card__header-toggle">
-                        <button
-                            class="pf-v5-c-button pf-m-plain"
-                            type="button"
-                            aria-label="Details"
-                            onclick={ctx.link().callback(|_|Msg::Toggle)}
-                            >
-                            <span class="pf-v5-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
-                        </button>
-                    </div>
-                    { self.title(ctx) }
-                </div>
-            }
-        } else {
-            self.title(ctx)
-        }
-    }
-
-    fn title(&self, ctx: &Context<Self>) -> Html {
-        match &ctx.props().title {
-            Some(t) => html! {
-                <div class="pf-v5-c-card__title">
-                    { t.clone() }
-                </div>
-            },
-            None => html! {},
-        }
-    }
-
-    fn footer(&self, ctx: &Context<Self>) -> Html {
-        match &ctx.props().footer {
-            Some(f) => html! {
+            if let Some(content) = &props.footer {
                 <div class="pf-v5-c-card__footer">
-                    { f.clone() }
+                    { content.clone() }
                 </div>
-            },
-            None => html! {},
+            }
+        </div>
+    )
+}
+
+fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
+    let onclick = {
+        Callback::from(move |_| {
+            expanded.set(!*expanded);
+        })
+    };
+
+    html!(
+        if props.expandable {
+            <div class="pf-v5-c-card__header">
+                <div class="pf-v5-c-card__header-toggle">
+                    <button
+                        class="pf-v5-c-button pf-m-plain"
+                        type="button"
+                        aria-label="Details"
+                        {onclick}
+                    >
+                        <span class="pf-v5-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
+                    </button>
+                </div>
+                <div class="pf-v5-c-card__header-main">
+                    <CardTitle content={props.title.clone()} />
+                </div>
+            </div>
+        } else {
+            <CardTitle content={props.title.clone()} />
         }
-    }
+    )
+}
+
+#[derive(PartialEq, Properties)]
+struct OptionalContentProperties {
+    content: Option<Html>,
+}
+
+#[function_component(CardTitle)]
+fn card_title(props: &OptionalContentProperties) -> Html {
+    html!(
+        if let Some(content) = &props.content {
+            <div class="pf-v5-c-card__title">
+                { content.clone() }
+            </div>
+        }
+    )
+}
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct CardBodyProperties {
+    #[prop_or_default]
+    pub children: Children,
+}
+
+#[function_component(CardBody)]
+pub fn card_body(props: &CardBodyProperties) -> Html {
+    html!(
+        <div class="pf-v5-c-card__body">
+            { props.children.clone() }
+        </div>
+    )
+}
+
+/// Specialized card divider component
+///
+/// This component is normally used as part of a list of card bodies.
+///
+/// ## Properties
+///
+/// This component does not have properties.
+#[function_component(CardDivider)]
+pub fn card_divider() -> Html {
+    html!(<Divider r#type={DividerType::Hr} />)
 }
