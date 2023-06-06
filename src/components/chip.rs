@@ -44,10 +44,12 @@ pub fn chip(props: &ChipProperties) -> Html {
 
     let body = html! {
         <>
-            { render_icon(props) }
-            <span class="pf-v5-c-chip__text">{props.text.clone()}</span>
-            { render_badge(props) }
-            { render_close(props) }
+            <span class="pf-v5-c-chip__content">
+                { render_icon(props) }
+                <span class="pf-v5-c-chip__text">{props.text.clone()}</span>
+                { render_badge(props) }
+                { render_close(props) }
+            </span>
         </>
     };
 
@@ -77,10 +79,12 @@ fn render_badge(props: &ChipProperties) -> Html {
 fn render_close(props: &ChipProperties) -> Html {
     html! (
         if let Some(onclose) = &props.onclose {
-            <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|e: MouseEvent| {
-                // This should work, but right now doesn't due to yewstack/yew#3041
-                e.stop_propagation();
-            })} />
+            <span class="pf-v5-c-chip__actions">
+                <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|e: MouseEvent| {
+                    // This should work, but right now doesn't due to yewstack/yew#3041
+                    e.stop_propagation();
+                })} />
+            </span>
         }
     )
 }
