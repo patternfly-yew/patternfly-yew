@@ -90,6 +90,10 @@ where
         class.push(classes!("pf-m-no-border-rows"));
     }
 
+    if !props.borders {
+        class.push(classes!("pf-m-no-border-rows"));
+    }
+
     html! (
         <table
             id={&props.id}
