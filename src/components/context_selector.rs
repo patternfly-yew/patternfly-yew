@@ -26,11 +26,13 @@ pub enum Msg {
 ///
 /// > A **context selector** can be used in addition to global navigation when the data or resources you show in the interface need to change depending on the user's context.
 ///
-/// See: <https://www.patternfly.org/v4/components/context-selector>
+/// See: <https://pf5.patternfly.org/components/menus/context-selector>
 ///
 /// ## Properties
 ///
 /// Defined by [`ContextSelectorProperties`].
+#[deprecated(since = "5.0.0", note = "The ContentSelector component has been depreciated by PatternFly.\
+    See https://pf5.patternfly.org/components/menus/context-selector for more information.")]
 pub struct ContextSelector {
     expanded: bool,
     global_close: GlobalClose,
