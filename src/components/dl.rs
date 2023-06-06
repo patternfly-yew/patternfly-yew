@@ -40,7 +40,7 @@ impl AsClasses for DescriptionListMode {
 ///
 /// > A **description list** contains terms and their corresponding descriptions.
 ///
-/// See: <https://www.patternfly.org/v4/components/description-list>
+/// See: <https://pf5.patternfly.org/components/description-list>
 ///
 /// ## Properties
 ///
@@ -96,7 +96,11 @@ pub struct DescriptionGroupProperties {
 pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
     html! (
         <div class="pf-v5-c-description-list__group">
-            <dt class="pf-v5-c-description-list__term">{ &props.term }</dt>
+            <dt class="pf-v5-c-description-list__term">
+                <span class="pf-v5-c-description-list__text">
+                    { &props.term }
+                </span>
+            </dt>
             <dd class="pf-v5-c-description-list__description">
                 <div class="pf-v5-c-description-list__text">
                     { for props.children.iter() }
