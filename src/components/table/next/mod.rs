@@ -32,6 +32,11 @@ where
     pub caption: Option<String>,
     #[prop_or_default]
     pub mode: TableMode,
+    /// Borders or borderless.
+    ///
+    /// Defaults to borders being enabled.
+    #[prop_or(true)]
+    pub borders: bool,
     #[prop_or_default]
     pub header: Option<VChild<TableHeader<C>>>,
     #[prop_or_default]
@@ -79,6 +84,10 @@ where
         }
         TableMode::Default => {}
     };
+
+    if !props.borders {
+        class.push(classes!("pf-m-no-border-rows"));
+    }
 
     html! (
         <table
