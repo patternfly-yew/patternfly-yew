@@ -93,10 +93,10 @@ pub fn list(props: &ListProperties) -> Html {
 
     let l = |items| match props.r#type {
         ListType::Basic | ListType::Inline | ListType::Plain | ListType::Bordered => {
-            html! (<ul class={classes}>{ items }</ul>)
+            html! (<ul class={classes} role="list">{ items }</ul>)
         }
         ListType::Ordered(n) => {
-            html! (<ol r#type={n} class={classes}>{ items }</ol>)
+            html! (<ol r#type={n} class={classes} role="list">{ items }</ol>)
         }
     };
 
