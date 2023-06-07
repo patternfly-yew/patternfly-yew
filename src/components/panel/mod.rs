@@ -96,7 +96,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 }
 
 #[function_component(PanelHeader)]
-pub fn panel_main_body(props: &ChildrenProperties) -> Html {
+pub fn panel_header(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__header">
             { for props.children.iter() }
@@ -105,7 +105,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 }
 
 #[function_component(PanelFooter)]
-pub fn panel_main_body(props: &ChildrenProperties) -> Html {
+pub fn panel_footer(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__footer">
             { for props.children.iter() }
