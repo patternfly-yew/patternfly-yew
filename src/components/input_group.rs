@@ -37,7 +37,7 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
     }
 
     html! (
-        <div {class} aria-label={&props.aria_label} role="group">
+        <div {class} aria-label={&props.aria_label}>
             { for props.children.iter() }
         </div>
     )
@@ -59,15 +59,17 @@ pub struct InputGroupTextProperties {
 /// Input group text, as child of [`InputGroup`]
 #[function_component(InputGroupText)]
 pub fn input_group_text(props: &InputGroupTextProperties) -> Html {
-    let mut class = classes!("pf-v5-c-input-group__text");
+    let mut class = classes!("pf-v5-c-input-group__item");
 
     if props.plain {
         class.push(classes!("pf-m-plain"));
     }
 
     html!(
-        <span {class} id={&props.id}>
-            { for props.children.iter() }
-        </span>
+        <div {class}>
+            <span class={"pf-v5-c-input-group__text"} id={&props.id}>
+                { for props.children.iter() }
+            </span>
+        </div>
     )
 }
