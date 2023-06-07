@@ -243,7 +243,7 @@ impl Component for Form {
                 >
 
                     if let Some(alert) = alert {
-                        <div class="pf-v5-c-form__alert">
+                            <div class="pf-v5-c-form__alert">
                             <Alert
                                 inline=true
                                 r#type={alert.r#type}
@@ -252,8 +252,6 @@ impl Component for Form {
                                 { alert.children.clone() }
                             </Alert>
                         </div>
-                    } else {
-                        <div style="display: none;"></div>
                     }
 
                     { for ctx.props().children.iter() }
@@ -300,10 +298,8 @@ pub struct ActionGroupProperties {
 pub fn action_group(props: &ActionGroupProperties) -> Html {
     html! {
         <div class="pf-v5-c-form__group pf-m-action">
-            <div class="pf-v5-c-form__group-control">
-                <div class="pf-v5-c-form__actions">
-                    { for props.children.iter() }
-                </div>
+            <div class="pf-v5-c-form__actions">
+                { for props.children.iter() }
             </div>
         </div>
     }
