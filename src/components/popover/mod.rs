@@ -185,13 +185,14 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
         >
             <div class="pf-v5-c-popover__arrow"></div>
             <div class="pf-v5-c-popover__content">
-
-                <Button
-                    variant={ButtonVariant::Plain}
-                    icon={Icon::Times}
-                    aria_label="Close"
-                    onclick={onclose}
-                />
+                <div class="pf-v5-c-popover__close">
+                    <Button
+                        variant={ButtonVariant::Plain}
+                        icon={Icon::Times}
+                        aria_label="Close"
+                        onclick={onclose}
+                    />
+                </div>
 
                 { props.body.clone() }
 
@@ -215,9 +216,13 @@ pub fn popover_body(props: &PopoverBodyProperties) -> Html {
     html!(
         <>
             if !props.header.is_empty() {
-                <h1 class="pf-v5-c-title pf-m-md">
-                    { for props.header.iter() }
-                </h1>
+                <header class="pf-v5-c-popover__header">
+                    <div class="pf-v5-c-popover__title">
+                        <h1 class="pf-v5-c-title pf-m-md">
+                            { for props.header.iter() }
+                        </h1>
+                    </div>
+                </header>
             }
 
             <div class="pf-v5-c-popover__body">
