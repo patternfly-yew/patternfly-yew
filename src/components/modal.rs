@@ -130,14 +130,16 @@ pub fn modal(props: &ModalProperties) -> Html {
             ref={node_ref}
         >
             if props.show_close {
-                <button
-                    class="pf-v5-c-button pf-m-plain"
-                    type="button"
-                    aria-label="Close dialog"
-                    onclick={onclose.reform(|_|())}
-                >
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
+                <div class="pf-v5-c-modal-box__close">
+                    <button
+                        class="pf-v5-c-button pf-m-plain"
+                        type="button"
+                        aria-label="Close dialog"
+                        onclick={onclose.reform(|_|())}
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
             }
 
             <header class="pf-v5-c-modal-box__header">
@@ -156,7 +158,7 @@ pub fn modal(props: &ModalProperties) -> Html {
 
             { for props.children.iter().map(|c|{
                { html! (
-                <div class="pf-v5-c-modal-box__body">{c}</div>
+                <div class="pf-v5-c-modal-box__body" id="modal-description">{c}</div>
                ) }
             }) }
 
