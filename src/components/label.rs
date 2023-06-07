@@ -101,12 +101,16 @@ pub fn label(props: &LabelProperties) -> Html {
                         if let Some(icon) = &props.icon {
                             <span class="pf-v5-c-label__icon"> { icon.as_html() } </span>
                         }
-                        { &props.label }
+                        <span class="pf-v5-c-label__text">
+                            { &props.label }
+                        </span>
                     </>
                 )
             )}
             if let Some(onclose) = &props.onclose {
-                <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>
+                <span class="pf-v5-c-label__actions">
+                    <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>
+                </span>
             }
         </span>
     )
