@@ -106,7 +106,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         });
     }
 
-    let (aria_labeledby, aria_label, header) = if props.product_name.is_empty() {
+    let (aria_labelledby, aria_label, header) = if props.product_name.is_empty() {
         (props.id.clone(), props.aria_label.clone(), html!())
     } else {
         (
@@ -141,7 +141,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             class={classes!("pf-v5-c-about-modal-box", props.class.clone())}
             role="dialog"
             aria-modal="true"
-            aria-labeledby={aria_labeledby}
+            aria-labelledby={aria_labelledby}
             aria-label={aria_label}
             ref={node_ref}
         >

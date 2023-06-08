@@ -22,7 +22,7 @@ pub struct ChipGroupProperties {
 pub fn chip_group(props: &ChipGroupProperties) -> Html {
     let id = use_prop_id(props.id.clone());
 
-    let (aria_label, aria_labeled_by) = match props.label.is_some() {
+    let (aria_label, aria_labelled_by) = match props.label.is_some() {
         true => (AttrValue::default(), Some(id.to_string())),
         false => (props.aria_label.clone(), None),
     };
@@ -49,7 +49,7 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
                     class="pf-v5-c-chip-group__list"
                     role="list"
                     aria-label={aria_label}
-                    aria-labeledby={aria_labeled_by}
+                    aria-labelledby={aria_labelled_by}
                 >
                     { for props.children.iter().map(|chip| {
                         html!(
