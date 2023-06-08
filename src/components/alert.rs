@@ -88,8 +88,10 @@ pub fn alert(props: &AlertProperties) -> Html {
         classes.push("pf-m-inline");
     }
 
+    let mut title_classes = classes!("pf-v5-c-alert__title");
+
     if props.truncate {
-        classes.push("pf-m-truncate");
+        title_classes.push("pf-m-truncate");
     }
 
     let t = props.r#type;
@@ -115,12 +117,10 @@ pub fn alert(props: &AlertProperties) -> Html {
     html! (
         <div id={props.id.clone()} class={classes} aria_label={t.aria_label()}>
             <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
-            <div class="pf-v5-c-alert__title">
-                <strong>
-                    <span class="pf-v5-u-screen-reader">{ t.aria_label() }{":"}</span>
-                    { &props.title }
-                </strong>
-            </div>
+            <p class={title_classes}>
+                <span class="pf-v5-screen-reader">{ t.aria_label() }{":"}</span>
+                { &props.title }
+            </p>
 
 
             if let Some(onclose) = props.onclose.as_ref() {
@@ -162,7 +162,7 @@ pub fn view(props: &GroupProperties) -> Html {
     }
 
     html! (
-        <ul class={classes}>
+        <ul class={classes} role="list">
             { for props.children.iter().map(|child|html!{
                 <li class="pf-v5-c-alert-group__item">
                     { child }
