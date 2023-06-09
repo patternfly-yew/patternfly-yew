@@ -1,6 +1,6 @@
 //! Pagination controls
-use crate::{
-    next::TextInput, on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState,
+use crate::prelude::{
+    on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
     ValidationContext, Validator,
 };
 use yew::prelude::*;
