@@ -88,7 +88,7 @@ where
             role="grid"
         >
             if let Some(caption) = &props.caption {
-                <caption>{caption}</caption>
+                <caption class="pf-v5-c-table__caption">{caption}</caption>
             }
             { render_header(props) }
             { render_entries(props) }
@@ -132,7 +132,7 @@ where
     html!(if is_expandable(props) {
         { for props.entries.iter().map(|entry| render_expandable_entry(props, entry) )}
     } else {
-        <tbody role="rowgroup">
+        <tbody lass="pf-v5-c-table__tbody" role="rowgroup">
             { for props.entries.iter().map(|entry| render_normal_entry(props, entry) )}
         </tbody>
     })
@@ -147,7 +147,7 @@ where
     M: PartialEq + TableModel<C> + 'static,
 {
     html!(
-        <tr role="row" key={entry.key}>
+        <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
             { render_row(props, entry.value)}
         </tr>
     )
@@ -200,16 +200,16 @@ where
         .is_full_width_details()
         .unwrap_or(props.full_width_details)
     {
-        cells.push(html! {<td></td>});
+        cells.push(html! {<td class="pf-v5-c-table__td"></td>});
         cols -= 1;
     }
 
     for cell in entry.value.render_details() {
-        let mut classes = Classes::new();
+        let mut classes = classes!("pf-v5-c-table__td");
         classes.extend_from(&cell.modifiers);
 
         cells.push(html! {
-            <td class={classes} colspan={cell.cols.to_string()}>
+            <td class={classes} role="cell" colspan={cell.cols.to_string()}>
                 <div class="pf-v5-c-table__expandable-row-content">
                     { cell.content }
                 </div>
@@ -228,19 +228,19 @@ where
 
     if cols > 0 {
         cells.push(html! {
-            <td colspan={cols.to_string()}></td>
+            <td class="pf-v5-c-table__td" colspan={cols.to_string()}></td>
         });
     }
 
-    let mut tr_classes = classes!("pf-v5-c-table__expandable-row");
+    let mut tr_classes = classes!("pf-v5-c-table__tr", "pf-v5-c-table__expandable-row");
     tr_classes.extend(expanded_class.clone());
 
     let onclick = props.onexpand.reform(move |_| (key.clone(), !expanded));
 
     html! (
-        <tbody role="rowgroup" class={expanded_class}>
-            <tr>
-                <td class="pf-v5-c-table__toggle">
+        <tbody class="pf-v5-c-table__tbody" role="rowgroup" class={expanded_class}>
+            <tr class="pf-v5-c-table__tr" role="row">
+                <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
                     <button class={classes} {onclick} aria-expanded={aria_expanded}>
                         <div class="pf-v5-c-table__toggle-icon">
                             { Icon::AngleDown }
@@ -251,7 +251,7 @@ where
                 { render_row(props, entry.value) }
             </tr>
 
-            <tr class={tr_classes}>
+            <tr class={tr_classes} role="row">
                 { cells }
             </tr>
         </tbody>
@@ -278,15 +278,17 @@ where
         let cell = entry.render_cell(&CellContext {
             column: &column.props.index,
         });
-        let mut class = match cell.center {
-            true => classes!("pf-m-center"),
-            false => Classes::new(),
-        };
+        let mut class = classes!("pf-v5-c-table__td");
+
+        if cell.center == true {
+            class.push("pf-m-center")
+        }
+
         class.extend_from(&cell.text_modifier);
 
         let label = column.props.label.clone();
         cells.push(html!(
-            <td {class} data-label={label.unwrap_or_default()}>
+            <td {class} role="cell" data-label={label.unwrap_or_default()}>
                 {cell.content}
             </td>
         ));
@@ -295,7 +297,7 @@ where
     let actions = entry.actions();
     if !actions.is_empty() {
         cells.push(html!(
-            <td class="pf-v5-c-table__action">
+            <td class="pf-v5-c-table__td pf-v5-c-table__action" role="cell">
                 <Dropdown
                     plain=true
                     toggle={html!(<KebabToggle/>)}

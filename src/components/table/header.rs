@@ -30,18 +30,18 @@ where
     K: Clone + Eq + 'static,
 {
     html! (
-        <thead>
+        <thead class="pf-v5-c-table__thead">
 
-            <tr role="row">
+            <tr class="pf-v5-c-table__tr" role="row">
 
                 if props.expandable {
-                    <th></th>
+                    <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell"></td>
                 }
 
                 { for props.children.iter() }
 
                 if !props.hide_actions {
-                    <th></th>
+                    <td class="pf-v5-c-table__td"></td>
                 }
 
             </tr>
