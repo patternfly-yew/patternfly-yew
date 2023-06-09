@@ -40,8 +40,11 @@ pub enum Msg {
 ///
 /// Children of the application launcher are [`AppLauncherItem`]s. It is also possible use
 /// [`crate::prelude::Divider`] to group entries.
-#[deprecated(since = "5.0.0", note = "The AppLauncher component has been depreciated by PatternFly.\
-    See https://patternfly-react-v5.surge.sh/components/menus/application-launcher for more information.")]
+#[deprecated(
+    since = "5.0.0",
+    note = "The AppLauncher component has been depreciated by PatternFly.\
+    See https://patternfly-react-v5.surge.sh/components/menus/application-launcher for more information."
+)]
 pub struct AppLauncher {
     expanded: bool,
     global_close: GlobalClose,
