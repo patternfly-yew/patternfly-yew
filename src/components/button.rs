@@ -6,7 +6,10 @@ use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
-#[deprecated(since = "0.4.0", note = "The enum `Variant` in the Button component module was renamed to `ButtonVariant`")]
+#[deprecated(
+    since = "0.4.0",
+    note = "The enum `Variant` in the Button component module was renamed to `ButtonVariant`"
+)]
 pub type Variant = ButtonVariant;
 
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]

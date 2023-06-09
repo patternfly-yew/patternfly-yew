@@ -76,7 +76,6 @@ pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
     if props.current {
         class.push("pf-m-current");
         aria_current = AttrValue::from("page")
-
     }
 
     if props.href.is_empty() {

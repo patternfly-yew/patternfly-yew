@@ -231,4 +231,3 @@ pub fn text_input(props: &TextInputProperties) -> Html {
         />
     )
 }
-

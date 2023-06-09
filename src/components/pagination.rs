@@ -1,7 +1,6 @@
 //! Pagination controls
 use crate::{
-    on_enter, Button, ButtonVariant, Icon, InputState, TextInput, ValidationContext,
-    Validator,
+    on_enter, Button, ButtonVariant, Icon, InputState, TextInput, ValidationContext, Validator,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
