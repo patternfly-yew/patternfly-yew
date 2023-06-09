@@ -3,8 +3,13 @@ use std::fmt::Debug;
 use yew::prelude::*;
 
 /// Properties for [`TableColumn`]
-#[derive(Debug, PartialEq, Eq, Clone, Properties)]
-pub struct TableColumnProperties {
+#[derive(Debug, PartialEq, Properties)]
+pub struct TableColumnProperties<C>
+where
+    C: Clone + Eq + 'static,
+{
+    /// The column (id) of the column
+    pub index: C,
     #[prop_or_default]
     pub label: Option<String>,
     #[prop_or_default]
@@ -61,7 +66,10 @@ impl AsClasses for ColumnWidth {
 ///
 /// Define by [`TableColumnProperties`].
 #[function_component(TableColumn)]
-pub fn table_column(props: &TableColumnProperties) -> Html {
+pub fn table_column<K>(props: &TableColumnProperties<K>) -> Html
+where
+    K: Clone + Eq + 'static,
+{
     let mut class = Classes::new();
 
     if props.first_tree_column {

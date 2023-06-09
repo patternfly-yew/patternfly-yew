@@ -1,4 +1,4 @@
-use crate::TextModifier;
+use super::props::TextModifier;
 use yew::prelude::*;
 
 /// A rendered cell.
@@ -36,6 +36,6 @@ impl From<Html> for Cell {
 
 /// The context information for rendering a cell.
 #[derive(Copy, Clone, Debug)]
-pub struct CellContext {
-    pub column: usize,
+pub struct CellContext<'c, C> {
+    pub column: &'c C,
 }
