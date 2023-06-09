@@ -5,11 +5,14 @@ use super::column::TableColumn;
 
 /// Properties for [`TableHeader`]
 #[derive(Debug, PartialEq, Clone, Properties)]
-pub struct TableHeaderProperties {
+pub struct TableHeaderProperties<K>
+where
+    K: Clone + Eq + 'static,
+{
     #[prop_or_default]
     pub sticky: bool,
     #[prop_or_default]
-    pub children: ChildrenWithProps<TableColumn>,
+    pub children: ChildrenWithProps<TableColumn<K>>,
     #[prop_or_default]
     pub(crate) expandable: bool,
     #[prop_or_default]
@@ -22,7 +25,10 @@ pub struct TableHeaderProperties {
 ///
 /// Defined by [`TableHeaderProperties`].
 #[function_component(TableHeader)]
-pub fn table_header(props: &TableHeaderProperties) -> Html {
+pub fn table_header<K>(props: &TableHeaderProperties<K>) -> Html
+where
+    K: Clone + Eq + 'static,
+{
     html! (
         <thead>
 
