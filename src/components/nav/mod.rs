@@ -41,7 +41,7 @@ pub struct NavListProperties {
 #[function_component(NavList)]
 pub fn nav_list(props: &NavListProperties) -> Html {
     html! {
-        <ul class="pf-v5-c-nav__list">
+        <ul class="pf-v5-c-nav__list" role="list">
             { for props.children.iter() }
         </ul>
     }
@@ -210,7 +210,7 @@ impl Component for NavExpandable {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-v5-c-nav__item pf-v5-c-expandable");
+        let mut classes = Classes::from("pf-v5-c-nav__item pf-m-expandable");
 
         let expanded = self.is_expanded(ctx);
 
