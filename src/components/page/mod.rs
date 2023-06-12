@@ -1,6 +1,7 @@
 //! Full Page components
 use std::rc::Rc;
 use yew::prelude::*;
+use crate::{Button, ButtonType};
 
 mod section;
 mod sidebar;
@@ -61,35 +62,31 @@ pub fn page(props: &PageProperties) -> Html {
 
     let mut class = classes!("pf-v5-c-page");
 
-    if props.full_height {
-        class.push("pf-m-full-height");
-    }
+    // if props.full_height {
+    //     class.push("pf-m-full-height");
+    // }
 
     html! (
         <div {class} id={&props.id}>
-            <header class="pf-v5-c-page__header">
-                <div class="pf-v5-c-page__header-brand">
+            <header class="pf-v5-c-masthead">
+                <span class="pf-v5-c-masthead__toggle">
+                    <Button
+                        r#type={ButtonType::Button}
+                        {onclick}
+                    >
+                        <i class="fas fa-bars" aria-hidden="true" />
+                    </Button>
+                </span>
 
-                    if !props.sidebar.is_empty() {
-                        <div class="pf-v5-c-page__header-brand-toggle">
-                            <button
-                                aria-expanded={(*open).to_string()}
-                                class="pf-v5-c-button pf-m-plain"
-                                type="button"
-                                {onclick}
-                                >
-                                <i class="fas fa-bars" aria-hidden="true"/>
-                            </button>
-                        </div>
-                    }
-
-                    <a href="#" class="pf-v5-c-page__header-brand-link"> {
-                        for props.logo.iter()
-                    } </a>
-
+                <div class="pf-v5-c-masthead__main">
+                    <a class="pf-v5-c-masthead__brand" href="#">
+                        {for props.logo.iter()}
+                    </a>
+                    <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
+                        {for props.nav.iter()}
+                        { for props.tools.iter() }
+                    </div>
                 </div>
-                <div class="pf-v5-c-page__header-nav">{for props.nav.iter()}</div>
-                <div class="pf-v5-c-page__header-tools"> { for props.tools.iter() }</div>
             </header>
 
             { for props.sidebar.iter().map(|mut s|{
