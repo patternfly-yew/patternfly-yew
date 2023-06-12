@@ -6,6 +6,7 @@ use yew::prelude::*;
 pub enum ToolbarItemType {
     None,
     BulkSelect,
+    ChipGroup,
     OverflowMenu,
     Pagination,
     SearchFilter,
@@ -22,6 +23,7 @@ impl AsClasses for ToolbarItemType {
         match self {
             Self::None => {}
             Self::BulkSelect => classes.push("pf-m-bulk-select"),
+            Self::ChipGroup => classes.push("pf-m-chip-group"),
             Self::OverflowMenu => classes.push("pf-m-overflow-menu"),
             Self::Pagination => classes.push("pf-m-pagination"),
             Self::SearchFilter => classes.push("pf-m-search-filter"),

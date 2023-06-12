@@ -1,7 +1,7 @@
 //! Full Page components
 use std::rc::Rc;
 use yew::prelude::*;
-use crate::{Button, ButtonType};
+use crate::{Button, ButtonType, ButtonVariant};
 
 mod section;
 mod sidebar;
@@ -72,6 +72,7 @@ pub fn page(props: &PageProperties) -> Html {
                 <span class="pf-v5-c-masthead__toggle">
                     <Button
                         r#type={ButtonType::Button}
+                        variant={ButtonVariant::Plain}
                         {onclick}
                     >
                         <i class="fas fa-bars" aria-hidden="true" />
@@ -82,11 +83,12 @@ pub fn page(props: &PageProperties) -> Html {
                     <a class="pf-v5-c-masthead__brand" href="#">
                         {for props.logo.iter()}
                     </a>
-                    <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
-                        {for props.nav.iter()}
-                        { for props.tools.iter() }
-                    </div>
                 </div>
+                <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
+                    {for props.nav.iter()}
+                    { for props.tools.iter() }
+                </div>
+
             </header>
 
             { for props.sidebar.iter().map(|mut s|{
