@@ -27,9 +27,9 @@ impl AsClasses for PageSectionVariant {
 pub enum PageSectionType {
     #[default]
     Default,
+    Breadcrumbs,
     Navigation,
     SubNavigation,
-    Breadcrumbs,
     Tabs,
     Wizard,
 }
@@ -38,9 +38,9 @@ impl AsClasses for PageSectionType {
     fn extend_classes(&self, classes: &mut Classes) {
         match self {
             Self::Default => classes.push("pf-v5-c-page__main-section"),
+            Self::Breadcrumbs => classes.push("pf-v5-c-page__main-breadcrumb"),
             Self::Navigation => classes.push("pf-v5-c-page__main-nav"),
             Self::SubNavigation => classes.push("pf-v5-c-page__main-subnav"),
-            Self::Breadcrumbs => classes.push("pf-v5-c-page__main-breadcrumb"),
             Self::Tabs => classes.push("pf-v5-c-page__main-tabs"),
             Self::Wizard => classes.push("pf-v5-c-page__main-wizard"),
         }
@@ -54,7 +54,7 @@ pub struct PageSectionProperties {
     #[prop_or_default]
     pub r#type: PageSectionType,
     #[prop_or_default]
-    pub variant: PageSectionVariant,
+    pub variant: PageSectionVariant, // Should only be used on PageSectionType::Main
     #[prop_or_default]
     pub fill: PageSectionFill,
     #[prop_or_default]
@@ -180,30 +180,25 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     }
 
     if props.align_center {
-        class.push("pf-m-align-center");
+        class.push("pf-m-align-center"); // Can only be used with limit_width
     }
 
     if props.overflow_scroll {
-        class.push("pf-m-overflow-scroll");
+        class.push("pf-m-overflow-scroll"); // Can only be used with PageSectionType::Default
     }
 
     // render
 
     html! (
         <section {class} id={&props.id} hidden={props.hidden}>
-            {
-                match props.limit_width {
-                    true => html!(
-                        <div class="pf-v5-c-page__main-body">
-                            { for props.children.iter() }
-                        </div>
-                    ),
-                    false => html!(
-                        {for props.children.iter()}
-                    ),
+                 if props.r#type == PageSectionType::Default && props.limit_width {
+                    <div class="pf-v5-c-page__main-body">
+                        { for props.children.iter() }
+                    </div>
+                } else {
+                    { for props.children.iter() }
                 }
-            }
-        </section>
+         </section>
     )
 }
 
