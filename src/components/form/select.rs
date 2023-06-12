@@ -49,7 +49,6 @@ pub fn form_select<K>(props: &FormSelectProperties<K>) -> Html
 where
     K: 'static + Clone + PartialEq + Display + FromStr,
 {
-    let class = Classes::from("pf-v5-c-form-control");
 
     let node_ref = use_node_ref();
 
@@ -86,19 +85,20 @@ where
     }
 
     html! (
-        <select
-            {class}
-            {oninput}
-            name={&props.name}
-            id={&props.id}
-            ref={node_ref}
-            required={props.required}
-            >
-            if !props.placeholder.is_empty() {
-                <option value="">{ &props.placeholder }</option>
-            }
-            { for props.children.iter() }
-        </select>
+        <div class="pf-v5-c-form-control">
+            <select
+                {oninput}
+                name={&props.name}
+                id={&props.id}
+                ref={node_ref}
+                required={props.required}
+                >
+                if !props.placeholder.is_empty() {
+                    <option value="">{ &props.placeholder }</option>
+                }
+                { for props.children.iter() }
+            </select>
+        </div>
     )
 }
 

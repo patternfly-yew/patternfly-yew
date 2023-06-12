@@ -1,5 +1,5 @@
 //! Context selector
-use crate::{GlobalClose, Icon, InputGroup, TextInput, TextInputIcon};
+use crate::{GlobalClose, Icon, InputGroup, TextInput};
 use std::rc::Rc;
 use yew::prelude::*;
 
@@ -98,7 +98,7 @@ impl Component for ContextSelector {
                         <InputGroup>
                             <TextInput
                                 onchange={ctx.link().callback(Msg::Search)}
-                                icon={TextInputIcon::Search}
+                                icon={Icon::Search}
                                 r#type="search"/>
                         </InputGroup>
                     </div>
