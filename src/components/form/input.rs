@@ -1,38 +1,7 @@
-use crate::{
-    focus, value, AsClasses, ExtendClasses, InputState, ValidatingComponent,
-    ValidatingComponentProperties, ValidationContext, Validator,
-};
+use crate::{focus, value, AsClasses, ExtendClasses, Icon, InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext, Validator};
 
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-
-/// Icons as part of a [`TextInput`] component.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TextInputIcon {
-    None,
-    Calendar,
-    Clock,
-    Search,
-    Custom,
-}
-
-impl AsClasses for TextInputIcon {
-    fn extend_classes(&self, classes: &mut Classes) {
-        match self {
-            Self::None => {}
-            Self::Search => classes.extend(classes!("pf-m-search")),
-            Self::Calendar => classes.extend(classes!("pf-m-icon", "pf-m-calendar")),
-            Self::Clock => classes.extend(classes!("pf-m-icon", "pf-m-clock")),
-            Self::Custom => classes.extend(classes!("pf-m-icon")),
-        }
-    }
-}
-
-impl Default for TextInputIcon {
-    fn default() -> Self {
-        Self::None
-    }
-}
 
 /// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
@@ -52,7 +21,7 @@ pub struct TextInputProperties {
     #[prop_or_default]
     pub state: InputState,
     #[prop_or_default]
-    pub icon: TextInputIcon,
+    pub icon: Option<Icon>,
     #[prop_or("text".into())]
     pub r#type: AttrValue,
     #[prop_or_default]
@@ -145,7 +114,10 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 pub fn text_input(props: &TextInputProperties) -> Html {
     let input_ref = props.r#ref.clone();
     let mut classes = classes!("pf-v5-c-form-control");
-    classes.extend_from(&props.icon);
+
+    if props.icon.is_some() {
+        classes.push("pf-m-icon");
+    }
 
     // validation
 
@@ -209,25 +181,33 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     );
 
     html! (
-        <input
-            ref={input_ref}
-            class={classes}
-            type={&props.r#type}
-            name={&props.name}
-            id={&props.id}
-            required={props.required}
-            disabled={props.disabled}
-            readonly={props.readonly}
-            aria-invalid={aria_invalid.to_string()}
-            value={props.value.clone()}
-            placeholder={&props.placeholder}
-            form={&props.form}
-            autocomplete={&props.autocomplete}
-            onchange={(*onchange).clone()}
-            oninput={(*oninput).clone()}
-            onkeydown={&props.onkeydown}
-            inputmode={&props.inputmode}
-            enterkeyhint={&props.enterkeyhint}
-        />
+        <div class={classes}>
+            <input
+                ref={input_ref}
+                type={&props.r#type}
+                name={&props.name}
+                id={&props.id}
+                required={props.required}
+                disabled={props.disabled}
+                readonly={props.readonly}
+                aria-invalid={aria_invalid.to_string()}
+                value={props.value.clone()}
+                placeholder={&props.placeholder}
+                form={&props.form}
+                autocomplete={&props.autocomplete}
+                onchange={(*onchange).clone()}
+                oninput={(*oninput).clone()}
+                onkeydown={&props.onkeydown}
+                inputmode={&props.inputmode}
+                enterkeyhint={&props.enterkeyhint}
+            />
+            if let Some(icon) = props.icon {
+                <div class="pf-v5-c-form-control__utilities"> // TODO: Refactor out to component
+                    <div class="pf-v5-c-form-control__icon">
+                        { icon }
+                    </div>
+                </div>
+            }
+        </div>
     )
 }

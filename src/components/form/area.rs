@@ -24,7 +24,7 @@ impl AsClasses for ResizeOrientation {
         match self {
             ResizeOrientation::Horizontal => classes.push("pf-m-resize-horizontal"),
             ResizeOrientation::Vertical => classes.push("pf-m-resize-vertical"),
-            ResizeOrientation::Both => {}
+            ResizeOrientation::Both => classes.push("pf-m-resize-both")
         }
     }
 }
@@ -225,28 +225,29 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
     );
 
     html!(
-        <textarea
-            ref={input_ref}
-            class={classes}
-            name={&props.name}
-            id={&props.id}
-            required={props.required}
-            disabled={props.disabled}
-            readonly={props.readonly}
-            aria-invalid={aria_invalid.to_string()}
-            value={props.value.clone()}
-            placeholder={&props.placeholder}
-            form={&props.form}
-            autocomplete={&props.autocomplete}
+        <div class={classes}>
+            <textarea
+                ref={input_ref}
+                name={&props.name}
+                id={&props.id}
+                required={props.required}
+                disabled={props.disabled}
+                readonly={props.readonly}
+                aria-invalid={aria_invalid.to_string()}
+                value={props.value.clone()}
+                placeholder={&props.placeholder}
+                form={&props.form}
+                autocomplete={&props.autocomplete}
 
-            cols={props.cols.as_ref().map(|v|v.to_string())}
-            rows={props.rows.as_ref().map(|v|v.to_string())}
+                cols={props.cols.as_ref().map(|v|v.to_string())}
+                rows={props.rows.as_ref().map(|v|v.to_string())}
 
-            wrap={props.wrap.to_string()}
-            spellcheck={&props.spellcheck}
+                wrap={props.wrap.to_string()}
+                spellcheck={&props.spellcheck}
 
-            onchange={(*onchange).clone()}
-            oninput={(*oninput).clone()}
-        />
+                onchange={(*onchange).clone()}
+                oninput={(*oninput).clone()}
+            />
+        </div>
     )
 }
