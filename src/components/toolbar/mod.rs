@@ -26,48 +26,12 @@ impl AsClasses for ToolbarElementModifier {
         classes.push(match self {
             Self::Hidden => "pf-m-hidden",
             Self::Visible => "pf-m-visible",
-            Self::Left => "pf-m-align-left",
-            Self::Right => "pf-m-align-right",
+            Self::Left => "pf-m-align-left", // Only allowed as direct decendants of toolbar...
+            Self::Right => "pf-m-align-right", // ^
         });
     }
 }
 
-/// Properties for [`Toolbar`]
-#[derive(Clone, PartialEq, Properties)]
-pub struct ToolbarProperties {
-    #[prop_or_default]
-    pub children: ChildrenRenderer<ToolbarChildVariant>,
-    #[prop_or_default]
-    pub id: String,
-}
-
-/// Toolbar component
-///
-/// > A **toolbar** allows a user to manage and manipulate a data set. Data can be presented in any valid presentation, a table, a list, or a data visualization (chart), for example. The toolbar responsively accommodates controls and displays applied filters in chip groups.
-///
-/// See: <https://www.patternfly.org/v4/components/toolbar>
-///
-/// ## Properties
-///
-/// Defined by [`ToolbarProperties`].
-#[deprecated(note = "Will be replaced with the 'next' version", since = "0.4.0")]
-#[allow(deprecated)]
-#[function_component(Toolbar)]
-pub fn toolbar(props: &ToolbarProperties) -> Html {
-    html! {
-        <div id={props.id.clone()} class="pf-v5-c-toolbar">
-            <div class="pf-v5-c-toolbar__content">
-                <div class="pf-v5-c-toolbar__content-section">
-                    { for props.children.iter() }
-                </div>
-            </div>
-        </div>
-    }
-}
-
-/// Upcoming version of the [`Toolbar`] component.
-pub mod next {
-    use super::*;
 
     /// Properties for [`Toolbar`]
     #[derive(Clone, PartialEq, Properties)]
@@ -77,6 +41,9 @@ pub mod next {
 
         #[prop_or_default]
         pub id: AttrValue,
+
+        #[prop_or_default]
+        pub full_height: bool
     }
 
     /// Toolbar component
@@ -94,10 +61,16 @@ pub mod next {
     /// The toolbar requires one or more [`ToolbarContent`] children.
     #[function_component(Toolbar)]
     pub fn toolbar(props: &ToolbarProperties) -> Html {
+        let mut class = classes!("pf-v5-c-toolbar");
+
+        if props.full_height {
+            class.push("pf-m-full-height")
+        }
+
         html! (
             <div
                 id={&props.id}
-                class="pf-v5-c-toolbar"
+                {class}
             >
                 { for props.children.iter() }
             </div>
@@ -124,4 +97,3 @@ pub mod next {
             </div>
         )
     }
-}
