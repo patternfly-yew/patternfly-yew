@@ -1,5 +1,5 @@
 //! Select control
-use crate::{Button, ButtonType, ButtonVariant, Chip, GlobalClose, Icon, ListDivider};
+use crate::{ButtonType, Chip, GlobalClose, Icon, ListDivider};
 use std::{
     cell::Cell,
     fmt::{Debug, Display},
@@ -138,11 +138,6 @@ where
         let menu_classes = Classes::from("pf-v5-c-select__menu");
 
         let onclick = ctx.link().callback(|_| Msg::Toggle);
-
-        let variant = match ctx.props().plain {
-            true => ButtonVariant::Plain,
-            false => ButtonVariant::None,
-        };
 
         html! (
             <div class={classes}

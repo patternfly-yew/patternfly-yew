@@ -1,10 +1,9 @@
 use crate::{
     focus, value, AsClasses, ExtendClasses, InputState, ValidatingComponent,
-    ValidatingComponentProperties, ValidationContext, Validator,
+    ValidatingComponentProperties, ValidationContext,
 };
 
 use std::fmt::{Display, Formatter};
-use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 //

@@ -41,6 +41,7 @@ pub struct ContextSelector {
     global_close: GlobalClose,
 }
 
+#[allow(deprecated)]
 impl Component for ContextSelector {
     type Message = Msg;
     type Properties = ContextSelectorProperties;

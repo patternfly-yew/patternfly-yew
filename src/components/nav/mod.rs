@@ -107,7 +107,7 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
             >
                 { for props.children.iter() }
                 if props.external {
-                    <span class="pf-u-ml-sm pf-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
+                    <span class="pf-v5-u-ml-sm pf-v5-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
                 }
             </a>
         </li>

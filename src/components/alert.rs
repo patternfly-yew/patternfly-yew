@@ -10,7 +10,7 @@ pub type Type = AlertType;
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd)]
 pub enum AlertType {
     #[default]
-    Default,
+    Custom,
     Info,
     Success,
     Warning,
@@ -20,7 +20,7 @@ pub enum AlertType {
 impl AlertType {
     pub fn as_classes(&self) -> Vec<&'static str> {
         match self {
-            AlertType::Default => vec![],
+            AlertType::Custom => vec!["pf-m-custom"],
             AlertType::Info => vec!["pf-m-info"],
             AlertType::Success => vec!["pf-m-success"],
             AlertType::Warning => vec!["pf-m-warning"],
@@ -30,7 +30,7 @@ impl AlertType {
 
     pub fn aria_label(&self) -> &'static str {
         match self {
-            AlertType::Default => "Default alert",
+            AlertType::Custom => "Custom alert",
             AlertType::Info => "Information alert",
             AlertType::Success => "Success alert",
             AlertType::Warning => "Warning alert",
@@ -40,7 +40,7 @@ impl AlertType {
 
     pub fn icon(&self) -> Icon {
         match self {
-            AlertType::Default => Icon::Bell,
+            AlertType::Custom => Icon::Bell,
             AlertType::Info => Icon::InfoCircle,
             AlertType::Success => Icon::CheckCircle,
             AlertType::Warning => Icon::ExclamationTriangle,

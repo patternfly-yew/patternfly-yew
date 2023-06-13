@@ -50,6 +50,7 @@ pub struct AppLauncher {
     global_close: GlobalClose,
 }
 
+#[allow(deprecated)]
 impl Component for AppLauncher {
     type Message = Msg;
     type Properties = AppLauncherProperties;
@@ -118,6 +119,7 @@ impl Component for AppLauncher {
     }
 }
 
+#[allow(deprecated)]
 impl AppLauncher {
     fn render_trigger(&self, props: &<AppLauncher as Component>::Properties) -> Html {
         if let Some(toggle) = &props.toggle {
