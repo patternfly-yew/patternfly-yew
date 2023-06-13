@@ -106,6 +106,12 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         });
     }
 
+    let style = if props.background_image_src.is_empty() {
+        ""
+    } else {
+        format!("--pf-v5-c-about-modal-box--BackgroundImage:{}", props.background_image_src)
+    };
+
     let (aria_labelledby, aria_label, header) = if props.product_name.is_empty() {
         (props.id.clone(), props.aria_label.clone(), html!())
     } else {
@@ -120,25 +126,11 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         )
     };
 
-    let hero_style = props
-        .hero_style
-        .clone()
-        .map(AttrValue::from)
-        .unwrap_or_else(|| {
-            if props.background_image_src.is_empty() {
-                AttrValue::default()
-            } else {
-                AttrValue::from(format!(
-                    r#"--pf-v5-c-about-modal-box__hero--sm--BackgroundImage: url( "{}" );"#,
-                    props.background_image_src
-                ))
-            }
-        });
-
     html!(
         <div
             id={props.id.clone()}
             class={classes!("pf-v5-c-about-modal-box", props.class.clone())}
+            {style}
             role="dialog"
             aria-modal="true"
             aria-labelledby={aria_labelledby}
@@ -166,11 +158,6 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             </div>
 
             { header }
-
-            <div
-                class="pf-v5-c-about-modal-box__hero"
-                style={hero_style}
-            />
 
             <div class="pf-v5-c-about-modal-box__content">
                 <div class="pf-v5-c-about-modal-box__body">
