@@ -69,6 +69,9 @@ where
     pub label: String,
     /// The switch this item references to
     pub to: T,
+    /// If tab is disabled
+    #[prop_or(false)]
+    pub disabled: bool,
 }
 
 #[function_component(TabRouterItem)]
@@ -84,9 +87,15 @@ where
         classes.push("pf-m-current");
     }
 
+    let mut link_classes = Classes::from("pf-c-tabs__link");
+
+    if props.disabled {
+        link_classes.push("pf-m-disabled");
+    }
+
     html! (
         <li class={classes}>
-            <Link<T> element="button" class="pf-c-tabs__link" target={props.to.clone()}>
+            <Link<T> element="button" class={link_classes} target={props.to.clone()}>
                 <span class="pf-c-tabs__item-text"> { &props.label } </span>
             </Link<T>>
         </li>
