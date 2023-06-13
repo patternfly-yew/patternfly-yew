@@ -37,12 +37,6 @@ pub struct AboutModalProperties {
     /// Id of the outermost element
     #[prop_or_default]
     pub id: AttrValue,
-
-    /// Custom style information for the "hero" section.
-    ///
-    /// NOTE: This overrides the `background_image_src` attribute.
-    #[prop_or_default]
-    pub hero_style: Option<String>,
 }
 
 /// About modal component
@@ -107,9 +101,12 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
     }
 
     let style = if props.background_image_src.is_empty() {
-        ""
+        None
     } else {
-        format!("--pf-v5-c-about-modal-box--BackgroundImage:{}", props.background_image_src)
+        Some(format!(
+            "--pf-v5-c-about-modal-box--BackgroundImage: url({});",
+            &props.background_image_src
+        ))
     };
 
     let (aria_labelledby, aria_label, header) = if props.product_name.is_empty() {

@@ -1,10 +1,8 @@
-use crate::{SelectVariant, ValidationContext};
-use std::fmt::{Debug, Display};
-use std::marker::PhantomData;
+use crate::ValidationContext;
+use std::fmt::Display;
 use std::rc::Rc;
 use std::str::FromStr;
-use wasm_bindgen::JsCast;
-use web_sys::{HtmlOptionElement, HtmlSelectElement};
+use web_sys::HtmlSelectElement;
 use yew::{
     html::ChildrenRenderer,
     prelude::*,

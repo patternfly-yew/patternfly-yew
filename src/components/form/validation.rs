@@ -1,5 +1,5 @@
 use crate::{AsClasses, FormHelperText, Icon, ValidationContext};
-use yew::{classes, Callback, Classes};
+use yew::{Callback, Classes};
 
 /// State of an input from validation
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]

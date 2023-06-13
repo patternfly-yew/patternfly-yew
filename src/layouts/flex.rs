@@ -24,8 +24,6 @@ pub enum FlexModifier {
     Flex4,
     /// Full width item
     FullWidth,
-    Default,
-    None,
     /// Column ordering
     Column,
     /// Row ordering
@@ -66,8 +64,6 @@ impl AsClasses for FlexModifier {
             FlexModifier::Flex3 => classes.push("pf-m-flex-3"),
             FlexModifier::Flex4 => classes.push("pf-m-flex-4"),
             FlexModifier::FullWidth => classes.push("pf-m-full-width"),
-            FlexModifier::Default => classes.push("pf-m-default"),
-            FlexModifier::None => classes.push("pf-m-none"),
             FlexModifier::Column => classes.push("pf-m-column"),
             FlexModifier::Row => classes.push("pf-m-row"),
             FlexModifier::Justify(layout) => match layout {

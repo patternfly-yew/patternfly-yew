@@ -60,14 +60,8 @@ pub fn page(props: &PageProperties) -> Html {
         })
     };
 
-    let mut class = classes!("pf-v5-c-page");
-
-    // if props.full_height {
-    //     class.push("pf-m-full-height");
-    // }
-
     html! (
-        <div {class} id={&props.id}>
+        <div class="pf-v5-c-page" id={&props.id}>
             <header class="pf-v5-c-masthead">
                 <span class="pf-v5-c-masthead__toggle">
                     <Button
