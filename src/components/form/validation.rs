@@ -37,7 +37,7 @@ impl InputState {
             InputState::Error => {
                 classes.push("pf-m-error");
                 aria_invalid = true;
-            },
+            }
         };
         (classes, aria_invalid)
     }

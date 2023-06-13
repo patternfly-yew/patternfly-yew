@@ -1,4 +1,7 @@
-use crate::{focus, value, AsClasses, ExtendClasses, Icon, InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext, Validator};
+use crate::{
+    focus, value, AsClasses, ExtendClasses, Icon, InputState, ValidatingComponent,
+    ValidatingComponentProperties, ValidationContext, Validator,
+};
 
 use web_sys::HtmlInputElement;
 use yew::prelude::*;

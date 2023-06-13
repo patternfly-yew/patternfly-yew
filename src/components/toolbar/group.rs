@@ -7,7 +7,7 @@ pub enum GroupVariant {
     None,
     Button,
     Filter,
-    IconButton
+    IconButton,
 }
 
 impl AsClasses for GroupVariant {

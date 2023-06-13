@@ -49,7 +49,6 @@ pub fn form_select<K>(props: &FormSelectProperties<K>) -> Html
 where
     K: 'static + Clone + PartialEq + Display + FromStr,
 {
-
     let node_ref = use_node_ref();
 
     let oninput = {

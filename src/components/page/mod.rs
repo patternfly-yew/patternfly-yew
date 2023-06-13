@@ -1,7 +1,7 @@
 //! Full Page components
+use crate::{Button, ButtonType, ButtonVariant};
 use std::rc::Rc;
 use yew::prelude::*;
-use crate::{Button, ButtonType, ButtonVariant};
 
 mod section;
 mod sidebar;

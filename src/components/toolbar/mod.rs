@@ -32,68 +32,67 @@ impl AsClasses for ToolbarElementModifier {
     }
 }
 
+/// Properties for [`Toolbar`]
+#[derive(Clone, PartialEq, Properties)]
+pub struct ToolbarProperties {
+    #[prop_or_default]
+    pub children: ChildrenWithProps<ToolbarContent>,
 
-    /// Properties for [`Toolbar`]
-    #[derive(Clone, PartialEq, Properties)]
-    pub struct ToolbarProperties {
-        #[prop_or_default]
-        pub children: ChildrenWithProps<ToolbarContent>,
+    #[prop_or_default]
+    pub id: AttrValue,
 
-        #[prop_or_default]
-        pub id: AttrValue,
+    #[prop_or_default]
+    pub full_height: bool,
+}
 
-        #[prop_or_default]
-        pub full_height: bool
+/// Toolbar component
+///
+/// > A **toolbar** allows a user to manage and manipulate a data set. Data can be presented in any valid presentation, a table, a list, or a data visualization (chart), for example. The toolbar responsively accommodates controls and displays applied filters in chip groups.
+///
+/// See: <https://www.patternfly.org/v4/components/toolbar>
+///
+/// ## Properties
+///
+/// Defined by [`ToolbarProperties`].
+///
+/// ## Children
+///
+/// The toolbar requires one or more [`ToolbarContent`] children.
+#[function_component(Toolbar)]
+pub fn toolbar(props: &ToolbarProperties) -> Html {
+    let mut class = classes!("pf-v5-c-toolbar");
+
+    if props.full_height {
+        class.push("pf-m-full-height")
     }
 
-    /// Toolbar component
-    ///
-    /// > A **toolbar** allows a user to manage and manipulate a data set. Data can be presented in any valid presentation, a table, a list, or a data visualization (chart), for example. The toolbar responsively accommodates controls and displays applied filters in chip groups.
-    ///
-    /// See: <https://www.patternfly.org/v4/components/toolbar>
-    ///
-    /// ## Properties
-    ///
-    /// Defined by [`ToolbarProperties`].
-    ///
-    /// ## Children
-    ///
-    /// The toolbar requires one or more [`ToolbarContent`] children.
-    #[function_component(Toolbar)]
-    pub fn toolbar(props: &ToolbarProperties) -> Html {
-        let mut class = classes!("pf-v5-c-toolbar");
+    html! (
+        <div
+            id={&props.id}
+            {class}
+        >
+            { for props.children.iter() }
+        </div>
+    )
+}
 
-        if props.full_height {
-            class.push("pf-m-full-height")
-        }
+/// Properties for [`Toolbar`]
+#[derive(Clone, PartialEq, Properties)]
+pub struct ToolbarContentProperties {
+    #[prop_or_default]
+    pub children: ChildrenRenderer<ToolbarChildVariant>,
 
-        html! (
-            <div
-                id={&props.id}
-                {class}
-            >
+    #[prop_or_default]
+    pub id: AttrValue,
+}
+
+#[function_component(ToolbarContent)]
+pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
+    html! (
+        <div class="pf-v5-c-toolbar__content">
+            <div class="pf-v5-c-toolbar__content-section">
                 { for props.children.iter() }
             </div>
-        )
-    }
-
-    /// Properties for [`Toolbar`]
-    #[derive(Clone, PartialEq, Properties)]
-    pub struct ToolbarContentProperties {
-        #[prop_or_default]
-        pub children: ChildrenRenderer<ToolbarChildVariant>,
-
-        #[prop_or_default]
-        pub id: AttrValue,
-    }
-
-    #[function_component(ToolbarContent)]
-    pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
-        html! (
-            <div class="pf-v5-c-toolbar__content">
-                <div class="pf-v5-c-toolbar__content-section">
-                    { for props.children.iter() }
-                </div>
-            </div>
-        )
-    }
+        </div>
+    )
+}
