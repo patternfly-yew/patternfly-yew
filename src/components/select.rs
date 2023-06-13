@@ -148,9 +148,10 @@ where
             <div class={classes}
                 ref={self.global_close.clone()}
             >
-                <Button
+                <button
                     class="pf-v5-c-select__toggle"
-                    variant={variant}
+                    aria-haspopup="true"
+                    aria-expanded="false"
                     r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
@@ -167,7 +168,7 @@ where
                     <div class="pf-v5-c-select__toggle-arrow">
                         { Icon::CaretDown }
                     </div>
-                </Button>
+                </button>
                 <div
                     class={menu_classes}
                     hidden={!self.expanded}

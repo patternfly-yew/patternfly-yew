@@ -24,7 +24,7 @@ impl AsClasses for ResizeOrientation {
         match self {
             ResizeOrientation::Horizontal => classes.push("pf-m-resize-horizontal"),
             ResizeOrientation::Vertical => classes.push("pf-m-resize-vertical"),
-            ResizeOrientation::Both => classes.push("pf-m-resize-both")
+            ResizeOrientation::Both => classes.push("pf-m-resize-both"),
         }
     }
 }
