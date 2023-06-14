@@ -163,16 +163,14 @@ impl Component for Clipboard {
                             <>
                             <div class="pf-v5-c-clipboard-copy__group">
                                 { self.expander(ctx) }
-                                <div class="pf-v5-c-form-control">
-                                    <TextInput
-                                        r#ref={self.text_ref.clone()}
-                                        readonly={ctx.props().readonly | self.expanded}
-                                        value={value}
-                                        name={ctx.props().name.clone()}
-                                        id={ctx.props().id.clone()}
-                                        oninput={ctx.link().callback(|_|Msg::Sync)}
-                                    />
-                                </div>
+                                <TextInput
+                                    r#ref={self.text_ref.clone()}
+                                    readonly={ctx.props().readonly | self.expanded}
+                                    value={value}
+                                    name={ctx.props().name.clone()}
+                                    id={ctx.props().id.clone()}
+                                    oninput={ctx.link().callback(|_|Msg::Sync)}
+                                />
                                 <Tooltip text={self.message}>
                                     <Button aria_label="Copy to clipboard" variant={ButtonVariant::Control} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                 </Tooltip>

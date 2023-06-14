@@ -1,4 +1,4 @@
-use crate::ValidationContext;
+use crate::{Icon, ValidationContext};
 use std::fmt::Display;
 use std::rc::Rc;
 use std::str::FromStr;
@@ -95,6 +95,11 @@ where
                 }
                 { for props.children.iter() }
             </select>
+            <div class="pf-v5-c-form-control__utilities">
+                <div class="pf-v5-c-form-control__toggle-icon">
+                  {Icon::CaretDown}
+                </div>
+            </div>
         </div>
     )
 }

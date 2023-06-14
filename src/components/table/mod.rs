@@ -132,7 +132,7 @@ where
     html!(if is_expandable(props) {
         { for props.entries.iter().map(|entry| render_expandable_entry(props, entry) )}
     } else {
-        <tbody lass="pf-v5-c-table__tbody" role="rowgroup">
+        <tbody class="pf-v5-c-table__tbody" role="rowgroup">
             { for props.entries.iter().map(|entry| render_normal_entry(props, entry) )}
         </tbody>
     })

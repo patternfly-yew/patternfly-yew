@@ -4,6 +4,7 @@ use crate::{
 };
 
 use yew::prelude::*;
+use yew::virtual_dom::VNode;
 
 /// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
@@ -117,6 +118,14 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     let input_ref = props.r#ref.clone();
     let mut classes = classes!("pf-v5-c-form-control");
 
+    if props.disabled {
+        classes.push("pf-m-disabled")
+    }
+
+    if props.readonly {
+        classes.push("pf-m-readonly")
+    }
+
     if props.icon.is_some() {
         classes.push("pf-m-icon");
     }
@@ -182,6 +191,26 @@ pub fn text_input(props: &TextInputProperties) -> Html {
         ),
     );
 
+    let icon_html = if let Some(icon) = props.icon {
+        Some(html!(
+            <div class="pf-v5-c-form-control__icon">
+                    { icon }
+            </div>
+        ))
+    } else {
+        None
+    };
+
+    let status_html = if props.state != InputState::Default {
+        Some(html!(
+            <div class="pf-v5-c-form-control__icon pf-m-status">
+                {props.state.icon()}
+            </div>
+        ))
+    } else {
+        None
+    };
+
     html! (
         <div class={classes}>
             <input
@@ -203,11 +232,12 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
             />
-            if let Some(icon) = props.icon {
+
+                        { None::<VNode> }
+            if icon_html.is_some() || status_html.is_some() {
                 <div class="pf-v5-c-form-control__utilities"> // TODO: Refactor out to component
-                    <div class="pf-v5-c-form-control__icon">
-                        { icon }
-                    </div>
+                    { icon_html }
+                    { status_html }
                 </div>
             }
         </div>

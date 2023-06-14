@@ -22,7 +22,15 @@ pub struct BullseyeProperties {
 pub fn bullseye(props: &BullseyeProperties) -> Html {
     html! {
         <div class="pf-v5-l-bullseye">
-            <div class="pf-v5-l-bullseye__item">{ for props.children.iter() }</div>
+            { for props.children.iter().map(|c|{
+                if props.plain {
+                    // according to the PatternFly documentation wrapping element with the item
+                    // shouldn't make a difference. In practice, sometimes it does.
+                    c
+                } else {html!{
+                    <div class="pf-v5-l-bullseye__item">{c}</div>
+                }}
+            }) }
         </div>
     }
 }

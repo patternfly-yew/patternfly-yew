@@ -70,7 +70,7 @@ pub fn table_column<K>(props: &TableColumnProperties<K>) -> Html
 where
     K: Clone + Eq + 'static,
 {
-    let mut class = Classes::new();
+    let mut class = classes!("pf-v5-c-table__th");
 
     if props.first_tree_column {
         class.push(classes!("pf-v5-c-table__tree-view-title-header-cell"));
