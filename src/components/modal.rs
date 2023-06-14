@@ -46,8 +46,8 @@ pub struct ModalProperties {
     pub onclose: Option<Callback<()>>,
 
     /// Disable close button
-    #[prop_or_default]
-    pub disable_close_button: bool,
+    #[prop_or(true)]
+    pub show_close: bool,
 
     /// Disable closing the modal when the escape key is pressed
     #[prop_or_default]
@@ -129,21 +129,15 @@ pub fn modal(props: &ModalProperties) -> Html {
             aria-describedby="modal-description"
             ref={node_ref}
         >
-            {
-                if !props.disable_close_button {
-                    html! {
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            aria-label="Close dialog"
-                            onclick={onclose.reform(|_|())}
-                        >
-                            <i class="fas fa-times" aria-hidden="true"></i>
-                        </button>
-                    }
-                } else {
-                    html!{}
-                }
+            if props.show_close {
+                <button
+                    class="pf-c-button pf-m-plain"
+                    type="button"
+                    aria-label="Close dialog"
+                    onclick={onclose.reform(|_|())}
+                >
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
             }
 
             <header class="pf-c-modal-box__header">
