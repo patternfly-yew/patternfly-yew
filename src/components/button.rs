@@ -122,6 +122,8 @@ pub struct ButtonProperties {
     pub aria_label: AttrValue,
     #[prop_or_default]
     pub aria_haspopup: AttrValue,
+    #[prop_or_default]
+    pub aria_pressed: Option<AttrValue>,
 
     #[prop_or_default]
     pub r#type: ButtonType,
@@ -223,6 +225,7 @@ pub fn button(props: &ButtonProperties) -> Html {
              form={props.form.clone()}
              formaction={props.formaction.clone()}
              aria-label={props.aria_label.clone()}
+             aria-pressed={props.aria_pressed.clone()}
          >
              if props.loading {
                  <span class="pf-c-button__progress">
