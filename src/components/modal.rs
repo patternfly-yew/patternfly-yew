@@ -129,7 +129,7 @@ pub fn modal(props: &ModalProperties) -> Html {
             aria-describedby="modal-description"
             ref={node_ref}
         >
-            if !props.disable_close_button {
+            if props.show_close {
                 <div class="pf-v5-c-modal-box__close">
                     <button
                         class="pf-v5-c-button pf-m-plain"
