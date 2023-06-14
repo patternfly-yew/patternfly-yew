@@ -147,7 +147,6 @@ where
                     class="pf-v5-c-select__toggle"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
                     id={ctx.props().id.clone()}

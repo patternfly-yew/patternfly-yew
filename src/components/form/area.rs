@@ -162,6 +162,10 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
 
     classes.extend_from(&props.resize);
 
+    if props.readonly {
+        classes.push("pf-m-readonly");
+    }
+
     // validation
 
     {
@@ -247,6 +251,13 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
                 onchange={(*onchange).clone()}
                 oninput={(*oninput).clone()}
             />
+            if props.state != InputState::Default {
+                <div class="pf-v5-c-form-control__utilities">
+                    <div class="pf-v5-c-form-control__icon pf-m-status">
+                        {props.state.icon()}
+                    </div>
+                </div>
+            }
         </div>
     )
 }

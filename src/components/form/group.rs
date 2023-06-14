@@ -195,7 +195,7 @@ impl<'a> From<FormGroupHelpText<'a>> for VNode {
                         id="form-help-text-info-helper"
                     >
                         if let Some(icon) = icon {
-                            <span class="pf-v5-c-form__helper-text-icon">
+                            <span class="pf-v5-c-helper-text__item-icon">
                                 { icon }
                             </span>
                         }
