@@ -96,7 +96,7 @@ pub fn list(props: &ListProperties) -> Html {
             html! (<ul class={classes} role="list">{ items }</ul>)
         }
         ListType::Ordered(n) => {
-            html! (<ol r#type={n} class={classes} role="list">{ items }</ol>)
+            html! (<ol type={n} class={classes} role="list">{ items }</ol>)
         }
     };
 
