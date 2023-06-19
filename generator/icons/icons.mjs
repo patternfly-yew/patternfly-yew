@@ -138,13 +138,6 @@ export const iconsData = [
   },
   {
     "Style": "fas",
-    "Name": "fa-caret-up",
-    "React_name": "CaretUpIcon",
-    "Type": "Framework",
-    "Contextual_usage": "Indicates the ability to acces option panels for components like drop-downs, filters and page ranges",
-  },
-  {
-    "Style": "fas",
     "Name": "fa-caret-down",
     "React_name": "CaretDownIcon",
     "Type": "Framework",
