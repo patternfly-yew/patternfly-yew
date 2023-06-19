@@ -41,7 +41,7 @@ where
 }
 
 #[derive(Clone, Debug)]
-pub enum Msg {
+pub enum PopperMsg {
     Close,
     State(popperjs::State),
 }
@@ -51,7 +51,7 @@ where
     C: PopperContent + 'static,
     C::Properties: Clone + PartialEq + Debug,
 {
-    type Message = Msg;
+    type Message = PopperMsg;
     type Properties = PopperProperties<C::Properties>;
 
     fn create(ctx: &Context<Self>) -> Self {
@@ -62,13 +62,16 @@ where
             active: false,
             state: None,
             _marker: Default::default(),
-            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
+            global_close: GlobalClose::new(
+                NodeRef::default(),
+                ctx.link().callback(|_| PopperMsg::Close),
+            ),
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::State(state) => {
+            PopperMsg::State(state) => {
                 let state = Some(state);
                 if self.state != state {
                     self.state = state;
@@ -77,7 +80,7 @@ where
                     false
                 }
             }
-            Msg::Close => {
+            PopperMsg::Close => {
                 if self.active {
                     ctx.props().onclose.emit(());
                 }
@@ -105,7 +108,7 @@ where
     fn view(&self, ctx: &Context<Self>) -> Html {
         self.check_update().ok();
 
-        let onclose = ctx.link().callback(|_| Msg::Close);
+        let onclose = ctx.link().callback(|_| PopperMsg::Close);
 
         let content = <C as PopperContent>::view(
             &ctx.props().content,
@@ -146,7 +149,7 @@ where
             .get()
             .ok_or_else(|| JsValue::from("Missing content"))?;
 
-        let update = ctx.link().callback(Msg::State);
+        let update = ctx.link().callback(PopperMsg::State);
         let update = Closure::wrap(Box::new(move |this: &Instance| {
             // web_sys::console::debug_2(&JsValue::from("apply: "), this);
             let msg = from_popper(this).unwrap();
