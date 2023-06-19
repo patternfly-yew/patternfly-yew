@@ -141,7 +141,6 @@ impl ValidatingComponentProperties<String> for TextAreaProperties {
 ///
 /// ```rust
 /// use yew::prelude::*;
-/// use patternfly_yew::next::TextInput;
 /// use patternfly_yew::prelude::*;
 ///
 /// #[function_component(Example)]

@@ -20,7 +20,7 @@ use yew::prelude::*;
 ///
 /// ```
 /// # use yew::prelude::*;
-/// # use patternfly_yew::*;
+/// # use patternfly_yew::prelude::*;
 /// #[function_component(App)]
 /// fn app() -> Html {
 ///   html! {
@@ -40,9 +40,9 @@ use yew::prelude::*;
 ///         html! {
 ///             <Bullseye>
 ///                 <Modal
-///                     title = {"Example modal"}
-///                     variant = { ModalVariant::Medium }
-///                     description = {"A description is used when you want to provide more info about the modal than the title is able to describe."}
+///                     title={"Example modal"}
+///                     variant={ ModalVariant::Medium }
+///                     description={"A description is used when you want to provide more info about the modal than the title is able to describe."}
 ///                 >
 ///                     <p>{"The modal body can contain text, a form, any nested html will work."}</p>
 ///                 </Modal>

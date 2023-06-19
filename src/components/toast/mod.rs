@@ -17,7 +17,7 @@ use yew::{prelude::*, virtual_dom::VChild};
 /// For example:
 /// ```
 /// # use yew::prelude::*;
-/// # use patternfly_yew::*;
+/// # use patternfly_yew::prelude::*;
 /// #[function_component(App)]
 /// fn app() -> Html {
 ///   html! {

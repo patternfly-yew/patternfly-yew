@@ -151,7 +151,7 @@ impl IntoPropValue<PageSectionFill> for bool {
 ///
 /// ```rust
 /// use yew::prelude::*;
-/// use patternfly_yew::*;
+/// use patternfly_yew::prelude::*;
 ///
 /// #[function_component(MyPage)]
 /// fn my_page() -> Html {

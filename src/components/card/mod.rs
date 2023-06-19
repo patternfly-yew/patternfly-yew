@@ -61,7 +61,7 @@ pub struct CardProperties {
 ///
 /// ```
 /// use yew::prelude::*;
-/// use patternfly_yew::next::*;
+/// use patternfly_yew::prelude::*;
 ///
 /// #[function_component(Example)]
 /// fn example() -> Html {

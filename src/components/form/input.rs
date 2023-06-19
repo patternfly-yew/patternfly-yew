@@ -99,7 +99,6 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 ///
 /// ```rust
 /// use yew::prelude::*;
-/// use patternfly_yew::next::TextInput;
 /// use patternfly_yew::prelude::*;
 ///
 /// #[function_component(Example)]
