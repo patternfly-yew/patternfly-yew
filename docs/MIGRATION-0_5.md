@@ -2,7 +2,8 @@
 
 ## PatternFly v5
 
-This version is based on PatternFly v5. This requires
+This version is based on PatternFly v5. This requires a change of the PatternFly assets, probably an your `package.json`
+file.
 
 ## Next versions & Deprecations
 
