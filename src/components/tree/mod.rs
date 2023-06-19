@@ -35,9 +35,10 @@ impl AsClasses for TreeTableMode {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct TreeTableProperties<T>
+pub struct TreeTableProperties<C, M>
 where
-    T: TreeTableModel + PartialEq,
+    C: Clone + Eq + 'static,
+    M: TreeTableModel<C> + PartialEq,
 {
     #[prop_or_default]
     pub id: AttrValue,
@@ -45,15 +46,16 @@ where
     #[prop_or_default]
     pub mode: TreeTableMode,
 
-    pub header: VChild<TreeTableHeader>,
+    pub header: VChild<TreeTableHeader<C>>,
 
-    pub model: Rc<T>,
+    pub model: Rc<M>,
 }
 
 #[function_component(TreeTable)]
-pub fn tree_table<T>(props: &TreeTableProperties<T>) -> Html
+pub fn tree_table<C, M>(props: &TreeTableProperties<C, M>) -> Html
 where
-    T: TreeTableModel + PartialEq + 'static,
+    C: Clone + Eq + 'static,
+    M: TreeTableModel<C> + PartialEq + 'static,
 {
     let mut class = classes!("pf-v5-c-table", "pf-m-tree-view");
 
@@ -78,8 +80,8 @@ where
 
             { props.header.clone() }
 
-            <tbody role="rowgroup">
-            { (*content).clone() }
+            <tbody class="pf-v5-c-table__tbody">
+                { (*content).clone() }
             </tbody>
 
         </table>
@@ -87,17 +89,24 @@ where
 }
 
 #[derive(Clone, PartialEq, Eq)]
-struct Column {
+struct Column<C>
+where
+    C: Clone + Eq + 'static,
+{
     label: Option<String>,
+    index: C,
 }
 
-fn collect_columns(props: &TreeTableHeaderProperties) -> Vec<Column> {
+fn collect_columns<C>(props: &TreeTableHeaderProperties<C>) -> Vec<Column<C>>
+where
+    C: Clone + Eq + 'static,
+{
     props
         .children
         .iter()
-        .skip(1)
         .map(|c| Column {
             label: c.props.label.clone(),
+            index: c.props.index.clone(),
         })
         .collect()
 }
@@ -123,42 +132,52 @@ impl Visibility {
     }
 }
 
-fn render_model<T>(model: &Rc<T>, headers: Rc<Vec<Column>>) -> Html
+fn render_model<C, M>(model: &Rc<M>, headers: Rc<Vec<Column<C>>>) -> Html
 where
-    T: TreeTableModel,
+    C: Clone + Eq + 'static,
+    M: TreeTableModel<C>,
 {
     render_nodes(1, model.children(), Visibility::new(), headers)
 }
 
-fn render_nodes(
+fn render_nodes<C>(
     level: usize,
-    nodes: Vec<Rc<dyn TreeNode>>,
+    nodes: Vec<Rc<dyn TreeNode<C>>>,
     visibility: Visibility,
-    headers: Rc<Vec<Column>>,
-) -> Html {
+    headers: Rc<Vec<Column<C>>>,
+) -> Html
+where
+    C: Clone + Eq + 'static,
+{
     let size = nodes.len();
     html!(
         {
             for nodes.iter()
                 .enumerate()
                 .map(|(position,node) | html!(
-                    <Row {visibility} {size} {position} {level} node={node.clone()} headers={headers.clone()}/>
+                    <Row<C> {visibility} {size} {position} {level} node={node.clone()} headers={headers.clone()} />
                 ))
         }
     )
 }
 
 #[derive(Properties)]
-struct RowProperties {
+struct RowProperties<C>
+where
+    C: Clone + Eq + 'static,
+{
     level: usize,
     size: usize,
     position: usize,
-    node: Rc<dyn TreeNode>,
+    node: Rc<dyn TreeNode<C>>,
     visibility: Visibility,
-    headers: Rc<Vec<Column>>,
+    headers: Rc<Vec<Column<C>>>,
 }
 
-impl PartialEq for RowProperties {
+impl<C> PartialEq for RowProperties<C>
+where
+    C: Clone + Eq + 'static,
+{
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.node, &other.node)
             && self.level == other.level
@@ -170,26 +189,17 @@ impl PartialEq for RowProperties {
 }
 
 #[function_component(Row)]
-fn row(props: &RowProperties) -> Html {
-    let main = props.node.render_main();
-
-    let mut main_class = classes!("pf-v5-c-table__tree-view-title-cell");
-    if main.center {
-        main_class.push(classes!("pf-m-center"));
-    }
-
+fn row<C>(props: &RowProperties<C>) -> Html
+where
+    C: Clone + Eq + 'static,
+{
     let expanded = use_state_eq(|| true);
-    let ontoggle = {
-        let expanded = expanded.clone();
-        Callback::from(move |_| {
-            expanded.set(!*expanded);
-        })
-    };
 
-    let class = match *expanded {
-        true => classes!("pf-m-expanded"),
-        false => classes!(),
-    };
+    let mut class = classes!("pf-v5-c-table__tr");
+
+    if *expanded {
+        class.extend(classes!("pf-m-expanded"));
+    }
 
     let children = props.node.children();
 
@@ -198,26 +208,49 @@ fn row(props: &RowProperties) -> Html {
             <tr
                 {class}
                 role="row"
+                tabindex="0"
                 aria-level={ props.level.to_string() }
                 aria-expanded={ (*expanded).to_string() }
                 aria-setsize={ props.size.to_string() }
                 aria-posinset={ props.position.to_string() }
                 hidden={!props.visibility.is_visible()}
             >
-                <th class={main_class}>
-                    <MainCell has_children={!children.is_empty()} {ontoggle} expanded={*expanded} content={main.content}/>
-                </th>
-                { for props.headers.iter().enumerate().map(|(column, column_info)| {
-                    let cell = props.node.render_cell(CellContext{column});
-                    let class = match cell.center {
+
+                { for props.headers.iter().enumerate().map(|(nr, column)| {
+
+                    let cell = props.node.render_cell(CellContext{column: &column.index});
+                    let mut class = match cell.center {
                         true => classes!("pf-m-center"),
                         false => Classes::new(),
                     };
-                    html!(
-                        <td {class} role="cell" data-label={column_info.label.clone()}>
-                           {cell.content}
-                        </td>
-                    )
+
+                    match nr {
+                        0 => {
+                             let ontoggle = {
+                                let expanded = expanded.clone();
+                                Callback::from(move |_| {
+                                    expanded.set(!*expanded);
+                                })
+                            };
+
+                            class.push(classes!("pf-v5-c-table__th", "pf-v5-c-table__tree-view-title-cell"));
+                            html!(
+                                <th {class}>
+                                    <MainCell has_children={!children.is_empty()} {ontoggle} expanded={*expanded}>
+                                        { cell.content }
+                                    </MainCell>
+                                </th>
+                            )
+                        },
+                        _ => {
+                            class.push(classes!("pf-v5-c-table__td"));
+                            html!(
+                                <td {class} role="cell" data-label={column.label.clone()}>
+                                   {cell.content}
+                                </td>
+                            )
+                        },
+                    }
                 }) }
 
                 // cell for the actions
@@ -230,9 +263,10 @@ fn row(props: &RowProperties) -> Html {
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 struct MainCellProperties {
+    children: Children,
+
     has_children: bool,
     expanded: bool,
-    content: Html,
     ontoggle: Callback<()>,
 }
 
@@ -271,7 +305,7 @@ fn main_cell(props: &MainCellProperties) -> Html {
                     class="pf-v5-c-table__text"
                     id={ *id_label }
                 >
-                    {props.content.clone()}
+                    { for props.children.iter() }
                 </span>
             </div>
             // TODO: not sure why this is needed

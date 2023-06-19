@@ -3,10 +3,13 @@ use std::rc::Rc;
 use yew::prelude::*;
 
 /// Properties for [`TreeTableHeader`]
-#[derive(Debug, PartialEq, Clone, Properties)]
-pub struct TreeTableHeaderProperties {
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct TreeTableHeaderProperties<K>
+where
+    K: Clone + Eq + 'static,
+{
     #[prop_or_default]
-    pub children: ChildrenWithProps<TableColumn>,
+    pub children: ChildrenWithProps<TableColumn<K>>,
 }
 
 /// The Table Header component.
@@ -15,11 +18,14 @@ pub struct TreeTableHeaderProperties {
 ///
 /// Defined by [`TreeTableHeaderProperties`].
 #[function_component(TreeTableHeader)]
-pub fn tree_table_header(props: &TreeTableHeaderProperties) -> Html {
+pub fn tree_table_header<K>(props: &TreeTableHeaderProperties<K>) -> Html
+where
+    K: Clone + Eq + 'static,
+{
     html! (
-        <thead>
+        <thead class="pf-v5-c-table__thead">
 
-            <tr role="row">
+            <tr class="pf-v5-c-table__tr">
 
                 { for props.children.iter().enumerate().map(|(n,mut c)| {
                     if n == 0 {

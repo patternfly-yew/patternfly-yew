@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use yew::prelude::*;
 
 /// Properties for [`TableColumn`]
-#[derive(Debug, PartialEq, Properties)]
+#[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TableColumnProperties<C>
 where
     C: Clone + Eq + 'static,

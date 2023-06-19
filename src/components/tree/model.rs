@@ -2,15 +2,13 @@ use crate::prelude::{Cell, CellContext};
 use std::rc::Rc;
 
 /// A node in a tree
-pub trait TreeNode {
-    fn render_main(&self) -> Cell;
+pub trait TreeNode<C> {
+    fn render_cell(&self, ctx: CellContext<C>) -> Cell;
 
-    fn render_cell(&self, ctx: CellContext) -> Cell;
-
-    fn children(&self) -> Vec<Rc<dyn TreeNode>>;
+    fn children(&self) -> Vec<Rc<dyn TreeNode<C>>>;
 }
 
 /// A model providing access to tree nodes
-pub trait TreeTableModel {
-    fn children(&self) -> Vec<Rc<dyn TreeNode>>;
+pub trait TreeTableModel<C> {
+    fn children(&self) -> Vec<Rc<dyn TreeNode<C>>>;
 }
