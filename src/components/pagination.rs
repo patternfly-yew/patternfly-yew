@@ -1,7 +1,7 @@
 //! Pagination controls
 use crate::{
-    next::TextInput, on_enter, Button, ButtonVariant, Icon, InputState, ValidationContext,
-    Validator,
+    next::TextInput, on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState,
+    ValidationContext, Validator,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
@@ -12,17 +12,19 @@ pub enum PaginationPosition {
     Bottom,
 }
 
-impl PaginationPosition {
-    fn menu_classes(&self) -> Classes {
+impl AsClasses for PaginationPosition {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
-            PaginationPosition::Top => classes!("pf-c-options-menu"),
-            PaginationPosition::Bottom => classes!("pf-c-options-menu", "pf-m-top"),
+            Self::Top => {}
+            Self::Bottom => classes.push(classes!("pf-m-top")),
         }
     }
+}
 
+impl PaginationPosition {
     fn toggle_icon(&self, expanded: bool) -> Icon {
         match (self, expanded) {
-            (PaginationPosition::Bottom, true) => Icon::CaretUp,
+            (Self::Bottom, true) => Icon::CaretUp,
             _ => Icon::CaretDown,
         }
     }
@@ -85,7 +87,9 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let expanded = use_state_eq(|| false);
 
     // The pagination menu : "1-20 of nnn"
-    let mut menu_classes = props.position.menu_classes();
+    let mut menu_classes = classes!("pf-c-options-menu");
+    menu_classes.extend_from(&props.position);
+
     if *expanded {
         menu_classes.push("pf-m-expanded");
     }
