@@ -1,11 +1,55 @@
 //! Background image
+use std::borrow::Cow;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 
 /// Properties for [`Background`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BackgroundProperties {
+    /// The main element's ID.
     #[prop_or_default]
-    pub filter: Option<String>,
+    pub id: Option<String>,
+
+    /// The styling of the background.
+    ///
+    /// By default, this will be the patternfly logo loaded from the static PatternFly assets.
+    /// However, this can be overridden by either using a simple URL for an image, or a full set
+    /// of CSS styling.
+    #[prop_or_default]
+    pub style: BackgroundStyle,
+
+    /// Additional CSS styling which will be appended to the base style.
+    ///
+    /// **NOTE:** Using this in combination with [`BackgroundStyle::Style`] will simple append
+    /// two strings as style information.
+    #[prop_or_default]
+    pub additional_style: Option<String>,
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Eq)]
+pub enum BackgroundStyle {
+    #[default]
+    Default,
+    Image(Cow<'static, str>),
+    Style(Cow<'static, str>),
+}
+
+impl IntoPropValue<BackgroundStyle> for String {
+    fn into_prop_value(self) -> BackgroundStyle {
+        BackgroundStyle::Image(self.into())
+    }
+}
+
+impl IntoPropValue<BackgroundStyle> for &'static str {
+    fn into_prop_value(self) -> BackgroundStyle {
+        BackgroundStyle::Image(self.into())
+    }
+}
+
+impl IntoPropValue<BackgroundStyle> for Cow<'static, str> {
+    fn into_prop_value(self) -> BackgroundStyle {
+        BackgroundStyle::Image(self)
+    }
 }
 
 /// Background image component
@@ -17,29 +61,45 @@ pub struct BackgroundProperties {
 /// ## Properties
 ///
 /// Defined by [`BackgroundProperties`].
+///
+/// ## Example
+///
+/// ```rust
+/// use patternfly_yew::prelude::*;
+/// use yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   html!(
+///     <>
+///       <Background style="assets/images/pfbg-icon.svg"/>
+///       <p>{"Content on the background"}</p>
+///     </>
+///   )
+/// }
+/// ```
 #[function_component(Background)]
-pub fn view(props: &BackgroundProperties) -> Html {
-    if let Some(filter) = &props.filter {
-        let styles = format!("--pf-v5-c-background-image--Filter: {};", filter);
-        html! (
-            <div class="pf-v5-c-background-image" style={styles}></div>
-        )
-    } else {
-        // FIXME: something is still wrong here, the filter gets applied, but seems to have no effect
-        html! (
-            <div class="pf-v5-c-background-image">
-                <svg xmlns="http://www.w3.org/2000/svg" class="pf-v5-c-background-image__filter" width="0" height="0">
-                    <filter id="image_overlay">
-                        <feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"></feColorMatrix>
-                        <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
-                            <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
-                            <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
-                            <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
-                            <feFuncA type="table" tableValues="0 1"></feFuncA>
-                        </feComponentTransfer>
-                    </filter>
-                </svg>
-            </div>
-        )
+pub fn background(props: &BackgroundProperties) -> Html {
+    let mut style = match &props.style {
+        BackgroundStyle::Default => {
+            "--pf-v5-c-background-image--BackgroundImage: url(assets/images/pfbg-icon.svg);"
+                .to_string()
+        }
+        BackgroundStyle::Image(url) => {
+            format!("--pf-v5-c-background-image--BackgroundImage: url({url});")
+        }
+        BackgroundStyle::Style(style) => style.to_string(),
+    };
+
+    if let Some(additional) = &props.additional_style {
+        style.push_str(&additional);
     }
+
+    html!(
+        <div
+            id={props.id.clone()}
+            class="pf-v5-c-background-image"
+            {style}
+        ></div>
+    )
 }
