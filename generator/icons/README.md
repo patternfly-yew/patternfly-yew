@@ -9,7 +9,7 @@ Source: https://github.com/patternfly/patternfly-org/blob/main/packages/v4/patte
 * Fetch a new version of the description
 
   ```shell
-  curl -sSL https://raw.githubusercontent.com/patternfly/patternfly-org/main/packages/v4/patternfly-docs/content/design-guidelines/styles/icons/icons.js -o icons.mjs
+  curl -sSL https://raw.githubusercontent.com/patternfly/patternfly-org/v5/packages/documentation-site/patternfly-docs/content/design-guidelines/styles/icons/icons.js -o icons.mjs
   ```
 
 * Convert file

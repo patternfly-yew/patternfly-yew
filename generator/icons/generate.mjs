@@ -1,4 +1,5 @@
 import {iconsData} from "./icons.mjs";
+import {iconsData as manualIconsData} from "./icons.manual.mjs";
 
 class Generator {
   #known;
@@ -19,7 +20,9 @@ class Generator {
     }
     this.#known.add(icon.React_name);
 
-    // fix up style
+    let className = icon.Name;
+
+    // fix up based on style
 
     switch (icon.Style) {
       case "fas":
@@ -34,8 +37,9 @@ class Generator {
       case "":
         icon.Style = "plain";
         break;
-      case "pf-icon":
+      case "pficon":
         icon.Style = "pf";
+        className = `pf-v5-${className}`;
         break;
       default:
         // This means we need to adap the generator
@@ -65,25 +69,21 @@ class Generator {
     ${feature}${name},`;
 
     this.#impl += `
-            ${feature}Self::${name} => classes.extend(super::${icon.Style}("${icon.Name}")),`;
+            ${feature}Self::${name} => classes.extend(super::${icon.Style}("${className}")),`;
   }
 
-  #collect(icons) {
+  add(icons) {
     for (const icon of icons) {
       if (Array.isArray(icon)) {
-        this.#collect(icon);
+        this.add(icon);
       } else {
         this.#icon(icon);
       }
     }
+    return this;
   }
 
-  run(icons) {
-    this.#collect(icons);
-    this.#output();
-  }
-
-  #output() {
+  write() {
 
     console.log(`#[derive(Copy, Clone, Debug, PartialEq, Eq, strum_macros::EnumIter, strum_macros::EnumMessage, strum_macros::AsRefStr)]
 pub enum Icon {
@@ -93,7 +93,7 @@ pub enum Icon {
 
     console.log(`
 impl crate::core::AsClasses for Icon {
-    fn extend(&self, classes: &mut yew::prelude::Classes) {
+    fn extend_classes(&self, classes: &mut yew::prelude::Classes) {
         match self {
             ${this.#impl}
         }
@@ -104,5 +104,9 @@ impl crate::core::AsClasses for Icon {
 
 }
 
-new Generator().run(iconsData);
+new Generator()
+    .add(iconsData)
+    .add(manualIconsData)
+    .write()
+;
 

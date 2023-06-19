@@ -56,7 +56,7 @@ pub(crate) fn fab(name: &str) -> [&str; 2] {
 }
 
 pub(crate) fn pf(name: &str) -> [&str; 2] {
-    ["pficon", name]
+    ["pf-v5-pficon", name]
 }
 
 impl From<Icon> for VNode {
