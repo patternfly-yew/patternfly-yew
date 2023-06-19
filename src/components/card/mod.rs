@@ -2,25 +2,15 @@ mod variant;
 
 pub use variant::*;
 
-use crate::prelude::{Divider, DividerType, Icon};
+use crate::prelude::{Button, ButtonType, ButtonVariant, Divider, DividerType, Icon, Id};
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
-
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub enum CardSelection {
-    #[default]
-    None,
-    Disabled,
-    Selectable {
-        selected: bool,
-    },
-}
 
 /// Properties for [`Card`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardProperties {
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Id,
     #[prop_or_default]
     pub children: ChildrenRenderer<CardBodyVariant>,
     #[prop_or_default]
@@ -29,6 +19,8 @@ pub struct CardProperties {
     pub footer: Option<Html>,
     #[prop_or_default]
     pub compact: bool,
+    #[prop_or_default]
+    pub disabled: bool,
     #[prop_or_default]
     pub flat: bool,
     #[prop_or_default]
@@ -42,7 +34,9 @@ pub struct CardProperties {
     #[prop_or_default]
     pub rounded: bool,
     #[prop_or_default]
-    pub selection: CardSelection,
+    pub selectable: bool,
+    #[prop_or_default]
+    pub selected: bool,
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
@@ -91,49 +85,48 @@ pub struct CardProperties {
 /// ```
 #[function_component(Card)]
 pub fn card(props: &CardProperties) -> Html {
-    let expanded = use_state_eq(|| false);
+    let expanded = use_state_eq(|| !props.expandable);
 
     let mut class = classes!("pf-v5-c-card");
 
     if props.compact {
-        class.push(classes!("pf-m-compact"));
+        class.push("pf-m-compact");
+    }
+
+    if props.disabled {
+        class.push("pf-m-disabled");
     }
 
     if props.expandable && *expanded {
-        class.push(classes!("pf-m-expanded"));
+        class.push("pf-m-expanded");
     }
 
     if props.large {
-        class.push(classes!("pf-m-display-lg"));
+        class.push("pf-m-display-lg");
     }
 
     if props.flat {
-        class.push(classes!("pf-m-flat"));
+        class.push("pf-m-flat");
     }
 
-    match props.selection {
-        CardSelection::None => {}
-        CardSelection::Disabled => {
-            class.push(classes!("pf-m-non-selectable-raised"));
-        }
-        CardSelection::Selectable { selected } => {
-            class.push(classes!("pf-m-selectable-raised"));
-            if selected {
-                class.push(classes!("pf-m-selected-raised"));
-            }
-        }
+    if props.selectable {
+        class.push("pf-m-selectable")
+    }
+
+    if props.selected {
+        class.push("pf-m-selected")
     }
 
     if props.full_height {
-        class.push(classes!("pf-m-full-height"));
+        class.push("pf-m-full-height");
     }
 
     if props.rounded {
-        class.push(classes!("pf-m-rounded"));
+        class.push("pf-m-rounded");
     }
 
     if props.plain {
-        class.push(classes!("pf-m-plain"));
+        class.push("pf-m-plain");
     }
 
     class.extend(props.class.clone());
@@ -142,49 +135,111 @@ pub fn card(props: &CardProperties) -> Html {
         <div
             {class}
             onclick={props.onclick.clone()}
-            id={&props.id}
+            id={props.id.clone()}
         >
             { header(props, expanded.clone()) }
 
-            if *expanded || !props.expandable {
+            if *expanded {
                 { props.children.clone() }
-            }
 
-            if let Some(content) = &props.footer {
-                <div class="pf-v5-c-card__footer">
-                    { content.clone() }
-                </div>
+                if let Some(content) = &props.footer {
+                    <div class="pf-v5-c-card__footer">
+                        { content.clone() }
+                    </div>
+                }
             }
         </div>
     )
 }
 
 fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
-    let onclick = {
-        Callback::from(move |_| {
-            expanded.set(!*expanded);
-        })
+    let (card_title, title_id) = if props.title.is_some() {
+        let id = format!("{}-title", props.id);
+        (
+            Some(html!(<CardTitle id={ id.clone() }  content={ props.title.clone() } />)),
+            Some(id),
+        )
+    } else {
+        (None, None)
     };
 
-    html!(
-        if props.expandable {
-            <div class="pf-v5-c-card__header">
-                <div class="pf-v5-c-card__header-toggle">
-                    <button
-                        class="pf-v5-c-button pf-m-plain"
-                        type="button"
-                        aria-label="Details"
-                        {onclick}
-                    >
-                        <span class="pf-v5-c-card__header-toggle-icon"> { Icon::AngleRight } </span>
-                    </button>
+    let header_toggle = props.expandable.then_some({
+        let id = format!("{}-toggle", props.id);
+        let mut aria_labelledby = id.clone();
+        if let Some(title_id) = title_id {
+            aria_labelledby = format!("{} {}", title_id, aria_labelledby);
+        }
+
+        let onclick = {
+            Callback::from(move |_: MouseEvent| {
+                expanded.set(!*expanded);
+            })
+        };
+
+        html!(
+            <div class="pf-v5-c-card__header-toggle">
+                <Button
+                    id={ id.clone() }
+                    r#type={ ButtonType::Button }
+                    variant={ ButtonVariant::Plain }
+                    aria_label="Details"
+                    { aria_labelledby }
+                    { onclick }
+                >
+                    <span class="pf-v5-c-card__header-toggle-icon">
+                      { Icon::AngleRight }
+                    </span>
+                </Button>
+            </div>
+        )
+    });
+
+    let selector_check = &props.selectable.then_some({
+        let id = format!("{}-check", props.id);
+        let mut class = classes!("pf-v5-c-check__label");
+        if props.disabled {
+            class.push("pf-m-disabled");
+        }
+
+        html!(
+            <div class="pf-v5-c-card__selectable-actions">
+                <div class="pf-v5-c-check pf-m-standalone">
+                    <input
+                        class="pf-v5-c-check__input"
+                        type="checkbox"
+                        id={ id.clone() }
+                        name={ id.clone() }
+                        aria_labelledby={ props.id }
+                        checked={ props.selected }
+                        disabled={ props.disabled }
+                    />
+                    <label
+                        id={ format!("{}-label", id) }
+                        { class }
+                        for={ id }
+                        />
                 </div>
+            </div>
+        )
+    });
+
+    let actions = selector_check.clone().and(Some(html!(
+        <div class="pf-v5-c-card__actions pf-m-no-offset">
+            { selector_check.clone() }
+        </div>
+    )));
+
+    html!(
+        if header_toggle.is_some() || actions.is_some() {
+            <div class="pf-v5-c-card__header">
+                { header_toggle }
+                { actions.clone() }
                 <div class="pf-v5-c-card__header-main">
-                    <CardTitle content={props.title.clone()} />
+                    { card_title }
                 </div>
             </div>
         } else {
-            <CardTitle content={props.title.clone()} />
+            { card_title }
         }
     )
 }
@@ -192,13 +247,16 @@ fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
 #[derive(PartialEq, Properties)]
 struct OptionalContentProperties {
     content: Option<Html>,
+
+    #[prop_or_default]
+    id: AttrValue,
 }
 
 #[function_component(CardTitle)]
 fn card_title(props: &OptionalContentProperties) -> Html {
     html!(
         if let Some(content) = &props.content {
-            <div class="pf-v5-c-card__title">
+            <div id={ props.id .clone() } class="pf-v5-c-card__title">
                 { content.clone() }
             </div>
         }
