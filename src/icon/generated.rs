@@ -47,6 +47,8 @@ pub enum Icon {
     #[cfg(feature = "icons-far")]
     OutlinedCalendarAlt,
     /// Indicates the ability to acces option panels for components like drop-downs, filters and page ranges
+    CaretUp,
+    /// Indicates the ability to acces option panels for components like drop-downs, filters and page ranges
     CaretDown,
     /// Represents status: Indicates a switch toggle is in the enabled position
     Check,
@@ -420,6 +422,7 @@ impl crate::core::AsClasses for Icon {
             Self::Bug => classes.extend(super::fas("fa-bug")),
             #[cfg(feature = "icons-far")]
             Self::OutlinedCalendarAlt => classes.extend(super::far("fa-calendar-alt")),
+            Self::CaretUp => classes.extend(super::fas("fa-caret-up")),
             Self::CaretDown => classes.extend(super::fas("fa-caret-down")),
             Self::Check => classes.extend(super::fas("fa-check")),
             Self::CheckCircle => classes.extend(super::fas("fa-check-circle")),

@@ -31,6 +31,9 @@ pub struct PaginationProperties {
     /// additional styles
     #[prop_or_default]
     pub style: AttrValue,
+
+    #[prop_or_default]
+    pub is_bottom: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -61,6 +64,9 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // The pagination menu : "1-20 of nnn"
     let mut menu_classes = classes!("pf-c-options-menu");
+    if props.is_bottom {
+        menu_classes.push("pf-m-top");
+    }
     if *expanded {
         menu_classes.push("pf-m-expanded");
     }
@@ -171,6 +177,18 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         })
     };
 
+    // Page number can be changed through props, therefore input_text should watch props
+    {
+        let input_text = input_text.clone();
+        use_effect_with_deps(
+            move |tuple| {
+                let r = (tuple.0 as f64 / tuple.1 as f64).ceil() as usize;
+                input_text.set(Some((r + 1).to_string()));
+            },
+            (props.offset, props.selected_choice),
+        );
+    }
+
     // on limit change
 
     let onlimit = {
@@ -212,7 +230,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                             <b>{ total_entries }</b>
                         </span>
                         <span class="pf-c-options-menu__toggle-icon">
-                            { Icon::CaretDown }
+                            { if props.is_bottom && *expanded { Icon::CaretUp } else { Icon::CaretDown } }
                         </span>
                     </Button>
                 </div>
@@ -274,6 +292,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {oninput}
                         {onkeydown}
                         state={(*input_state).clone()}
+                        // value={((props.offset/props.selected_choice) + 1).to_string()}
                         value={(*input_text).clone().unwrap_or_default()}
                     />
                 if let Some(max_page) = max_page {
