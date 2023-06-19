@@ -37,10 +37,6 @@ impl Icon {
     }
 }
 
-pub(crate) fn plain(name: &str) -> [&str; 1] {
-    [name]
-}
-
 pub(crate) fn fas(name: &str) -> [&str; 2] {
     ["fas", name]
 }
