@@ -6,7 +6,6 @@ pub use crate::validation::*;
 
 pub use crate::components::about::*;
 pub use crate::components::alert::*;
-pub use crate::components::app_launcher::*;
 pub use crate::components::avatar::*;
 pub use crate::components::backdrop::*;
 pub use crate::components::background::*;
@@ -47,8 +46,6 @@ pub use crate::components::spinner::*;
 pub use crate::components::switch::*;
 pub use crate::components::table::*;
 pub use crate::components::tabs::*;
-#[allow(deprecated)]
-pub use crate::components::text::*;
 pub use crate::components::text_input_group::*;
 pub use crate::components::title::*;
 pub use crate::components::toast::*;

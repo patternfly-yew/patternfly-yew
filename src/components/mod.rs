@@ -2,7 +2,6 @@
 
 pub mod about;
 pub mod alert;
-pub mod app_launcher;
 pub mod avatar;
 pub mod backdrop;
 pub mod background;
@@ -42,11 +41,6 @@ pub mod spinner;
 pub mod switch;
 pub mod table;
 pub mod tabs;
-#[deprecated(
-    since = "0.4.0",
-    note = "Use the `Content` component as a wrapper to standard HTML elements instead"
-)]
-pub mod text;
 pub mod text_input_group;
 pub mod title;
 pub mod toast;
