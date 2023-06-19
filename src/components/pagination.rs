@@ -6,6 +6,28 @@ use crate::{
 use yew::prelude::*;
 use yew_hooks::use_click_away;
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PaginationPosition {
+    Top,
+    Bottom,
+}
+
+impl PaginationPosition {
+    fn menu_classes(&self) -> Classes {
+        match self {
+            PaginationPosition::Top => classes!("pf-c-options-menu"),
+            PaginationPosition::Bottom => classes!("pf-c-options-menu", "pf-m-top"),
+        }
+    }
+
+    fn toggle_icon(&self, expanded: bool) -> Icon {
+        match (self, expanded) {
+            (PaginationPosition::Bottom, true) => Icon::CaretUp,
+            _ => Icon::CaretDown,
+        }
+    }
+}
+
 /// Properties for [`Pagination`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct PaginationProperties {
@@ -32,8 +54,8 @@ pub struct PaginationProperties {
     #[prop_or_default]
     pub style: AttrValue,
 
-    #[prop_or_default]
-    pub is_bottom: bool,
+    #[prop_or(PaginationPosition::Top)]
+    pub position: PaginationPosition,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -63,10 +85,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let expanded = use_state_eq(|| false);
 
     // The pagination menu : "1-20 of nnn"
-    let mut menu_classes = classes!("pf-c-options-menu");
-    if props.is_bottom {
-        menu_classes.push("pf-m-top");
-    }
+    let mut menu_classes = props.position.menu_classes();
     if *expanded {
         menu_classes.push("pf-m-expanded");
     }
@@ -230,7 +249,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                             <b>{ total_entries }</b>
                         </span>
                         <span class="pf-c-options-menu__toggle-icon">
-                            { if props.is_bottom && *expanded { Icon::CaretUp } else { Icon::CaretDown } }
+                            { props.position.toggle_icon(*expanded)}
                         </span>
                     </Button>
                 </div>
@@ -292,7 +311,6 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {oninput}
                         {onkeydown}
                         state={(*input_state).clone()}
-                        // value={((props.offset/props.selected_choice) + 1).to_string()}
                         value={(*input_text).clone().unwrap_or_default()}
                     />
                 if let Some(max_page) = max_page {
