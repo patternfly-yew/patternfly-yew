@@ -1,4 +1,4 @@
-use crate::Tooltip;
+use crate::prelude::Tooltip;
 use yew::prelude::*;
 
 /// Properties for [`LoginMainFooterLink`]

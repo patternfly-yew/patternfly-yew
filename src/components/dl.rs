@@ -1,5 +1,5 @@
 //! Description list
-use crate::{AsClasses, ExtendClasses};
+use crate::prelude::{AsClasses, ExtendClasses};
 use yew::prelude::*;
 
 /// Properties for [`DescriptionList`]

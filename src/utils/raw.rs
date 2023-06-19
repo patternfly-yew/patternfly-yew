@@ -1,4 +1,4 @@
-use crate::ChildrenProperties;
+use crate::prelude::ChildrenProperties;
 use yew::prelude::*;
 
 #[function_component(Raw)]

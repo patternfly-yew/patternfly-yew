@@ -1,6 +1,6 @@
 use crate::{
     integration::popperjs::{self, from_popper, Instance},
-    GlobalClose,
+    prelude::GlobalClose,
 };
 use std::{fmt::Debug, marker::PhantomData};
 use wasm_bindgen::{closure::Closure, JsValue};

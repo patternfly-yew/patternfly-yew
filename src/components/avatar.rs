@@ -1,5 +1,5 @@
 //! Avatar graphic
-use crate::Size;
+use crate::prelude::Size;
 use yew::prelude::*;
 
 /// Border style of the [`Avatar`] component

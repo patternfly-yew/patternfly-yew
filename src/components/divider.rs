@@ -1,6 +1,6 @@
 //! General purpose dividers
 
-use crate::{AsClasses, ExtendClasses, Inset, Visibility, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, Inset, Visibility, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

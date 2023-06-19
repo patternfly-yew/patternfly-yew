@@ -1,5 +1,5 @@
 use super::{StateModel, TableDataModel};
-use crate::{StateModelIter, TableModel};
+use crate::prelude::{StateModelIter, TableModel};
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::rc::Rc;

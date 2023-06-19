@@ -1,5 +1,5 @@
 //! Switch control
-use crate::{random_id, Icon};
+use crate::prelude::{random_id, Icon};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 

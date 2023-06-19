@@ -1,8 +1,6 @@
 //! Title
-use crate::ExtendClasses;
+use crate::prelude::{ExtendClasses, Size};
 use yew::prelude::*;
-
-use crate::Size;
 
 /// Title level
 #[derive(Clone, Default, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]

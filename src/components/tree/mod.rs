@@ -8,11 +8,7 @@ mod model;
 pub use header::*;
 pub use model::*;
 
-use crate::{
-    core::{AsClasses, ExtendClasses},
-    prelude::CellContext,
-    use_random_id,
-};
+use crate::prelude::{use_random_id, AsClasses, CellContext, ExtendClasses};
 use std::rc::Rc;
 use yew::{prelude::*, virtual_dom::VChild};
 

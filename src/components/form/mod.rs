@@ -14,7 +14,7 @@ pub use select::*;
 use std::collections::BTreeMap;
 pub use validation::*;
 
-use crate::{Alert, AlertType, AsClasses, Button, ExtendClasses, WithBreakpoints};
+use crate::prelude::{Alert, AlertType, AsClasses, Button, ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

@@ -1,4 +1,4 @@
-use crate::{Cell, CellContext, DropdownChildVariant, Span};
+use crate::prelude::{Cell, CellContext, DropdownChildVariant, Span};
 
 /// Render table entries
 pub trait TableEntryRenderer<C>

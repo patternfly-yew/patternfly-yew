@@ -1,4 +1,4 @@
-use crate::{
+use crate::prelude::{
     focus, value, AsClasses, ExtendClasses, InputState, ValidatingComponent,
     ValidatingComponentProperties, ValidationContext,
 };

@@ -1,7 +1,7 @@
 //! Empty state
 use yew::prelude::*;
 
-use crate::{Action, Button, ButtonVariant, ExtendClasses, Icon, Size, Title};
+use crate::prelude::{Action, Button, ButtonVariant, ExtendClasses, Icon, Size, Title};
 
 /// Properties for [`EmptyState`]
 #[derive(Clone, PartialEq, Properties)]

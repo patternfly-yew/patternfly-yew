@@ -1,4 +1,4 @@
-use crate::{AsClasses, Inset};
+use crate::prelude::{AsClasses, Inset};
 use std::fmt::Debug;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};

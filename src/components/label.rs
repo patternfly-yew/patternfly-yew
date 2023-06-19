@@ -1,5 +1,5 @@
 //! Label
-use crate::{AsClasses, Button, ButtonVariant, ExtendClasses, Icon};
+use crate::prelude::{AsClasses, Button, ButtonVariant, ExtendClasses, Icon};
 use yew::prelude::*;
 
 use strum_macros::{Display, EnumIter, EnumString};

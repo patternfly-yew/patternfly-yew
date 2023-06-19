@@ -1,5 +1,5 @@
 //! Select control
-use crate::{Chip, GlobalClose, Icon, ListDivider};
+use crate::prelude::{Chip, GlobalClose, Icon, ListDivider};
 use std::{
     cell::Cell,
     fmt::{Debug, Display},

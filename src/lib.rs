@@ -31,8 +31,3 @@ pub mod utils;
 pub mod validation;
 
 pub mod prelude;
-#[deprecated(
-    since = "0.4.0",
-    note = "For a wildcard import, use 'patternfly_yew::prelude::*'"
-)]
-pub use prelude::*;

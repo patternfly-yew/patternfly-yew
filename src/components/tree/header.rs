@@ -1,4 +1,4 @@
-use crate::TableColumn;
+use crate::prelude::TableColumn;
 use std::rc::Rc;
 use yew::prelude::*;
 

@@ -1,4 +1,4 @@
-use crate::AsClasses;
+use crate::prelude::AsClasses;
 use yew::{classes, Classes};
 
 /// Definition of visibility

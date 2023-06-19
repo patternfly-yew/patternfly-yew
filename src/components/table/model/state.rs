@@ -1,4 +1,4 @@
-use crate::{TableEntryRenderer, TableModelEntry};
+use crate::prelude::{TableEntryRenderer, TableModelEntry};
 use std::iter::Enumerate;
 use yew::virtual_dom::Key;
 use yew::UseStateHandle;

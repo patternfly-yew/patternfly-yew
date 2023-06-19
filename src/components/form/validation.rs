@@ -1,4 +1,4 @@
-use crate::{AsClasses, FormHelperText, Icon, ValidationContext};
+use crate::prelude::{AsClasses, FormHelperText, Icon, ValidationContext};
 use yew::{Callback, Classes};
 
 /// State of an input from validation

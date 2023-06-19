@@ -1,4 +1,4 @@
-use crate::{Icon, ValidationContext};
+use crate::prelude::{Icon, ValidationContext};
 use std::fmt::Display;
 use std::rc::Rc;
 use std::str::FromStr;

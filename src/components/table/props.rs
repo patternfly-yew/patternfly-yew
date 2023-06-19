@@ -1,4 +1,4 @@
-use crate::AsClasses;
+use crate::prelude::AsClasses;
 use yew::prelude::*;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq)]

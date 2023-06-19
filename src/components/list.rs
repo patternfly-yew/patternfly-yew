@@ -1,5 +1,5 @@
 //! List
-use crate::{AsClasses, ExtendClasses};
+use crate::prelude::{AsClasses, ExtendClasses};
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
 #[derive(Copy, Clone, PartialEq, Eq)]

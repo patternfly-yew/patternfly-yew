@@ -1,4 +1,4 @@
-use crate::AsClasses;
+use crate::prelude::AsClasses;
 use std::fmt::Formatter;
 use yew::Classes;
 

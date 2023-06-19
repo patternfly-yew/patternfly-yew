@@ -1,7 +1,7 @@
 //! Copy clipboard
 use crate::icon::*;
+use crate::prelude::TextInput;
 use crate::prelude::*;
-use crate::TextInput;
 use gloo_timers::callback::Timeout;
 use wasm_bindgen::prelude::*;
 use web_sys::{Element, HtmlInputElement};

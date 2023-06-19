@@ -1,5 +1,5 @@
 //! Expandable section
-use crate::{icon::Icon, AsClasses, ExtendClasses};
+use crate::prelude::{AsClasses, ExtendClasses, Icon};
 use yew::prelude::*;
 
 /// Properties for [`ExpandableSection`]

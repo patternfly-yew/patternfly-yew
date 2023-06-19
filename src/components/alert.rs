@@ -1,6 +1,6 @@
 //! Alert popup
 
-use crate::{Action, Button, ButtonVariant, Icon};
+use crate::prelude::{Action, Button, ButtonVariant, Icon};
 
 use yew::prelude::*;
 

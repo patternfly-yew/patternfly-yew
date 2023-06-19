@@ -2,7 +2,7 @@
  * Grow.on(Lg)
  */
 
-use crate::AsClasses;
+use crate::prelude::AsClasses;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use yew::html::IntoPropValue;
@@ -349,7 +349,7 @@ where
 
 #[cfg(test)]
 mod test {
-    use crate::{AsClasses, WithBreakpoints};
+    use crate::prelude::{AsClasses, WithBreakpoints};
     use yew::Classes;
 
     use super::*;

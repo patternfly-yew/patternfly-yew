@@ -1,5 +1,7 @@
 //! Drop down menu
-use crate::{Avatar, Button, ButtonType, ButtonVariant, GlobalClose, Icon, ListDivider, Position};
+use crate::prelude::{
+    Avatar, Button, ButtonType, ButtonVariant, GlobalClose, Icon, ListDivider, Position,
+};
 use std::rc::Rc;
 use yew::{
     html::ChildrenRenderer,

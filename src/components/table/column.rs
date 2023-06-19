@@ -1,4 +1,4 @@
-use crate::{AsClasses, ExtendClasses};
+use crate::prelude::{AsClasses, ExtendClasses};
 use std::fmt::Debug;
 use yew::prelude::*;
 

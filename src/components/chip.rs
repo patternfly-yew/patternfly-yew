@@ -1,5 +1,5 @@
 //! Chip
-use crate::{Button, ButtonVariant, Icon};
+use crate::prelude::{Button, ButtonVariant, Icon};
 use std::fmt::Debug;
 use yew::prelude::*;
 

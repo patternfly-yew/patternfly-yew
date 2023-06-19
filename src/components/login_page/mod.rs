@@ -3,7 +3,7 @@ mod footer;
 
 pub use footer::*;
 
-use crate::Title;
+use crate::prelude::Title;
 use yew::{prelude::*, virtual_dom::VChild};
 
 /// Properties for [`Login`]

@@ -1,4 +1,4 @@
-use crate::TableEntryRenderer;
+use crate::prelude::TableEntryRenderer;
 use std::iter::Enumerate;
 use std::rc::Rc;
 

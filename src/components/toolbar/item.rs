@@ -1,4 +1,4 @@
-use crate::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 /// Properties for [`ToolbarItem`]

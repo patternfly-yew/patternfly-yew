@@ -1,6 +1,6 @@
 //! Button
 
-use crate::{Icon, Spinner, SpinnerSize};
+use crate::prelude::{Icon, Spinner, SpinnerSize};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
 use yew::prelude::*;

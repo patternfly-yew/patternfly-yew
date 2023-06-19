@@ -1,6 +1,6 @@
 //! Flex
 
-use crate::{AsClasses, ExtendClasses, SpaceItems, Spacer, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, SpaceItems, Spacer, WithBreakpoints};
 use std::{fmt::Debug, rc::Rc};
 use yew::{
     html::ChildrenRenderer,

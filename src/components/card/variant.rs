@@ -1,5 +1,5 @@
 use super::{CardBody, CardBodyProperties, CardDivider};
-use crate::{ChildrenProperties, Raw};
+use crate::prelude::{ChildrenProperties, Raw};
 use std::rc::Rc;
 use yew::virtual_dom::VComp;
 use yew::{prelude::*, virtual_dom::VChild};

@@ -9,7 +9,7 @@ pub use divider::*;
 pub use group::*;
 pub use item::*;
 
-use crate::AsClasses;
+use crate::prelude::AsClasses;
 use yew::{html::ChildrenRenderer, prelude::*};
 
 /// Modifier for toolbar elements.

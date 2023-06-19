@@ -1,6 +1,6 @@
 //! Grid
 
-use crate::{ExtendClasses, WithBreakpoints};
+use crate::prelude::{ExtendClasses, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]

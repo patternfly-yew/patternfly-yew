@@ -1,4 +1,4 @@
-use crate::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
 use std::rc::Rc;
 use yew::prelude::*;
 

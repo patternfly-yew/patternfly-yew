@@ -1,5 +1,5 @@
 //! Toast notifications
-use crate::{Action, Alert, AlertGroup, AlertType};
+use crate::prelude::{Action, Alert, AlertGroup, AlertType};
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
 use gloo_timers::callback::Timeout;

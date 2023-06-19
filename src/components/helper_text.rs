@@ -3,7 +3,7 @@
 //! **NOTE:** While it looks similar to the [`Form`](crate::prelude::Form)'s helper text, it is
 //! a different type.
 
-use crate::{AsClasses, ExtendClasses, Icon};
+use crate::prelude::{AsClasses, ExtendClasses, Icon};
 use yew::prelude::*;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]

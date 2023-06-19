@@ -1,4 +1,4 @@
-use crate::{AsClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::prelude::{AsClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]

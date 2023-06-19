@@ -1,6 +1,6 @@
 //! Chip Group
 
-use crate::{use_prop_id, Chip};
+use crate::prelude::{use_prop_id, Chip};
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]

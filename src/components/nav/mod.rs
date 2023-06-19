@@ -6,7 +6,7 @@ mod router;
 pub use router::*;
 use std::collections::HashSet;
 
-use crate::{Icon, Id};
+use crate::prelude::{Icon, Id};
 use std::fmt::Debug;
 use yew::prelude::*;
 

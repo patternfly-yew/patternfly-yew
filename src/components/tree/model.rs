@@ -1,4 +1,4 @@
-use crate::{Cell, CellContext};
+use crate::prelude::{Cell, CellContext};
 use std::rc::Rc;
 
 /// A node in a tree

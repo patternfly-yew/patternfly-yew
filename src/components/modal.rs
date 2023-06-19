@@ -1,5 +1,5 @@
 //! Modal
-use crate::use_backdrop;
+use crate::prelude::use_backdrop;
 use yew::prelude::*;
 use yew_hooks::{use_click_away, use_event_with_window};
 

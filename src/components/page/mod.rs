@@ -1,5 +1,5 @@
 //! Full Page components
-use crate::{Button, ButtonType, ButtonVariant};
+use crate::prelude::{Button, ButtonType, ButtonVariant};
 use std::rc::Rc;
 use yew::prelude::*;
 
