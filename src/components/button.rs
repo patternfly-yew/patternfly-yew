@@ -124,6 +124,8 @@ pub struct ButtonProperties {
     #[prop_or_default]
     pub aria_label: AttrValue,
     #[prop_or_default]
+    pub aria_labelledby: AttrValue,
+    #[prop_or_default]
     pub aria_haspopup: AttrValue,
 
     #[prop_or_default]
