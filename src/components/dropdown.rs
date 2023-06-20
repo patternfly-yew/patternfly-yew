@@ -49,28 +49,31 @@ pub struct Dropdown {
 
 #[doc(hidden)]
 #[derive(Clone, Debug)]
-pub enum Msg {
+pub enum DropdownMsg {
     Toggle,
     Close,
 }
 
 impl Component for Dropdown {
-    type Message = Msg;
+    type Message = DropdownMsg;
     type Properties = DropdownProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {
             expanded: false,
-            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
+            global_close: GlobalClose::new(
+                NodeRef::default(),
+                ctx.link().callback(|_| DropdownMsg::Close),
+            ),
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::Toggle => {
+            DropdownMsg::Toggle => {
                 self.expanded = !self.expanded;
             }
-            Msg::Close => self.expanded = false,
+            DropdownMsg::Close => self.expanded = false,
         }
         true
     }
@@ -89,7 +92,7 @@ impl Component for Dropdown {
             Position::Top => classes.push("pf-m-top"),
         }
 
-        let onclick = ctx.link().callback(|_| Msg::Toggle);
+        let onclick = ctx.link().callback(|_| DropdownMsg::Toggle);
 
         let variant = match ctx.props().plain {
             true => ButtonVariant::Plain,
@@ -118,7 +121,7 @@ impl Component for Dropdown {
                     <ul>
                     { for ctx.props().children.iter().map(|mut c|{
                         // request a close callback from the item
-                        c.set_need_close(ctx.link().callback(|_|Msg::Close));
+                        c.set_need_close(ctx.link().callback(|_|DropdownMsg::Close));
                         c
                     }) }
                     </ul>

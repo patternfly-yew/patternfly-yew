@@ -16,7 +16,7 @@ pub struct ContextSelectorProperties {
 
 #[doc(hidden)]
 #[derive(Clone, Debug)]
-pub enum Msg {
+pub enum ContextSelectorMsg {
     Toggle,
     Close,
     Search(String),
@@ -43,12 +43,14 @@ pub struct ContextSelector {
 
 #[allow(deprecated)]
 impl Component for ContextSelector {
-    type Message = Msg;
+    type Message = ContextSelectorMsg;
     type Properties = ContextSelectorProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let global_close =
-            GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close));
+        let global_close = GlobalClose::new(
+            NodeRef::default(),
+            ctx.link().callback(|_| ContextSelectorMsg::Close),
+        );
         Self {
             expanded: false,
             global_close,
@@ -87,7 +89,7 @@ impl Component for ContextSelector {
                     class="pf-v5-c-context-selector__toggle"
                     aria-expanded={self.expanded.to_string()}
                     type="button"
-                    onclick={ctx.link().callback(|_|Msg::Toggle)}
+                    onclick={ctx.link().callback(|_|ContextSelectorMsg::Toggle)}
                 >
                     <span class="pf-v5-c-context-selector__toggle-text">{&ctx.props().selected}</span>
                     <span class="pf-v5-c-context-selector__toggle-icon">{Icon::CaretDown}</span>
@@ -98,7 +100,7 @@ impl Component for ContextSelector {
                     <div class="pf-v5-c-context-selector__menu-search">
                         <InputGroup>
                             <TextInput
-                                onchange={ctx.link().callback(Msg::Search)}
+                                onchange={ctx.link().callback(ContextSelectorMsg::Search)}
                                 icon={Icon::Search}
                                 r#type="search"/>
                         </InputGroup>
@@ -106,7 +108,7 @@ impl Component for ContextSelector {
                     <ul class="pf-v5-c-context-selector__menu-list">
                         { for ctx.props().children.iter().map(|mut item|{
                             let mut props = Rc::make_mut(&mut item.props);
-                            props.need_close = ctx.link().callback(|_|Msg::Close);
+                            props.need_close = ctx.link().callback(|_|ContextSelectorMsg::Close);
                             item
                         }) }
                     </ul>
@@ -167,7 +169,7 @@ impl Component for ContextSelectorItem {
                     disabled={ctx.props().disabled}
                     type="button"
                     onclick={ctx.link().callback(|_|ItemMsg::Clicked)}
-                    >
+                >
                     { &ctx.props().label }
                 </button>
             </li>

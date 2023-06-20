@@ -94,7 +94,7 @@ where
 }
 
 #[derive(Clone, Debug)]
-pub enum Msg<K> {
+pub enum SelectMsg<K> {
     Toggle,
     Close,
     Clicked(K),
@@ -104,24 +104,27 @@ impl<K> Component for Select<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,
 {
-    type Message = Msg<K>;
+    type Message = SelectMsg<K>;
     type Properties = SelectProperties<K>;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {
             expanded: false,
-            global_close: GlobalClose::new(NodeRef::default(), ctx.link().callback(|_| Msg::Close)),
+            global_close: GlobalClose::new(
+                NodeRef::default(),
+                ctx.link().callback(|_| SelectMsg::Close),
+            ),
             selection: ctx.props().initial_selection.clone(),
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::Toggle => {
+            SelectMsg::Toggle => {
                 self.expanded = !self.expanded;
             }
-            Msg::Close => self.expanded = false,
-            Msg::Clicked(k) => self.clicked(ctx, k),
+            SelectMsg::Close => self.expanded = false,
+            SelectMsg::Clicked(k) => self.clicked(ctx, k),
         }
         true
     }
@@ -137,7 +140,7 @@ where
 
         let menu_classes = Classes::from("pf-v5-c-select__menu");
 
-        let onclick = ctx.link().callback(|_| Msg::Toggle);
+        let onclick = ctx.link().callback(|_| SelectMsg::Toggle);
 
         html! (
             <div class={classes}
@@ -211,7 +214,7 @@ where
                                 selection.iter().map(|b| {
                                     let link = {
                                         let b = b.clone();
-                                        ctx.link().callback(move |()|Msg::Clicked(b.clone()))
+                                        ctx.link().callback(move |()|SelectMsg::Clicked(b.clone()))
                                     };
                                     html!(<Chip text={b.to_string()} onclose={link} />)
                                 })
@@ -229,8 +232,8 @@ where
             <ul>
                 { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
-                    c.set_need_close(ctx.link().callback(|_|Msg::Close));
-                    c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
+                    c.set_need_close(ctx.link().callback(|_|SelectMsg::Close));
+                    c.set_need_clicked(ctx.link().callback(|k|SelectMsg::Clicked(k)));
                     c.set_variant(ctx.props().variant.clone());
                     c.set_selection(&self.selection);
                     c
@@ -244,8 +247,8 @@ where
             <fieldset class="pf-v5-c-select__menu-fieldset" aria-label="Select input">
                 { for ctx.props().children.iter().map(|mut c|{
                     // request a close callback from the item
-                    c.set_need_close(ctx.link().callback(|_|Msg::Close));
-                    c.set_need_clicked(ctx.link().callback(|k|Msg::Clicked(k)));
+                    c.set_need_close(ctx.link().callback(|_|SelectMsg::Close));
+                    c.set_need_clicked(ctx.link().callback(|k|SelectMsg::Clicked(k)));
                     c.set_variant(ctx.props().variant.clone());
                     c.set_selection(&self.selection);
                     c

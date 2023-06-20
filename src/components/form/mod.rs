@@ -153,12 +153,12 @@ pub struct Form {
 }
 
 #[doc(hidden)]
-pub enum Msg {
+pub enum FormMsg {
     GroupValidationChanged(GroupValidationResult),
 }
 
 impl Component for Form {
-    type Message = Msg;
+    type Message = FormMsg;
     type Properties = FormProperties;
 
     fn create(_ctx: &Context<Self>) -> Self {
@@ -169,7 +169,7 @@ impl Component for Form {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::GroupValidationChanged(state) => {
+            FormMsg::GroupValidationChanged(state) => {
                 let changed = self.validation.push_state(state);
                 if changed {
                     ctx.props().onvalidated.emit(self.validation.state);
@@ -217,7 +217,7 @@ impl Component for Form {
         };
 
         let validation_context = ValidationFormContext::new(
-            ctx.link().callback(Msg::GroupValidationChanged),
+            ctx.link().callback(FormMsg::GroupValidationChanged),
             self.validation.state,
         );
 

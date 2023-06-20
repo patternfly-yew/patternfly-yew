@@ -40,12 +40,12 @@ pub struct Switch {
     input_ref: NodeRef,
 }
 
-pub enum Msg {
+pub enum SwitchMsg {
     Changed,
 }
 
 impl Component for Switch {
-    type Message = Msg;
+    type Message = SwitchMsg;
     type Properties = SwitchProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
@@ -58,7 +58,7 @@ impl Component for Switch {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::Changed => {
+            SwitchMsg::Changed => {
                 ctx.props().onchange.emit(self.current_state());
                 false
             }
@@ -86,8 +86,8 @@ impl Component for Switch {
                     aria-label={ctx.props().aria_label.clone()}
                     checked={ctx.props().checked}
                     disabled={ctx.props().disabled}
-                    onchange={ctx.link().callback(|_|Msg::Changed)}
-                    />
+                    onchange={ctx.link().callback(|_|SwitchMsg::Changed)}
+                />
                 <span class="pf-v5-c-switch__toggle">
                     if ctx.props().label.is_none() {
                         <span class="pf-v5-c-switch__toggle-icon">
@@ -97,8 +97,8 @@ impl Component for Switch {
                 </span>
                 if let Some(ref label) = ctx.props().label {
                     <>
-                    <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
-                    <span class="pf-v5-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
+                        <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
+                        <span class="pf-v5-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
                     </>
                 }
             </label>

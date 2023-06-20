@@ -101,7 +101,7 @@ pub enum SnapMode {
 }
 
 #[doc(hidden)]
-pub enum Msg {
+pub enum SliderMsg {
     // set the value as original value
     SetValue(f64),
     Start(Input, i32),
@@ -145,7 +145,7 @@ struct Refs {
 }
 
 impl Component for Slider {
-    type Message = Msg;
+    type Message = SliderMsg;
     type Properties = SliderProperties;
 
     fn create(ctx: &Context<Self>) -> Self {
@@ -180,7 +180,7 @@ impl Component for Slider {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::SetValue(value) => {
+            SliderMsg::SetValue(value) => {
                 if self.value != value {
                     self.value = value;
                     ctx.props().onchange.emit(self.value);
@@ -188,18 +188,18 @@ impl Component for Slider {
                     return false;
                 }
             }
-            Msg::Start(input, x) => {
+            SliderMsg::Start(input, x) => {
                 log::debug!("Start: {x}");
                 match input {
                     Input::Mouse => self.start_mouse(ctx),
                     Input::Touch => self.start_touch(ctx),
                 }
             }
-            Msg::Move(x) => {
+            SliderMsg::Move(x) => {
                 log::debug!("Move: {x}");
                 self.r#move(ctx, x);
             }
-            Msg::Stop => {
+            SliderMsg::Stop => {
                 log::debug!("Stop");
                 self.mousemove = None;
                 self.mouseup = None;
@@ -216,7 +216,7 @@ impl Component for Slider {
         if old_props != props {
             if old_props.value != props.value {
                 if let Some(value) = props.value {
-                    ctx.link().send_message(Msg::SetValue(value));
+                    ctx.link().send_message(SliderMsg::SetValue(value));
                 }
             };
             true
@@ -233,13 +233,13 @@ impl Component for Slider {
         let onmousedown = ctx.link().callback(|e: MouseEvent| {
             e.stop_propagation();
             e.prevent_default();
-            Msg::Start(Input::Mouse, e.client_x())
+            SliderMsg::Start(Input::Mouse, e.client_x())
         });
 
         let ontouchstart = ctx.link().batch_callback(|e: TouchEvent| {
             e.stop_propagation();
             if let Some(t) = e.touches().get(0) {
-                vec![Msg::Start(Input::Touch, t.client_x())]
+                vec![SliderMsg::Start(Input::Touch, t.client_x())]
             } else {
                 vec![]
             }
@@ -282,8 +282,8 @@ impl Component for Slider {
 
 impl Slider {
     fn start_mouse(&mut self, ctx: &Context<Self>) {
-        let onmove = ctx.link().callback(Msg::Move);
-        let onstop = ctx.link().callback(|_: ()| Msg::Stop);
+        let onmove = ctx.link().callback(SliderMsg::Move);
+        let onstop = ctx.link().callback(|_: ()| SliderMsg::Stop);
 
         let mousemove = {
             let onmove = onmove;
@@ -314,8 +314,8 @@ impl Slider {
     }
 
     fn start_touch(&mut self, ctx: &Context<Self>) {
-        let onmove = ctx.link().callback(Msg::Move);
-        let onstop = ctx.link().callback(|_: ()| Msg::Stop);
+        let onmove = ctx.link().callback(SliderMsg::Move);
+        let onstop = ctx.link().callback(|_: ()| SliderMsg::Stop);
 
         let touchmove = EventListener::new_with_options(
             &document(),
@@ -377,7 +377,7 @@ impl Slider {
             let value = Self::calc_value(value, ctx.props());
             let value = self.snap(value);
 
-            ctx.link().send_message(Msg::SetValue(value))
+            ctx.link().send_message(SliderMsg::SetValue(value))
         }
     }
 
