@@ -1,5 +1,5 @@
 //! Context selector
-use crate::prelude::{GlobalClose, Icon, InputGroup, TextInput};
+use crate::prelude::{GlobalClose, Icon, InputGroup, TextInput, TextInputType};
 use std::rc::Rc;
 use yew::prelude::*;
 
@@ -100,7 +100,8 @@ impl Component for ContextSelector {
                             <TextInput
                                 onchange={ctx.link().callback(Msg::Search)}
                                 icon={Icon::Search}
-                                r#type="search"/>
+                                r#type={TextInputType::Search}
+                            />
                         </InputGroup>
                     </div>
                     <ul class="pf-v5-c-context-selector__menu-list">
