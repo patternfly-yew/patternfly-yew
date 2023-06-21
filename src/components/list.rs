@@ -44,22 +44,19 @@ pub enum ListOrder {
     UppercaseRomanNumber,
 }
 
-impl ToString for ListOrder {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Number => "1",
-            Self::LowercaseLetter => "a",
-            Self::UppercaseLetter => "A",
-            Self::LowercaseRomanNumber => "i",
-            Self::UppercaseRomanNumber => "I",
-        }
-        .into()
-    }
-}
-
 impl IntoPropValue<Option<AttrValue>> for ListOrder {
     fn into_prop_value(self) -> Option<AttrValue> {
-        Some(self.to_string().into())
+        Some(
+            AttrValue::Static(
+                match self {
+                    Self::Number => "1",
+                    Self::LowercaseLetter => "a",
+                    Self::UppercaseLetter => "A",
+                    Self::LowercaseRomanNumber => "i",
+                    Self::UppercaseRomanNumber => "I",
+                }
+            )
+        )
     }
 }
 
