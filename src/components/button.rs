@@ -61,33 +61,26 @@ impl Default for Align {
 /// Button Type.
 ///
 /// See: <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type>
-#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug)]
 pub enum ButtonType {
-    Submit,
-    Reset,
+    #[default]
     Button,
-}
+    Reset,
+    Submit,
 
-impl Default for ButtonType {
-    fn default() -> Self {
-        ButtonType::Button
-    }
-}
-
-impl ToString for ButtonType {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Submit => "submit",
-            Self::Reset => "reset",
-            Self::Button => "button",
-        }
-        .into()
-    }
 }
 
 impl IntoPropValue<Option<AttrValue>> for ButtonType {
     fn into_prop_value(self) -> Option<AttrValue> {
-        Some(self.to_string().into())
+        Some(
+            AttrValue::Static(
+                match self {
+                    Self::Submit => "submit",
+                    Self::Reset => "reset",
+                    Self::Button => "button",
+                }
+            )
+        )
     }
 }
 
