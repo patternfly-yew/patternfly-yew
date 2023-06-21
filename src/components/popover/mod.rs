@@ -1,5 +1,8 @@
 //! Popover
-use crate::prelude::{Button, ButtonVariant, Icon, Orientation, Popper, PopperContent};
+use crate::{
+    prelude::{Button, ButtonVariant, Icon, Orientation},
+    utils::popper::legacy::{Popper, PopperContent},
+};
 use yew::prelude::*;
 use yew::virtual_dom::VChild;
 

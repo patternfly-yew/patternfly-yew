@@ -1,6 +1,6 @@
 use crate::prelude::Orientation;
 use gloo_utils::format::JsValueSerdeExt;
-use serde_json::json;
+use serde_json::{json, Value};
 use wasm_bindgen::prelude::*;
 
 #[cfg_attr(debug_assertions, wasm_bindgen(module = "/js/debug/popperjs.js"))]
@@ -80,7 +80,8 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
         .collect::<Vec<String>>()
         .join(" ");
 
-    styles.push_str("z-index: 1000;");
+    styles.push_str(" z-index: 1000;");
+    log::debug!(target: LOG_TARGET, "Computed Style: {styles}",);
 
     Ok(State {
         orientation,
@@ -88,33 +89,181 @@ pub(crate) fn from_popper(popper: &JsValue) -> Result<State, JsValue> {
     })
 }
 
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Options {
+    pub placement: Placement,
+    pub strategy: Strategy,
+    pub modifiers: Vec<Modifier>,
+}
+
 pub(crate) fn create_default_opts(apply: &Closure<dyn Fn(&Instance)>) -> Result<JsValue, JsValue> {
+    create_opts(
+        apply,
+        Options {
+            modifiers: vec![
+                Modifier::Offset(Offset {
+                    skidding: 0,
+                    distance: 11,
+                }),
+                Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
+            ],
+            placement: Placement::Auto,
+            strategy: Strategy::Fixed,
+        },
+    )
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct Offset {
+    pub skidding: i32,
+    pub distance: i32,
+}
+
+impl Offset {
+    pub fn to_json(&self) -> Value {
+        json!({
+            "offset": [self.skidding, self.distance],
+        })
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct PreventOverflow {
+    pub padding: i32,
+}
+
+impl PreventOverflow {
+    pub fn to_json(&self) -> Value {
+        json!({
+            "padding": self.padding,
+        })
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub enum Modifier {
+    Offset(Offset),
+    PreventOverflow(PreventOverflow),
+}
+
+impl Modifier {
+    pub fn to_json(&self) -> Value {
+        match self {
+            Self::Offset(options) => {
+                json!({
+                    "name": "offset",
+                    "options": options.to_json(),
+                })
+            }
+            Self::PreventOverflow(options) => {
+                json!({
+                    "name": "preventOverflow",
+                    "options": options.to_json(),
+                })
+            }
+        }
+    }
+}
+
+pub(crate) fn create_opts(
+    apply: &Closure<dyn Fn(&Instance)>,
+    opts: Options,
+) -> Result<JsValue, JsValue> {
+    let mods = js_sys::Array::new();
+
     let m1 = js_sys::Object::new();
     js_sys::Reflect::set(&m1, &JsValue::from("name"), &JsValue::from("applyStyles"))?;
     js_sys::Reflect::set(&m1, &JsValue::from("phase"), &JsValue::from("write"))?;
     js_sys::Reflect::set(&m1, &JsValue::from("fn"), apply.as_ref())?;
 
-    let m2 = JsValue::from_serde(&json!({
-        "name":"offset",
-        "options": {
-            "offset": [0,11],
+    mods.push(&m1);
+
+    for m in &opts.modifiers {
+        let m =
+            JsValue::from_serde(&m.to_json()).map_err(|err| JsValue::from_str(&err.to_string()))?;
+        mods.push(&m);
+    }
+
+    let result = js_sys::Object::new();
+    js_sys::Reflect::set(&result, &JsValue::from("modifiers"), &mods)?;
+    js_sys::Reflect::set(
+        &result,
+        &JsValue::from("strategy"),
+        &JsValue::from(opts.strategy.as_str()),
+    )?;
+    js_sys::Reflect::set(
+        &result,
+        &JsValue::from("placement"),
+        &JsValue::from_str(opts.placement.as_str()),
+    )?;
+
+    web_sys::console::debug_2(&JsValue::from("options: "), &result);
+
+    Ok(result.into())
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default)]
+pub enum Placement {
+    #[default]
+    Auto,
+    AutoStart,
+    AutoEnd,
+
+    Left,
+    LeftStart,
+    LeftEnd,
+
+    Top,
+    TopStart,
+    TopEnd,
+
+    Right,
+    RightStart,
+    RightEnd,
+
+    Bottom,
+    BottomStart,
+    BottomEnd,
+}
+
+impl Placement {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Auto => "auto",
+            Self::AutoStart => "auto-start",
+            Self::AutoEnd => "auto-end",
+
+            Self::Left => "left",
+            Self::LeftStart => "left-start",
+            Self::LeftEnd => "left-end",
+
+            Self::Top => "top",
+            Self::TopStart => "top-start",
+            Self::TopEnd => "top-end",
+
+            Self::Right => "right",
+            Self::RightStart => "right-start",
+            Self::RightEnd => "right-end",
+
+            Self::Bottom => "bottom",
+            Self::BottomStart => "bottom-start",
+            Self::BottomEnd => "bottom-end",
         }
-    }))
-    .unwrap();
+    }
+}
 
-    let m3 = JsValue::from_serde(&json!({
-        "name": "preventOverflow",
-        "options": {
-            "padding": 0,
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default)]
+pub enum Strategy {
+    #[default]
+    Absolute,
+    Fixed,
+}
+
+impl Strategy {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Absolute => "absolute",
+            Self::Fixed => "fixed",
         }
-    }))
-    .unwrap();
-
-    let mods = js_sys::Array::of3(&m1, &m2, &m3);
-    let opts = js_sys::Object::new();
-    js_sys::Reflect::set(&opts, &JsValue::from("modifiers"), &mods)?;
-    js_sys::Reflect::set(&opts, &JsValue::from("strategy"), &JsValue::from("fixed"))?;
-    js_sys::Reflect::set(&opts, &JsValue::from("placement"), &JsValue::from("auto"))?;
-
-    Ok(opts.into())
+    }
 }

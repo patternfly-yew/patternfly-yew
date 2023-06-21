@@ -6,6 +6,7 @@ use std::{fmt::Debug, marker::PhantomData};
 use wasm_bindgen::{closure::Closure, JsValue};
 use yew::prelude::*;
 
+#[deprecated]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PopperProperties<T>
 where
@@ -24,6 +25,7 @@ where
 }
 
 /// Support component for popper.js.
+#[deprecated]
 pub struct Popper<C>
 where
     C: PopperContent + 'static,
@@ -151,7 +153,7 @@ where
 
         let update = ctx.link().callback(PopperMsg::State);
         let update = Closure::wrap(Box::new(move |this: &Instance| {
-            // web_sys::console::debug_2(&JsValue::from("apply: "), this);
+            web_sys::console::debug_2(&JsValue::from("apply: "), this);
             let msg = from_popper(this).unwrap();
             // log::info!("Msg: {:?}", msg);
 
@@ -190,6 +192,7 @@ where
     }
 }
 
+#[deprecated]
 pub trait PopperContent: Component {
     fn view(
         props: &Self::Properties,

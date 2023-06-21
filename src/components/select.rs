@@ -83,6 +83,11 @@ where
 /// ## Properties
 ///
 /// Defined by [`SelectProperties`].
+#[deprecated(
+    since = "5.0.0",
+    note = "The Select component has been depreciated by PatternFly.\
+    See https://pf5.patternfly.org/components/menus/select for more information."
+)]
 pub struct Select<K>
 where
     K: 'static + Clone + PartialEq + Display + Debug,

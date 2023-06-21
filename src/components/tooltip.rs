@@ -1,9 +1,6 @@
 //! Tooltip
-use crate::prelude::{Orientation, Popper, PopperContent};
-
+use crate::{prelude::Orientation, utils::popper::*};
 use yew::prelude::*;
-
-use crate::integration::popperjs;
 
 /// Properties for [`Tooltip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -21,85 +18,116 @@ pub struct TooltipProperties {
 /// ## Properties
 ///
 /// Defined by [`TooltipProperties`].
-pub struct Tooltip {
-    node: NodeRef,
-    active: bool,
-}
+#[function_component(Tooltip)]
+pub fn view(props: &TooltipProperties) -> Html {
+    let active = use_state_eq(|| false);
+    let state = use_state_eq(|| Option::<PopperState>::None);
 
-#[doc(hidden)]
-#[derive(Clone, Debug)]
-pub enum TooltipMsg {
-    Enter,
-    Leave,
-}
+    let onmouseenter = {
+        let active = active.clone();
+        Callback::from(move |_| {
+            log::debug!("OnMouseEnter");
+            active.set(true);
+        })
+    };
+    let onmouseleave = {
+        let active = active.clone();
+        Callback::from(move |_| {
+            log::debug!("OnMouseLeave");
+            active.set(false);
+        })
+    };
 
-impl Component for Tooltip {
-    type Message = TooltipMsg;
-    type Properties = TooltipProperties;
+    let content_ref = use_node_ref();
+    let target_ref = use_node_ref();
 
-    fn create(_: &Context<Self>) -> Self {
-        Self {
-            node: NodeRef::default(),
-            active: false,
-        }
-    }
+    let content = html!(
+        <TooltipPopupContent
+            state={(*state).clone()}
+            text={props.text.clone()}
+            r#ref={content_ref.clone()}
+        />
+    );
 
-    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
-        log::debug!("Update: {:?}", msg);
+    /*
+    let onstatechange = {
+        let state = state.clone();
+        Callback::from(move |new_state| {
+            state.set(Some(new_state));
+        })
+    };*/
 
-        match msg {
-            TooltipMsg::Enter => {
-                self.active = true;
-                true
-            }
-            TooltipMsg::Leave => {
-                self.active = false;
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let enter = ctx.link().callback(|_| TooltipMsg::Enter);
-        let leave = ctx.link().callback(|_| TooltipMsg::Leave);
-
-        html! (
-            <>
-                <Popper<Tooltip> active={self.active} content={ctx.props().clone()}>
-                    <span onmouseenter={enter.clone()} onmouseleave={leave.clone()} ref={self.node.clone()}>
-                        { for ctx.props().children.iter() }
-                    </span>
-                </Popper<Tooltip>>
-            </>
+    let onstatechange = {
+        let state = state.clone();
+        use_memo(
+            move |()| {
+                let state = state.clone();
+                Callback::from(move |new_state| {
+                    state.set(Some(new_state));
+                })
+            },
+            (),
         )
-    }
+    };
+
+    let options = PopperOptions {
+        strategy: PopperStrategy::Fixed,
+        placement: PopperPlacement::Right,
+        modifiers: vec![
+            Modifier::Offset(Offset {
+                skidding: 0,
+                distance: 11,
+            }),
+            Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
+        ],
+    };
+
+    html! (
+        <>
+            <span {onmouseenter} {onmouseleave} ref={target_ref.clone()}>
+                { for props.children.iter() }
+            </span>
+            <Popper
+                visible={*active}
+                {content}
+                {content_ref}
+                {target_ref}
+                mode={PopperMode::Portal}
+                onstatechange={(*onstatechange).clone()}
+                {options}
+            />
+        </>
+    )
 }
 
-impl PopperContent for Tooltip {
-    fn view(
-        props: &TooltipProperties,
-        _onclose: Callback<()>,
-        r#ref: NodeRef,
-        state: Option<popperjs::State>,
-    ) -> Html {
-        let styles = state
-            .as_ref()
-            .map(|s| s.styles.to_string())
-            .unwrap_or_default();
-        let orientation = state
-            .as_ref()
-            .map(|s| s.orientation)
-            .unwrap_or(Orientation::Bottom);
+#[derive(PartialEq, Properties)]
+struct TooltipPopupContentProperties {
+    text: String,
+    state: Option<PopperState>,
+    r#ref: NodeRef,
+}
 
-        html! {
-            <TooltipPopup
-                r#ref={r#ref}
-                styles={styles}
-                hidden={state.is_none()}
-                orientation={orientation}
-                text={props.text.clone()}
-            />
-        }
+#[function_component(TooltipPopupContent)]
+fn tooltip_popup_content(props: &TooltipPopupContentProperties) -> Html {
+    let style = props
+        .state
+        .as_ref()
+        .map(|s| s.styles.to_string())
+        .unwrap_or_default();
+    let orientation = props
+        .state
+        .as_ref()
+        .map(|s| s.orientation)
+        .unwrap_or(Orientation::Bottom);
+
+    html! {
+        <TooltipPopup
+            r#ref={props.r#ref.clone()}
+            {style}
+            hidden={props.state.is_none()}
+            orientation={orientation}
+            text={props.text.clone()}
+        />
     }
 }
 
@@ -111,7 +139,7 @@ pub struct TooltipPopupProperties {
     #[prop_or_default]
     pub hidden: bool,
     #[prop_or_default]
-    pub styles: String,
+    pub style: String,
     #[prop_or_default]
     pub r#ref: NodeRef,
 }
@@ -130,12 +158,12 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
     let style = if props.hidden {
         "display: none;"
     } else {
-        &props.styles
+        &props.style
     }
     .to_string();
 
     html! {
-        <div ref={&props.r#ref} style={style} class={classes} role="tooltip">
+        <div ref={&props.r#ref} {style} class={classes} role="tooltip">
             <div class="pf-v5-c-tooltip__arrow"></div>
             <div class="pf-v5-c-tooltip__content">
                 { &props.text }

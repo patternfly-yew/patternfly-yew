@@ -29,6 +29,7 @@ pub mod input_group;
 pub mod label;
 pub mod list;
 pub mod login_page;
+pub mod menu;
 pub mod modal;
 pub mod nav;
 pub mod page;

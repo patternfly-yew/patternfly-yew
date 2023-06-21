@@ -34,6 +34,7 @@ pub use crate::components::input_group::*;
 pub use crate::components::label::*;
 pub use crate::components::list::*;
 pub use crate::components::login_page::*;
+pub use crate::components::menu::*;
 pub use crate::components::modal::*;
 pub use crate::components::nav::*;
 pub use crate::components::page::*;

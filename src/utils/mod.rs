@@ -4,15 +4,15 @@ mod action;
 mod context;
 mod global_close;
 mod html;
-mod popper;
 mod props;
 mod raw;
+
+pub mod popper;
 
 pub use action::*;
 pub use context::*;
 pub use global_close::*;
 pub use html::*;
-pub use popper::*;
 pub use props::*;
 pub use raw::*;
 

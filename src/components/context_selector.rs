@@ -107,7 +107,7 @@ impl Component for ContextSelector {
                     </div>
                     <ul class="pf-v5-c-context-selector__menu-list">
                         { for ctx.props().children.iter().map(|mut item|{
-                            let mut props = Rc::make_mut(&mut item.props);
+                            let props = Rc::make_mut(&mut item.props);
                             props.need_close = ctx.link().callback(|_|ContextSelectorMsg::Close);
                             item
                         }) }
