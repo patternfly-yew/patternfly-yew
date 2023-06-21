@@ -1,7 +1,7 @@
 //! Pagination controls
 use crate::prelude::{
     on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
-    ValidationContext, Validator,
+    TextInputType, ValidationContext, Validator,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
@@ -310,7 +310,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 </div>
                 <div class="pf-v5-c-pagination__nav-page-select">
                     <TextInput
-                        r#type="number"
+                        r#type={TextInputType::Number}
                         {oninput}
                         {onkeydown}
                         state={(*input_state).clone()}

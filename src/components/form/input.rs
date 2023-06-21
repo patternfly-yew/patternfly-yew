@@ -3,8 +3,47 @@ use crate::prelude::{
     ValidationContext,
 };
 
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum TextInputType {
+    Date,
+    DateTimeLocal,
+    Email,
+    Month,
+    Number,
+    Password,
+    Search,
+    #[default]
+    Text,
+    Tel,
+    Time,
+    Url,
+}
+
+impl IntoPropValue<Option<AttrValue>> for TextInputType {
+    fn into_prop_value(self) -> Option<AttrValue> {
+        Some(
+            AttrValue::Static(
+                match self {
+                    Self::Date => "date",
+                    Self::DateTimeLocal => "datetime-local",
+                    Self::Email => "email",
+                    Self::Month => "month",
+                    Self::Number => "number",
+                    Self::Password => "password",
+                    Self::Search => "search",
+                    Self::Text => "text",
+                    Self::Tel => "tel",
+                    Self::Time => "time",
+                    Self::Url => "url",
+                }
+            )
+        )
+    }
+}
 
 /// Properties for [`TextInput`]
 #[derive(Clone, PartialEq, Properties)]
@@ -14,7 +53,7 @@ pub struct TextInputProperties {
     #[prop_or_default]
     pub id: AttrValue,
     #[prop_or_default]
-    pub value: String,
+    pub value: AttrValue,
     #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
@@ -25,8 +64,8 @@ pub struct TextInputProperties {
     pub state: InputState,
     #[prop_or_default]
     pub icon: Option<Icon>,
-    #[prop_or("text".into())]
-    pub r#type: AttrValue,
+    #[prop_or_default]
+    pub r#type: TextInputType,
     #[prop_or_default]
     pub placeholder: AttrValue,
     #[prop_or_default]
@@ -39,6 +78,8 @@ pub struct TextInputProperties {
     pub inputmode: AttrValue,
     #[prop_or_default]
     pub enterkeyhint: AttrValue,
+    #[prop_or_default]
+    pub aria_describedby: AttrValue,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -130,9 +171,8 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     }
 
     // validation
-
     {
-        let value = props.value.clone();
+        let value = props.value.to_string();
         let onvalidate = props.onvalidate.clone();
         use_effect_with_deps(
             move |()| {
@@ -214,12 +254,13 @@ pub fn text_input(props: &TextInputProperties) -> Html {
         <div class={classes}>
             <input
                 ref={input_ref}
-                type={&props.r#type}
+                type={props.r#type}
                 name={&props.name}
                 id={&props.id}
                 required={props.required}
                 disabled={props.disabled}
                 readonly={props.readonly}
+                aria-describedby={&props.aria_describedby}
                 aria-invalid={aria_invalid.to_string()}
                 value={props.value.clone()}
                 placeholder={&props.placeholder}
