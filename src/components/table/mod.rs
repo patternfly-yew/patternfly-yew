@@ -177,28 +177,15 @@ where
     let expanded = entry.expanded;
     let key = entry.key;
 
-    /*
-    let onclick = match expanded {
-        true => ctx.link().callback(move |_: MouseEvent| Msg::Collapse(idx)),
-        false => ctx.link().callback(move |_: MouseEvent| Msg::Expand(idx)),
-    };
-     */
-
-    let mut classes = classes!("pf-v5-c-button");
-    classes.push(classes!("pf-m-plain"));
+    let mut toggle_class = classes!("pf-v5-c-button", "pf-m-plain");
     if expanded {
-        classes.push(classes!("pf-m-expanded"));
+        toggle_class.push(classes!("pf-m-expanded"));
     }
 
     let aria_expanded = match expanded {
         true => "true",
         false => "false",
     };
-
-    let mut expanded_class = Classes::new();
-    if expanded {
-        expanded_class.push(classes!("pf-m-expanded"));
-    }
 
     let mut cols = props
         .header
@@ -245,16 +232,25 @@ where
         });
     }
 
-    let mut tr_classes = classes!("pf-v5-c-table__tr", "pf-v5-c-table__expandable-row");
-    tr_classes.extend(expanded_class.clone());
+    let mut tbody_class = classes!("pf-v5-c-table__tbody");
+    let mut tr_class = classes!("pf-v5-c-table__tr", "pf-v5-c-table__expandable-row");
+
+    if expanded {
+        tbody_class.push(classes!("pf-m-expanded"));
+        tr_class.push(classes!("pf-m-expanded"));
+    }
 
     let onclick = props.onexpand.reform(move |_| (key.clone(), !expanded));
 
     html! (
-        <tbody class="pf-v5-c-table__tbody" role="rowgroup" class={expanded_class}>
+        <tbody role="rowgroup" class={tbody_class}>
             <tr class="pf-v5-c-table__tr" role="row">
                 <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
-                    <button class={classes} {onclick} aria-expanded={aria_expanded}>
+                    <button
+                        class={toggle_class}
+                        {onclick}
+                        aria-expanded={aria_expanded}
+                    >
                         <div class="pf-v5-c-table__toggle-icon">
                             { Icon::AngleDown }
                         </div>
@@ -264,7 +260,7 @@ where
                 { render_row(props, entry.value) }
             </tr>
 
-            <tr class={tr_classes} role="row">
+            <tr class={tr_class} role="row">
                 { cells }
             </tr>
         </tbody>
