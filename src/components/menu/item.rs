@@ -82,6 +82,9 @@ pub struct MenuActionProperties {
     pub text: String,
 
     #[prop_or_default]
+    pub icon: Option<Html>,
+
+    #[prop_or_default]
     pub danger: bool,
 
     #[prop_or_default]
@@ -95,6 +98,7 @@ pub struct MenuActionProperties {
 pub fn menu_action(props: &MenuActionProperties) -> Html {
     let MenuActionProperties {
         text,
+        icon,
         danger,
         disabled,
         onclick,
@@ -102,6 +106,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
     html!(
         <MenuItem
             {text}
+            {icon}
             {danger}
             {disabled}
             r#type={MenuItemType::Button(onclick)}
@@ -112,6 +117,9 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuLinkProperties {
     pub text: String,
+
+    #[prop_or_default]
+    pub icon: Option<Html>,
 
     #[prop_or_default]
     pub danger: bool,
@@ -129,6 +137,7 @@ pub struct MenuLinkProperties {
 pub fn menu_link(props: &MenuLinkProperties) -> Html {
     let MenuLinkProperties {
         text,
+        icon,
         danger,
         disabled,
         href,
@@ -137,6 +146,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
     html!(
         <MenuItem
             {text}
+            {icon}
             {danger}
             {disabled}
             r#type={MenuItemType::Link{href, target}}

@@ -7,6 +7,7 @@ pub enum MenuChild {
     Action(Rc<<MenuAction as BaseComponent>::Properties>),
     Link(Rc<<MenuLink as BaseComponent>::Properties>),
     Divider(Rc<<ListDivider as BaseComponent>::Properties>),
+    Group(Rc<<MenuGroup as BaseComponent>::Properties>),
     Raw(Rc<<Raw as BaseComponent>::Properties>),
 }
 
@@ -25,6 +26,12 @@ impl From<MenuActionProperties> for MenuChild {
 impl From<MenuLinkProperties> for MenuChild {
     fn from(props: MenuLinkProperties) -> Self {
         MenuChild::Link(Rc::new(props))
+    }
+}
+
+impl From<MenuGroupProperties> for MenuChild {
+    fn from(props: MenuGroupProperties) -> Self {
+        MenuChild::Group(Rc::new(props))
     }
 }
 

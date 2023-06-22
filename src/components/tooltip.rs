@@ -1,5 +1,8 @@
 //! Tooltip
-use crate::{prelude::Orientation, utils::popper::*};
+use crate::{
+    prelude::{ExtendClasses, Orientation},
+    utils::popper::*,
+};
 use yew::prelude::*;
 
 /// Properties for [`Tooltip`]
@@ -48,14 +51,6 @@ pub fn view(props: &TooltipProperties) -> Html {
             r#ref={content_ref.clone()}
         />
     );
-
-    /*
-    let onstatechange = {
-        let state = state.clone();
-        Callback::from(move |new_state| {
-            state.set(Some(new_state));
-        })
-    };*/
 
     let onstatechange = {
         let state = state.clone();
@@ -151,9 +146,9 @@ pub struct TooltipPopupProperties {
 /// Defined by [`TooltipPopupProperties`].
 #[function_component(TooltipPopup)]
 pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-tooltip");
+    let mut class = Classes::from("pf-v5-c-tooltip");
 
-    classes.extend(props.orientation.as_classes());
+    class.extend_from(&props.orientation);
 
     let style = if props.hidden {
         "display: none;"
@@ -163,7 +158,7 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
     .to_string();
 
     html! {
-        <div ref={&props.r#ref} {style} class={classes} role="tooltip">
+        <div ref={&props.r#ref} {style} {class} role="tooltip">
             <div class="pf-v5-c-tooltip__arrow"></div>
             <div class="pf-v5-c-tooltip__content">
                 { &props.text }

@@ -82,6 +82,7 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
     class.extend_from(&props.variant);
 
     let plain = matches!(props.variant, MenuToggleVariant::Plain);
+    let text = props.text.is_some();
 
     html!(
         <button
@@ -94,7 +95,8 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
             onclick={ props.ontoggle.reform(|_|()) }
         >
             if let Some(icon) = &props.icon {
-                if plain {
+                if plain && !text{
+                    // if we just have an icon, don't wrap it
                     { icon.clone() }
                 } else {
                     <span class="pf-v5-c-menu-toggle__icon">{ icon.clone() }</span>
@@ -104,7 +106,7 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
                 <span class="pf-v5-c-menu-toggle__text">{ text }</span>
             }
 
-            if !plain || props.text.is_some() {
+            if !plain || text {
                 // if we have more than just a plain icon, add the toggle control
                 <span class="pf-v5-c-menu-toggle__controls">
                     <span class="pf-v5-c-menu-toggle__toggle-icon">

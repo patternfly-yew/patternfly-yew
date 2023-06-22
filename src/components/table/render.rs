@@ -1,4 +1,4 @@
-use crate::prelude::{Cell, CellContext, DropdownChildVariant, Span};
+use crate::prelude::{Cell, CellContext, MenuChildVariant, Span};
 
 /// Render table entries
 pub trait TableEntryRenderer<C>
@@ -23,7 +23,7 @@ where
     /// Render the row actions.
     ///
     /// Defaults to no actions.
-    fn actions(&self) -> Vec<DropdownChildVariant> {
+    fn actions(&self) -> Vec<MenuChildVariant> {
         vec![]
     }
 }

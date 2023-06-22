@@ -1,13 +1,13 @@
 //! Menu components
 mod child;
-mod drop_down;
+mod group;
 mod item;
 mod menu;
 mod toggle;
 mod variant;
 
 pub use child::*;
-pub use drop_down::*;
+pub use group::*;
 pub use item::*;
 pub use menu::*;
 pub use toggle::*;

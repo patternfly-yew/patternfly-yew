@@ -1,3 +1,6 @@
+use crate::core::AsClasses;
+use yew::{classes, Classes};
+
 /// Definition for orientations
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Orientation {
@@ -7,13 +10,13 @@ pub enum Orientation {
     Bottom,
 }
 
-impl Orientation {
-    pub fn as_classes(&self) -> Vec<&'static str> {
+impl AsClasses for Orientation {
+    fn extend_classes(&self, classes: &mut Classes) {
         match self {
-            Orientation::Left => vec!["pf-m-left"],
-            Orientation::Right => vec!["pf-m-right"],
-            Orientation::Top => vec!["pf-m-top"],
-            Orientation::Bottom => vec!["pf-m-bottom"],
+            Self::Left => classes.extend(classes!("pf-m-left")),
+            Self::Right => classes.extend(classes!("pf-m-right")),
+            Self::Top => classes.extend(classes!("pf-m-top")),
+            Self::Bottom => classes.extend(classes!("pf-m-bottom")),
         }
     }
 }

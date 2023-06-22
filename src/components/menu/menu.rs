@@ -42,10 +42,22 @@ pub fn menu(props: &MenuProperties) -> Html {
             {class}
         >
             <div class="pf-v5-c-menu__content">
-                <ul class="pf-v5-c-menu__list" role="menu">
-                    { for props.children.iter() }
-                </ul>
+                <MenuList>{ for props.children.iter() }</MenuList>
             </div>
         </div>
+    )
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub(crate) struct MenuListProperties {
+    pub(crate) children: ChildrenRenderer<MenuChildVariant>,
+}
+
+#[function_component(MenuList)]
+pub(crate) fn menu_list(props: &MenuListProperties) -> Html {
+    html!(
+        <ul class="pf-v5-c-menu__list" role="menu">
+            { props.children.clone() }
+        </ul>
     )
 }

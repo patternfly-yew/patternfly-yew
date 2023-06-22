@@ -1,12 +1,10 @@
 //! Popover
 use crate::{
-    prelude::{Button, ButtonVariant, Icon, Orientation},
-    utils::popper::legacy::{Popper, PopperContent},
+    prelude::{Button, ButtonVariant, ExtendClasses, Icon, Orientation},
+    utils::popper::*,
 };
-use yew::prelude::*;
-use yew::virtual_dom::VChild;
-
-use crate::integration::popperjs;
+use yew::{prelude::*, virtual_dom::VChild};
+use yew_hooks::use_click_away;
 
 // tooltip
 
@@ -19,10 +17,6 @@ pub struct PopoverProperties {
 
     /// The body content of the popover.
     pub body: VChild<PopoverBody>,
-
-    /// Binds the onclick handler of the target to toggle visibility.
-    #[prop_or_default]
-    pub toggle_by_onclick: bool,
 }
 
 /// Popover component
@@ -34,112 +28,117 @@ pub struct PopoverProperties {
 /// ## Properties
 ///
 /// Defined by [`PopoverProperties`].
-pub struct Popover {
-    node: NodeRef,
-    active: bool,
-}
+#[function_component(Popover)]
+pub fn popover(props: &PopoverProperties) -> Html {
+    let active = use_state_eq(|| false);
+    let state = use_state_eq(|| Option::<PopperState>::None);
 
-#[doc(hidden)]
-#[derive(Clone, Debug)]
-pub enum PopoverMsg {
-    Open,
-    Close,
-}
+    // a reference to the target the user clicks on
+    let target_ref = use_node_ref();
+    // a reference to the content
+    let content_ref = use_node_ref();
 
-impl Component for Popover {
-    type Message = PopoverMsg;
-    type Properties = PopoverProperties;
+    let onclick = {
+        let active = active.clone();
+        Callback::from(move |_| {
+            active.set(!*active);
+        })
+    };
+    let onclose = {
+        let active = active.clone();
+        Callback::from(move |_| {
+            active.set(false);
+        })
+    };
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            node: NodeRef::default(),
-            active: false,
-        }
+    {
+        let active = active.clone();
+        use_click_away(content_ref.clone(), move |_| {
+            active.set(false);
+        });
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            PopoverMsg::Open => {
-                if !self.active {
-                    self.active = true;
-                    true
-                } else {
-                    false
-                }
+    let content = use_memo(
+        |(r#ref, state, body)| {
+            let style = match &state {
+                Some(state) => &state.styles,
+                None => "display: none;",
             }
-            PopoverMsg::Close => {
-                if self.active {
-                    self.active = false;
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-    }
+            .to_string();
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let (onclick, onclose) = match ctx.props().toggle_by_onclick {
-            true => (
-                ctx.link().callback(|_| PopoverMsg::Open),
-                ctx.link().callback(|_| PopoverMsg::Close),
-            ),
-            false => Default::default(),
-        };
+            let orientation = state
+                .as_ref()
+                .map(|s| s.orientation)
+                .unwrap_or(Orientation::Bottom);
 
-        let style = match self.active {
-            true => "pointer-events: none;",
-            false => "",
-        };
+            html! (
+                <PopoverPopup
+                    r#ref={r#ref}
+                    {style}
+                    {orientation}
+                    {onclose}
+                    body={(*body).clone()}
+                />
+            )
+        },
+        (content_ref.clone(), (*state).clone(), props.body.clone()),
+    );
 
-        html! (
-            <>
-                <Popper<Popover>
-                    active={self.active}
-                    content={ctx.props().clone()}
-                    onclose={onclose}
-                    >
-                    <span style={style} onclick={onclick} ref={self.node.clone()}>
-                        { ctx.props().target.clone() }
-                    </span>
-                </Popper<Popover>>
-            </>
+    let onstatechange = {
+        let state = state.clone();
+        use_memo(
+            move |()| {
+                let state = state.clone();
+                Callback::from(move |new_state| {
+                    state.set(Some(new_state));
+                })
+            },
+            (),
         )
-    }
-}
+    };
 
-impl PopperContent for Popover {
-    fn view(
-        props: &PopoverProperties,
-        onclose: Callback<()>,
-        r#ref: NodeRef,
-        state: Option<popperjs::State>,
-    ) -> Html {
-        let styles = match &state {
-            Some(state) => &state.styles,
-            None => "display: none;",
-        }
-        .to_string();
+    let options = PopperOptions {
+        strategy: PopperStrategy::Fixed,
+        placement: PopperPlacement::Right,
+        modifiers: vec![
+            Modifier::Offset(Offset {
+                skidding: 0,
+                distance: 11,
+            }),
+            Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
+        ],
+    };
 
-        let orientation = state
-            .as_ref()
-            .map(|s| s.orientation)
-            .unwrap_or(Orientation::Bottom);
+    let style = match *active {
+        true => "pointer-events: none;",
+        false => "",
+    };
 
-        html! (
-            <PopoverPopup
-                r#ref={r#ref}
-                styles={styles}
-                orientation={orientation}
-                onclose={onclose}
-                body={props.body.clone()}
+    html!(
+        <>
+            <span
+                {onclick}
+                {style}
+                ref={target_ref.clone()}
+            >
+                { props.target.clone() }
+            </span>
+            <Popper
+                visible={*active}
+                content={(*content).clone()}
+                {content_ref}
+                {target_ref}
+                mode={PopperMode::Portal}
+                onstatechange={(*onstatechange).clone()}
+                {options}
             />
-        )
-    }
+        </>
+    )
 }
 
 // popover popup
 
+/// The popover content component.
 #[derive(Clone, PartialEq, Properties)]
 pub struct PopoverPopupProperties {
     pub body: VChild<PopoverBody>,
@@ -148,7 +147,7 @@ pub struct PopoverPopupProperties {
     #[prop_or_default]
     pub hidden: bool,
     #[prop_or_default]
-    pub styles: String,
+    pub style: AttrValue,
 
     /// called when the close button is clicked
     #[prop_or_default]
@@ -161,14 +160,14 @@ pub struct PopoverPopupProperties {
 /// The actual popover content component.
 #[function_component(PopoverPopup)]
 pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
-    let mut classes = classes!("pf-v5-c-popover");
+    let mut class = classes!("pf-v5-c-popover");
 
-    classes.extend(props.orientation.as_classes());
+    class.extend_from(&props.orientation);
 
     let style = if props.hidden {
         "display: none;".to_string()
     } else {
-        props.styles.to_string()
+        props.style.to_string()
     };
 
     let onclose = {
@@ -181,8 +180,8 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
     html! (
         <div
             ref={&props.r#ref}
-            style={style}
-            class={classes}
+            {style}
+            {class}
             role="dialog"
             aria-model="true"
         >

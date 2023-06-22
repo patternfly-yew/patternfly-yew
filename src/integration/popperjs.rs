@@ -1,4 +1,4 @@
-use crate::prelude::Orientation;
+use crate::prelude::*;
 use gloo_utils::format::JsValueSerdeExt;
 use serde_json::{json, Value};
 use wasm_bindgen::prelude::*;

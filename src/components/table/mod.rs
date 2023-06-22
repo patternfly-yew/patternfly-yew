@@ -12,7 +12,7 @@ pub use model::*;
 pub use props::*;
 pub use render::*;
 
-use crate::prelude::{Dropdown, ExtendClasses, Icon, KebabToggle};
+use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuToggleVariant};
 use std::rc::Rc;
 use yew::{
     prelude::*,
@@ -312,8 +312,8 @@ where
         cells.push(html!(
             <td class="pf-v5-c-table__td pf-v5-c-table__action" role="cell">
                 <Dropdown
-                    plain=true
-                    toggle={html!(<KebabToggle/>)}
+                    variant={MenuToggleVariant::Plain}
+                    icon={Icon::EllipsisV}
                 >
                     { actions }
                 </Dropdown>

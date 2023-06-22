@@ -145,7 +145,7 @@ impl Component for FormGroup {
                                         tabindex=0
                                     >
                                         {" "}
-                                        <Popover toggle_by_onclick=true target={html!(Icon::QuestionCircle)} body={popover.clone()} />
+                                        <Popover target={html!(Icon::QuestionCircle)} body={popover.clone()} />
                                     </span>
                                 ),
                                 LabelIcon::Children(children) => children.iter().collect(),
