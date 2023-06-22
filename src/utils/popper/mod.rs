@@ -1,5 +1,3 @@
-pub mod legacy;
-
 pub(crate) use crate::integration::popperjs::Options as PopperOptions;
 use crate::integration::popperjs::*;
 pub use crate::integration::popperjs::{

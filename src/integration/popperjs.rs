@@ -96,23 +96,6 @@ pub struct Options {
     pub modifiers: Vec<Modifier>,
 }
 
-pub(crate) fn create_default_opts(apply: &Closure<dyn Fn(&Instance)>) -> Result<JsValue, JsValue> {
-    create_opts(
-        apply,
-        Options {
-            modifiers: vec![
-                Modifier::Offset(Offset {
-                    skidding: 0,
-                    distance: 11,
-                }),
-                Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
-            ],
-            placement: Placement::Auto,
-            strategy: Strategy::Fixed,
-        },
-    )
-}
-
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Offset {
     pub skidding: i32,
