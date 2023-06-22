@@ -18,8 +18,15 @@ pub struct PageProperties {
     pub sidebar: ChildrenWithProps<PageSidebar>,
     #[prop_or_default]
     pub tools: Children,
+
+    /// The brand section.
+    ///
+    /// Expected to be a single [`MastheadBrand`] component.
+    ///
+    /// NOTE: Future versions might enforce the child requirement without prior deprecation.
     #[prop_or_default]
-    pub logo: Children,
+    pub brand: Children,
+
     #[prop_or_default]
     pub nav: Children,
     #[prop_or(true)]
@@ -46,7 +53,7 @@ pub struct PageProperties {
 /// * **Sidebar**: Contains a single [`PageSidebar`], hosting the main navigation.
 /// * **Navigation**: The top header navigation section.
 /// * **Tools**: Tools, shown in the header section of the page.
-/// * **Logo**: A logo, show in the navigation header section.
+/// * **Brand**: A brand logo, shown in the navigation header section.
 /// * **Children**: The actual page content, probably wrapped into [`PageSection`] components.
 ///
 #[function_component(Page)]
@@ -74,13 +81,12 @@ pub fn page(props: &PageProperties) -> Html {
                 </span>
 
                 <div class="pf-v5-c-masthead__main">
-                    <a class="pf-v5-c-masthead__brand" href="#">
-                        {for props.logo.iter()}
-                    </a>
+                    {for props.brand.iter()}
                 </div>
+
                 <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
                     {for props.nav.iter()}
-                    { for props.tools.iter() }
+                    {for props.tools.iter()}
                 </div>
 
             </header>
@@ -96,4 +102,48 @@ pub fn page(props: &PageProperties) -> Html {
             </main>
         </div>
     )
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct MastheadBrandProperties {
+    /// Expected to be a single [`crate::prelude::Brand`] component.
+    ///
+    /// NOTE: Future versions might enforce the child requirement without prior deprecation.
+    #[prop_or_default]
+    pub children: Children,
+
+    /// Called when the user clicks on the brand logo.
+    #[prop_or_default]
+    pub onclick: Option<Callback<()>>,
+}
+
+/// Masthead brand component.
+///
+/// ## Properties
+///
+/// Defined by [`MastheadBrandProperties`].
+///
+/// ## Children
+///
+/// A single [`crate::prelude::Brand`] component. The children may be wrapped in an `a` element when the `onclick`
+/// callback is set.
+#[function_component(MastheadBrand)]
+pub fn masthead_brand(props: &MastheadBrandProperties) -> Html {
+    match &props.onclick {
+        Some(onclick) => {
+            let onclick = onclick.reform(|_| ());
+            html!(
+                <a class="pf-v5-c-masthead__brand" href="#" {onclick}>
+                    {for props.children.iter()}
+                </a>
+            )
+        }
+        None => {
+            html!(
+                <div class="pf-v5-c-masthead__brand">
+                    {for props.children.iter()}
+                </div>
+            )
+        }
+    }
 }
