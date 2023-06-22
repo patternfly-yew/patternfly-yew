@@ -101,7 +101,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let current_page = (props.offset as f64 / props.selected_choice as f64).ceil() as usize;
 
     let is_last_page = if let Some(max) = props.total_entries {
-        props.offset + props.selected_choice > max
+        props.offset + props.selected_choice >= max
     } else {
         false
     };
@@ -114,7 +114,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let showing = format!(
         "{} - {}",
         props.offset + 1,
-        props.offset + props.selected_choice
+        (props.offset + props.selected_choice).clamp(0, props.total_entries.unwrap_or_default())
     );
 
     let limit_choices = props.entries_per_page_choices.clone();
@@ -326,7 +326,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Next)}
-                        disabled={max_page.map_or_else(|| false, |m| current_page >= m)}
+                        disabled={is_last_page}
                     >
                         { Icon::AngleRight }
                     </Button>
