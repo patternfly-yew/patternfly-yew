@@ -103,7 +103,7 @@ pub fn popover(props: &PopoverProperties) -> Html {
         modifiers: vec![
             Modifier::Offset(Offset {
                 skidding: 0,
-                distance: 11,
+                distance: 20,
             }),
             Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
         ],
