@@ -79,7 +79,7 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
 
     html!(
         <>
-            <div ref={inside_ref}>
+            <div style="display: contents;" ref={inside_ref}>
                 <Popper
                     target_ref={target_ref.clone()}
                     content_ref={menu_ref}
