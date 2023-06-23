@@ -84,9 +84,11 @@ pub fn accordion_item(props: &AccordionItemProperties) -> Html {
                 </button>
             </h3>
             <div class={content_class} hidden={!expanded}>
-                <div class="pf-v5-c-accordion__expandable-content-body">
-                    { for props.children.iter() }
-                </div>
+                { for props.children.iter().map(|item| html!(
+                    <div class="pf-v5-c-accordion__expandable-content-body">
+                        { item }
+                    </div>
+                )) }
             </div>
         </>
     )
