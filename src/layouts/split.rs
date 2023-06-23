@@ -23,8 +23,24 @@ pub struct SplitProperties {
 ///
 /// ## Children
 ///
-/// The grid layout is supposed to contain [`crate::prelude::GridItem`] children. However, there is
-/// no restriction through component types on that.
+/// The grid layout is supposed to contain [`crate::prelude::SplitItem`] children.
+///
+/// ## Example
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   html!(
+///     <Split gutter=true>
+///       <SplitItem>{"Foo"}</SplitItem>
+///       <SplitItem fill=true>{"Full Width"}</SplitItem>
+///     </Split>
+///   )
+/// }
+/// ```
 #[function_component(Split)]
 pub fn split(props: &SplitProperties) -> Html {
     let mut classes = Classes::from("pf-v5-l-split");
