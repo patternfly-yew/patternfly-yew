@@ -1,6 +1,7 @@
 //! Components
 
 pub mod about;
+pub mod accordion;
 pub mod alert;
 pub mod avatar;
 pub mod backdrop;

@@ -5,6 +5,7 @@ pub use crate::utils::*;
 pub use crate::validation::*;
 
 pub use crate::components::about::*;
+pub use crate::components::accordion::*;
 pub use crate::components::alert::*;
 pub use crate::components::avatar::*;
 pub use crate::components::backdrop::*;
