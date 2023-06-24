@@ -67,20 +67,15 @@ pub enum ButtonType {
     Button,
     Reset,
     Submit,
-
 }
 
 impl IntoPropValue<Option<AttrValue>> for ButtonType {
     fn into_prop_value(self) -> Option<AttrValue> {
-        Some(
-            AttrValue::Static(
-                match self {
-                    Self::Submit => "submit",
-                    Self::Reset => "reset",
-                    Self::Button => "button",
-                }
-            )
-        )
+        Some(AttrValue::Static(match self {
+            Self::Submit => "submit",
+            Self::Reset => "reset",
+            Self::Button => "button",
+        }))
     }
 }
 
