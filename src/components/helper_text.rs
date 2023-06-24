@@ -131,7 +131,8 @@ pub fn helper_text(props: &HelperTextProperties) -> Html {
         HelperTextComponent::Ul => HelperTextItemComponent::Li,
     };
     let role = (props.component == HelperTextComponent::Ul).then_some("list");
-    let _ = use_memo( // Use memo so that warn doesnt keep getting called.
+    let _ = use_memo(
+        // Use memo so that warn doesnt keep getting called.
         |(component, label)| {
             if component == &HelperTextComponent::Ul && label.is_none() {
                 warn!(
@@ -140,7 +141,7 @@ pub fn helper_text(props: &HelperTextProperties) -> Html {
                 );
             }
         },
-        (props.component.clone(), props.aria_label.clone())
+        (props.component.clone(), props.aria_label.clone()),
     );
 
     html!(
@@ -241,7 +242,9 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
     let component = props.component.to_string();
     let icon = match (props.icon, &props.dynamic) {
         (HelperTextItemIcon::Default, false) | (HelperTextItemIcon::Hidden, ..) => None,
-        (HelperTextItemIcon::Default, true) | (HelperTextItemIcon::Visible, ..) => Some(props.variant.icon()),
+        (HelperTextItemIcon::Default, true) | (HelperTextItemIcon::Visible, ..) => {
+            Some(props.variant.icon())
+        }
         (HelperTextItemIcon::Custom(icon), ..) => Some(icon),
     };
 
@@ -251,9 +254,12 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
                 { icon }
             </span>
         ))
-    } else { None };
+    } else {
+        None
+    };
 
-    let screen_reader = use_memo( // Use memo so that warn doesnt keep getting called.
+    let screen_reader = use_memo(
+        // Use memo so that warn doesnt keep getting called.
         |(text, _)| {
             if !text.is_empty() {
                 if props.dynamic {
@@ -263,13 +269,17 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
                         </span>
                     ))
                 } else {
-                    warn!("The screen_reader_text attribute was set but has not been used as the \
-                    dynamic attribute was not set to true.");
+                    warn!(
+                        "The screen_reader_text attribute was set but has not been used as the \
+                    dynamic attribute was not set to true."
+                    );
                     None
                 }
-            } else { None }
+            } else {
+                None
+            }
         },
-        (props.screen_reader_text.clone(), props.dynamic.clone())
+        (props.screen_reader_text.clone(), props.dynamic.clone()),
     );
 
     html!(
