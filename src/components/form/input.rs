@@ -25,23 +25,19 @@ pub enum TextInputType {
 
 impl IntoPropValue<Option<AttrValue>> for TextInputType {
     fn into_prop_value(self) -> Option<AttrValue> {
-        Some(
-            AttrValue::Static(
-                match self {
-                    Self::Date => "date",
-                    Self::DateTimeLocal => "datetime-local",
-                    Self::Email => "email",
-                    Self::Month => "month",
-                    Self::Number => "number",
-                    Self::Password => "password",
-                    Self::Search => "search",
-                    Self::Text => "text",
-                    Self::Tel => "tel",
-                    Self::Time => "time",
-                    Self::Url => "url",
-                }
-            )
-        )
+        Some(AttrValue::Static(match self {
+            Self::Date => "date",
+            Self::DateTimeLocal => "datetime-local",
+            Self::Email => "email",
+            Self::Month => "month",
+            Self::Number => "number",
+            Self::Password => "password",
+            Self::Search => "search",
+            Self::Text => "text",
+            Self::Tel => "tel",
+            Self::Time => "time",
+            Self::Url => "url",
+        }))
     }
 }
 

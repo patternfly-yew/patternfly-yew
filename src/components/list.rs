@@ -46,17 +46,13 @@ pub enum ListOrder {
 
 impl IntoPropValue<Option<AttrValue>> for ListOrder {
     fn into_prop_value(self) -> Option<AttrValue> {
-        Some(
-            AttrValue::Static(
-                match self {
-                    Self::Number => "1",
-                    Self::LowercaseLetter => "a",
-                    Self::UppercaseLetter => "A",
-                    Self::LowercaseRomanNumber => "i",
-                    Self::UppercaseRomanNumber => "I",
-                }
-            )
-        )
+        Some(AttrValue::Static(match self {
+            Self::Number => "1",
+            Self::LowercaseLetter => "a",
+            Self::UppercaseLetter => "A",
+            Self::LowercaseRomanNumber => "i",
+            Self::UppercaseRomanNumber => "I",
+        }))
     }
 }
 
