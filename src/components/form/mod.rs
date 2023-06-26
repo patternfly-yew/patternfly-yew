@@ -1,5 +1,6 @@
 //! Form controls
 mod area;
+mod check;
 mod group;
 mod input;
 mod section;
@@ -7,6 +8,7 @@ mod select;
 mod validation;
 
 pub use area::*;
+pub use check::*;
 pub use group::*;
 pub use input::*;
 pub use section::*;
