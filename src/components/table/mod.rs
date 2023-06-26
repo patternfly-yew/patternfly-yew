@@ -109,6 +109,7 @@ where
     )
 }
 
+#[inline]
 fn is_expandable<C, M>(props: &TableProperties<C, M>) -> bool
 where
     C: Clone + Eq + 'static,
