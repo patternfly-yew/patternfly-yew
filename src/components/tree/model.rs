@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 /// A node in a tree
 pub trait TreeNode<C> {
-    fn render_cell(&self, ctx: CellContext<C>) -> Cell;
+    fn render_cell(&self, ctx: CellContext<'_, C>) -> Cell;
 
     fn children(&self) -> Vec<Rc<dyn TreeNode<C>>>;
 }

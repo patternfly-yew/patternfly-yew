@@ -284,7 +284,7 @@ where
         .iter()
         .flat_map(|header| header.props.children.iter())
     {
-        let cell = entry.render_cell(&CellContext {
+        let cell = entry.render_cell(CellContext {
             column: &column.props.index,
         });
         let mut class = classes!("pf-v5-c-table__td");

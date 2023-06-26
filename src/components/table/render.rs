@@ -6,7 +6,7 @@ where
     C: Clone + Eq + 'static,
 {
     /// Render the cell for the requested column.
-    fn render_cell(&self, context: &CellContext<'_, C>) -> Cell;
+    fn render_cell(&self, context: CellContext<'_, C>) -> Cell;
 
     /// Control if the details section spans the full width.
     fn is_full_width_details(&self) -> Option<bool> {
