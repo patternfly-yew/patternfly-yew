@@ -180,8 +180,8 @@ mod test {
         struct MockModel {}
 
         impl TableEntryRenderer<()> for String {
-            fn render_cell(&self, context: CellContext<'_, ()>) -> Cell {
-                todo!()
+            fn render_cell(&self, _context: CellContext<'_, ()>) -> Cell {
+                html!().into()
             }
         }
 
@@ -193,11 +193,11 @@ mod test {
             type Key = usize;
 
             fn len(&self) -> usize {
-                todo!()
+                0
             }
 
             fn iter(&self) -> Self::Iterator<'_> {
-                todo!()
+                Vec::new().into_iter()
             }
         }
 
