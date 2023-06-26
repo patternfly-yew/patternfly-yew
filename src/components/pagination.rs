@@ -223,14 +223,25 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         })
     };
 
+    // The main div
+    let pagination_classes = match &props.position {
+        PaginationPosition::Top => classes!("pf-v5-c-pagination"),
+        PaginationPosition::Bottom => classes!("pf-v5-c-pagination", "pf-m-bottom"),
+    };
+
+    let pagination_styles = format!(
+        "--pf-v5-c-pagination__nav-page-select--c-form-control--width-chars: {};",
+        max_page.unwrap_or_default().to_string().len().clamp(2, 10)
+    );
+
     // render
 
     html! (
 
         <div
             id={&props.id}
-            class="pf-v5-c-pagination"
-            style={&props.style}
+            class={pagination_classes}
+            style={vec![pagination_styles, props.style.to_string()].join(" ")}
             ref={node}
         >
 
