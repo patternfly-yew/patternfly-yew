@@ -321,7 +321,31 @@ where
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
         self.into_iter()
-            .map(|i| WithBreakpoint::new(i))
+            .map(WithBreakpoint::new)
+            .collect::<Vec<WithBreakpoint<T>>>()
+            .into()
+    }
+}
+
+impl<T> IntoPropValue<WithBreakpoints<T>> for &[T]
+where
+    T: PartialEq + Clone,
+{
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into_iter()
+            .map(|i| WithBreakpoint::new(i.clone()))
+            .collect::<Vec<WithBreakpoint<T>>>()
+            .into()
+    }
+}
+
+impl<T> IntoPropValue<WithBreakpoints<T>> for Vec<T>
+where
+    T: PartialEq,
+{
+    fn into_prop_value(self) -> WithBreakpoints<T> {
+        self.into_iter()
+            .map(WithBreakpoint::new)
             .collect::<Vec<WithBreakpoint<T>>>()
             .into()
     }
