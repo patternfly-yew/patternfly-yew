@@ -38,6 +38,7 @@ pub mod pagination;
 pub mod panel;
 pub mod popover;
 pub mod select;
+pub mod skeleton;
 pub mod slider;
 pub mod spinner;
 pub mod switch;
