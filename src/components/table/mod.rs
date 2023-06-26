@@ -20,7 +20,7 @@ use yew::{
 };
 
 /// Properties for [`Table`]
-#[derive(Debug, PartialEq, Clone, Properties)]
+#[derive(PartialEq, Clone, Properties)]
 pub struct TableProperties<C, M>
 where
     C: Clone + Eq + 'static,
@@ -49,7 +49,7 @@ where
     pub grid: Option<TableGridMode>,
 
     #[prop_or_default]
-    pub onexpand: Callback<(M::Key, bool)>,
+    pub onexpand: OnToggleCallback<C, M>,
 }
 
 #[function_component(Table)]
@@ -240,10 +240,13 @@ where
         tr_class.push(classes!("pf-m-expanded"));
     }
 
-    let onclick = props.onexpand.reform(move |_| (key.clone(), !expanded));
+    let onclick = {
+        let key = key.clone();
+        props.onexpand.0.reform(move |_| (key.clone(), !expanded))
+    };
 
     html! (
-        <tbody role="rowgroup" class={tbody_class}>
+        <tbody {key} role="rowgroup" class={tbody_class}>
             <tr class="pf-v5-c-table__tr" role="row">
                 <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
                     <button
