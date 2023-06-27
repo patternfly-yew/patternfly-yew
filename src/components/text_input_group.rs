@@ -10,6 +10,9 @@ pub struct TextInputGroupProperties {
 
     #[prop_or_default]
     pub children: Children,
+
+    #[prop_or_default]
+    pub disabled: bool,
 }
 
 /// Text input group component
@@ -27,8 +30,14 @@ pub struct TextInputGroupProperties {
 /// This component is mainly a container, it requires one [`TextInputGroupMain`] to work properly.
 #[function_component(TextInputGroup)]
 pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
+    let mut class = classes!("pf-v5-c-text-input-group");
+
+    if props.disabled {
+        class.extend(classes!("pf-m-disabled"));
+    }
+
     html!(
-        <div class="pf-v5-c-text-input-group" id={&props.id}>
+        <div {class} id={&props.id}>
             { for props.children.iter() }
         </div>
     )
