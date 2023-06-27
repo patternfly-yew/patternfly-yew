@@ -14,8 +14,8 @@
 
 ---
 
-## Getting starting
+## Getting started
 
-Take a look at the demo, which shows various features of the project: https://ctron.github.io/patternfly-yew-quickstart
+Take a look at the demo, which shows various features of the project: https://patternfly-yew.github.io/patternfly-yew-quickstart
 
-The code of the demo is also intended to be a quickstart/template project, to get you started with just a few commands: https://github.com/ctron/patternfly-yew-quickstart
+The code of the demo is also intended to be a quickstart/template project, to get you started with just a few commands: https://github.com/patternfly-yew/patternfly-yew-quickstart
