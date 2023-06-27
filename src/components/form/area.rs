@@ -50,9 +50,9 @@ impl Display for Wrap {
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextAreaProperties {
     #[prop_or_default]
-    pub name: AttrValue,
+    pub name: Option<AttrValue>,
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
     #[prop_or_default]
     pub value: String,
     #[prop_or_default]
@@ -64,16 +64,16 @@ pub struct TextAreaProperties {
     #[prop_or_default]
     pub state: InputState,
     #[prop_or_default]
-    pub placeholder: AttrValue,
+    pub placeholder: Option<AttrValue>,
     #[prop_or_default]
     pub autofocus: bool,
     #[prop_or_default]
-    pub form: AttrValue,
+    pub form: Option<AttrValue>,
     #[prop_or_default]
-    pub autocomplete: AttrValue,
+    pub autocomplete: Option<AttrValue>,
 
     #[prop_or_default]
-    pub spellcheck: AttrValue,
+    pub spellcheck: Option<AttrValue>,
     #[prop_or_default]
     pub wrap: Wrap,
 

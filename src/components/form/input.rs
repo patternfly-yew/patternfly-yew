@@ -45,9 +45,9 @@ impl IntoPropValue<Option<AttrValue>> for TextInputType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextInputProperties {
     #[prop_or_default]
-    pub name: AttrValue,
+    pub name: Option<AttrValue>,
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
     #[prop_or_default]
     pub value: AttrValue,
     #[prop_or_default]
@@ -63,19 +63,19 @@ pub struct TextInputProperties {
     #[prop_or_default]
     pub r#type: TextInputType,
     #[prop_or_default]
-    pub placeholder: AttrValue,
+    pub placeholder: Option<AttrValue>,
     #[prop_or_default]
     pub autofocus: bool,
     #[prop_or_default]
-    pub form: AttrValue,
+    pub form: Option<AttrValue>,
     #[prop_or_default]
-    pub autocomplete: AttrValue,
+    pub autocomplete: Option<AttrValue>,
     #[prop_or_default]
-    pub inputmode: AttrValue,
+    pub inputmode: Option<AttrValue>,
     #[prop_or_default]
-    pub enterkeyhint: AttrValue,
+    pub enterkeyhint: Option<AttrValue>,
     #[prop_or_default]
-    pub aria_describedby: AttrValue,
+    pub aria_describedby: Option<AttrValue>,
 
     /// This event is triggered when the element loses focus.
     #[prop_or_default]
@@ -229,7 +229,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     let icon_html = if let Some(icon) = props.icon {
         Some(html!(
             <div class="pf-v5-c-form-control__icon">
-                    { icon }
+                { icon }
             </div>
         ))
     } else {

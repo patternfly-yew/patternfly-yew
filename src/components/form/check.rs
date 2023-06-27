@@ -9,7 +9,7 @@ pub struct CheckProperties {
     pub id: Option<String>,
 
     #[prop_or_default]
-    pub name: AttrValue,
+    pub name: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
