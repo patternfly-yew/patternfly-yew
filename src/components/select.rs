@@ -154,6 +154,7 @@ where
                     r#type={ButtonType::Button}
                     disabled={ctx.props().disabled}
                     onclick={onclick}
+                    r#type="button"
                     id={ctx.props().id.clone()}
                 >
                     <div class="pf-c-select__toggle-wrapper">
@@ -527,6 +528,7 @@ where
                 <button
                     class={classes}
                     role="option"
+                    r#type="button"
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     >
                 { if let Some(description) = &ctx.props().description {
