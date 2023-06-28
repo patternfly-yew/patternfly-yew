@@ -11,7 +11,7 @@ pub struct LoginMainFooterLinkProperties {
     #[prop_or_default]
     pub label: String,
     #[prop_or_default]
-    pub target: String,
+    pub target: Option<AttrValue>,
     #[prop_or_default]
     pub children: Children,
 }

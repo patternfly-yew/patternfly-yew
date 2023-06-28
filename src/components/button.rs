@@ -83,11 +83,11 @@ impl IntoPropValue<Option<AttrValue>> for ButtonType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct ButtonProperties {
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
     #[prop_or_default]
     pub class: Option<String>,
     #[prop_or_default]
-    pub style: AttrValue,
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub label: String,
@@ -110,22 +110,22 @@ pub struct ButtonProperties {
     pub loading: bool,
 
     #[prop_or_default]
-    pub aria_label: AttrValue,
+    pub aria_label: Option<AttrValue>,
     #[prop_or_default]
-    pub aria_labelledby: AttrValue,
+    pub aria_labelledby: Option<AttrValue>,
     #[prop_or_default]
-    pub aria_haspopup: AttrValue,
+    pub aria_haspopup: Option<AttrValue>,
 
     #[prop_or_default]
     pub r#type: ButtonType,
 
     #[prop_or_default]
-    pub form: AttrValue,
+    pub form: Option<AttrValue>,
     #[prop_or_default]
-    pub formaction: AttrValue,
+    pub formaction: Option<AttrValue>,
 
     #[prop_or_default]
-    pub role: AttrValue,
+    pub role: Option<AttrValue>,
 
     #[prop_or_default]
     pub expanded: bool,

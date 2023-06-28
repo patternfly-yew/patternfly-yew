@@ -13,10 +13,10 @@ use yew::{
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + FromStr> {
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
 
     #[prop_or_default]
-    pub name: AttrValue,
+    pub name: Option<AttrValue>,
 
     #[prop_or_default]
     pub disabled: bool,
@@ -25,7 +25,7 @@ pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + FromS
     pub required: bool,
 
     #[prop_or_default]
-    pub placeholder: String,
+    pub placeholder: Option<AttrValue>,
 
     #[prop_or_default]
     pub onchange: Callback<Option<K>>,
@@ -90,8 +90,8 @@ where
                 ref={node_ref}
                 required={props.required}
                 >
-                if !props.placeholder.is_empty() {
-                    <option value="">{ &props.placeholder }</option>
+                if let Some(placeholder) = &props.placeholder {
+                    <option value="">{ placeholder }</option>
                 }
                 { for props.children.iter() }
             </select>

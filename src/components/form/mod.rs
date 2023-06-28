@@ -235,7 +235,7 @@ impl Component for Form {
                 >
 
                     if let Some(alert) = alert {
-                            <div class="pf-v5-c-form__alert">
+                        <div class="pf-v5-c-form__alert">
                             <Alert
                                 inline=true
                                 r#type={alert.r#type}
