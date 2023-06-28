@@ -34,7 +34,7 @@ use yew::{prelude::*, virtual_dom::VChild};
 ///   let toaster = use_toaster().expect("Must be nested under a ToastViewer component");
 ///   html!{
 ///     <div>
-///       <button onclick={move |_| toaster.toast("Toast Title".into())}>
+///       <button onclick={move |_| toaster.toast("Toast Title")}>
 ///         { "Click me" }  
 ///       </button>
 ///     </div>
