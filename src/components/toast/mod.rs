@@ -3,6 +3,7 @@ use crate::prelude::{Action, Alert, AlertGroup, AlertType};
 use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
 use gloo_timers::callback::Timeout;
+use std::fmt::Display;
 use std::{collections::BinaryHeap, time::Duration};
 use yew::{prelude::*, virtual_dom::VChild};
 
@@ -52,16 +53,48 @@ pub struct Toast {
     pub actions: Vec<Action>,
 }
 
-/// Allows to convert a string into a toast by using the string as title.
-impl<S: ToString> From<S> for Toast {
-    fn from(message: S) -> Self {
-        Toast {
-            title: message.to_string(),
+impl Toast {
+    /// Create a simple toast from a string
+    pub fn from_str(title: String) -> Self {
+        Self {
+            title,
             timeout: None,
             body: Default::default(),
             r#type: Default::default(),
             actions: Vec::new(),
         }
+    }
+}
+
+impl From<&str> for Toast {
+    fn from(value: &str) -> Self {
+        Self::from_str(value.to_string())
+    }
+}
+
+impl From<String> for Toast {
+    fn from(value: String) -> Self {
+        Self::from_str(value)
+    }
+}
+
+impl From<&String> for Toast {
+    fn from(value: &String) -> Self {
+        Self::from_str(value.clone())
+    }
+}
+
+/// Turn something into a [`Toast`] explicitly.
+pub trait ToToast {
+    fn to_toast(&self) -> Toast;
+}
+
+impl<T> ToToast for T
+where
+    T: Display,
+{
+    fn to_toast(&self) -> Toast {
+        Toast::from_str(self.to_string())
     }
 }
 
@@ -84,8 +117,8 @@ pub struct Toaster {
 
 impl Toaster {
     /// Request a toast from the toast viewer.
-    pub fn toast(&self, toast: Toast) {
-        self.callback.emit(ToastAction::ShowToast(toast))
+    pub fn toast(&self, toast: impl Into<Toast>) {
+        self.callback.emit(ToastAction::ShowToast(toast.into()))
     }
 }
 
