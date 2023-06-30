@@ -4,6 +4,10 @@ use yew::prelude::*;
 /// Properties for [`Content`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ContentProperties {
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
     pub children: Children,
 }
 
@@ -21,7 +25,10 @@ pub struct ContentProperties {
 #[function_component(Content)]
 pub fn content(props: &ContentProperties) -> Html {
     html! {
-        <div class="pf-v5-c-content">
+        <div
+            class="pf-v5-c-content"
+            id={&props.id}
+        >
             { for props.children.iter() }
         </div>
     }
