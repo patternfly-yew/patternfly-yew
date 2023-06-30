@@ -38,9 +38,11 @@ pub struct CardProperties {
     #[prop_or_default]
     pub selected: bool,
     #[prop_or_default]
-    pub class: Classes,
+    pub additional_class: Classes,
     #[prop_or_default]
     pub plain: bool,
+    #[prop_or_default]
+    pub actions: Option<Html>,
 }
 
 /// Card component
@@ -129,7 +131,7 @@ pub fn card(props: &CardProperties) -> Html {
         class.push("pf-m-plain");
     }
 
-    class.extend(props.class.clone());
+    class.extend(props.additional_class.clone());
 
     html! (
         <div
@@ -194,7 +196,7 @@ fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
         )
     });
 
-    let selector_check = &props.selectable.then_some({
+    let selector_check = props.selectable.then_some({
         let id = format!("{}-check", props.id);
         let mut class = classes!("pf-v5-c-check__label");
         if props.disabled {
@@ -217,23 +219,26 @@ fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
                         id={ format!("{}-label", id) }
                         { class }
                         for={ id }
-                        />
+                    />
                 </div>
             </div>
         )
     });
 
-    let actions = selector_check.clone().and(Some(html!(
-        <div class="pf-v5-c-card__actions pf-m-no-offset">
-            { selector_check.clone() }
-        </div>
-    )));
+    let actions = match (selector_check, props.actions.clone()) {
+        (None, None) => None,
+        (a, b) => Some(html! (
+            <div class="pf-v5-c-card__actions pf-m-no-offset">
+                {a} {b}
+            </div>
+        )),
+    };
 
     html!(
         if header_toggle.is_some() || actions.is_some() {
             <div class="pf-v5-c-card__header">
                 { header_toggle }
-                { actions.clone() }
+                { actions }
                 <div class="pf-v5-c-card__header-main">
                     { card_title }
                 </div>
