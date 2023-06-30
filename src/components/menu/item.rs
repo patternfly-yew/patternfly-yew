@@ -7,6 +7,7 @@ struct MenuItemProperties {
     pub danger: bool,
     pub disabled: bool,
     pub r#type: MenuItemType,
+    pub description: Option<String>,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -63,15 +64,20 @@ fn menu_item(props: &MenuItemProperties) -> Html {
     html!(
         <div {class}>
             { element(html!(
-                <span class="pf-v5-c-menu__item-main">
-                    if let Some(icon) = &props.icon {
-                        <span class="pf-v5-c-menu__item-icon"> {icon.clone()} </span>
+                <>
+                    <span class="pf-v5-c-menu__item-main">
+                        if let Some(icon) = &props.icon {
+                            <span class="pf-v5-c-menu__item-icon"> {icon.clone()} </span>
+                        }
+                        if props.danger {
+                            <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
+                        }
+                        <span class="pf-v5-c-menu__item-text">{ &props.text }</span>
+                    </span>
+                    if let Some(description) = &props.description {
+                        <span class="pf-v5-c-menu__item-description"> {description} </span>
                     }
-                    if props.danger {
-                        <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
-                    }
-                    <span class="pf-v5-c-menu__item-text">{ &props.text }</span>
-                </span>
+                </>
             )) }
         </div>
     )
@@ -80,6 +86,9 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuActionProperties {
     pub text: String,
+
+    #[prop_or_default]
+    pub description: Option<String>,
 
     #[prop_or_default]
     pub icon: Option<Html>,
@@ -96,27 +105,35 @@ pub struct MenuActionProperties {
 
 #[function_component(MenuAction)]
 pub fn menu_action(props: &MenuActionProperties) -> Html {
+    // we use destructing and struct initialization here to ensure we're not missing any new field
+
     let MenuActionProperties {
         text,
         icon,
         danger,
         disabled,
         onclick,
+        description,
     } = props.clone();
-    html!(
-        <MenuItem
-            {text}
-            {icon}
-            {danger}
-            {disabled}
-            r#type={MenuItemType::Button(onclick)}
-        />
-    )
+
+    let props = MenuItemProperties {
+        text,
+        icon,
+        danger,
+        disabled,
+        r#type: MenuItemType::Button(onclick),
+        description,
+    };
+
+    html!(<MenuItem ..props />)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuLinkProperties {
     pub text: String,
+
+    #[prop_or_default]
+    pub description: Option<String>,
 
     #[prop_or_default]
     pub icon: Option<Html>,
@@ -135,6 +152,8 @@ pub struct MenuLinkProperties {
 
 #[function_component(MenuLink)]
 pub fn menu_link(props: &MenuLinkProperties) -> Html {
+    // we use destructing and struct initialization here to ensure we're not missing any new field
+
     let MenuLinkProperties {
         text,
         icon,
@@ -142,14 +161,17 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         disabled,
         href,
         target,
+        description,
     } = props.clone();
-    html!(
-        <MenuItem
-            {text}
-            {icon}
-            {danger}
-            {disabled}
-            r#type={MenuItemType::Link{href, target}}
-        />
-    )
+
+    let props = MenuItemProperties {
+        text,
+        icon,
+        danger,
+        disabled,
+        r#type: MenuItemType::Link { href, target },
+        description,
+    };
+
+    html!(<MenuItem ..props />)
 }
