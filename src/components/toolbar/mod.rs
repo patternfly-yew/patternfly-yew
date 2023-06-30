@@ -89,7 +89,7 @@ pub struct ToolbarContentProperties {
 #[function_component(ToolbarContent)]
 pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
     html! (
-        <div class="pf-v5-c-toolbar__content">
+        <div class="pf-v5-c-toolbar__content" id={&props.id}>
             <div class="pf-v5-c-toolbar__content-section">
                 { for props.children.iter() }
             </div>

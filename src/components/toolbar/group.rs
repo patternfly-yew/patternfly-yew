@@ -1,4 +1,4 @@
-use crate::prelude::{AsClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -25,23 +25,34 @@ impl AsClasses for GroupVariant {
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarGroupProperties {
     #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
     pub modifiers: WithBreakpoints<ToolbarElementModifier>,
     #[prop_or_default]
     pub variant: GroupVariant,
+
+    /// Additional classes
+    #[prop_or_default]
+    pub additional_class: Classes,
 }
 
 /// A group item for a toolbar
 #[function_component(ToolbarGroup)]
 pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-toolbar__group");
+    let mut class = Classes::from("pf-v5-c-toolbar__group");
 
-    classes.extend(props.modifiers.as_classes());
-    classes.extend(props.variant.as_classes());
+    class.extend_from(&props.modifiers);
+    class.extend_from(&props.variant);
+    class.extend(props.additional_class.clone());
 
     html! {
-        <div class={classes}>
+        <div
+            id={&props.id}
+            {class}
+        >
             { for props.children.iter() }
         </div>
     }

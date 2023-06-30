@@ -34,6 +34,9 @@ impl AsClasses for ToolbarItemType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarItemProperties {
     #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
     pub children: Children,
 
     #[prop_or_default]
@@ -49,6 +52,10 @@ pub struct ToolbarItemProperties {
     /// Control the minimal width of the item
     #[prop_or_default]
     pub min_width: WithBreakpoints<String>,
+
+    /// Additional classes
+    #[prop_or_default]
+    pub additional_class: Classes,
 }
 
 #[function_component(ToolbarItem)]
@@ -57,6 +64,7 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
 
     class.extend_from(&props.r#type);
     class.extend_from(&props.modifiers);
+    class.extend(props.additional_class.clone());
 
     let style = props
         .width
@@ -71,7 +79,11 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
         .collect::<String>();
 
     html! (
-        <div {class} {style}>
+        <div
+            id={&props.id}
+            {class}
+            {style}
+        >
             { for props.children.iter() }
         </div>
     )
