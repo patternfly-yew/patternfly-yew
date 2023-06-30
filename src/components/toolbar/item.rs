@@ -46,7 +46,7 @@ pub struct ToolbarItemProperties {
     #[prop_or_default]
     pub width: WithBreakpoints<String>,
 
-    /// Control the minimul width of the item
+    /// Control the minimal width of the item
     #[prop_or_default]
     pub min_width: WithBreakpoints<String>,
 }

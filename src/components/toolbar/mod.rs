@@ -26,7 +26,7 @@ impl AsClasses for ToolbarElementModifier {
         classes.push(match self {
             Self::Hidden => "pf-m-hidden",
             Self::Visible => "pf-m-visible",
-            Self::Left => "pf-m-align-left", // Only allowed as direct decendants of toolbar...
+            Self::Left => "pf-m-align-left", // Only allowed as direct descendants of toolbar...
             Self::Right => "pf-m-align-right", // ^
         });
     }
