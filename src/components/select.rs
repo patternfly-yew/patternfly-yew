@@ -157,7 +157,7 @@ where
                     aria-expanded="false"
                     disabled={ctx.props().disabled}
                     onclick={onclick}
-                    r#type="button"
+                    type="button"
                     id={ctx.props().id.clone()}
                 >
                     <div class="pf-v5-c-select__toggle-wrapper">
@@ -531,7 +531,7 @@ where
                 <button
                     class={classes}
                     role="option"
-                    r#type="button"
+                    type="button"
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     >
                 { if let Some(description) = &ctx.props().description {
