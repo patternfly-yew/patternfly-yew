@@ -85,7 +85,7 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct DescriptionGroupProperties {
     /// The term to describe
-    pub term: String,
+    pub term: AttrValue,
     /// The definition
     #[prop_or_default]
     pub children: Children,
