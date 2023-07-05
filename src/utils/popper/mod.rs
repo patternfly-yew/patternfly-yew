@@ -109,7 +109,7 @@ pub fn popper(props: &PopperProperties) -> Html {
                     let callback = {
                         let onstatechange = onstatechange.clone();
                         Closure::wrap(Box::new(move |this: &Instance| {
-                            web_sys::console::debug_2(&JsValue::from("apply: "), this);
+                            // web_sys::console::debug_2(&JsValue::from("apply: "), this);
                             if let Ok(state) = from_popper(this) {
                                 onstatechange.emit(state);
                             }
