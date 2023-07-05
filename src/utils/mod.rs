@@ -6,6 +6,7 @@ mod global_close;
 mod html;
 mod props;
 mod raw;
+mod styled;
 
 pub mod popper;
 
@@ -15,6 +16,7 @@ pub use global_close::*;
 pub use html::*;
 pub use props::*;
 pub use raw::*;
+pub use styled::*;
 
 use std::fmt::{Debug, Display, Formatter};
 use web_sys::KeyboardEvent;

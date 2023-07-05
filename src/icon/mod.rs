@@ -1,17 +1,23 @@
-use crate::core::AsClasses;
-use yew::html::IntoPropValue;
-use yew::prelude::*;
-use yew::virtual_dom::VNode;
-
 mod generated;
 mod state;
 
 pub use generated::*;
 pub use state::*;
 
+use crate::{core::AsClasses, prelude::Styled};
+use yew::{html::IntoPropValue, prelude::*, virtual_dom::VNode};
+
 impl Icon {
     pub fn as_html(&self) -> Html {
         self.with_classes(Classes::new())
+    }
+
+    /// Wrap an [`Icon`] with a CSS style
+    pub fn with_style(&self, style: impl Into<Option<AttrValue>>) -> Styled<Icon> {
+        Styled {
+            content: *self,
+            style: style.into(),
+        }
     }
 
     pub fn with_state(&self, state: State) -> Html {
@@ -19,13 +25,10 @@ impl Icon {
     }
 
     pub fn with_state_weight(&self, state: State, weight: usize) -> Html {
-        let style = state.as_var(weight).map(|v| format!("color: var({});", v));
-
-        html! (
-            <span {style}>
-                { self.as_html() }
-            </span>
-        )
+        let style = state
+            .as_var(weight)
+            .map(|v| format!("color: var({});", v).into());
+        self.with_style(style).into_html()
     }
 
     pub fn with_classes(&self, mut classes: Classes) -> Html {
