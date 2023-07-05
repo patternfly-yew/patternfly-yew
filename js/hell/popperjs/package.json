@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@popperjs/core": "^2.11.6"
+    "@popperjs/core": "^2.11.8"
   },
   "devDependencies": {
     "rollup": "^2.61.1",
