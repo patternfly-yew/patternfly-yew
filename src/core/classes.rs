@@ -14,14 +14,6 @@ pub trait AsClasses {
         classes
     }
 
-    #[deprecated(
-        note = "Use `AsClasses::extend_classes` instead. Resolves the conflict with Extend::extend.",
-        since = "0.4.1"
-    )]
-    fn extend(&self, classes: &mut Classes) {
-        self.extend_classes(classes);
-    }
-
     fn extend_classes(&self, classes: &mut Classes);
 }
 
