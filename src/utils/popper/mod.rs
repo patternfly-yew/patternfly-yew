@@ -121,6 +121,7 @@ pub fn popper(props: &PopperProperties) -> Html {
                     Some(PopperInstance {
                         id: Uuid::new_v4(),
                         instance: create_popper(target, content, &opts),
+                        // keep the callback, dropping it would remove it
                         _callback: callback,
                     })
                 }
