@@ -22,7 +22,7 @@ pub struct TooltipProperties {
 ///
 /// Defined by [`TooltipProperties`].
 #[function_component(Tooltip)]
-pub fn view(props: &TooltipProperties) -> Html {
+pub fn tooltip(props: &TooltipProperties) -> Html {
     let active = use_state_eq(|| false);
     let state = use_state_eq(|| Option::<PopperState>::None);
 
