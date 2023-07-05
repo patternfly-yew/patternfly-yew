@@ -13,7 +13,15 @@ impl Icon {
     }
 
     /// Wrap an [`Icon`] with a CSS style
-    pub fn with_style(&self, style: impl Into<Option<AttrValue>>) -> Styled<Icon> {
+    pub fn with_style(&self, style: impl Into<AttrValue>) -> Styled<Icon> {
+        Styled {
+            content: *self,
+            style: Some(style.into()),
+        }
+    }
+
+    /// Wrap an [`Icon`] with a optional CSS style
+    pub fn with_optional_style(&self, style: impl Into<Option<AttrValue>>) -> Styled<Icon> {
         Styled {
             content: *self,
             style: style.into(),
@@ -28,7 +36,7 @@ impl Icon {
         let style = state
             .as_var(weight)
             .map(|v| format!("color: var({});", v).into());
-        self.with_style(style).into_html()
+        self.with_optional_style(style).into_html()
     }
 
     pub fn with_classes(&self, mut classes: Classes) -> Html {
