@@ -20,7 +20,7 @@ pub mod context_selector;
 pub mod divider;
 pub mod dl;
 pub mod dropdown;
-pub mod empty;
+pub mod empty_state;
 pub mod expandable_section;
 pub mod file_upload;
 pub mod form;

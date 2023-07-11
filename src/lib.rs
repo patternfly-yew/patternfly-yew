@@ -22,6 +22,10 @@
 
 #![recursion_limit = "1024"]
 mod icon;
+
+#[macro_use]
+pub mod macros;
+
 mod integration;
 
 pub mod components;
