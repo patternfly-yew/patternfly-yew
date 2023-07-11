@@ -46,7 +46,7 @@ pub struct EmptyStateProperties {
 
     /** Cause component to consume the available height of its container */
     #[prop_or_default]
-    pub is_full_height: bool,
+    pub full_height: bool,
 }
 
 #[function_component(EmptyState)]
@@ -55,7 +55,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE,
-                props.variant.classes(props.is_full_height).to_string(),
+                props.variant.classes(props.full_height).to_string(),
                 &props.class,
             )}
         >
