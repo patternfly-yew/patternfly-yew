@@ -17,6 +17,6 @@ impl EmptyStateStyles {
     pub const MODIFIERS_LG: &str = "pf-m-lg";
     pub const MODIFIERS_XL: &str = "pf-m-xl";
     pub const MODIFIERS_FULL_HEIGHT: &str = "pf-m-full-height";
-    
+
     pub const VARIABLE_C_EMPTY_STATE_ICON_COLOR: &str = "--pf-v5-c-empty-state__icon--Color";
 }
