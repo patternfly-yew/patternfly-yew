@@ -27,7 +27,7 @@ wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 yew = "0.20"
 yew-hooks = "0.2"
-yew-nested-router = { version = "0.2.0", optional = true }
+yew-nested-router = { version = "0.3.0", optional = true }
 
 web-sys = { version = "0.3", features = [
     "HtmlCollection",
@@ -56,5 +56,5 @@ icons-far = []
 icons-fab = []
 
 [patch.crates-io]
-#yew-nested-router = { path = "../yew-nested-router" }
+yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
