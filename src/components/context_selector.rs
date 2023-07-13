@@ -33,7 +33,7 @@ pub enum ContextSelectorMsg {
 /// Defined by [`ContextSelectorProperties`].
 #[deprecated(
     since = "5.0.0",
-    note = "The ContentSelector component has been depreciated by PatternFly.\
+    note = "The ContentSelector component has been deprecated by PatternFly. \
     See https://pf5.patternfly.org/components/menus/context-selector for more information."
 )]
 pub struct ContextSelector {
