@@ -85,7 +85,7 @@ class Generator {
 
   write() {
 
-    console.log(`#[derive(Copy, Clone, Debug, PartialEq, Eq, strum_macros::EnumIter, strum_macros::EnumMessage, strum_macros::AsRefStr)]
+    console.log(`#[derive(Copy, Clone, Debug, PartialEq, Eq, strum_macros::EnumIter, strum_macros::EnumMessage, strum_macros::AsRefStr, strum_macros::IntoStaticStr)]
 pub enum Icon {
     ${this.#define}
 }

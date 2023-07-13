@@ -7,6 +7,7 @@
     strum_macros::EnumIter,
     strum_macros::EnumMessage,
     strum_macros::AsRefStr,
+    strum_macros::IntoStaticStr,
 )]
 pub enum Icon {
     /// Indicates the ability to navigate to the first page of a multi-page data set
