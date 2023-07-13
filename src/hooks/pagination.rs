@@ -118,7 +118,7 @@ impl Default for PaginationControl {
 #[derive(Debug, PartialEq, Clone)]
 pub struct UsePagination {
     pub state: UseStateHandle<PaginationState>,
-    pub onpagechange: Callback<Navigation>,
+    pub onnavigation: Callback<Navigation>,
     pub onperpagechange: Callback<usize>,
 }
 
@@ -144,6 +144,44 @@ impl DerefMut for PaginationState {
     }
 }
 
+/// Create a hook for managing pagination state.
+///
+/// If known, the hook takes in a total number of items to be shown, otherwise it will be an
+/// unbounded pagination control. The state will be initialized using the initializer function.
+///
+/// The hook returns a struct to manage and track pagination state. It is intended to be used
+/// in combination with the [`crate::components::pagination::SimplePagination`] component.
+///
+/// ## Example
+///
+/// Also see the quickstart project for a full example.
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   let total = use_state_eq(||Some(123));
+///   let pagination = use_pagination(*total, Default::default);
+///
+///   html!(
+///     <>
+///       <SimplePagination
+///         pagination={pagination.clone()}
+///         total={*total}
+///       />
+///       // ... render content
+///       { format!("Showing items: {}", pagination.state.range()) }
+///       <SimplePagination
+///         pagination={pagination.clone()}
+///         total={*total}
+///         position={PaginationPosition::Bottom}
+///       />
+///     </>
+///   )
+/// }
+/// ```
 #[hook]
 pub fn use_pagination<T>(total: Option<usize>, init: T) -> UsePagination
 where
@@ -161,12 +199,10 @@ where
         );
     }
 
-    let onpagechange = {
+    let onnavigation = {
         let state = state.clone();
         Callback::from(move |nav: Navigation| {
-            log::debug!("Pagination - navigate: {nav:?}");
             state.set((*state).clone().navigate(nav));
-            log::debug!("New state: {:?}", *state);
         })
     };
 
@@ -179,7 +215,7 @@ where
 
     UsePagination {
         state,
-        onpagechange,
+        onnavigation,
         onperpagechange,
     }
 }

@@ -54,9 +54,11 @@ pub struct PaginationProperties {
     #[prop_or_default]
     pub onlimit: Callback<usize>,
 
+    /// Element ID
     #[prop_or_default]
-    pub id: AttrValue,
-    /// additional styles
+    pub id: Option<AttrValue>,
+
+    /// Additional styles
     #[prop_or_default]
     pub style: AttrValue,
 
