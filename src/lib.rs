@@ -26,6 +26,7 @@ mod integration;
 
 pub mod components;
 pub mod core;
+pub mod hooks;
 pub mod layouts;
 pub mod utils;
 pub mod validation;

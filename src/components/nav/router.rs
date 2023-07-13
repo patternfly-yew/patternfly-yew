@@ -1,5 +1,5 @@
 use super::*;
-use crate::utils::use_random_id;
+use crate::hooks::id::use_random_id;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};
 

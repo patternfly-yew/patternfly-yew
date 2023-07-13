@@ -1,4 +1,4 @@
-use crate::utils::use_prop_id;
+use crate::hooks::id::use_prop_id;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
