@@ -172,7 +172,7 @@ impl DerefMut for PaginationState {
 ///         total={*total}
 ///       />
 ///       // ... render content
-///       { format!("Showing items: {}", pagination.state.range()) }
+///       { format!("Showing items: {:?}", pagination.state.range()) }
 ///       <SimplePagination
 ///         pagination={pagination.clone()}
 ///         total={*total}
@@ -185,9 +185,12 @@ impl DerefMut for PaginationState {
 #[hook]
 pub fn use_pagination<T>(total: Option<usize>, init: T) -> UsePagination
 where
-    T: FnOnce() -> PaginationState,
+    T: FnOnce() -> PaginationControl,
 {
-    let state = use_state_eq(init);
+    let state = use_state_eq(|| PaginationState {
+        control: init(),
+        total,
+    });
 
     {
         let state = state.clone();
