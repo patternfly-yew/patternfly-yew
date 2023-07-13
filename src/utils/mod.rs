@@ -20,7 +20,7 @@ pub use styled::*;
 
 use std::fmt::{Debug, Display, Formatter};
 use web_sys::KeyboardEvent;
-use yew::{html::IntoPropValue, use_memo, AttrValue, Callback};
+use yew::{html::IntoPropValue, AttrValue, Callback};
 
 /// Create a random ID.
 ///
