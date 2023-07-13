@@ -1,4 +1,8 @@
 //! Pagination controls
+
+mod simple;
+pub use simple::*;
+
 use crate::prelude::{
     on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
     TextInputType, ValidationContext, Validator,
@@ -46,7 +50,7 @@ pub struct PaginationProperties {
     #[prop_or_default]
     pub onnavigation: Callback<Navigation>,
 
-    /// Callback for change in limit
+    /// Callback for change in limit (page size, per page)
     #[prop_or_default]
     pub onlimit: Callback<usize>,
 
@@ -58,6 +62,10 @@ pub struct PaginationProperties {
 
     #[prop_or(PaginationPosition::Top)]
     pub position: PaginationPosition,
+
+    /// Disable the full control
+    #[prop_or_default]
+    pub disabled: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -66,6 +74,7 @@ pub enum Navigation {
     Previous,
     Next,
     Last,
+    /// navigate to a specific page (zero based)
     Page(usize),
 }
 
@@ -109,13 +118,15 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let total_entries = props
         .total_entries
         .map(|m| format!("{}", m))
-        .unwrap_or_else(|| String::from("unknown"));
+        .unwrap_or_else(|| String::from("many"));
+
     // +1 because humans don't count from 0 :)
-    let showing = format!(
-        "{} - {}",
-        props.offset + 1,
-        (props.offset + props.selected_choice).clamp(0, props.total_entries.unwrap_or_default())
-    );
+    let start = props.offset + 1;
+    let mut end = props.offset + props.selected_choice;
+    if let Some(total) = props.total_entries {
+        end = end.min(total);
+    }
+    let showing = format!("{start} - {end}",);
 
     let limit_choices = props.entries_per_page_choices.clone();
 
@@ -167,7 +178,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         let input = input.clone();
         let onnavigation = props.onnavigation.clone();
         on_enter(move || {
-            onnavigation.emit(Navigation::Page(*input));
+            let mut page = *input;
+            if page > 0 {
+                // humans start with 1, we use 0.
+                page -= 1;
+            }
+            onnavigation.emit(Navigation::Page(page));
         })
     };
 
@@ -236,6 +252,8 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // render
 
+    let unbound = props.total_entries.is_none();
+
     html! (
 
         <div
@@ -258,6 +276,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                     aria-haspopup="listbox"
                     aria-expanded="true"
                     onclick={ontoggle}
+                    disabled={props.disabled}
                 >
                     <span class="pf-v5-c-options-menu__toggle-text">
                         <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
@@ -303,7 +322,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                     <Button
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::First)}
-                        disabled={ props.offset == 0 }
+                        disabled={ props.disabled || props.offset == 0 }
                         aria_label="Go to first page"
                     >
                       { Icon::AngleDoubleLeft }
@@ -314,7 +333,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to previous page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Previous)}
-                        disabled={ props.offset == 0 }
+                        disabled={ props.disabled || props.offset == 0 }
                     >
                        { Icon::AngleLeft }
                     </Button>
@@ -326,6 +345,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {onkeydown}
                         state={(*input_state).clone()}
                         value={(*input_text).clone().unwrap_or_default()}
+                        disabled={ props.disabled }
                     />
                 if let Some(max_page) = max_page {
                     <span aria-hidden="true">{ "of "} { max_page }</span>
@@ -337,7 +357,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Next)}
-                        disabled={is_last_page}
+                        disabled={ props.disabled || is_last_page }
                     >
                         { Icon::AngleRight }
                     </Button>
@@ -347,7 +367,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Last)}
-                        disabled={is_last_page}
+                        disabled={ props.disabled || unbound || is_last_page}
                     >
                         { Icon::AngleDoubleRight }
                     </Button>
