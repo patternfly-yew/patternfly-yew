@@ -331,4 +331,33 @@ mod test {
         assert_eq!(state.offset(), 10);
         assert_eq!(state.range(), 10..15);
     }
+
+    #[test]
+    fn test_change_none() {
+        let state = state(0, 10, None);
+        assert_eq!(state.total_pages(), None);
+        assert_eq!(state.control.page, 0);
+        assert_eq!(state.offset(), 0);
+        assert_eq!(state.range(), 0..10);
+    }
+
+    #[test]
+    fn test_change_empty() {
+        let state = state(0, 10, Some(0));
+        assert_eq!(state.total_pages(), Some(0));
+        assert_eq!(state.control.page, 0);
+        assert_eq!(state.offset(), 0);
+        assert_eq!(state.range(), 0..0);
+    }
+
+    #[test]
+    fn test_total_pages() {
+        for i in 0..100 {
+            let state = state(0, 10, Some(i));
+            assert_eq!(
+                state.total_pages(),
+                Some((i as f64 / 10f64).ceil() as usize)
+            );
+        }
+    }
 }
