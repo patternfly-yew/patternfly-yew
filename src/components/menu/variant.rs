@@ -22,9 +22,9 @@ where
     }
 }
 
-impl Into<Html> for MenuChildVariant {
-    fn into(self) -> Html {
-        match self.props {
+impl From<MenuChildVariant> for Html {
+    fn from(value: MenuChildVariant) -> Self {
+        match value.props {
             MenuChild::Action(props) => VComp::new::<MenuAction>(props, None).into(),
             MenuChild::Link(props) => VComp::new::<MenuLink>(props, None).into(),
             MenuChild::Group(props) => VComp::new::<MenuGroup>(props, None).into(),

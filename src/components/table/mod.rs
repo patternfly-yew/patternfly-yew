@@ -12,7 +12,7 @@ pub use model::*;
 pub use props::*;
 pub use render::*;
 
-use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuToggleVariant};
+use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuChildVariant, MenuToggleVariant};
 use std::rc::Rc;
 use yew::{
     prelude::*,
@@ -144,28 +144,23 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    html!(if props.is_expandable() {
-        { for props.entries.iter().map(|entry| render_expandable_entry(props, entry) )}
+    if props.is_expandable() {
+        props
+            .entries
+            .iter()
+            .map(|entry| render_expandable_entry(props, entry))
+            .collect()
     } else {
-        <tbody class="pf-v5-c-table__tbody" role="rowgroup">
-            { for props.entries.iter().map(|entry| render_normal_entry(props, entry) )}
-        </tbody>
-    })
-}
-
-fn render_normal_entry<C, M>(
-    props: &TableProperties<C, M>,
-    entry: TableModelEntry<M::Item, M::Key>,
-) -> Html
-where
-    C: Clone + Eq + 'static,
-    M: PartialEq + TableModel<C> + 'static,
-{
-    html!(
-        <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
-            { render_row(props, entry.value)}
-        </tr>
-    )
+        html!(
+            <tbody class="pf-v5-c-table__tbody" role="rowgroup"> {
+                for props.entries.iter().map(|entry| html!(
+                    <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
+                        { render_row(props, entry.value)}
+                    </tr>
+                ))
+            } </tbody>
+        )
+    }
 }
 
 fn render_expandable_entry<C, M>(
@@ -178,16 +173,6 @@ where
 {
     let expanded = entry.expanded;
     let key = entry.key;
-
-    let mut toggle_class = classes!("pf-v5-c-button", "pf-m-plain");
-    if expanded {
-        toggle_class.push(classes!("pf-m-expanded"));
-    }
-
-    let aria_expanded = match expanded {
-        true => "true",
-        false => "false",
-    };
 
     let mut cols = props
         .header
@@ -229,9 +214,9 @@ where
     }
 
     if cols > 0 {
-        cells.push(html! {
+        cells.push(html! (
             <td class="pf-v5-c-table__td" colspan={cols.to_string()}></td>
-        });
+        ));
     }
 
     let mut tbody_class = classes!("pf-v5-c-table__tbody");
@@ -250,20 +235,17 @@ where
     html! (
         <tbody {key} role="rowgroup" class={tbody_class}>
             <tr class="pf-v5-c-table__tr" role="row">
-                <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
-                    <button
-                        class={toggle_class}
-                        {onclick}
-                        aria-expanded={aria_expanded}
-                    >
-                        <div class="pf-v5-c-table__toggle-icon">
-                            { Icon::AngleDown }
-                        </div>
-                    </button>
-                </td>
+
+                // first column, the toggle
+
+                <TableRowToggle {expanded} {onclick} />
+
+                // then, the actual content
 
                 { render_row(props, entry.value) }
             </tr>
+
+            // the expanded row details
 
             <tr class={tr_class} role="row">
                 { cells }
@@ -272,57 +254,103 @@ where
     )
 }
 
-fn render_row<C, M>(props: &TableProperties<C, M>, entry: &M::Item) -> Vec<Html>
+#[derive(PartialEq, Properties)]
+struct TableRowToggleProperties {
+    expanded: bool,
+    onclick: Callback<MouseEvent>,
+}
+
+#[function_component(TableRowToggle)]
+fn table_row_toggle(props: &TableRowToggleProperties) -> Html {
+    let aria_expanded = match props.expanded {
+        true => "true",
+        false => "false",
+    };
+
+    let mut toggle_class = classes!("pf-v5-c-button", "pf-m-plain");
+    if props.expanded {
+        toggle_class.push(classes!("pf-m-expanded"));
+    }
+
+    html!(
+        <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
+            <button
+                class={toggle_class}
+                onclick={props.onclick.clone()}
+                aria-expanded={aria_expanded}
+            >
+                <div class="pf-v5-c-table__toggle-icon">
+                    { Icon::AngleDown }
+                </div>
+            </button>
+        </td>
+    )
+}
+
+fn render_row<C, M>(props: &TableProperties<C, M>, entry: &M::Item) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let len = props
-        .header
-        .as_ref()
-        .map_or(0, |header| header.props.children.len());
+    let actions = entry.actions();
 
-    let mut cells: Vec<Html> = Vec::with_capacity(len);
-
-    for column in props
+    let cols = props
         .header
         .iter()
-        .flat_map(|header| header.props.children.iter())
-    {
-        let cell = entry.render_cell(CellContext {
-            column: &column.props.index,
-        });
-        let mut class = classes!("pf-v5-c-table__td");
+        .flat_map(|header| header.props.children.iter());
 
-        if cell.center == true {
-            class.push("pf-m-center")
-        }
+    html!(<>
+        { for cols.map(|column| {
+            // main cell content
+            
+            let cell = entry.render_cell(CellContext {
+                column: &column.props.index,
+            });
+        
+            // cell attributes
+            
+            let mut class = classes!("pf-v5-c-table__td");
+            if cell.center == true {
+                class.push("pf-m-center")
+            }
+            class.extend_from(&cell.text_modifier);
+    
+            // data label
+            
+            let label = column.props.label.clone();
+            
+            // render
+            
+            html!(
+                <td {class} role="cell" data-label={label.unwrap_or_default()}>
+                    { cell.content }
+                </td>
+            )
+        })}
 
-        class.extend_from(&cell.text_modifier);
+        <RowActions {actions} />
+    </>)
+}
 
-        let label = column.props.label.clone();
-        cells.push(html!(
-            <td {class} role="cell" data-label={label.unwrap_or_default()}>
-                {cell.content}
-            </td>
-        ));
-    }
+#[derive(PartialEq, Properties)]
+struct RowActionsProperties {
+    actions: Vec<MenuChildVariant>,
+}
 
-    let actions = entry.actions();
-    if !actions.is_empty() {
-        cells.push(html!(
+#[function_component(RowActions)]
+fn row_actions(props: &RowActionsProperties) -> Html {
+    html!(<>
+        if !props.actions.is_empty() {
             <td class="pf-v5-c-table__td pf-v5-c-table__action" role="cell">
                 <Dropdown
                     variant={MenuToggleVariant::Plain}
                     icon={Icon::EllipsisV}
                 >
-                    { actions }
+                    { props.actions.clone() }
                 </Dropdown>
             </td>
-        ));
-    }
-
-    cells
+        } 
+    </>)
 }
 
 #[derive(Clone, Debug, PartialEq)]
