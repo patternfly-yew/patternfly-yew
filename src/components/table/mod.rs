@@ -340,6 +340,7 @@ impl Span {
             modifiers: Vec::new(),
         }
     }
+
     pub fn max(html: Html) -> Self {
         Self {
             cols: usize::MAX,
@@ -347,6 +348,7 @@ impl Span {
             modifiers: Vec::new(),
         }
     }
+
     pub fn truncate(mut self) -> Self {
         self.modifiers.push(SpanModifiers::Truncate);
         self
