@@ -93,6 +93,8 @@ where
 
     let trigger = use_force_update();
 
+    // FIXME: allow toggling entries without re-evaluating the whole table: https://github.com/patternfly-yew/patternfly-yew/issues/69
+    /*
     let ontoggle = use_memo(
         |()| {
             Callback::from(move |(key, expanded): (M::Key, bool)| {
@@ -106,7 +108,17 @@ where
             })
         },
         (),
-    );
+    );*/
+
+    let ontoggle = Rc::new(Callback::from(move |(key, expanded): (M::Key, bool)| {
+        let changed = match expanded {
+            true => state.borrow_mut().insert(key),
+            false => state.borrow_mut().remove(&key),
+        };
+        if changed {
+            trigger.force_update();
+        }
+    }));
 
     ({ UseTableData { model } }, ontoggle)
 }
