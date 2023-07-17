@@ -52,6 +52,19 @@ where
     pub onexpand: OnToggleCallback<C, M>,
 }
 
+impl<C, M> TableProperties<C, M>
+where
+    C: Clone + Eq + 'static,
+    M: PartialEq + TableModel<C> + 'static,
+{
+    pub fn is_expandable(&self) -> bool {
+        matches!(
+            self.mode,
+            TableMode::Expandable | TableMode::CompactExpandable
+        )
+    }
+}
+
 #[function_component(Table)]
 pub fn table<C, M>(props: &TableProperties<C, M>) -> Html
 where
@@ -109,24 +122,12 @@ where
     )
 }
 
-#[inline]
-fn is_expandable<C, M>(props: &TableProperties<C, M>) -> bool
-where
-    C: Clone + Eq + 'static,
-    M: PartialEq + TableModel<C> + 'static,
-{
-    matches!(
-        props.mode,
-        TableMode::Expandable | TableMode::CompactExpandable
-    )
-}
-
 fn render_header<C, M>(props: &TableProperties<C, M>) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let expandable = is_expandable(props);
+    let expandable = props.is_expandable();
     match &props.header {
         Some(header) => {
             let mut header = header.clone();
@@ -143,7 +144,7 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    html!(if is_expandable(props) {
+    html!(if props.is_expandable() {
         { for props.entries.iter().map(|entry| render_expandable_entry(props, entry) )}
     } else {
         <tbody class="pf-v5-c-table__tbody" role="rowgroup">
