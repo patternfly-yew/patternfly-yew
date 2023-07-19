@@ -62,6 +62,8 @@ pub struct AlertProperties {
     #[prop_or_default]
     pub inline: bool,
     #[prop_or_default]
+    pub plain: bool,
+    #[prop_or_default]
     pub truncate: bool,
     #[prop_or_default]
     pub actions: Vec<Action>,
@@ -86,6 +88,9 @@ pub fn alert(props: &AlertProperties) -> Html {
 
     if props.inline {
         classes.push("pf-m-inline");
+    }
+    if props.plain {
+        classes.push("pf-m-plain");
     }
 
     let mut title_classes = classes!("pf-v5-c-alert__title");
