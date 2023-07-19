@@ -7,7 +7,7 @@ use yew::prelude::*;
 pub struct EmptyStateIconProperties {
     /** Additional classes added to the empty state icon */
     #[prop_or_default]
-    pub class: AttrValue,
+    pub class: Classes,
 
     /** Adds an accessible name for the Table */
     #[prop_or_default]
@@ -15,14 +15,14 @@ pub struct EmptyStateIconProperties {
 
     /** Changes the color of the icon.  */
     #[prop_or_default]
-    pub color: String,
+    pub color: AttrValue,
 }
 
 #[function_component(EmptyStateIcon)]
 pub fn empty_state_icon(props: &EmptyStateIconProperties) -> Html {
     let icon = props.icon.iter().map(|mut vnode| {
         if let yew::virtual_dom::VNode::VTag(tag) = &mut vnode {
-            tag.add_attribute("class", props.class.clone());
+            tag.add_attribute("class", props.class.to_string());
             tag.add_attribute("aria-hidden", "true");
         }
         vnode

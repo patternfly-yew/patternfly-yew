@@ -11,7 +11,7 @@ pub struct EmptyStateActionsProperties {
 
     /** Additional classes added to the empty state actions */
     #[prop_or_default]
-    pub class: String,
+    pub class: Classes,
 }
 
 #[function_component(EmptyStateActions)]
@@ -20,7 +20,7 @@ pub fn empty_state_actions(props: &EmptyStateActionsProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_ACTIONS,
-                &props.class,
+                props.class.to_string(),
             )}
         >
             { for props.children.iter() }

@@ -10,7 +10,7 @@ pub struct SimpleEmptyStateProperties {
     pub children: Children,
 
     #[prop_or_default]
-    pub title: String,
+    pub title: AttrValue,
 
     #[prop_or_default]
     pub icon: Option<Icon>,
@@ -66,11 +66,13 @@ pub fn simple_empty_state(props: &SimpleEmptyStateProperties) -> Html {
                 }
                 if !props.secondaries.is_empty() {
                     <EmptyStateActions>
-                        { for props.secondaries.iter().map(|action|{
-                            html!{
-                                <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
-                            }
-                        }) }
+                        {
+                            for props.secondaries.iter().map(|action|{
+                                html!{
+                                    <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
+                                }
+                            })
+                        }
                     </EmptyStateActions>
                 }
             </EmptyStateFooter>

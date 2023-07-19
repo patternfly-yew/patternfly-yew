@@ -38,7 +38,7 @@ pub struct EmptyStateProperties {
 
     /** Additional classes added to the empty state */
     #[prop_or_default]
-    pub class: String,
+    pub class: Classes,
 
     /** Modifies empty state max-width and sizes of icon, title and body */
     #[prop_or(EmptyStateVariant::FULL)]
@@ -56,7 +56,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE,
                 props.variant.classes(props.full_height).to_string(),
-                &props.class,
+                props.class.to_string(),
             )}
         >
             <div

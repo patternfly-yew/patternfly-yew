@@ -33,11 +33,11 @@ pub struct EmptyStateHeaderProperties {
 
     /** Additional classes added to the empty state header */
     #[prop_or_default]
-    pub class: String,
+    pub class: Classes,
 
     /** Additional classes added to the title inside empty state header */
     #[prop_or_default]
-    pub title_class: String,
+    pub title_class: Classes,
 
     /** Text of the title inside empty state header, will be wrapped in headingLevel */
     #[prop_or_default]
@@ -59,7 +59,7 @@ pub fn empty_state_header(props: &EmptyStateHeaderProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_HEADER,
-                &props.class,
+                props.class.to_string(),
             )}
         >
             { for props.icon.iter() }
@@ -69,7 +69,7 @@ pub fn empty_state_header(props: &EmptyStateHeaderProperties) -> Html {
                 <@{props.heading_level.level().to_string()}
                     class={classes!(
                         EmptyStateStyles::EMPTY_STATE_TITLE_TEXT,
-                        &props.title_class
+                        props.title_class.to_string(),
                     )}
                 >
                     { for props.title_text.iter() }

@@ -11,7 +11,7 @@ pub struct EmptyStateBodyProperties {
 
     /** Additional classes added to the empty state body */
     #[prop_or_default]
-    pub class: String,
+    pub class: Classes,
 }
 
 #[function_component(EmptyStateBody)]
@@ -20,7 +20,7 @@ pub fn empty_state_body(props: &EmptyStateBodyProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_BODY,
-                &props.class,
+                props.class.to_string(),
             )}
         >
             { for props.children.iter() }

@@ -11,7 +11,7 @@ pub struct EmptyStateFooterProperties {
 
     /** Additional classes added to the empty state footer */
     #[prop_or_default]
-    pub class: String,
+    pub class: Classes,
 }
 
 #[function_component(EmptyStateFooter)]
@@ -20,7 +20,7 @@ pub fn empty_state_footer(props: &EmptyStateFooterProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_FOOTER,
-                &props.class,
+                props.class.to_string(),
             )}
         >
             { for props.children.iter() }
