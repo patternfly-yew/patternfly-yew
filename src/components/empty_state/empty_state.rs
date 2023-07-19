@@ -56,7 +56,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE,
                 props.variant.classes(props.full_height).to_string(),
-                props.class.to_string(),
+                props.class.clone(),
             )}
         >
             <div

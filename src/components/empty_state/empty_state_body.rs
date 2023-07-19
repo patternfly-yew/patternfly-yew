@@ -20,7 +20,7 @@ pub fn empty_state_body(props: &EmptyStateBodyProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_BODY,
-                props.class.to_string(),
+                props.class.clone(),
             )}
         >
             { for props.children.iter() }

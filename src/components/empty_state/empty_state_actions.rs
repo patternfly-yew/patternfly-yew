@@ -20,7 +20,7 @@ pub fn empty_state_actions(props: &EmptyStateActionsProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_ACTIONS,
-                props.class.to_string(),
+                props.class.clone(),
             )}
         >
             { for props.children.iter() }

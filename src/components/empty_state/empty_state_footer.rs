@@ -20,7 +20,7 @@ pub fn empty_state_footer(props: &EmptyStateFooterProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_FOOTER,
-                props.class.to_string(),
+                props.class.clone(),
             )}
         >
             { for props.children.iter() }

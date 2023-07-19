@@ -59,7 +59,7 @@ pub fn empty_state_header(props: &EmptyStateHeaderProperties) -> Html {
         <div
             class={classes!(
                 EmptyStateStyles::EMPTY_STATE_HEADER,
-                props.class.to_string(),
+                props.class.clone(),
             )}
         >
             { for props.icon.iter() }
@@ -69,7 +69,7 @@ pub fn empty_state_header(props: &EmptyStateHeaderProperties) -> Html {
                 <@{props.heading_level.level().to_string()}
                     class={classes!(
                         EmptyStateStyles::EMPTY_STATE_TITLE_TEXT,
-                        props.title_class.to_string(),
+                        props.title_class.clone(),
                     )}
                 >
                     { for props.title_text.iter() }
