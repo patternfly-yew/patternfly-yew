@@ -2,7 +2,7 @@ use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 struct MenuItemProperties {
-    pub text: String,
+    pub children: Children,
     pub icon: Option<Html>,
     pub danger: bool,
     pub disabled: bool,
@@ -72,7 +72,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                         if props.danger {
                             <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
                         }
-                        <span class="pf-v5-c-menu__item-text">{ &props.text }</span>
+                        <span class="pf-v5-c-menu__item-text">{ for props.children.iter() }</span>
                     </span>
                     if let Some(description) = &props.description {
                         <span class="pf-v5-c-menu__item-description"> {description} </span>
@@ -85,7 +85,8 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuActionProperties {
-    pub text: String,
+    #[prop_or_default]
+    pub children: Children,
 
     #[prop_or_default]
     pub description: Option<String>,
@@ -108,7 +109,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
     // we use destructing and struct initialization here to ensure we're not missing any new field
 
     let MenuActionProperties {
-        text,
+        children,
         icon,
         danger,
         disabled,
@@ -117,7 +118,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
     } = props.clone();
 
     let props = MenuItemProperties {
-        text,
+        children,
         icon,
         danger,
         disabled,
@@ -130,7 +131,8 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuLinkProperties {
-    pub text: String,
+    #[prop_or_default]
+    pub children: Children,
 
     #[prop_or_default]
     pub description: Option<String>,
@@ -155,7 +157,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
     // we use destructing and struct initialization here to ensure we're not missing any new field
 
     let MenuLinkProperties {
-        text,
+        children,
         icon,
         danger,
         disabled,
@@ -165,7 +167,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
     } = props.clone();
 
     let props = MenuItemProperties {
-        text,
+        children,
         icon,
         danger,
         disabled,
