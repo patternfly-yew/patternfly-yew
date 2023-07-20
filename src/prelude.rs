@@ -25,7 +25,7 @@ pub use crate::components::context_selector::*;
 pub use crate::components::divider::*;
 pub use crate::components::dl::*;
 pub use crate::components::dropdown::*;
-pub use crate::components::empty::*;
+pub use crate::components::empty_state::*;
 pub use crate::components::expandable_section::*;
 pub use crate::components::file_upload::*;
 pub use crate::components::form::*;
