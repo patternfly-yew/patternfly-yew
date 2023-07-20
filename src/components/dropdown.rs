@@ -32,10 +32,12 @@ pub struct DropdownProperties {
 pub fn drop_down(props: &DropdownProperties) -> Html {
     let expanded = use_state_eq(|| false);
     let ontoggle = {
-        let expanded = expanded.clone();
-        Callback::from(move |()| {
-            expanded.set(!*expanded);
-        })
+        use_callback(
+            move |_, expanded| {
+                expanded.set(!**expanded);
+            },
+            expanded.clone(),
+        )
     };
 
     // this defines what is "inside"
