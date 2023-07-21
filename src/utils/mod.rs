@@ -8,8 +8,6 @@ mod props;
 mod raw;
 mod styled;
 
-pub mod popper;
-
 pub use action::*;
 pub use context::*;
 pub use global_close::*;

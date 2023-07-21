@@ -22,7 +22,6 @@
 
 #![recursion_limit = "1024"]
 mod icon;
-mod integration;
 
 pub mod components;
 pub mod core;
