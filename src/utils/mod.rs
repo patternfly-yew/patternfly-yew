@@ -64,7 +64,7 @@ impl IntoPropValue<Option<AttrValue>> for Id {
 }
 
 /// Create a new callback handling only the case when the user pressed the enter key.
-pub fn on_enter<F: Fn() -> () + 'static>(f: F) -> Callback<KeyboardEvent> {
+pub fn on_enter<F: Fn() + 'static>(f: F) -> Callback<KeyboardEvent> {
     Callback::from(move |evt: KeyboardEvent| {
         if evt.key_code() == 13 {
             f()

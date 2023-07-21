@@ -332,7 +332,7 @@ where
     T: PartialEq + Clone,
 {
     fn into_prop_value(self) -> WithBreakpoints<T> {
-        self.into_iter()
+        self.iter()
             .map(|i| WithBreakpoint::new(i.clone()))
             .collect::<Vec<WithBreakpoint<T>>>()
             .into()
