@@ -1,8 +1,6 @@
 //! Tooltip
-use crate::{
-    prelude::{ExtendClasses, Orientation},
-    utils::popper::*,
-};
+use crate::prelude::{ExtendClasses, Orientation};
+use popper_rs::{prelude::*, yew::component::PortalPopper};
 use yew::prelude::*;
 
 /// Properties for [`Tooltip`]
@@ -24,73 +22,41 @@ pub struct TooltipProperties {
 #[function_component(Tooltip)]
 pub fn tooltip(props: &TooltipProperties) -> Html {
     let active = use_state_eq(|| false);
-    let state = use_state_eq(|| Option::<PopperState>::None);
+    let state = use_state_eq(State::default);
 
-    let onmouseenter = {
-        let active = active.clone();
-        Callback::from(move |_| {
-            log::debug!("OnMouseEnter");
-            active.set(true);
-        })
-    };
-    let onmouseleave = {
-        let active = active.clone();
-        Callback::from(move |_| {
-            log::debug!("OnMouseLeave");
-            active.set(false);
-        })
-    };
+    let onmouseenter = use_callback(|_, active| active.set(true), active.clone());
+    let onmouseleave = use_callback(|_, active| active.set(false), active.clone());
 
     let content_ref = use_node_ref();
     let target_ref = use_node_ref();
 
-    let content = html!(
-        <TooltipPopupContent
-            state={(*state).clone()}
-            text={props.text.clone()}
-            r#ref={content_ref.clone()}
-        />
-    );
-
-    let onstatechange = {
-        let state = state.clone();
-        use_memo(
-            move |()| {
-                let state = state.clone();
-                Callback::from(move |new_state| {
-                    state.set(Some(new_state));
-                })
-            },
-            (),
-        )
-    };
-
-    let options = PopperOptions {
-        strategy: PopperStrategy::Fixed,
-        placement: PopperPlacement::Right,
-        modifiers: vec![
-            Modifier::Offset(Offset {
-                skidding: 0,
-                distance: 11,
-            }),
-            Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
-        ],
-    };
+    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
 
     html! (
         <>
             <span {onmouseenter} {onmouseleave} ref={target_ref.clone()}>
                 { for props.children.iter() }
             </span>
-            <Popper
+            <PortalPopper
                 visible={*active}
-                {content}
-                {content_ref}
-                {target_ref}
-                mode={PopperMode::Portal}
-                onstatechange={(*onstatechange).clone()}
-                {options}
-            />
+                content={content_ref.clone()}
+                target={target_ref}
+                {onstatechange}
+                placement={Placement::Right}
+                modifiers={vec![
+                    Modifier::Offset(Offset {
+                        skidding: 0,
+                        distance: 11,
+                    }),
+                    Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
+                ]}
+            >
+                <TooltipPopupContent
+                    state={(*state).clone()}
+                    text={props.text.clone()}
+                    r#ref={content_ref}
+                />
+            </PortalPopper>
         </>
     )
 }
@@ -98,29 +64,30 @@ pub fn tooltip(props: &TooltipProperties) -> Html {
 #[derive(PartialEq, Properties)]
 struct TooltipPopupContentProperties {
     text: String,
-    state: Option<PopperState>,
+    state: State,
     r#ref: NodeRef,
 }
 
 #[function_component(TooltipPopupContent)]
 fn tooltip_popup_content(props: &TooltipPopupContentProperties) -> Html {
-    let style = props
+    let orientation = match props
         .state
-        .as_ref()
-        .map(|s| s.styles.to_string())
-        .unwrap_or_default();
-    let orientation = props
-        .state
-        .as_ref()
-        .map(|s| s.orientation)
-        .unwrap_or(Orientation::Bottom);
+        .attributes
+        .popper
+        .get("data")
+        .map(|v| v.as_str())
+    {
+        Some("top") => Orientation::Top,
+        Some("left") => Orientation::Left,
+        Some("right") => Orientation::Right,
+        None | Some(_) => Orientation::Bottom,
+    };
 
     html! {
         <TooltipPopup
             r#ref={props.r#ref.clone()}
-            {style}
-            hidden={props.state.is_none()}
-            orientation={orientation}
+            style={&props.state.styles.popper}
+            {orientation}
             text={props.text.clone()}
         />
     }
@@ -134,7 +101,7 @@ pub struct TooltipPopupProperties {
     #[prop_or_default]
     pub hidden: bool,
     #[prop_or_default]
-    pub style: String,
+    pub style: AttrValue,
     #[prop_or_default]
     pub r#ref: NodeRef,
 }
