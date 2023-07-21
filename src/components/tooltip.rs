@@ -70,18 +70,7 @@ struct TooltipPopupContentProperties {
 
 #[function_component(TooltipPopupContent)]
 fn tooltip_popup_content(props: &TooltipPopupContentProperties) -> Html {
-    let orientation = match props
-        .state
-        .attributes
-        .popper
-        .get("data")
-        .map(|v| v.as_str())
-    {
-        Some("top") => Orientation::Top,
-        Some("left") => Orientation::Left,
-        Some("right") => Orientation::Right,
-        None | Some(_) => Orientation::Bottom,
-    };
+    let orientation = Orientation::from_popper_data(&props.state.attributes.popper);
 
     html! {
         <TooltipPopup

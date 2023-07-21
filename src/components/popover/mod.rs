@@ -1,7 +1,8 @@
 //! Popover
-use crate::{
-    prelude::{Button, ButtonVariant, ExtendClasses, Icon, Orientation},
-    utils::popper::*,
+use crate::prelude::{Button, ButtonVariant, ExtendClasses, Icon, Orientation};
+use popper_rs::{
+    prelude::{State as PopperState, *},
+    yew::component::PortalPopper,
 };
 use yew::{prelude::*, virtual_dom::VChild};
 use yew_hooks::use_click_away;
@@ -31,25 +32,17 @@ pub struct PopoverProperties {
 #[function_component(Popover)]
 pub fn popover(props: &PopoverProperties) -> Html {
     let active = use_state_eq(|| false);
-    let state = use_state_eq(|| Option::<PopperState>::None);
+
+    let state = use_state_eq(PopperState::default);
+    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
 
     // a reference to the target the user clicks on
     let target_ref = use_node_ref();
     // a reference to the content
     let content_ref = use_node_ref();
 
-    let onclick = {
-        let active = active.clone();
-        Callback::from(move |_| {
-            active.set(!*active);
-        })
-    };
-    let onclose = {
-        let active = active.clone();
-        Callback::from(move |_| {
-            active.set(false);
-        })
-    };
+    let onclick = use_callback(|_, active| active.set(!**active), active.clone());
+    let onclose = use_callback(|_, active| active.set(false), active.clone());
 
     {
         let active = active.clone();
@@ -58,61 +51,12 @@ pub fn popover(props: &PopoverProperties) -> Html {
         });
     }
 
-    let content = use_memo(
-        |(r#ref, state, body)| {
-            let style = match &state {
-                Some(state) => &state.styles,
-                None => "display: none;",
-            }
-            .to_string();
-
-            let orientation = state
-                .as_ref()
-                .map(|s| s.orientation)
-                .unwrap_or(Orientation::Bottom);
-
-            html! (
-                <PopoverPopup
-                    r#ref={r#ref}
-                    {style}
-                    {orientation}
-                    {onclose}
-                    body={(*body).clone()}
-                />
-            )
-        },
-        (content_ref.clone(), (*state).clone(), props.body.clone()),
-    );
-
-    let onstatechange = {
-        let state = state.clone();
-        use_memo(
-            move |()| {
-                let state = state.clone();
-                Callback::from(move |new_state| {
-                    state.set(Some(new_state));
-                })
-            },
-            (),
-        )
-    };
-
-    let options = PopperOptions {
-        strategy: PopperStrategy::Fixed,
-        placement: PopperPlacement::Right,
-        modifiers: vec![
-            Modifier::Offset(Offset {
-                skidding: 0,
-                distance: 20,
-            }),
-            Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
-        ],
-    };
-
     let style = match *active {
         true => "pointer-events: none;",
         false => "",
     };
+
+    let orientation = Orientation::from_popper_data(&state.attributes.popper);
 
     html!(
         <>
@@ -123,15 +67,28 @@ pub fn popover(props: &PopoverProperties) -> Html {
             >
                 { props.target.clone() }
             </span>
-            <Popper
+            <PortalPopper
                 visible={*active}
-                content={(*content).clone()}
-                {content_ref}
-                {target_ref}
-                mode={PopperMode::Portal}
-                onstatechange={(*onstatechange).clone()}
-                {options}
-            />
+                content={content_ref.clone()}
+                target={target_ref}
+                {onstatechange}
+                placement={Placement::Right}
+                modifiers={vec![
+                    Modifier::Offset(Offset {
+                        skidding: 0,
+                        distance: 20,
+                    }),
+                    Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
+                ]}
+            >
+                <PopoverPopup
+                    r#ref={content_ref}
+                    style={&state.styles.popper.extend_with("z-index", "1000")}
+                    {orientation}
+                    {onclose}
+                    body={props.body.clone()}
+                />
+            </PortalPopper>
         </>
     )
 }

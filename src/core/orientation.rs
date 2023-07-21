@@ -1,4 +1,5 @@
 use crate::core::AsClasses;
+use popper_rs::state::AttributesMap;
 use yew::{classes, Classes};
 
 /// Definition for orientations
@@ -17,6 +18,17 @@ impl AsClasses for Orientation {
             Self::Right => classes.extend(classes!("pf-m-right")),
             Self::Top => classes.extend(classes!("pf-m-top")),
             Self::Bottom => classes.extend(classes!("pf-m-bottom")),
+        }
+    }
+}
+
+impl Orientation {
+    pub fn from_popper_data(attributes: &AttributesMap) -> Self {
+        match attributes.get("data-popper-placement").map(|v| v.as_str()) {
+            Some("top") => Self::Top,
+            Some("left") => Self::Left,
+            Some("right") => Self::Right,
+            None | Some(_) => Self::Bottom,
         }
     }
 }
