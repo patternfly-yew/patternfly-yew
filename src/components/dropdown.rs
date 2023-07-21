@@ -1,4 +1,8 @@
-use crate::{integration::popperjs::Options, prelude::*, utils::popper::*};
+use crate::prelude::*;
+use popper_rs::{
+    prelude::{State as PopperState, *},
+    yew::component::PortalPopper,
+};
 use yew::{html::ChildrenRenderer, prelude::*};
 use yew_hooks::prelude::*;
 
@@ -31,14 +35,10 @@ pub struct DropdownProperties {
 #[function_component(Dropdown)]
 pub fn drop_down(props: &DropdownProperties) -> Html {
     let expanded = use_state_eq(|| false);
-    let ontoggle = {
-        use_callback(
-            move |_, expanded| {
-                expanded.set(!**expanded);
-            },
-            expanded.clone(),
-        )
-    };
+    let ontoggle = use_callback(
+        move |_, expanded| expanded.set(!**expanded),
+        expanded.clone(),
+    );
 
     // this defines what is "inside"
     let inside_ref = use_node_ref();
@@ -55,53 +55,32 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
         });
     }
 
-    let popper = use_state_eq(|| Option::<PopperState>::None);
+    let state = use_state_eq(PopperState::default);
+    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
 
-    let onstatechange = {
-        let popper = popper.clone();
-        use_memo(
-            move |()| {
-                let popper = popper.clone();
-                Callback::from(move |state| {
-                    popper.set(Some(state));
-                })
-            },
-            (),
-        )
+    let placement = match props.position {
+        Position::Left => Placement::BottomStart,
+        Position::Right => Placement::BottomEnd,
+        Position::Top => Placement::TopStart,
     };
-
-    let content = html!(
-        <Menu
-            r#ref={menu_ref.clone()}
-            style={popper.as_ref().map(|state|state.styles.clone()).unwrap_or_default()}
-        >
-            { for props.children.iter() }
-        </Menu>
-    );
 
     html!(
         <>
-            <div style="display: contents;" ref={inside_ref}>
-                <Popper
-                    target_ref={target_ref.clone()}
-                    content_ref={menu_ref}
-                    {content}
-                    mode={PopperMode::Inline}
+            <div style="display: inline;" ref={inside_ref}>
+                <PortalPopper
+                    target={target_ref.clone()}
+                    content={menu_ref.clone()}
                     visible={*expanded}
-                    onstatechange={(*onstatechange).clone()}
-                    options={
-                        Options {
-                            placement: match props.position {
-                                Position::Left => PopperPlacement::BottomStart,
-                                Position::Right => PopperPlacement::BottomEnd,
-                                Position::Top => PopperPlacement::TopStart,
-                            },
-                            strategy: PopperStrategy::Absolute,
-                            ..Default::default()
-                        }
-                    }
+                    {onstatechange}
+                    {placement}
                 >
-                </Popper>
+                    <Menu
+                        r#ref={menu_ref}
+                        style={&state.styles.popper.extend_with("z-index", "1000")}
+                    >
+                        { for props.children.iter() }
+                    </Menu>
+                </PortalPopper>
                 <MenuToggle
                     r#ref={target_ref}
                     text={props.text.clone()}
