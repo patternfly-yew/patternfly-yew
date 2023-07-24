@@ -18,7 +18,7 @@ gloo-timers = "0.2.4"
 gloo-utils = "0.1.4"
 js-sys = "0.3.64"
 log = "0.4"
-popper-rs = { version = "0.1.0-alpha.3", features = ["yew"] }
+popper-rs = { version = "0.1.0-alpha.4", features = ["yew"] }
 serde = "1"
 serde_json = "1"
 strum = "0.25.0"
@@ -59,4 +59,4 @@ icons-fab = []
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
-popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
+#popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
