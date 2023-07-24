@@ -78,37 +78,47 @@ pub struct NavItemProperties {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub to: String,
-    #[prop_or_default]
-    pub target: String,
-    #[prop_or_default]
-    pub external: bool,
+    pub onclick: Callback<()>,
 }
 
+/// A navigation item, which triggers a callback when clicked.
 #[function_component(NavItem)]
 pub fn nav_item(props: &NavItemProperties) -> Html {
-    let mut target = props.target.to_string();
-    if target.is_empty() && props.external {
-        target = "_blank".to_string();
-    }
-
-    let href = if props.to.is_empty() {
-        "#".into()
-    } else {
-        props.to.clone()
-    };
-
     html! (
         <li class="pf-v5-c-nav__item">
             <a
-                href={href}
+                href="#"
                 class="pf-v5-c-nav__link"
-                target={target}
+                onclick={props.onclick.reform(|_|())}
             >
                 { for props.children.iter() }
-                if props.external {
-                    <span class="pf-v5-u-ml-sm pf-v5-u-font-size-sm">{Icon::ExternalLinkAlt}</span>
-                }
+            </a>
+        </li>
+    )
+}
+
+/// Properties for [`NavItem`]
+#[derive(Clone, PartialEq, Properties)]
+pub struct NavLinkProperties {
+    #[prop_or_default]
+    pub children: Children,
+    #[prop_or_default]
+    pub href: AttrValue,
+    #[prop_or_default]
+    pub target: Option<AttrValue>,
+}
+
+/// A navigation item, which is a link.
+#[function_component(NavLink)]
+pub fn nav_link(props: &NavLinkProperties) -> Html {
+    html! (
+        <li class="pf-v5-c-nav__item">
+            <a
+                href={&props.href}
+                class="pf-v5-c-nav__link"
+                target={&props.target}
+            >
+                { for props.children.iter() }
             </a>
         </li>
     )
