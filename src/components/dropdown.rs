@@ -1,8 +1,5 @@
 use crate::prelude::*;
-use popper_rs::{
-    prelude::{State as PopperState, *},
-    yew::component::PortalPopper,
-};
+use popper_rs::prelude::{State as PopperState, *};
 use yew::{html::ChildrenRenderer, prelude::*};
 use yew_hooks::prelude::*;
 
@@ -32,6 +29,17 @@ pub struct DropdownProperties {
     pub position: Position,
 }
 
+/// Dropdown menu component
+///
+/// ## Properties
+///
+/// Define by [`DropdownProperties`].
+///
+/// ## Contexts
+///
+/// Provides the following contexts to its children:
+///
+/// * [`CloseMenuContext`]
 #[function_component(Dropdown)]
 pub fn drop_down(props: &DropdownProperties) -> Html {
     let expanded = use_state_eq(|| false);
@@ -64,23 +72,30 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
         Position::Top => Placement::TopStart,
     };
 
+    let onclose = use_callback(|(), expanded| expanded.set(false), expanded.clone());
+    let context = CloseMenuContext::new(onclose);
+
     html!(
         <>
             <div style="display: inline;" ref={inside_ref}>
-                <PortalPopper
+                <InlinePopper
                     target={target_ref.clone()}
                     content={menu_ref.clone()}
                     visible={*expanded}
                     {onstatechange}
                     {placement}
                 >
-                    <Menu
-                        r#ref={menu_ref}
-                        style={&state.styles.popper.extend_with("z-index", "1000")}
+                    <ContextProvider<CloseMenuContext>
+                        {context}
                     >
-                        { for props.children.iter() }
-                    </Menu>
-                </PortalPopper>
+                        <Menu
+                            r#ref={menu_ref}
+                            style={&state.styles.popper.extend_with("z-index", "1000")}
+                        >
+                            { for props.children.iter() }
+                        </Menu>
+                    </ContextProvider<CloseMenuContext>>
+                </InlinePopper>
                 <MenuToggle
                     r#ref={target_ref}
                     text={props.text.clone()}

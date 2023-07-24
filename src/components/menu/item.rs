@@ -1,3 +1,4 @@
+use super::use_close_menu_callback;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -28,6 +29,8 @@ fn menu_item(props: &MenuItemProperties) -> Html {
         class.push(classes!("pf-m-disabled"));
     }
 
+    let onclose = use_close_menu_callback();
+
     let element = |content: Html| match &props.r#type {
         MenuItemType::Button(callback) => {
             html!(
@@ -36,7 +39,9 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                     type="button"
                     role="menuitem"
                     disabled={props.disabled}
-                    onclick={callback.reform(|_|())}
+                    onclick={callback.reform(move |_| {
+                        onclose.emit(());
+                    })}
                 >
                     { content }
                 </button>
@@ -47,10 +52,12 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                 true => Some("-1"),
                 false => None,
             };
+
             html!(
                 <a
                     class="pf-v5-c-menu__item"
                     {href} {target}
+                    onclick={onclose.reform(|_|())}
                     aria-disabled={props.disabled.to_string()}
                     {tabindex}
                     role="menuitem"

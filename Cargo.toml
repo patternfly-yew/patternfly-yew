@@ -59,4 +59,4 @@ icons-fab = []
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
-popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "f23e1960f792ed3d1ce597a1f4ded661f72ee903" }
+popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
