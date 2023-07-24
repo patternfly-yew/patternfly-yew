@@ -75,7 +75,7 @@ fn tooltip_popup_content(props: &TooltipPopupContentProperties) -> Html {
     html! {
         <TooltipPopup
             r#ref={props.r#ref.clone()}
-            style={&props.state.styles.popper}
+            style={&props.state.styles.popper.extend_with("z-index", "1000")}
             {orientation}
             text={props.text.clone()}
         />
@@ -87,8 +87,6 @@ fn tooltip_popup_content(props: &TooltipPopupContentProperties) -> Html {
 pub struct TooltipPopupProperties {
     pub text: String,
     pub orientation: Orientation,
-    #[prop_or_default]
-    pub hidden: bool,
     #[prop_or_default]
     pub style: AttrValue,
     #[prop_or_default]
@@ -106,15 +104,8 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
 
     class.extend_from(&props.orientation);
 
-    let style = if props.hidden {
-        "display: none;"
-    } else {
-        &props.style
-    }
-    .to_string();
-
     html! {
-        <div ref={&props.r#ref} {style} {class} role="tooltip">
+        <div ref={&props.r#ref} style={&props.style} {class} role="tooltip">
             <div class="pf-v5-c-tooltip__arrow"></div>
             <div class="pf-v5-c-tooltip__content">
                 { &props.text }
