@@ -189,7 +189,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         })
     };
 
-    let oninput = {
+    let onchange = {
         let input = input.clone();
         let input_text = input_text.clone();
         let page_number_field_validator = page_number_field_validator.clone();
@@ -343,7 +343,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 <div class="pf-v5-c-pagination__nav-page-select">
                     <TextInput
                         r#type={TextInputType::Number}
-                        {oninput}
+                        {onchange}
                         {onkeydown}
                         state={(*input_state).clone()}
                         value={(*input_text).clone().unwrap_or_default()}

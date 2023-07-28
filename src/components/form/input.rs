@@ -77,17 +77,18 @@ pub struct TextInputProperties {
     #[prop_or_default]
     pub aria_describedby: Option<AttrValue>,
 
-    /// This event is triggered when the element loses focus.
+    /// This event is triggered when the element's value changes.
+    ///
+    /// **NOTE:** Contrary to the HTML definition of onchange, the callback provides the full value
+    /// of the input element and fires with every keystroke.
     #[prop_or_default]
     pub onchange: Callback<String>,
-    /// This event is similar to the onchange event.
+    /// The element's oninput event.
     ///
-    /// The difference is that the oninput event occurs immediately after the value of an element has changed.
-    ///
-    /// **NOTE:** Contrary to the HTML definition of oninput, the callback provides the full value
-    /// of the input element, not just the changed part.
+    /// **NOTE:** In previous versions `oninput` behaved as does `onchange` now.
     #[prop_or_default]
-    pub oninput: Callback<String>,
+    pub oninput: Callback<InputEvent>,
+
     // Called when validation should occur
     #[prop_or_default]
     pub onvalidate: Callback<ValidationContext<String>>,
@@ -125,13 +126,13 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 ///
 /// ## Change events
 ///
-/// The component emits changes of the input value through the `onchange` event once the
-/// component looses the focus (same of plain HTML). It also emits the full input value via the
-/// `oninput` event and does the same using the `onvalidate` event. This duplication is required
-/// to support both change events as well as supporting the [`ValidatingComponent`] trait.
+/// The component emits changes of the input value through the `onchange` event whenever the
+/// value changes It also emits the full input value via the `onvalidate` event. This duplication
+/// is required to support both change events as well as supporting the [`ValidatingComponent`]
+/// trait.
 ///
 /// If a value is provided via the `value` property, that value must be updated through the
-/// `oninput` callback. Otherwise the value will be reset immediately and the component will
+/// `onchange` callback. Otherwise the value will be reset immediately and the component will
 /// be effectively read-only:
 ///
 /// ```rust
@@ -141,12 +142,9 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 /// #[function_component(Example)]
 /// fn example() -> Html {
 ///   let value = use_state_eq(String::default);
-///   let onchange = {
-///     let value = value.clone();
-///     Callback::from(move |data| value.set(data))
-///   };
+///   let onchange = use_callback(|new_value, value| value.set(new_value), value.clone());
 ///
-///   html!(<TextInput value={(*value).clone()}/>)
+///   html!(<TextInput {onchange} value={(*value).clone()}/>)
 /// }
 /// ```
 #[function_component(TextInput)]
@@ -199,28 +197,15 @@ pub fn text_input(props: &TextInputProperties) -> Html {
 
     // change events
 
-    let onchange = use_memo(
-        |(onchange, input_ref)| {
-            let input_ref = input_ref.clone();
-            onchange.reform(move |_: Event| value(&input_ref).unwrap_or_default())
-        },
-        (props.onchange.clone(), input_ref.clone()),
-    );
-
-    let oninput = use_memo(
-        |(oninput, onvalidate, input_ref)| {
-            let input_ref = input_ref.clone();
-            let oninput = oninput.clone();
-            let onvalidate = onvalidate.clone();
-            Callback::from(move |_: InputEvent| {
-                // get the (complete) current value
-                let value = value(&input_ref).unwrap_or_default();
-                oninput.emit(value.clone());
-                onvalidate.emit(value.into());
-            })
+    let onchange = use_callback(
+        |_, (onchange, onvalidate, input_ref)| {
+            if let Some(new_value) = value(input_ref) {
+                onchange.emit(new_value.clone());
+                onvalidate.emit(new_value.into());
+            }
         },
         (
-            props.oninput.clone(),
+            props.onchange.clone(),
             props.onvalidate.clone(),
             input_ref.clone(),
         ),
@@ -262,14 +247,15 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 placeholder={&props.placeholder}
                 form={&props.form}
                 autocomplete={&props.autocomplete}
-                onchange={(*onchange).clone()}
-                oninput={(*oninput).clone()}
+                {onchange}
+                oninput={props.oninput.clone()}
                 onkeydown={&props.onkeydown}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
             />
 
-                        { None::<VNode> }
+                { None::<VNode> }
+
             if icon_html.is_some() || status_html.is_some() {
                 <div class="pf-v5-c-form-control__utilities"> // TODO: Refactor out to component
                     { icon_html }

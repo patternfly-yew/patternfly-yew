@@ -63,7 +63,10 @@ pub struct TextInputGroupMainProperties {
     pub aria_label: AttrValue,
 
     #[prop_or_default]
-    pub oninput: Callback<String>,
+    pub onchange: Callback<String>,
+
+    #[prop_or_default]
+    pub oninput: Callback<InputEvent>,
 
     #[prop_or_default]
     pub r#type: AttrValue,
@@ -85,15 +88,14 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
 
     let node_ref = use_node_ref();
 
-    let oninput = {
-        let node_ref = node_ref.clone();
-        let onchange = props.oninput.clone();
-        Callback::from(move |_| {
+    let onchange = use_callback(
+        |_, (node_ref, onchange)| {
             if let Some(input) = node_ref.cast::<HtmlInputElement>() {
                 onchange.emit(input.value());
             }
-        })
-    };
+        },
+        (node_ref.clone(), props.onchange.clone()),
+    );
 
     html!(
         <div {class}>
@@ -108,7 +110,8 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                     ref={node_ref}
                     type={&props.r#type}
                     inputmode={&props.inputmode}
-                    {oninput}
+                    {onchange}
+                    oninput={props.oninput.clone()}
                     disabled={props.disabled}
                     placeholder={&props.placeholder}
                     value={props.value.clone()}
