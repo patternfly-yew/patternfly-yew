@@ -75,10 +75,10 @@ impl AsClasses for FlexModifier {
                 Alignment::Right => classes.push("pf-m-align-right"),
                 Alignment::Left => classes.push("pf-m-align-left"),
                 Alignment::Start => classes.push("pf-m-align-self-flex-start"),
-                Alignment::Center => classes.push("pf-m-align-self-flex-center"),
+                Alignment::Center => classes.push("pf-m-align-self-center"),
                 Alignment::End => classes.push("pf-m-align-self-flex-end"),
-                Alignment::Baseline => classes.push("pf-m-align-self-flex-baseline"),
-                Alignment::Stretch => classes.push("pf-m-align-self-flex-stretch"),
+                Alignment::Baseline => classes.push("pf-m-align-self-baseline"),
+                Alignment::Stretch => classes.push("pf-m-align-self-stretch"),
             },
         }
     }
