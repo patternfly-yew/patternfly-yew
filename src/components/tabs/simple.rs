@@ -230,6 +230,7 @@ where
 pub enum TabTitle {
     String(Cow<'static, str>),
     Children(Children),
+    Html(Html),
 }
 
 impl IntoPropValue<TabTitle> for String {
@@ -250,11 +251,18 @@ impl IntoPropValue<TabTitle> for Children {
     }
 }
 
+impl IntoPropValue<TabTitle> for Html {
+    fn into_prop_value(self) -> TabTitle {
+        TabTitle::Html(self)
+    }
+}
+
 impl From<TabTitle> for Html {
     fn from(value: TabTitle) -> Self {
         match value {
             TabTitle::String(s) => s.into(),
             TabTitle::Children(children) => children.into_iter().collect(),
+            TabTitle::Html(html) => html,
         }
     }
 }
