@@ -30,12 +30,15 @@ pub struct DrawerContext {
 
 #[derive(PartialEq, Properties)]
 pub struct DrawerProperties {
+    /// The expanded state.
     #[prop_or_default]
     pub expanded: bool,
 
+    /// Position of the drawer panel when opened.
     #[prop_or_default]
     pub position: DrawerPosition,
 
+    /// Whether the drawer panel overlaps or replaces the content.
     #[prop_or_default]
     pub inline: bool,
 
@@ -46,6 +49,63 @@ pub struct DrawerProperties {
     pub children: Children,
 }
 
+/// Drawer component
+///
+/// > A **drawer** is a sliding panel that enters from the right edge of the viewport. It can be configured to either overlay content on a page or create a sidebar by pushing that content to the left.
+///
+/// See: <https://www.patternfly.org/components/drawer>
+///
+/// ## Properties
+///
+/// Defined by [`DrawerProperties`].
+///
+/// ## Children
+///
+/// The drawer requires a structure of other drawer elements, which isn't enforced through types.
+/// See the example, the quickstart project, and the PatternFly documentation for guidance.
+///
+/// ## Example
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///
+///   let expanded = use_state_eq(|| false);
+///   let onclick = use_callback(|_, expanded| expanded.set(!**expanded), expanded.clone());
+///   let onclose = use_callback(|_, expanded| expanded.set(false) , expanded.clone());
+///
+///   let panel_content = html!(
+///     <DrawerPanelContent>
+///       <DrawerHead>
+///         <span>
+///           {"drawer-panel"}
+///         </span>
+///         <DrawerActions>
+///           <DrawerCloseButton onclick={onclose} />
+///         </DrawerActions>
+///       </DrawerHead>
+///     </DrawerPanelContent>
+///   );
+///
+///   html!(
+///     <>
+///       <Button variant={ButtonVariant::Primary} {onclick}>{"Toggle drawer"}</Button>
+///       <Drawer expanded={*expanded}>
+///         <DrawerContent {panel_content}>
+///           <DrawerContentBody>
+///             { "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pretium est a porttitor vehicula. Quisque vel commodo urna. Morbi mattis rutrum ante, id vehicula ex accumsan ut. Morbi viverra, eros vel porttitor facilisis, eros purus aliquet erat,nec lobortis felis elit pulvinar sem. Vivamus vulputate, risus eget commodo eleifend, eros nibh porta quam, vitae lacinia leo libero at magna. Maecenas aliquam sagittis orci, et posuere nisi ultrices sit amet. Aliquam ex odio, malesuada sed posuere quis, pellentesque at mauris. Phasellus venenatis massa ex, eget pulvinar libero auctor pretium. Aliquam erat volutpat. Duis euismod justo in quam ullamcorper, in commodo massa vulputate." }
+///           </DrawerContentBody>
+///         </DrawerContent>
+///       </Drawer>
+///     </>
+///   )
+/// }
+/// ```
+///
+/// For more examples, see the PatternFly Yew Quickstart project.
 #[function_component(Drawer)]
 pub fn drawer(props: &DrawerProperties) -> Html {
     let mut class = classes!("pf-v5-c-drawer");
