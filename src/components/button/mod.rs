@@ -111,6 +111,8 @@ pub struct ButtonProperties {
     pub aria_haspopup: Option<AttrValue>,
     #[prop_or_default]
     pub aria_expanded: Option<AttrValue>,
+    #[prop_or_default]
+    pub aria_controls: Option<AttrValue>,
 
     #[prop_or_default]
     pub r#type: ButtonType,
@@ -215,6 +217,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             aria-labelledby={&props.aria_labelledby}
             aria-haspopup={&props.aria_haspopup}
             aria-expanded={&props.aria_expanded}
+            aria-controls={&props.aria_controls}
          >
              if props.loading {
                  <span class="pf-v5-c-button__progress">

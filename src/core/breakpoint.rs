@@ -431,4 +431,14 @@ mod test {
         let prop: WithBreakpoints<MockVariant> = [MockVariant::Baz.all()].into();
         assert_eq!(prop.as_classes(), Classes::from("foo bar"));
     }
+
+    #[test]
+    fn test_map() {
+        let prop: WithBreakpoints<bool> = [true.all(), true.lg()].into();
+        assert_eq!(
+            prop.mapped(|f| f.then(|| "static".to_string()))
+                .as_classes(),
+            Classes::from("static static-on-lg")
+        );
+    }
 }
