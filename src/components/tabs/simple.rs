@@ -1,12 +1,24 @@
 use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
-use std::rc::Rc;
+use std::borrow::Cow;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
+
+#[derive(PartialEq, Eq, Clone)]
+pub struct TabsContext<T>
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
+    pub selected: T,
+}
 
 /// Properties for [`Tabs`]
 #[derive(Clone, Debug, Properties, PartialEq)]
-pub struct TabsProperties {
+pub struct TabsProperties<T>
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
     #[prop_or_default]
-    pub children: ChildrenWithProps<Tab>,
+    pub children: ChildrenWithProps<Tab<T>>,
 
     #[prop_or_default]
     pub id: String,
@@ -26,11 +38,10 @@ pub struct TabsProperties {
     #[prop_or_default]
     pub detached: bool,
     #[prop_or_default]
-    pub onselect: Callback<usize>,
+    pub onselect: Callback<T>,
 
     /// Set the current active tab, overrides the internal state.
-    #[prop_or_default]
-    pub active: Option<usize>,
+    pub selected: T,
 }
 
 /// Tabs component
@@ -42,30 +53,67 @@ pub struct TabsProperties {
 /// ## Properties
 ///
 /// Defined by [`TabsProperties`].
+///
+/// ## Example
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   #[derive(Clone, Copy, PartialEq, Eq)]
+///   enum MyIndex {
+///     Foo,
+///     Bar,
+///   }
+///
+///   let selected = use_state_eq(|| MyIndex::Foo);
+///   let onselect = use_callback(|index, selected| selected.set(index), selected.clone());
+///
+///   html!(
+///     <Tabs<MyIndex> selected={*selected} {onselect}>
+///       <Tab<MyIndex> index={MyIndex::Foo} title="Foo">
+///         {"Foo"}
+///       </Tab<MyIndex>>
+///       <Tab<MyIndex> index={MyIndex::Bar} title="Bar">
+///         {"Bar"}
+///       </Tab<MyIndex>>
+///     </Tabs<MyIndex>>
+///   )
+/// }
+/// ```
+///
+/// For more examples, see the PatternFly Yew Quickstart project.
 #[function_component(Tabs)]
-pub fn tabs(props: &TabsProperties) -> Html {
-    let active = use_state_eq(|| props.active.unwrap_or_default());
-
-    let mut classes = classes!("pf-v5-c-tabs");
+pub fn tabs<T>(props: &TabsProperties<T>) -> Html
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
+    let mut class = classes!("pf-v5-c-tabs");
 
     if props.r#box {
-        classes.push("pf-m-box");
+        class.push(classes!("pf-m-box"));
     }
 
     if props.vertical {
-        classes.push("pf-m-vertical");
+        class.push(classes!("pf-m-vertical"));
     }
 
     if props.filled {
-        classes.push("pf-m-fill");
+        class.push(classes!("pf-m-fill"));
     }
 
-    classes.extend_from(&props.inset);
+    class.extend_from(&props.inset);
+
+    let context = TabsContext {
+        selected: props.selected.clone(),
+    };
 
     html! (
-        <>
+        <ContextProvider<TabsContext<T>> {context}>
             <div
-                class={classes}
+                {class}
                 id={props.id.clone()}
             >
                 <button
@@ -77,20 +125,17 @@ pub fn tabs(props: &TabsProperties) -> Html {
                     { Icon::AngleLeft }
                 </button>
                 <ul class="pf-v5-c-tabs__list">
-                    { for props.children.iter().enumerate().map(|(idx, c)|{
-                        let current = *active == idx;
-                        let active = active.clone();
+                    { for props.children.iter().map(|c| {
                         let onselect = props.onselect.clone();
-                        let onselect = Callback::from(move |_| {
-                            onselect.emit(idx);
-                            active.set(idx);
-                        });
-                        html!(<TabHeaderItem
-                            label={c.props.label.clone()}
-                            icon={c.props.icon.clone()}
-                            {current}
-                            {onselect}
-                        />)
+                        html!(
+                            <TabHeaderItem<T>
+                                icon={c.props.icon.clone()}
+                                index={c.props.index.clone()}
+                                {onselect}
+                            >
+                                { c.props.title.clone() }
+                            </TabHeaderItem<T>>
+                        )
                     }) }
                 </ul>
                 <button
@@ -104,13 +149,9 @@ pub fn tabs(props: &TabsProperties) -> Html {
             </div>
 
             if !props.detached {
-                { for props.children.iter().enumerate().map(|(idx, mut c)| {
-                    let props = Rc::make_mut(&mut c.props);
-                    props.current = *active == idx;
-                    c
-                }) }
+                { for props.children.iter() }
             }
-        </>
+        </ContextProvider<TabsContext<T>>>
     )
 }
 
@@ -132,58 +173,124 @@ impl AsClasses for TabInset {
 }
 
 #[derive(Clone, Debug, Properties, PartialEq)]
-struct TabHeaderItemProperties {
-    pub label: String,
+struct TabHeaderItemProperties<T>
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
+    #[prop_or_default]
+    pub children: Children,
+
     #[prop_or_default]
     pub icon: Option<Icon>,
 
     #[prop_or_default]
-    pub(crate) onselect: Callback<()>,
-    #[prop_or_default]
-    pub(crate) current: bool,
+    pub onselect: Callback<T>,
+
+    pub index: T,
 }
 
 #[function_component(TabHeaderItem)]
-fn tab_header_item(props: &TabHeaderItemProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-tabs__item");
+fn tab_header_item<T>(props: &TabHeaderItemProperties<T>) -> Html
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
+    let context = use_context::<TabsContext<T>>();
+    let current = context
+        .map(|context| context.selected == props.index)
+        .unwrap_or_default();
 
-    if props.current {
-        classes.push("pf-m-current");
+    let mut class = Classes::from("pf-v5-c-tabs__item");
+
+    if current {
+        class.push("pf-m-current");
     }
 
+    let onclick = use_callback(
+        |_, (index, onselect)| {
+            onselect.emit(index.clone());
+        },
+        (props.index.clone(), props.onselect.clone()),
+    );
+
     html! (
-        <li class={classes}>
-            <button class="pf-v5-c-tabs__link" onclick={props.onselect.reform(|_|())}>
+        <li {class}>
+            <button class="pf-v5-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {
                     <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
                 }
-                <span class="pf-v5-c-tabs__item-text"> { &props.label } </span>
+                <span class="pf-v5-c-tabs__item-text">
+                    { for props.children.iter() }
+                </span>
             </button>
         </li>
     )
 }
 
+#[derive(Clone, PartialEq)]
+pub enum TabTitle {
+    String(Cow<'static, str>),
+    Children(Children),
+}
+
+impl IntoPropValue<TabTitle> for String {
+    fn into_prop_value(self) -> TabTitle {
+        TabTitle::String(self.into())
+    }
+}
+
+impl IntoPropValue<TabTitle> for &'static str {
+    fn into_prop_value(self) -> TabTitle {
+        TabTitle::String(self.into())
+    }
+}
+
+impl IntoPropValue<TabTitle> for Children {
+    fn into_prop_value(self) -> TabTitle {
+        TabTitle::Children(self)
+    }
+}
+
+impl From<TabTitle> for Html {
+    fn from(value: TabTitle) -> Self {
+        match value {
+            TabTitle::String(s) => s.into(),
+            TabTitle::Children(children) => children.into_iter().collect(),
+        }
+    }
+}
+
 /// Properties for [`Tab`]
-#[derive(Clone, Debug, Properties, PartialEq)]
-pub struct TabProperties {
-    pub label: String,
+#[derive(Properties, PartialEq)]
+pub struct TabProperties<T>
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
+    pub title: TabTitle,
+
     #[prop_or_default]
     pub icon: Option<Icon>,
 
     #[prop_or_default]
     pub children: Children,
 
-    #[prop_or_default]
-    pub(crate) current: bool,
+    pub index: T,
 }
 
 /// A tab in a [`Tabs`] component
 #[function_component(Tab)]
-pub fn tab(props: &TabProperties) -> Html {
+pub fn tab<T>(props: &TabProperties<T>) -> Html
+where
+    T: PartialEq + Eq + Clone + 'static,
+{
     let class = Classes::from("pf-v5-c-tab-content");
 
+    let context = use_context::<TabsContext<T>>();
+    let current = context
+        .map(|context| context.selected == props.index)
+        .unwrap_or_default();
+
     html! (
-        <section {class} hidden={!props.current}>
+        <section {class} hidden={!current}>
             { for props.children.iter() }
         </section>
     )
