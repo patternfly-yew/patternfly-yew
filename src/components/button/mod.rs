@@ -109,6 +109,8 @@ pub struct ButtonProperties {
     pub aria_labelledby: Option<AttrValue>,
     #[prop_or_default]
     pub aria_haspopup: Option<AttrValue>,
+    #[prop_or_default]
+    pub aria_expanded: Option<AttrValue>,
 
     #[prop_or_default]
     pub r#type: ButtonType,
@@ -199,17 +201,20 @@ pub fn button(props: &ButtonProperties) -> Html {
 
     html! (
          <button
-             ref={node_ref}
-             id={props.id.clone()}
-             class={classes}
-             style={props.style.clone()}
-             disabled={props.disabled}
-             type={props.r#type}
-             {onclick}
-             role={props.role.clone()}
-             form={props.form.clone()}
-             formaction={props.formaction.clone()}
-             aria-label={props.aria_label.clone()}
+            ref={node_ref}
+            id={props.id.clone()}
+            class={classes}
+            style={props.style.clone()}
+            disabled={props.disabled}
+            type={props.r#type}
+            {onclick}
+            role={props.role.clone()}
+            form={props.form.clone()}
+            formaction={props.formaction.clone()}
+            aria-label={props.aria_label.clone()}
+            aria-labelledby={&props.aria_labelledby}
+            aria-haspopup={&props.aria_haspopup}
+            aria-expanded={&props.aria_expanded}
          >
              if props.loading {
                  <span class="pf-v5-c-button__progress">
