@@ -7,7 +7,13 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TextInputGroupProperties {
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub children: Children,
@@ -33,12 +39,14 @@ pub struct TextInputGroupProperties {
 pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
     let mut class = classes!("pf-v5-c-text-input-group");
 
+    class.extend(props.class.clone());
+
     if props.disabled {
         class.extend(classes!("pf-m-disabled"));
     }
 
     html!(
-        <div {class} id={&props.id}>
+        <div {class} id={&props.id} style={&props.style}>
             { for props.children.iter() }
         </div>
     )
@@ -46,12 +54,21 @@ pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TextInputGroupMainProperties {
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+
     /// The value of the input component
     #[prop_or_default]
     pub value: String,
 
     #[prop_or_default]
-    pub placeholder: AttrValue,
+    pub placeholder: Option<AttrValue>,
 
     #[prop_or_default]
     pub icon: Option<Html>,
@@ -61,7 +78,7 @@ pub struct TextInputGroupMainProperties {
     pub disabled: bool,
 
     #[prop_or_default]
-    pub aria_label: AttrValue,
+    pub aria_label: Option<AttrValue>,
 
     #[prop_or_default]
     pub onchange: Callback<String>,
@@ -70,10 +87,10 @@ pub struct TextInputGroupMainProperties {
     pub oninput: Callback<InputEvent>,
 
     #[prop_or_default]
-    pub r#type: AttrValue,
+    pub r#type: Option<AttrValue>,
 
     #[prop_or_default]
-    pub inputmode: AttrValue,
+    pub inputmode: Option<AttrValue>,
 
     #[prop_or_default]
     pub onkeydown: Callback<KeyboardEvent>,
@@ -85,6 +102,7 @@ pub struct TextInputGroupMainProperties {
 #[function_component(TextInputGroupMain)]
 pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     let mut class = classes!("pf-v5-c-text-input-group__main");
+    class.extend(props.class.clone());
 
     if props.icon.is_some() {
         class.push(classes!("pf-m-icon"));
@@ -118,7 +136,11 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     // render
 
     html!(
-        <div {class}>
+        <div
+            {class}
+            id={&props.id}
+            style={&props.style}
+        >
             <span class="pf-v5-c-text-input-group__text">
                 if let Some(icon) = &props.icon {
                     <span class="pf-v5-c-text-input-group__icon">
