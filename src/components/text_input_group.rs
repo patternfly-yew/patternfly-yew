@@ -1,5 +1,6 @@
 //! Text Input Group
 
+use crate::prelude::focus;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -76,6 +77,9 @@ pub struct TextInputGroupMainProperties {
 
     #[prop_or_default]
     pub onkeydown: Callback<KeyboardEvent>,
+
+    #[prop_or_default]
+    pub autofocus: bool,
 }
 
 #[function_component(TextInputGroupMain)]
@@ -96,6 +100,22 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
         },
         (node_ref.clone(), props.onchange.clone()),
     );
+
+    // autofocus
+
+    {
+        let autofocus = props.autofocus;
+        use_effect_with_deps(
+            move |input_ref| {
+                if autofocus {
+                    focus(input_ref)
+                }
+            },
+            node_ref.clone(),
+        );
+    }
+
+    // render
 
     html!(
         <div {class}>
