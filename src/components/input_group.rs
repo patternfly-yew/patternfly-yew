@@ -6,6 +6,12 @@ use yew::prelude::*;
 /// Properties for [`InputGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct InputGroupProperties {
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+
     pub children: Children,
 
     #[prop_or_default]
@@ -33,12 +39,14 @@ pub struct InputGroupProperties {
 pub fn input_group(props: &InputGroupProperties) -> Html {
     let mut class = classes!("pf-v5-c-input-group");
 
+    class.extend(props.class.clone());
+
     if props.plain {
         class.push(classes!("pf-m-plain"));
     }
 
     html! (
-        <div {class} aria-label={&props.aria_label}>
+        <div {class} aria-label={&props.aria_label} style={&props.style}>
             { for props.children.iter() }
         </div>
     )
@@ -58,7 +66,13 @@ pub fn input_group_text(props: &ChildrenProperties) -> Html {
 pub struct InputGroupItemProperties {
     /// The element's ID
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
 
     #[prop_or_default]
     pub plain: bool,
@@ -97,8 +111,10 @@ pub fn input_group_item(props: &InputGroupItemProperties) -> Html {
         class.push(classes!("pf-m-disabled"));
     }
 
+    class.extend(props.class.clone());
+
     html!(
-        <div {class} id={&props.id}>
+        <div {class} id={&props.id} style={&props.style}>
             { for props.children.iter() }
         </div>
     )
