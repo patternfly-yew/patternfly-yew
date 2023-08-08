@@ -1,6 +1,8 @@
 //! Flex
 
-use crate::prelude::{AsClasses, ExtendClasses, Raw, SpaceItems, Spacer, WithBreakpoints};
+use crate::prelude::{
+    AsClasses, ChildrenProperties, ExtendClasses, Raw, SpaceItems, Spacer, WithBreakpoints,
+};
 use std::{fmt::Debug, rc::Rc};
 use yew::{
     html::ChildrenRenderer,
@@ -100,6 +102,12 @@ impl From<FlexProperties> for FlexChild {
 impl From<FlexItemProperties> for FlexChild {
     fn from(props: FlexItemProperties) -> Self {
         FlexChild::FlexItem(Rc::new(props))
+    }
+}
+
+impl From<ChildrenProperties> for FlexChild {
+    fn from(props: ChildrenProperties) -> Self {
+        FlexChild::Raw(Rc::new(props))
     }
 }
 
