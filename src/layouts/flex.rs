@@ -1,6 +1,6 @@
 //! Flex
 
-use crate::prelude::{AsClasses, ExtendClasses, SpaceItems, Spacer, WithBreakpoints};
+use crate::prelude::{AsClasses, ExtendClasses, Raw, SpaceItems, Spacer, WithBreakpoints};
 use std::{fmt::Debug, rc::Rc};
 use yew::{
     html::ChildrenRenderer,
@@ -88,6 +88,7 @@ impl AsClasses for FlexModifier {
 pub enum FlexChild {
     Flex(Rc<<Flex as BaseComponent>::Properties>),
     FlexItem(Rc<<FlexItem as BaseComponent>::Properties>),
+    Raw(Rc<<Raw as BaseComponent>::Properties>),
 }
 
 impl From<FlexProperties> for FlexChild {
@@ -124,6 +125,7 @@ impl Into<Html> for FlexChildVariant {
         match self.props {
             FlexChild::Flex(props) => VComp::new::<Flex>(props, None).into(),
             FlexChild::FlexItem(props) => VComp::new::<FlexItem>(props, None).into(),
+            FlexChild::Raw(props) => VComp::new::<Raw>(props, None).into(),
         }
     }
 }
