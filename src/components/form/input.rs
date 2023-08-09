@@ -1,6 +1,6 @@
 use crate::prelude::{
-    focus, value, Icon, InputState, ValidatingComponent, ValidatingComponentProperties,
-    ValidationContext,
+    focus, use_on_text_change, value, Icon, InputState, ValidatingComponent,
+    ValidatingComponentProperties, ValidationContext,
 };
 
 use yew::html::IntoPropValue;
@@ -196,20 +196,14 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     }
 
     // change events
-
     let onchange = use_callback(
-        |_, (onchange, onvalidate, input_ref)| {
-            if let Some(new_value) = value(input_ref) {
-                onchange.emit(new_value.clone());
-                onvalidate.emit(new_value.into());
-            }
+        |new_value: String, (onchange, onvalidate)| {
+            onchange.emit(new_value.clone());
+            onvalidate.emit(new_value.into());
         },
-        (
-            props.onchange.clone(),
-            props.onvalidate.clone(),
-            input_ref.clone(),
-        ),
+        (props.onchange.clone(), props.onvalidate.clone()),
     );
+    let oninput = use_on_text_change(input_ref.clone(), props.oninput.clone(), onchange);
 
     let icon_html = if let Some(icon) = props.icon {
         Some(html!(
@@ -247,8 +241,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 placeholder={&props.placeholder}
                 form={&props.form}
                 autocomplete={&props.autocomplete}
-                {onchange}
-                oninput={props.oninput.clone()}
+                {oninput}
                 onkeydown={&props.onkeydown}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}

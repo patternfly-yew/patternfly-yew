@@ -1,5 +1,5 @@
 use crate::prelude::{
-    focus, value, AsClasses, ExtendClasses, InputState, ValidatingComponent,
+    focus, use_on_text_change, value, AsClasses, ExtendClasses, InputState, ValidatingComponent,
     ValidatingComponentProperties, ValidationContext,
 };
 
@@ -200,18 +200,13 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
     // change events
 
     let onchange = use_callback(
-        |_, (onchange, onvalidate, input_ref)| {
-            if let Some(new_value) = value(input_ref) {
-                onchange.emit(new_value.clone());
-                onvalidate.emit(new_value.into());
-            }
+        |new_value: String, (onchange, onvalidate)| {
+            onchange.emit(new_value.clone());
+            onvalidate.emit(new_value.into());
         },
-        (
-            props.onchange.clone(),
-            props.onvalidate.clone(),
-            input_ref.clone(),
-        ),
+        (props.onchange.clone(), props.onvalidate.clone()),
     );
+    let oninput = use_on_text_change(input_ref.clone(), props.oninput.clone(), onchange);
 
     html!(
         <div class={classes}>
@@ -234,8 +229,7 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
                 wrap={props.wrap.to_string()}
                 spellcheck={&props.spellcheck}
 
-                {onchange}
-                oninput={props.oninput.clone()}
+                {oninput}
             />
             if props.state != InputState::Default {
                 <div class="pf-v5-c-form-control__utilities">

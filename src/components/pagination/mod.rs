@@ -4,7 +4,7 @@ mod simple;
 pub use simple::*;
 
 use crate::prelude::{
-    on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
+    use_on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
     TextInputType, ValidationContext, Validator,
 };
 use yew::prelude::*;
@@ -148,13 +148,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         );
 
     // toggle
-
-    let ontoggle = {
-        let expanded = expanded.clone();
-        Callback::from(move |_| {
-            expanded.set(!*expanded);
-        })
-    };
+    let ontoggle = use_callback(
+        |_, expanded| {
+            expanded.set(!**expanded);
+        },
+        expanded.clone(),
+    );
 
     let node = use_node_ref();
     {
@@ -166,35 +165,32 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // page input field
 
-    // the state of the input
+    // the validation state of the input
     let input_state = use_state_eq(InputState::default);
-    // the parsed input
+    // the parsed input (zero based)
     let input = use_state_eq(|| 0);
     // the raw input of the page number field
     let input_text = use_state_eq(|| Some((current_page + 1).to_string()));
+
     if input_text.is_none() {
         input_text.set(Some((current_page + 1).to_string()));
     }
 
-    let onkeydown = {
-        let input = input.clone();
-        let onnavigation = props.onnavigation.clone();
-        on_enter(move || {
-            let mut page = *input;
+    let onkeydown = use_on_enter(
+        |(input, onnavigation)| {
+            let mut page = **input;
             if page > 0 {
                 // humans start with 1, we use 0.
                 page -= 1;
             }
+            log::debug!("Emit page change: {page}");
             onnavigation.emit(Navigation::Page(page));
-        })
-    };
+        },
+        (input.clone(), props.onnavigation.clone()),
+    );
 
-    let onchange = {
-        let input = input.clone();
-        let input_text = input_text.clone();
-        let page_number_field_validator = page_number_field_validator.clone();
-        let input_state = input_state.clone();
-        Callback::from(move |text: String| {
+    let onchange = use_callback(
+        |text: String, (input, input_text, page_number_field_validator, input_state)| {
             input_text.set(Some(text.clone()));
 
             let state = page_number_field_validator
@@ -205,18 +201,25 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 input.set(text.parse().unwrap_or_default());
             }
 
-            input_state.set(state);
-        })
-    };
+            log::debug!("New prepared page value: {:?} / {}", **input_text, **input);
 
-    let onnavigation = {
-        let onnavigation = props.onnavigation.clone();
-        let input_text = input_text.clone();
-        Callback::from(move |nav| {
+            input_state.set(state);
+        },
+        (
+            input.clone(),
+            input_text.clone(),
+            page_number_field_validator.clone(),
+            input_state.clone(),
+        ),
+    );
+
+    let onnavigation = use_callback(
+        |nav, (onnavigation, input_text)| {
             input_text.set(None);
             onnavigation.emit(nav);
-        })
-    };
+        },
+        (props.onnavigation.clone(), input_text.clone()),
+    );
 
     // Page number can be changed through props, therefore input_text should watch props
     {
@@ -231,15 +234,13 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     }
 
     // on limit change
-
-    let onlimit = {
-        let onlimit = props.onlimit.clone();
-        let input_text = input_text.clone();
-        Callback::from(move |limit| {
+    let onlimit = use_callback(
+        |limit, (onlimit, input_text)| {
             input_text.set(None);
             onlimit.emit(limit);
-        })
-    };
+        },
+        (props.onlimit.clone(), input_text.clone()),
+    );
 
     // The main div
     let pagination_classes = match &props.position {
@@ -346,8 +347,8 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {onchange}
                         {onkeydown}
                         state={(*input_state).clone()}
-                        value={(*input_text).clone().unwrap_or_default()}
-                        disabled={ props.disabled }
+                        value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string()) }
+                        disabled={props.disabled}
                     />
                 if let Some(max_page) = max_page {
                     <span aria-hidden="true">{ "of "} { max_page }</span>

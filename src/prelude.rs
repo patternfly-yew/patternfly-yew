@@ -65,5 +65,7 @@ pub use crate::layouts::grid::*;
 pub use crate::layouts::split::*;
 pub use crate::layouts::stack::*;
 
+pub use crate::hooks::enter::*;
 pub use crate::hooks::id::*;
 pub use crate::hooks::pagination::*;
+pub use crate::hooks::text_change::*;

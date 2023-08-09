@@ -17,8 +17,7 @@ pub use raw::*;
 pub use styled::*;
 
 use std::fmt::{Debug, Display, Formatter};
-use web_sys::KeyboardEvent;
-use yew::{html::IntoPropValue, AttrValue, Callback};
+use yew::{html::IntoPropValue, AttrValue};
 
 /// Create a random ID.
 ///
@@ -59,13 +58,4 @@ impl IntoPropValue<Option<AttrValue>> for Id {
     fn into_prop_value(self) -> Option<AttrValue> {
         Some(self.to_string().into())
     }
-}
-
-/// Create a new callback handling only the case when the user pressed the enter key.
-pub fn on_enter<F: Fn() + 'static>(f: F) -> Callback<KeyboardEvent> {
-    Callback::from(move |evt: KeyboardEvent| {
-        if evt.key_code() == 13 {
-            f()
-        }
-    })
 }

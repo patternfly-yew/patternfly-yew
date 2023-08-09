@@ -1,6 +1,6 @@
 //! Text Input Group
 
-use crate::prelude::focus;
+use crate::prelude::{focus, use_on_text_change};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -109,14 +109,10 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     }
 
     let node_ref = use_node_ref();
-
-    let onchange = use_callback(
-        |_, (node_ref, onchange)| {
-            if let Some(input) = node_ref.cast::<HtmlInputElement>() {
-                onchange.emit(input.value());
-            }
-        },
-        (node_ref.clone(), props.onchange.clone()),
+    let oninput = use_on_text_change(
+        node_ref.clone(),
+        props.oninput.clone(),
+        props.onchange.clone(),
     );
 
     // autofocus
@@ -152,8 +148,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                     ref={node_ref}
                     type={&props.r#type}
                     inputmode={&props.inputmode}
-                    {onchange}
-                    oninput={props.oninput.clone()}
+                    {oninput}
                     disabled={props.disabled}
                     placeholder={&props.placeholder}
                     value={props.value.clone()}
