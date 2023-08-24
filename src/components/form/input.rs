@@ -1,5 +1,5 @@
 use crate::prelude::{
-    focus, use_on_text_change, value, Icon, InputState, ValidatingComponent,
+    focus, use_on_text_change, Icon, InputState, ValidatingComponent,
     ValidatingComponentProperties, ValidationContext,
 };
 

@@ -1,7 +1,6 @@
 //! Text Input Group
 
 use crate::prelude::{focus, use_on_text_change};
-use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
