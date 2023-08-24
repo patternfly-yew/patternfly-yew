@@ -1,3 +1,4 @@
+use super::TabContent;
 use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
 use std::borrow::Cow;
 use yew::html::IntoPropValue;
@@ -290,16 +291,14 @@ pub fn tab<T>(props: &TabProperties<T>) -> Html
 where
     T: PartialEq + Eq + Clone + 'static,
 {
-    let class = Classes::from("pf-v5-c-tab-content");
-
     let context = use_context::<TabsContext<T>>();
     let current = context
         .map(|context| context.selected == props.index)
         .unwrap_or_default();
 
     html! (
-        <section {class} hidden={!current}>
+        <TabContent hidden={!current}>
             { for props.children.iter() }
-        </section>
+        </TabContent>
     )
 }

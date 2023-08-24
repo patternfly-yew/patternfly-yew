@@ -40,3 +40,41 @@ pub fn tab_content_body(props: &TabContentBodyProperties) -> Html {
         </div>
     )
 }
+
+/// Properties for [`TabContent`]
+#[derive(PartialEq, Properties)]
+pub struct TabContentProperties {
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub hidden: bool,
+
+    #[prop_or_default]
+    pub children: Children,
+}
+
+/// Tabs component body.
+///
+/// > A **tab content** component should be used with the tabs component.
+///
+/// See: <https://www.patternfly.org/components/tab-content>
+///
+/// ## Properties
+///
+/// Defined by [`TabContentProperties`].
+#[function_component(TabContent)]
+pub fn tab_content(props: &TabContentProperties) -> Html {
+    let class = Classes::from("pf-v5-c-tab-content");
+
+    html!(
+        <section
+            id={props.id.clone()}
+            {class}
+            hidden={props.hidden}
+            tabindex="0"
+        >
+            { for props.children.iter() }
+        </section>
+    )
+}
