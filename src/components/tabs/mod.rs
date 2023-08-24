@@ -73,6 +73,7 @@ pub fn tab_content(props: &TabContentProperties) -> Html {
             {class}
             hidden={props.hidden}
             tabindex="0"
+            role="tabpanel"
         >
             { for props.children.iter() }
         </section>
