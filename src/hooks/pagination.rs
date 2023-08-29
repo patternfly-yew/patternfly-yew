@@ -7,14 +7,14 @@ use yew::prelude::*;
 pub const DEFAULT_PER_PAGE: usize = 10;
 
 /// The current control (input settings) of the pagination
-#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct PaginationControl {
     pub page: usize,
     pub per_page: usize,
 }
 
 /// The current state of the pagination
-#[derive(Clone, Debug, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct PaginationState {
     pub control: PaginationControl,
     pub total: Option<usize>,
