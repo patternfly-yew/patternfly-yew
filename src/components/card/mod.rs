@@ -137,7 +137,7 @@ pub fn card(props: &CardProperties) -> Html {
         <div
             {class}
             onclick={props.onclick.clone()}
-            id={props.id.clone()}
+            id={props.id}
         >
             { header(props, expanded.clone()) }
 

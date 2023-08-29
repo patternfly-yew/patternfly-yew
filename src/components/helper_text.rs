@@ -141,7 +141,7 @@ pub fn helper_text(props: &HelperTextProperties) -> Html {
                 );
             }
         },
-        (props.component.clone(), props.aria_label.clone()),
+        (props.component, props.aria_label.clone()),
     );
 
     html!(
@@ -279,7 +279,7 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
                 None
             }
         },
-        (props.screen_reader_text.clone(), props.dynamic.clone()),
+        (props.screen_reader_text.clone(), props.dynamic),
     );
 
     html!(

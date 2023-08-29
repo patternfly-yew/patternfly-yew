@@ -194,18 +194,18 @@ where
 
     use_effect_with_deps(
         move |(total, state)| {
-            state.set((**state).clone().change_total(*total));
+            state.set((**state).change_total(*total));
         },
         (total, state.clone()),
     );
 
     let onnavigation = use_callback(
-        |nav: Navigation, state| state.set((**state).clone().navigate(nav)),
+        |nav: Navigation, state| state.set((**state).navigate(nav)),
         state.clone(),
     );
 
     let onperpagechange = use_callback(
-        |per_page, state| state.set((**state).clone().change_per_page(per_page)),
+        |per_page, state| state.set((**state).change_per_page(per_page)),
         state.clone(),
     );
 

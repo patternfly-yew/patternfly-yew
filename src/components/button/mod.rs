@@ -173,7 +173,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             let icon = match icon {
                 Some(i) => html! (
                     <span class={classes}>
-                        { i.clone() }
+                        { *i }
                     </span>
                 ),
                 None => html!(),

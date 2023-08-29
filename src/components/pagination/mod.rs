@@ -346,7 +346,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         r#type={TextInputType::Number}
                         {onchange}
                         {onkeydown}
-                        state={(*input_state).clone()}
+                        state={*input_state}
                         value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string()) }
                         disabled={props.disabled}
                     />

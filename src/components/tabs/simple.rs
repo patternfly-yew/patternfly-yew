@@ -130,7 +130,7 @@ where
                         let onselect = props.onselect.clone();
                         html!(
                             <TabHeaderItem<T>
-                                icon={c.props.icon.clone()}
+                                icon={c.props.icon}
                                 index={c.props.index.clone()}
                                 {onselect}
                             >

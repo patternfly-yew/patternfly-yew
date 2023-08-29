@@ -38,7 +38,7 @@ pub struct TitleProperties {
 pub fn title(props: &TitleProperties) -> Html {
     let mut class = Classes::from("pf-v5-c-title");
 
-    class.extend_from(&props.size.unwrap_or_else(|| match props.level {
+    class.extend_from(&props.size.unwrap_or(match props.level {
         Level::H1 => Size::XXLarge,
         Level::H2 => Size::XLarge,
         Level::H3 => Size::Large,

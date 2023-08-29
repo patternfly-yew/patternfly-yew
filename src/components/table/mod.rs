@@ -310,7 +310,7 @@ where
             // cell attributes
             
             let mut class = classes!("pf-v5-c-table__td");
-            if cell.center == true {
+            if cell.center {
                 class.push("pf-m-center")
             }
             class.extend_from(&cell.text_modifier);

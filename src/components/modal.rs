@@ -97,7 +97,7 @@ pub fn modal(props: &ModalProperties) -> Html {
 
     // escape key
     {
-        let disabled = props.disable_close_escape.clone();
+        let disabled = props.disable_close_escape;
         let onclose = onclose.clone();
         use_event_with_window("keydown", move |e: KeyboardEvent| {
             if !disabled && e.key() == "Escape" {
@@ -111,7 +111,7 @@ pub fn modal(props: &ModalProperties) -> Html {
     let node_ref = use_node_ref();
 
     {
-        let disabled = props.disable_close_click_outside.clone();
+        let disabled = props.disable_close_click_outside;
         let onclose = onclose.clone();
         use_click_away(node_ref.clone(), move |_: Event| {
             if !disabled {

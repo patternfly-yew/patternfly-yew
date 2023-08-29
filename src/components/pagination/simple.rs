@@ -53,7 +53,7 @@ pub fn simple_pagination(props: &SimplePaginationProperties) -> Html {
             total_entries={*total}
             offset={(*state).offset()}
             entries_per_page_choices={props.entries_per_page_choices.clone()}
-            selected_choice={(*state).control.per_page}
+            selected_choice={state.control.per_page}
             onlimit={&onperpagechange}
             onnavigation={&onnavigation}
             style={&props.style}

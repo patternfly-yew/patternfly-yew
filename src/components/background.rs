@@ -92,7 +92,7 @@ pub fn background(props: &BackgroundProperties) -> Html {
     };
 
     if let Some(additional) = &props.additional_style {
-        style.push_str(&additional);
+        style.push_str(additional);
     }
 
     html!(

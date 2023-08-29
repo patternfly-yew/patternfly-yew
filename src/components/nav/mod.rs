@@ -210,12 +210,10 @@ impl Component for NavExpandable {
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
-        if first_render {
-            if self.expanded.is_none() && self.is_expanded(ctx) {
-                // if this is the first render, and we are expanded, we want to stay that way.
-                // Unless a user explicitly toggles.
-                self.expanded = Some(true);
-            }
+        if first_render && self.expanded.is_none() && self.is_expanded(ctx) {
+            // if this is the first render, and we are expanded, we want to stay that way.
+            // Unless a user explicitly toggles.
+            self.expanded = Some(true);
         }
     }
 
