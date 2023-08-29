@@ -51,6 +51,8 @@ pub struct TextInputProperties {
     #[prop_or_default]
     pub value: AttrValue,
     #[prop_or_default]
+    pub size: Option<AttrValue>,
+    #[prop_or_default]
     pub required: bool,
     #[prop_or_default]
     pub disabled: bool,
@@ -232,6 +234,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 type={props.r#type}
                 name={&props.name}
                 id={&props.id}
+                size={&props.size}
                 required={props.required}
                 disabled={props.disabled}
                 readonly={props.readonly}
