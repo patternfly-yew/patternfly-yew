@@ -165,7 +165,7 @@ impl Component for FormGroup {
     }
 }
 
-pub struct FormGroupHelpText<'a>(&'a FormHelperText);
+pub struct FormGroupHelpText<'a>(pub &'a FormHelperText);
 
 impl<'a> FormGroupHelpText<'a> {}
 
