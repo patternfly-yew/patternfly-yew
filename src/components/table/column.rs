@@ -1,4 +1,4 @@
-use crate::prelude::{AsClasses, ExtendClasses};
+use crate::prelude::{AsClasses, ExtendClasses, TextModifier};
 use std::fmt::Debug;
 use yew::prelude::*;
 
@@ -16,6 +16,8 @@ where
     pub center: bool,
     #[prop_or_default]
     pub width: ColumnWidth,
+    #[prop_or_default]
+    pub text_modifier: Option<TextModifier>,
 
     #[doc(hidden)]
     #[prop_or_default]
@@ -81,6 +83,7 @@ where
     }
 
     class.extend_from(&props.width);
+    class.extend_from(&props.text_modifier);
 
     match &props.label {
         None => html! (<th></th>),

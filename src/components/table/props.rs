@@ -30,9 +30,8 @@ impl AsClasses for TableGridMode {
     }
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TextModifier {
-    #[default]
     Wrap,
     NoWrap,
     Truncate,

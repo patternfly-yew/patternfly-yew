@@ -1,7 +1,6 @@
+use super::column::TableColumn;
 use std::fmt::Debug;
 use yew::prelude::*;
-
-use super::column::TableColumn;
 
 /// Properties for [`TableHeader`]
 #[derive(Debug, PartialEq, Clone, Properties)]
