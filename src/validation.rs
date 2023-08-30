@@ -63,10 +63,7 @@ impl<T, S> Default for Validator<T, S> {
 /// Validators are equal if they are still None. Everything else is a change.
 impl<T, S> PartialEq for Validator<T, S> {
     fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Validator::None, Validator::None) => true,
-            _ => false,
-        }
+        matches!((self, other), (Validator::None, Validator::None))
     }
 }
 
