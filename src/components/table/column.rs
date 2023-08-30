@@ -100,8 +100,10 @@ where
         None => html! (<th></th>),
         Some(label) => {
             let th_content = if let Some(onsort) = &props.onsort {
-                let header_context = table_header_context.unwrap();
-                let sort_by_next_status = match header_context.sort_by {
+                let header_context = table_header_context.expect(
+                    "Column must be inside TableHeader, the expected context is defined there",
+                );
+                let sort_by_next_status = match header_context.sortby {
                     Some(val) => {
                         if val.index == props.index {
                             class.push(classes!("pf-m-selected"));
@@ -127,7 +129,7 @@ where
                         class="pf-v5-c-table__button"
                         onclick={
                             {
-                                let on_sort_by = header_context.on_sort_by.clone();
+                                let on_sort_by = header_context.onsort.clone();
                                 let index = props.index.clone();
                                 let asc = sort_by_next_status.1;
                                 let onsort = onsort.clone();

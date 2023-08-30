@@ -16,8 +16,8 @@ pub struct TableHeaderContext<K>
 where
     K: Clone + Eq + 'static,
 {
-    pub sort_by: Option<TableHeaderSortBy<K>>,
-    pub on_sort_by: Callback<Option<TableHeaderSortBy<K>>>,
+    pub sortby: Option<TableHeaderSortBy<K>>,
+    pub onsort: Callback<Option<TableHeaderSortBy<K>>>,
 }
 
 /// Properties for [`TableHeader`]
@@ -46,17 +46,17 @@ pub fn table_header<K>(props: &TableHeaderProperties<K>) -> Html
 where
     K: Clone + Eq + 'static,
 {
-    let sort_by: UseStateHandle<Option<TableHeaderSortBy<K>>> = use_state_eq(|| None);
-    let on_sort_by = {
-        let sort_by = sort_by.clone();
-        Callback::from(move |val: Option<TableHeaderSortBy<K>>| {
-            sort_by.set(val);
-        })
-    };
+    let sortby: UseStateHandle<Option<TableHeaderSortBy<K>>> = use_state_eq(|| None);
+    let onsort = use_callback(
+        |val: Option<TableHeaderSortBy<K>>, sortby| {
+            sortby.set(val);
+        },
+        sortby.clone(),
+    );
 
     let table_header_context = TableHeaderContext {
-        on_sort_by,
-        sort_by: (*sort_by).clone(),
+        onsort,
+        sortby: (*sortby).clone(),
     };
 
     html! (
