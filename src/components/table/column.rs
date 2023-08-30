@@ -1,4 +1,6 @@
-use crate::prelude::{AsClasses, ExtendClasses, TextModifier};
+use crate::prelude::{
+    AsClasses, ExtendClasses, Icon, TableHeaderContext, TableHeaderSortBy, TextModifier,
+};
 use std::fmt::Debug;
 use yew::prelude::*;
 
@@ -22,6 +24,9 @@ where
     #[doc(hidden)]
     #[prop_or_default]
     pub(crate) first_tree_column: bool,
+
+    #[prop_or_default]
+    pub onsort: Option<Callback<TableHeaderSortBy<C>>>,
 }
 
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
@@ -72,6 +77,8 @@ pub fn table_column<K>(props: &TableColumnProperties<K>) -> Html
 where
     K: Clone + Eq + 'static,
 {
+    let table_header_context = use_context::<TableHeaderContext<K>>();
+
     let mut class = classes!("pf-v5-c-table__th");
 
     if props.first_tree_column {
@@ -82,14 +89,80 @@ where
         class.push(classes!("pf-m-center"));
     }
 
+    if props.onsort.is_some() {
+        class.push(classes!("pf-v5-c-table__sort"));
+    }
+
     class.extend_from(&props.width);
     class.extend_from(&props.text_modifier);
 
     match &props.label {
         None => html! (<th></th>),
-        Some(label) => html! (
-            <th {class} scope="col" role="columnheader">{ &label }</th>
-        ),
+        Some(label) => {
+            let th_content = if let Some(onsort) = &props.onsort {
+                let header_context = table_header_context.unwrap();
+                let sort_by_next_status = match header_context.sort_by {
+                    Some(val) => {
+                        if val.index == props.index {
+                            class.push(classes!("pf-m-selected"));
+                        }
+
+                        if val.index == props.index {
+                            let icon = if val.asc {
+                                Icon::LongArrowAltUp
+                            } else {
+                                Icon::LongArrowAltDown
+                            };
+                            (icon, val.asc)
+                        } else {
+                            (Icon::ArrowsAltV, false)
+                        }
+                    }
+                    None => (Icon::ArrowsAltV, false),
+                };
+
+                html_nested!(
+                    <button
+                        type="button"
+                        class="pf-v5-c-table__button"
+                        onclick={
+                            {
+                                let on_sort_by = header_context.on_sort_by.clone();
+                                let index = props.index.clone();
+                                let asc = sort_by_next_status.1;
+                                let onsort = onsort.clone();
+
+                                Callback::from(move |_| {
+                                    let sort_by = TableHeaderSortBy {
+                                        index: index.clone(),
+                                        asc: !asc
+                                    };
+                                    on_sort_by.emit(Some(sort_by.clone()));
+                                    onsort.emit(sort_by.clone());
+                                })
+                            }
+                        }
+                    >
+                        <div class="pf-v5-c-table__button-content">
+                            <span class="pf-v5-c-table__text">{ &label }</span>
+                            <span class="pf-v5-c-table__sort-indicator">
+                                {sort_by_next_status.0}
+                            </span>
+                        </div>
+                    </button>
+                )
+            } else {
+                html_nested!(
+                    <>{ &label }</>
+                )
+            };
+
+            html!(
+                <th {class} scope="col" role="columnheader">
+                    {th_content}
+                </th>
+            )
+        }
     }
 }
 
