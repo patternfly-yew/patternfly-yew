@@ -25,6 +25,10 @@ where
     #[prop_or_default]
     pub(crate) first_tree_column: bool,
 
+    // Current sortby status
+    #[prop_or_default]
+    pub sortby: Option<TableHeaderSortBy<C>>,
+
     #[prop_or_default]
     pub onsort: Option<Callback<TableHeaderSortBy<C>>>,
 }
@@ -103,7 +107,15 @@ where
                 let header_context = table_header_context.expect(
                     "Column must be inside TableHeader, the expected context is defined there",
                 );
-                let sort_by_next_status = match header_context.sortby {
+
+                // If status of sort is not provided by user then use the context
+                let sortby = if props.sortby.is_some() {
+                    &props.sortby
+                } else {
+                    &header_context.sortby
+                };
+
+                let sort_by_next_status = match sortby {
                     Some(val) => {
                         if val.index == props.index {
                             class.push(classes!("pf-m-selected"));
@@ -129,17 +141,19 @@ where
                         class="pf-v5-c-table__button"
                         onclick={
                             {
-                                let on_sort_by = header_context.onsort.clone();
+                                // Emit sorting in context and in user callback
+                                let onsort_context = header_context.onsort.clone();
+                                let onsort = onsort.clone();
+
                                 let index = props.index.clone();
                                 let asc = sort_by_next_status.1;
-                                let onsort = onsort.clone();
 
                                 Callback::from(move |_| {
                                     let sort_by = TableHeaderSortBy {
                                         index: index.clone(),
                                         asc: !asc
                                     };
-                                    on_sort_by.emit(Some(sort_by.clone()));
+                                    onsort_context.emit(sort_by.clone());
                                     onsort.emit(sort_by.clone());
                                 })
                             }
