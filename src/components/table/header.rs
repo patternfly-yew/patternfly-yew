@@ -2,7 +2,7 @@ use super::column::TableColumn;
 use std::fmt::Debug;
 use yew::prelude::*;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Copy)]
 pub struct TableHeaderSortBy<K>
 where
     K: Clone + Eq + 'static,
@@ -17,7 +17,7 @@ where
     K: Clone + Eq + 'static,
 {
     pub sortby: Option<TableHeaderSortBy<K>>,
-    pub onsort: Callback<Option<TableHeaderSortBy<K>>>,
+    pub onsort: Callback<TableHeaderSortBy<K>>,
 }
 
 /// Properties for [`TableHeader`]
@@ -48,8 +48,8 @@ where
 {
     let sortby: UseStateHandle<Option<TableHeaderSortBy<K>>> = use_state_eq(|| None);
     let onsort = use_callback(
-        |val: Option<TableHeaderSortBy<K>>, sortby| {
-            sortby.set(val);
+        |val: TableHeaderSortBy<K>, sortby| {
+            sortby.set(Some(val));
         },
         sortby.clone(),
     );
