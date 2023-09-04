@@ -65,6 +65,77 @@ where
     }
 }
 
+/// Table component
+///
+/// > A **table** is used to display large data sets that can be easily laid out in a simple grid with column headers.
+///
+/// See: <https://www.patternfly.org/components/table/html>
+///
+/// ## Properties
+///
+/// Defined by [`TableProperties`].
+///
+/// ## Usage
+///
+/// The table component is a more complex component than most others. It is recommended to check
+/// out the more complete examples in the quickstart project: <https://github.com/patternfly-yew/patternfly-yew-quickstart/tree/main/src/components/table>.
+///
+/// Summarizing it, you will need:
+///
+/// * A type defining the column/index (this can be an enum or a numeric like `usize`).
+/// * A type defining an item/entry/row.
+/// * Let the item type implement [`TableEntryRenderer`].
+/// * Create a table state model (e.g. using [`MemoizedTableModel`]).
+/// * Wire up the table state model (e.g. using [`use_table_data`]).
+///
+/// ## Example
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[derive(Copy, Clone, Eq, PartialEq)]
+/// enum Column { First, Second };
+/// struct ExampleEntry { foo: String };
+///
+/// impl TableEntryRenderer<Column> for ExampleEntry {
+///   fn render_cell(&self, context: CellContext<'_, Column>) -> Cell {
+///     match context.column {
+///       Column::First => html!(&self.foo).into(),
+///       Column::Second => html!({self.foo.len()}).into(),
+///     }
+///   }
+/// }
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///
+///   let entries = use_memo(|()| {
+///       vec![
+///           ExampleEntry { foo: "bar".into() },
+///           ExampleEntry {
+///               foo: "Much, much longer foo".into(),
+///           },
+///       ]
+///   }, ());
+///
+///   let (entries, _) = use_table_data(MemoizedTableModel::new(entries));
+///
+///   let header = html_nested! {
+///     <TableHeader<Column>>
+///       <TableColumn<Column> label="foo" index={Column::First} />
+///       <TableColumn<Column> label="bar" index={Column::Second} />
+///     </TableHeader<Column>>
+///  };
+///
+///   html! (
+///     <Table<Column, UseTableData<Column, MemoizedTableModel<ExampleEntry>>>
+///       {header}
+///       {entries}
+///     />
+///   )
+/// }
+/// ```
 #[function_component(Table)]
 pub fn table<C, M>(props: &TableProperties<C, M>) -> Html
 where
