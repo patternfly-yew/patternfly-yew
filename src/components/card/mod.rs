@@ -2,7 +2,7 @@ mod variant;
 
 pub use variant::*;
 
-use crate::prelude::{Button, ButtonType, ButtonVariant, Divider, DividerType, Icon, Id};
+use crate::prelude::{Button, ButtonType, ButtonVariant, Divider, DividerType, Icon};
 use yew::html::ChildrenRenderer;
 use yew::prelude::*;
 
@@ -10,7 +10,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardProperties {
     #[prop_or_default]
-    pub id: Id,
+    pub id: AttrValue,
     #[prop_or_default]
     pub children: ChildrenRenderer<CardBodyVariant>,
     #[prop_or_default]
@@ -37,6 +37,8 @@ pub struct CardProperties {
     pub selectable: bool,
     #[prop_or_default]
     pub selected: bool,
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
     #[prop_or_default]
     pub additional_class: Classes,
     #[prop_or_default]
@@ -137,7 +139,8 @@ pub fn card(props: &CardProperties) -> Html {
         <div
             {class}
             onclick={props.onclick.clone()}
-            id={props.id}
+            id={&props.id}
+            style={&props.style}
         >
             { header(props, expanded.clone()) }
 
@@ -211,7 +214,7 @@ fn header(props: &CardProperties, expanded: UseStateHandle<bool>) -> Html {
                         type="checkbox"
                         id={ id.clone() }
                         name={ id.clone() }
-                        aria_labelledby={ props.id }
+                        aria_labelledby={&props.id}
                         checked={ props.selected }
                         disabled={ props.disabled }
                     />
