@@ -68,7 +68,7 @@ pub fn page(props: &PageProperties) -> Html {
     };
 
     html! (
-        <div class="pf-v5-c-page" id={&props.id}>
+        <div class="pf-v5-c-page" id={&props.id} role="main" tabindex="-1">
             <header class="pf-v5-c-masthead">
                 <span class="pf-v5-c-masthead__toggle">
                     <Button
