@@ -275,12 +275,20 @@ fn card_title(props: &OptionalContentProperties) -> Html {
 pub struct CardBodyProperties {
     #[prop_or_default]
     pub children: Children,
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+    #[prop_or_default]
+    pub additional_class: Classes,
 }
 
 #[function_component(CardBody)]
 pub fn card_body(props: &CardBodyProperties) -> Html {
+    let mut class = classes!("pf-v5-c-card__body");
+
+    class.extend(props.additional_class.clone());
+
     html!(
-        <div class="pf-v5-c-card__body">
+        <div {class} style={&props.style}>
             { props.children.clone() }
         </div>
     )
