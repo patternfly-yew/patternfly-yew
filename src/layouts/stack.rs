@@ -8,6 +8,8 @@ pub struct StackProperties {
     pub children: Children,
     #[prop_or_default]
     pub gutter: bool,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 /// Stack layout
@@ -31,6 +33,8 @@ pub fn stack(props: &StackProperties) -> Html {
     if props.gutter {
         classes.push("pf-m-gutter");
     }
+
+    classes.extend(props.class.clone());
 
     html! (
         <div class={classes}>
