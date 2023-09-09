@@ -44,6 +44,7 @@ web-sys = { version = "0.3", features = [
     "TouchEvent",
     "TouchList",
 ] }
+num-traits = "0.2.16"
 
 [features]
 default = ["router"]
