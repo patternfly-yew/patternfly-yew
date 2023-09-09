@@ -1,11 +1,11 @@
 use crate::prelude::*;
+use chrono::*;
+use num_traits::cast::FromPrimitive;
+use std::str::FromStr;
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
-use chrono::*;
-use num_traits::cast::FromPrimitive;
-use std::str::FromStr;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct CalendarMonthProperties {
@@ -15,14 +15,12 @@ pub struct CalendarMonthProperties {
     pub onchange: Callback<NaiveDate>,
 }
 
-//pub struct CalendarView;
-
 fn build_calendar(date: NaiveDate) -> Vec<Vec<NaiveDate>> {
-    let mut ret : Vec<Vec<NaiveDate>>= Vec::new();
+    let mut ret: Vec<Vec<NaiveDate>> = Vec::new();
     let month = date.month();
     let mut first_date = date.with_day(1).unwrap();
     let mut tmp_date = first_date.week(Weekday::Mon).first_day();
-    let mut tmp : Vec<NaiveDate> = Vec::new();
+    let mut tmp: Vec<NaiveDate> = Vec::new();
 
     // just insert the first week before iterate on all month and stop at the new one
     while first_date.week(Weekday::Mon).days().contains(&tmp_date) {
@@ -54,24 +52,28 @@ fn tmp(date: NaiveDate) -> String {
 
 #[function_component(CalendarView)]
 pub fn calendar(props: &CalendarMonthProperties) -> Html {
-    //let date: DateTime<Local> = use_state(Local::now());
     let date = use_state_eq(|| props.date);
     let weeks = build_calendar(*date);
     let month = tmp(*date);
 
     let my_onchange = props.onchange.clone();
 
-    let callback_test = {
+    let callback_month_select = {
         let date = date.clone();
         let onchange = my_onchange.clone();
-        Callback::from(move |mois: String| {
-            let new = NaiveDate::from_ymd_opt(date.year(), mois.parse::<Month>().unwrap().number_from_month(), date.day()).unwrap();
+        Callback::from(move |month: String| {
+            let new = NaiveDate::from_ymd_opt(
+                date.year(),
+                month.parse::<Month>().unwrap().number_from_month(),
+                date.day(),
+            )
+            .unwrap();
             date.set(new);
             onchange.emit(new);
         })
     };
 
-    let callback_second_test = {
+    let callback_years = {
         let date = date.clone();
         let onchange = my_onchange.clone();
         Callback::from(move |year: String| {
@@ -104,7 +106,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
         })
     };
 
-    html!{
+    html! {
         <div class="pf-v5-c-calendar-month">
             <div class="pf-v5-c-calendar-month__header">
                 <div class="pf-v5-c-calendar-month__header-nav-control pf-m-prev-month">
@@ -119,7 +121,10 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 <InputGroup>
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-month">
-                            <Select<String> initial_selection={Vec::from([month])} variant={SelectVariant::Single(callback_test)}>
+                            <Select<String>
+                                initial_selection={Vec::from([month])}
+                                variant={SelectVariant::Single(callback_month_select)}
+                            >
                                 <SelectOption<String>  value={String::from(Month::January.name())} />
                                 <SelectOption<String>  value={String::from(Month::February.name())} />
                                 <SelectOption<String>  value={String::from(Month::March.name())} />
@@ -137,7 +142,11 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     </InputGroupItem>
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-year">
-                            <TextInput value={date.year().to_string()} r#type={TextInputType::Number} onchange={callback_second_test}>
+                            <TextInput
+                                value={date.year().to_string()}
+                                r#type={TextInputType::Number}
+                                onchange={callback_year}
+                            >
                             </TextInput>
                         </div>
                     </InputGroupItem>
