@@ -145,7 +145,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                             <TextInput
                                 value={date.year().to_string()}
                                 r#type={TextInputType::Number}
-                                onchange={callback_year}
+                                onchange={callback_years}
                             >
                             </TextInput>
                         </div>
@@ -188,9 +188,9 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                 let callback_date = {
                                     let date = date.clone();
                                     let onchange = props.onchange.clone();
-                                    move |day: u32| {
+                                    move |day: NaiveDate| {
                                         Callback::from(move |_| {
-                                            let new = NaiveDate::from_ymd_opt(date.year(), date.month(), day).unwrap();
+                                            let new = NaiveDate::from_ymd_opt(day.year(), day.month(), day.day()).unwrap();
                                             date.set(new);
                                             onchange.emit(new);
                                         })}
@@ -211,7 +211,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                         <Button
                                             class="pf-v5-c-calendar-month__date"
                                             r#type={ButtonType::Button}
-                                            onclick={callback_date(day.day())}
+                                            onclick={callback_date(day)}
                                         >
                                         {day.day()}
                                         </Button>
