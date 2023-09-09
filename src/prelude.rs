@@ -15,6 +15,7 @@ pub use crate::components::brand::*;
 pub use crate::components::brand::*;
 pub use crate::components::breadcrumb::*;
 pub use crate::components::button::*;
+pub use crate::components::calendar::*;
 pub use crate::components::card::*;
 pub use crate::components::chip::*;
 pub use crate::components::chip_group::*;
