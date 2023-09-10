@@ -13,6 +13,8 @@ pub struct CalendarMonthProperties {
     pub date: NaiveDate,
     #[prop_or_default]
     pub onchange: Callback<NaiveDate>,
+    #[prop_or_default]
+    pub rangestart: Option<NaiveDate>,
     #[prop_or(Weekday::Mon)]
     pub weekday_start: Weekday,
 }
@@ -194,6 +196,8 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                 };
 
                                 let mut classes = classes!("pf-v5-c-calendar-month__dates-cell");
+                                let mut classes_button = classes!("pf-v5-c-calendar-month__date");
+
                                 if day == *date {
                                     classes.extend(classes!("pf-m-selected"));
                                 }
@@ -202,13 +206,42 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                     classes.extend(classes!("pf-m-adjacent-month"));
                                 }
 
+                                let before_range = if let Some(range_start) = props.rangestart {
+                                    if day < range_start {
+                                        classes.extend(classes!("pf-m-disabled"));
+                                        classes_button.extend(classes!("pf-m-disabled"));
+                                    }
+
+                                    if day == range_start {
+                                        classes.extend(classes!("pf-m-start-range"));
+                                        classes.extend(classes!("pf-m-selected"));
+                                    }
+
+                                    if day >= range_start && day <= *date {
+                                        classes.extend(classes!("pf-m-in-range"));
+                                    }
+
+                                    if day == *date {
+                                        classes.extend(classes!("pf-m-end-range"));
+                                    }
+
+                                    day < range_start
+                                } else { false };
+
                                 html!{
                                     <>
                                     <td class={classes}>
                                         <Button
+                                            //class={classes_button.to_string()}
                                             class="pf-v5-c-calendar-month__date"
                                             r#type={ButtonType::Button}
+                                            variant={if before_range {
+                                                ButtonVariant::Plain
+                                            } else {
+                                                ButtonVariant::None
+                                            }}
                                             onclick={callback_date(day)}
+                                            disabled={before_range}
                                         >
                                         {day.day()}
                                         </Button>
