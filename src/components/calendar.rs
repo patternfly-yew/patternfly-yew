@@ -164,12 +164,11 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 <thead class="pf-v5-c-calendar-month__days">
                     <tr class="pf-v5-c-calendar-month__days-row">
                     {
-                        weeks[0].clone().into_iter().enumerate().map(|(id, day)| {
+                        weeks[0].clone().into_iter().map(|day| {
                             html!{
                                 <th class="pf-v5-c-calendar-month__day">
                                     <span class="pf-v5-screen-reader">{day.weekday().to_string()}</span>
                                     <span aria-hidden="true">{day.weekday().to_string()}</span>
-                                    //<span aria-hidden>{weekdayFormat(date)}</span>
                                 </th>
                             }
                         }).collect::<Html>()
@@ -178,12 +177,12 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 </thead>
                 <tbody class="pf-v5-c-calendar-month__dates">
                 {
-                    weeks.into_iter().enumerate().map(|(id, week)| {
+                    weeks.into_iter().map(|week| {
                         html!{
                             <>
-                            <tr key={id} class="pf-v5-c-calendar-month__dates-row">
+                            <tr class="pf-v5-c-calendar-month__dates-row">
                             {
-                            week.into_iter().enumerate().map(|(jid, day)| {
+                            week.into_iter().map(|day| {
                                 let callback_date = {
                                     let date = date.clone();
                                     let onchange = props.onchange.clone();
@@ -196,7 +195,6 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                 };
 
                                 let mut classes = classes!("pf-v5-c-calendar-month__dates-cell");
-                                let mut classes_button = classes!("pf-v5-c-calendar-month__date");
 
                                 if day == *date {
                                     classes.extend(classes!("pf-m-selected"));
@@ -209,7 +207,6 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                 let before_range = if let Some(range_start) = props.rangestart {
                                     if day < range_start {
                                         classes.extend(classes!("pf-m-disabled"));
-                                        classes_button.extend(classes!("pf-m-disabled"));
                                     }
 
                                     if day == range_start {
@@ -232,7 +229,6 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                     <>
                                     <td class={classes}>
                                         <Button
-                                            //class={classes_button.to_string()}
                                             class="pf-v5-c-calendar-month__date"
                                             r#type={ButtonType::Button}
                                             variant={if before_range {
