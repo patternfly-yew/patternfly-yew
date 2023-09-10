@@ -13,34 +13,31 @@ pub struct CalendarMonthProperties {
     pub date: NaiveDate,
     #[prop_or_default]
     pub onchange: Callback<NaiveDate>,
+    #[prop_or(Weekday::Mon)]
+    pub weekday_start: Weekday,
 }
 
-fn build_calendar(date: NaiveDate) -> Vec<Vec<NaiveDate>> {
+// Build a vec (month) which contains vecs (weeks) of a month with the first
+// and last day of week, even if they aren't in the same month.
+//
+// The month is set by `date` and the first day of the week by `weekday_start`.
+fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>> {
+    const one_day: Days = Days::new(1);
     let mut ret: Vec<Vec<NaiveDate>> = Vec::new();
-    let month = date.month();
-    let mut first_date = date.with_day(1).unwrap();
-    let mut tmp_date = first_date.week(Weekday::Mon).first_day();
-    let mut tmp: Vec<NaiveDate> = Vec::new();
+    // first day of the week. It's initialized first at the first day of the month
+    let mut first_day = date.with_day(1).unwrap();
+    let mut day = first_day.week(weekday_start).first_day();
+    let mut week: Vec<NaiveDate>;
 
-    // just insert the first week before iterate on all month and stop at the new one
-    while first_date.week(Weekday::Mon).days().contains(&tmp_date) {
-        tmp.push(tmp_date.clone());
-        tmp_date = tmp_date + Days::new(1);
-    }
-
-    ret.push(tmp);
-
-    first_date = first_date.week(Weekday::Mon).last_day() + Days::new(1);
-
-    while first_date.month() == month {
-        tmp = Vec::new();
-        while first_date.week(Weekday::Mon).days().contains(&tmp_date) {
-            tmp.push(tmp_date.clone());
-            tmp_date = tmp_date + Days::new(1);
+    while first_day.month() == date.month() {
+        week = Vec::new();
+        while first_day.week(weekday_start).days().contains(&day) {
+            week.push(day.clone());
+            day = day + one_day;
         }
 
-        first_date = first_date.week(Weekday::Mon).last_day() + Days::new(1);
-        ret.push(tmp);
+        first_day = first_day.week(weekday_start).last_day() + one_day;
+        ret.push(week);
     }
 
     ret
@@ -53,7 +50,7 @@ fn tmp(date: NaiveDate) -> String {
 #[function_component(CalendarView)]
 pub fn calendar(props: &CalendarMonthProperties) -> Html {
     let date = use_state_eq(|| props.date);
-    let weeks = build_calendar(*date);
+    let weeks = build_calendar(*date, props.weekday_start);
     let month = tmp(*date);
 
     let my_onchange = props.onchange.clone();
