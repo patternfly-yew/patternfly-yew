@@ -45,63 +45,57 @@ fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>
     ret
 }
 
-fn tmp(date: NaiveDate) -> String {
-    String::from(Month::from_u32(date.month()).unwrap().name())
+fn tmp(month: u32) -> String {
+    String::from(Month::from_u32(month).unwrap().name())
 }
 
 #[function_component(CalendarView)]
 pub fn calendar(props: &CalendarMonthProperties) -> Html {
+    // the date which is selected by user
     let date = use_state_eq(|| props.date);
-    let weeks = build_calendar(*date, props.weekday_start);
-    let month = tmp(*date);
-
-    let my_onchange = props.onchange.clone();
+    // the date which is showed when the user changes month or year without selecting a new date
+    let show_date = use_state_eq(|| props.date);
+    let weeks = build_calendar(*show_date, props.weekday_start);
 
     let callback_month_select = {
-        let date = date.clone();
-        let onchange = my_onchange.clone();
-        Callback::from(move |month: String| {
-            let new = NaiveDate::from_ymd_opt(
-                date.year(),
-                month.parse::<Month>().unwrap().number_from_month(),
-                date.day(),
-            )
-            .unwrap();
-            date.set(new);
-            onchange.emit(new);
+        let show_date = show_date.clone();
+        Callback::from(move |new_month: String| {
+            if let Some(d) = NaiveDate::from_ymd_opt(
+                show_date.year(),
+                new_month.parse::<Month>().unwrap().number_from_month(),
+                show_date.day(),
+            ) {
+                show_date.set(d);
+            }
         })
     };
 
     let callback_years = {
-        let date = date.clone();
-        let onchange = my_onchange.clone();
-        Callback::from(move |year: String| {
-            if let Ok(y) = i32::from_str(&year) {
-                if let Some(d) = NaiveDate::from_ymd_opt(y, date.month(), date.day()) {
-                    date.set(d);
-                    onchange.emit(d);
+        let show_date = show_date.clone();
+        Callback::from(move |new_year: String| {
+            if let Ok(y) = i32::from_str(&new_year) {
+                if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day()) {
+                    show_date.set(d)
                 }
             }
         })
     };
 
     let callback_prev = {
-        let date = date.clone();
-        let onchange = my_onchange.clone();
+        let show_date = show_date.clone();
         Callback::from(move |_| {
-            let new = *date - Months::new(1);
-            date.set(new);
-            onchange.emit(new);
+            if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
+                show_date.set(d);
+            }
         })
     };
 
     let callback_next = {
-        let date = date.clone();
-        let onchange = my_onchange.clone();
+        let show_date = show_date.clone();
         Callback::from(move |_| {
-            let new = *date + Months::new(1);
-            date.set(new);
-            onchange.emit(new);
+            if let Some(d) = show_date.checked_add_months(Months::new(1)) {
+                show_date.set(d);
+            }
         })
     };
 
@@ -121,7 +115,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-month">
                             <Select<String>
-                                initial_selection={Vec::from([month])}
+                                initial_selection={Vec::from([tmp(show_date.month())])}
                                 variant={SelectVariant::Single(callback_month_select)}
                             >
                                 <SelectOption<String>  value={String::from(Month::January.name())} />
@@ -142,7 +136,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-year">
                             <TextInput
-                                value={date.year().to_string()}
+                                value={show_date.year().to_string()}
                                 r#type={TextInputType::Number}
                                 onchange={callback_years}
                             >
@@ -185,11 +179,13 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                             week.into_iter().map(|day| {
                                 let callback_date = {
                                     let date = date.clone();
+                                    let show_date = show_date.clone();
                                     let onchange = props.onchange.clone();
                                     move |day: NaiveDate| {
                                         Callback::from(move |_| {
                                             let new = NaiveDate::from_ymd_opt(day.year(), day.month(), day.day()).unwrap();
                                             date.set(new);
+                                            show_date.set(new);
                                             onchange.emit(new);
                                         })}
                                 };
@@ -200,7 +196,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                     classes.extend(classes!("pf-m-selected"));
                                 }
 
-                                if day.month() != date.month() {
+                                if day.month() != show_date.month() {
                                     classes.extend(classes!("pf-m-adjacent-month"));
                                 }
 
