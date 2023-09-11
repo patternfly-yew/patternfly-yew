@@ -56,47 +56,61 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     // the date which is showed when the user changes month or year without selecting a new date
     let show_date = use_state_eq(|| props.date);
     let weeks = build_calendar(*show_date, props.weekday_start);
+    let month = tmp(show_date.month());
 
     let callback_month_select = {
         let show_date = show_date.clone();
-        Callback::from(move |new_month: String| {
-            if let Some(d) = NaiveDate::from_ymd_opt(
-                show_date.year(),
-                new_month.parse::<Month>().unwrap().number_from_month(),
-                show_date.day(),
-            ) {
-                show_date.set(d);
-            }
-        })
+        use_callback(
+            move |new_month: String, show_date| {
+                if let Some(d) = NaiveDate::from_ymd_opt(
+                    show_date.year(),
+                    new_month.parse::<Month>().unwrap().number_from_month(),
+                    show_date.day(),
+                ) {
+                    show_date.set(d);
+                }
+            },
+            show_date,
+        )
     };
 
     let callback_years = {
         let show_date = show_date.clone();
-        Callback::from(move |new_year: String| {
-            if let Ok(y) = i32::from_str(&new_year) {
-                if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day()) {
-                    show_date.set(d)
+        use_callback(
+            move |new_year: String, show_date| {
+                if let Ok(y) = i32::from_str(&new_year) {
+                    if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day())
+                    {
+                        show_date.set(d)
+                    }
                 }
-            }
-        })
+            },
+            show_date,
+        )
     };
 
     let callback_prev = {
         let show_date = show_date.clone();
-        Callback::from(move |_| {
-            if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
-                show_date.set(d);
-            }
-        })
+        use_callback(
+            move |_, show_date| {
+                if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
+                    show_date.set(d);
+                }
+            },
+            show_date,
+        )
     };
 
     let callback_next = {
         let show_date = show_date.clone();
-        Callback::from(move |_| {
-            if let Some(d) = show_date.checked_add_months(Months::new(1)) {
-                show_date.set(d);
-            }
-        })
+        use_callback(
+            move |_, show_date| {
+                if let Some(d) = show_date.checked_add_months(Months::new(1)) {
+                    show_date.set(d);
+                }
+            },
+            show_date,
+        )
     };
 
     html! {
@@ -187,7 +201,8 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                             date.set(new);
                                             show_date.set(new);
                                             onchange.emit(new);
-                                        })}
+                                        })
+                                    }
                                 };
 
                                 let mut classes = classes!("pf-v5-c-calendar-month__dates-cell");
