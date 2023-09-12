@@ -8,9 +8,14 @@ pub struct RadioProperties {
     #[prop_or_default]
     pub id: Option<String>,
 
+    /// The input control name, used to group radio buttons together.
     #[prop_or_default]
     pub name: Option<AttrValue>,
 
+    #[prop_or_default]
+    pub value: Option<AttrValue>,
+
+    /// The radio button label content.
     #[prop_or_default]
     pub children: Children,
 
@@ -23,11 +28,16 @@ pub struct RadioProperties {
     #[prop_or_default]
     pub disabled: bool,
 
+    /// A longer description text.
     #[prop_or_default]
     pub description: Children,
 
+    /// Additional content aligned with the label.
     #[prop_or_default]
     pub body: Children,
+
+    /// Event fired when the radio button is checked (but not when unchecked).
+    pub onchange: Callback<()>,
 }
 
 /// Radio button component
@@ -51,6 +61,13 @@ pub fn radio(props: &RadioProperties) -> Html {
         input_class.extend(classes!("pf-m-standalone"));
     }
 
+    let onchange = use_callback(
+        |_, onchange| {
+            onchange.emit(());
+        },
+        props.onchange.clone(),
+    );
+
     let mut first = html!(
         <input
             class={input_class}
@@ -59,6 +76,8 @@ pub fn radio(props: &RadioProperties) -> Html {
             name={&props.name}
             checked={props.checked}
             disabled={props.disabled}
+            value={&props.value}
+            {onchange}
         />
     );
 
