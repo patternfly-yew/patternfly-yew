@@ -37,6 +37,7 @@ pub struct RadioProperties {
     pub body: Children,
 
     /// Event fired when the radio button is checked (but not when unchecked).
+    #[prop_or_default]
     pub onchange: Callback<()>,
 }
 
