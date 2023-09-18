@@ -90,7 +90,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                         <span class="pf-v5-c-menu__item-text">{ for props.children.iter() }</span>
 
                         if props.selected {
-                            <span class="pf-v5-menu__item-select-icon">{ Icon::Check }</span>
+                            <span class="pf-v5-c-menu__item-select-icon">{ Icon::Check }</span>
                         }
                     </span>
                     if let Some(description) = &props.description {

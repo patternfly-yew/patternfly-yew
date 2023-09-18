@@ -1,4 +1,9 @@
 //! Select control
+
+mod select;
+
+pub use select::*;
+
 use crate::prelude::{Chip, GlobalClose, Icon, ListDivider};
 use std::{
     cell::Cell,
