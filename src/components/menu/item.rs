@@ -1,4 +1,5 @@
 use super::use_close_menu_callback;
+use crate::prelude::Icon;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -7,6 +8,7 @@ struct MenuItemProperties {
     pub icon: Option<Html>,
     pub danger: bool,
     pub disabled: bool,
+    pub selected: bool,
     pub r#type: MenuItemType,
     pub description: Option<String>,
 }
@@ -31,11 +33,16 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 
     let onclose = use_close_menu_callback();
 
+    let mut item_class = classes!("pf-v5-c-menu__item");
+    if props.selected {
+        item_class.push(classes!("pf-m-selected"));
+    }
+
     let element = |content: Html| match &props.r#type {
         MenuItemType::Button(callback) => {
             html!(
                 <button
-                    class="pf-v5-c-menu__item"
+                    class={item_class}
                     type="button"
                     role="menuitem"
                     disabled={props.disabled}
@@ -55,7 +62,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 
             html!(
                 <a
-                    class="pf-v5-c-menu__item"
+                    class={item_class}
                     {href} {target}
                     onclick={onclose.reform(|_|())}
                     aria-disabled={props.disabled.to_string()}
@@ -79,7 +86,12 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                         if props.danger {
                             <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
                         }
+
                         <span class="pf-v5-c-menu__item-text">{ for props.children.iter() }</span>
+
+                        if props.selected {
+                            <span class="pf-v5-menu__item-select-icon">{ Icon::Check }</span>
+                        }
                     </span>
                     if let Some(description) = &props.description {
                         <span class="pf-v5-c-menu__item-description"> {description} </span>
@@ -109,6 +121,9 @@ pub struct MenuActionProperties {
 
     #[prop_or_default]
     pub onclick: Callback<()>,
+
+    #[prop_or_default]
+    pub selected: bool,
 }
 
 #[function_component(MenuAction)]
@@ -122,6 +137,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         disabled,
         onclick,
         description,
+        selected,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -131,6 +147,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         disabled,
         r#type: MenuItemType::Button(onclick),
         description,
+        selected,
     };
 
     html!(<MenuItem ..props />)
@@ -157,6 +174,9 @@ pub struct MenuLinkProperties {
 
     #[prop_or_default]
     pub target: AttrValue,
+
+    #[prop_or_default]
+    pub selected: bool,
 }
 
 #[function_component(MenuLink)]
@@ -171,6 +191,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         href,
         target,
         description,
+        selected,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -180,6 +201,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         disabled,
         r#type: MenuItemType::Link { href, target },
         description,
+        selected,
     };
 
     html!(<MenuItem ..props />)
