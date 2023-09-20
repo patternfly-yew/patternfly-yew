@@ -45,29 +45,31 @@ fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>
     ret
 }
 
-fn tmp(month: u32) -> String {
-    String::from(Month::from_u32(month).unwrap().name())
-}
-
 #[function_component(CalendarView)]
 pub fn calendar(props: &CalendarMonthProperties) -> Html {
     // the date which is selected by user
     let date = use_state_eq(|| props.date);
     // the date which is showed when the user changes month or year without selecting a new date
     let show_date = use_state_eq(|| props.date);
+    // an array which contains the week of the selected date
     let weeks = build_calendar(*show_date, props.weekday_start);
-    let month = tmp(show_date.month());
+    // the month of the selected date, used for selector
+    let month = use_state_eq(|| Month::from_u32(props.date.month()).unwrap());
 
     let callback_month_select = {
         let show_date = show_date.clone();
+        let month = month.clone();
         use_callback(
             move |new_month: String, show_date| {
-                if let Some(d) = NaiveDate::from_ymd_opt(
-                    show_date.year(),
-                    new_month.parse::<Month>().unwrap().number_from_month(),
-                    show_date.day(),
-                ) {
-                    show_date.set(d);
+                if let Ok(m) = new_month.parse::<Month>() {
+                    if let Some(d) = NaiveDate::from_ymd_opt(
+                        show_date.year(),
+                        m.number_from_month(),
+                        show_date.day(),
+                    ) {
+                        show_date.set(d);
+                        month.set(m);
+                    }
                 }
             },
             show_date,
@@ -91,10 +93,12 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
 
     let callback_prev = {
         let show_date = show_date.clone();
+        let month = month.clone();
         use_callback(
             move |_, show_date| {
                 if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
                     show_date.set(d);
+                    month.set(month.pred());
                 }
             },
             show_date,
@@ -103,10 +107,12 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
 
     let callback_next = {
         let show_date = show_date.clone();
+        let month = month.clone();
         use_callback(
             move |_, show_date| {
                 if let Some(d) = show_date.checked_add_months(Months::new(1)) {
                     show_date.set(d);
+                    month.set(month.succ());
                 }
             },
             show_date,
@@ -128,23 +134,24 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 <InputGroup>
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-month">
-                            <Select<String>
-                                initial_selection={Vec::from([tmp(show_date.month())])}
-                                variant={SelectVariant::Single(callback_month_select)}
-                            >
-                                <SelectOption<String>  value={String::from(Month::January.name())} />
-                                <SelectOption<String>  value={String::from(Month::February.name())} />
-                                <SelectOption<String>  value={String::from(Month::March.name())} />
-                                <SelectOption<String>  value={String::from(Month::April.name())} />
-                                <SelectOption<String>  value={String::from(Month::May.name())} />
-                                <SelectOption<String>  value={String::from(Month::June.name())} />
-                                <SelectOption<String>  value={String::from(Month::July.name())} />
-                                <SelectOption<String>  value={String::from(Month::August.name())} />
-                                <SelectOption<String>  value={String::from(Month::September.name())} />
-                                <SelectOption<String>  value={String::from(Month::October.name())} />
-                                <SelectOption<String>  value={String::from(Month::November.name())} />
-                                <SelectOption<String>  value={String::from(Month::December.name())} />
-                            </Select<String>>
+                            <SimpleSelect<String>
+                                entries={vec![
+                                    String::from(Month::January.name()),
+                                    String::from(Month::February.name()),
+                                    String::from(Month::March.name()),
+                                    String::from(Month::April.name()),
+                                    String::from(Month::May.name()),
+                                    String::from(Month::June.name()),
+                                    String::from(Month::July.name()),
+                                    String::from(Month::August.name()),
+                                    String::from(Month::September.name()),
+                                    String::from(Month::October.name()),
+                                    String::from(Month::November.name()),
+                                    String::from(Month::December.name())
+                                ]}
+                                selected={String::from(month.name())}
+                                onselect={callback_month_select}
+                            />
                         </div>
                     </InputGroupItem>
                     <InputGroupItem>
@@ -193,6 +200,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                             week.into_iter().map(|day| {
                                 let callback_date = {
                                     let date = date.clone();
+                                    let month = month.clone();
                                     let show_date = show_date.clone();
                                     let onchange = props.onchange.clone();
                                     move |day: NaiveDate| {
@@ -200,6 +208,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                             let new = NaiveDate::from_ymd_opt(day.year(), day.month(), day.day()).unwrap();
                                             date.set(new);
                                             show_date.set(new);
+                                            month.set(Month::from_u32(day.month()).unwrap());
                                             onchange.emit(new);
                                         })
                                     }
