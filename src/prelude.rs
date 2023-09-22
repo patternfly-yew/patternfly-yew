@@ -23,6 +23,7 @@ pub use crate::components::clipboard::*;
 pub use crate::components::code_block::*;
 pub use crate::components::content::*;
 pub use crate::components::context_selector::*;
+pub use crate::components::date::*;
 pub use crate::components::divider::*;
 pub use crate::components::dl::*;
 pub use crate::components::drawer::*;
