@@ -1,11 +1,13 @@
-use crate::prelude::*;
-use chrono::*;
+use crate::prelude::{
+    Button, ButtonType, ButtonVariant, Icon, InputGroup, InputGroupItem, SimpleSelect, TextInput,
+    TextInputType,
+};
+use chrono::{Datelike, Days, Local, Month, Months, NaiveDate, Weekday};
 use num_traits::cast::FromPrimitive;
 use std::str::FromStr;
-use web_sys::HtmlElement;
-use yew::html::IntoPropValue;
-use yew::prelude::*;
-use yew::virtual_dom::AttrValue;
+use yew::{
+    classes, function_component, html, use_callback, use_state_eq, Callback, Html, Properties,
+};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct CalendarMonthProperties {
@@ -24,7 +26,7 @@ pub struct CalendarMonthProperties {
 //
 // The month is set by `date` and the first day of the week by `weekday_start`.
 fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>> {
-    const one_day: Days = Days::new(1);
+    const ONE_DAY: Days = Days::new(1);
     let mut ret: Vec<Vec<NaiveDate>> = Vec::new();
     // first day of the week. It's initialized first at the first day of the month
     let mut first_day = date.with_day(1).unwrap();
@@ -34,11 +36,11 @@ fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>
     while first_day.month() == date.month() {
         week = Vec::new();
         while first_day.week(weekday_start).days().contains(&day) {
-            week.push(day.clone());
-            day = day + one_day;
+            week.push(day);
+            day = day + ONE_DAY;
         }
 
-        first_day = first_day.week(weekday_start).last_day() + one_day;
+        first_day = first_day.week(weekday_start).last_day() + ONE_DAY;
         ret.push(week);
     }
 

@@ -1,5 +1,5 @@
 use crate::prelude::{CalendarView, InputGroup, InputGroupItem, Popover, PopoverBody, TextInput};
-use chrono::{Days, NaiveDate, Weekday};
+use chrono::{NaiveDate, Weekday};
 use std::ops::Deref;
 use yew::{
     function_component, html, html_nested, use_callback, use_state_eq, Callback, Html, Properties,
