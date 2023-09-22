@@ -18,6 +18,7 @@ pub mod clipboard;
 pub mod code_block;
 pub mod content;
 pub mod context_selector;
+pub mod date;
 pub mod divider;
 pub mod dl;
 pub mod drawer;
