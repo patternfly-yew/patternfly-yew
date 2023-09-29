@@ -213,7 +213,7 @@ pub struct HelperTextItemProperties {
     /// component's `aria-describedby` property when you intend for only specific helper text items
     /// to be announced to assistive technologies.
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
     /// Text that is only accessible to screen readers in order to announce the status of the
     /// [`HelperTextItem`]. This property is only used when the `dynamic` is `true`.
     #[prop_or_default]
