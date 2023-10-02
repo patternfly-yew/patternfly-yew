@@ -68,7 +68,9 @@ pub struct FormProperties {
     #[prop_or_default]
     pub onvalidated: Callback<InputState>,
 
+    #[prop_or_default]
     pub validation_warning_title: Option<String>,
+    #[prop_or_default]
     pub validation_error_title: Option<String>,
 
     #[prop_or_default]
