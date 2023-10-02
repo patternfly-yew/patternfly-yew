@@ -7,7 +7,17 @@ use popper_rs::{
 use yew::{prelude::*, virtual_dom::VChild};
 use yew_hooks::use_click_away;
 
-// tooltip
+#[derive(Clone, PartialEq)]
+pub struct PopoverContext {
+    close: Callback<()>,
+}
+
+impl PopoverContext {
+    /// Close the popover
+    pub fn close(&self) {
+        self.close.emit(());
+    }
+}
 
 /// Properties for [`Popover`]
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -67,6 +77,10 @@ pub fn popover(props: &PopoverProperties) -> Html {
 
     let orientation = Orientation::from_popper_data(&state.attributes.popper);
 
+    let context = PopoverContext {
+        close: onclose.clone(),
+    };
+
     html!(
         <>
             <span
@@ -90,16 +104,18 @@ pub fn popover(props: &PopoverProperties) -> Html {
                     Modifier::PreventOverflow(PreventOverflow { padding: 0 }),
                 ]}
             >
-                <PopoverPopup
-                    width_auto={props.width_auto}
-                    no_padding={props.no_padding}
-                    no_close={props.no_close}
-                    r#ref={content_ref}
-                    style={&state.styles.popper.extend_with("z-index", "1000")}
-                    {orientation}
-                    {onclose}
-                    body={props.body.clone()}
-                />
+                <ContextProvider<PopoverContext> {context}>
+                    <PopoverPopup
+                        width_auto={props.width_auto}
+                        no_padding={props.no_padding}
+                        no_close={props.no_close}
+                        r#ref={content_ref}
+                        style={&state.styles.popper.extend_with("z-index", "1000")}
+                        {orientation}
+                        {onclose}
+                        body={props.body.clone()}
+                    />
+                </ContextProvider<PopoverContext>>
             </PortalPopper>
         </>
     )
