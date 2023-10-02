@@ -74,8 +74,8 @@ pub struct DrawerProperties {
 /// fn example() -> Html {
 ///
 ///   let expanded = use_state_eq(|| false);
-///   let onclick = use_callback(|_, expanded| expanded.set(!**expanded), expanded.clone());
-///   let onclose = use_callback(|_, expanded| expanded.set(false) , expanded.clone());
+///   let onclick = use_callback(expanded.clone(), |_, expanded| expanded.set(!**expanded));
+///   let onclose = use_callback( expanded.clone(), |_, expanded| expanded.set(false));
 ///
 ///   let panel_content = html!(
 ///     <DrawerPanelContent>

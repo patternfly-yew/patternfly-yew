@@ -70,7 +70,7 @@ where
 ///   }
 ///
 ///   let selected = use_state_eq(|| MyIndex::Foo);
-///   let onselect = use_callback(|index, selected| selected.set(index), selected.clone());
+///   let onselect = use_callback(selected.clone(), |index, selected| selected.set(index));
 ///
 ///   html!(
 ///     <Tabs<MyIndex> selected={*selected} {onselect}>

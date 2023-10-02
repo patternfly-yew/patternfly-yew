@@ -110,14 +110,14 @@ where
 /// #[function_component(Example)]
 /// fn example() -> Html {
 ///
-///   let entries = use_memo(|()| {
+///   let entries = use_memo((), |()| {
 ///       vec![
 ///           ExampleEntry { foo: "bar".into() },
 ///           ExampleEntry {
 ///               foo: "Much, much longer foo".into(),
 ///           },
 ///       ]
-///   }, ());
+///   });
 ///
 ///   let (entries, _) = use_table_data(MemoizedTableModel::new(entries));
 ///

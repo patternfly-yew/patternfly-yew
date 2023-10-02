@@ -144,9 +144,9 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 /// #[function_component(Example)]
 /// fn example() -> Html {
 ///   let value = use_state_eq(String::default);
-///   let onchange = use_callback(|new_value, value| value.set(new_value), value.clone());
+///   let onchange = use_callback(value.clone(), |new_value, value| value.set(new_value));
 ///
-///   html!(<TextInput {onchange} value={(*value).clone()}/>)
+///   html!(<TextInput {onchange} value={(*value).clone()} />)
 /// }
 /// ```
 #[function_component(TextInput)]
