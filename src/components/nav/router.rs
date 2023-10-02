@@ -34,14 +34,11 @@ where
     let id = use_random_id();
 
     let expandable = use_expandable();
-    use_effect_with_deps(
-        move |_| {
-            if let Some(expandable) = expandable {
-                expandable.state(*id, active)
-            }
-        },
-        active,
-    );
+    use_effect_with(active, move |_| {
+        if let Some(expandable) = expandable {
+            expandable.state(*id, active)
+        }
+    });
 
     if active {
         classes.push("pf-m-current");

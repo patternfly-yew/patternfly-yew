@@ -114,17 +114,14 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
         class.push(classes!("pf-m-limit-width"));
     }
 
-    let ontoggle = {
-        let expanded = expanded.clone();
-        use_callback(
-            move |(), (ontoggle, expanded)| {
-                let new_state = !**expanded;
-                expanded.set(new_state);
-                ontoggle.emit(new_state);
-            },
-            (props.ontoggle.clone(), expanded),
-        )
-    };
+    let ontoggle = use_callback(
+        (props.ontoggle.clone(), expanded.clone()),
+        move |(), (ontoggle, expanded)| {
+            let new_state = !**expanded;
+            expanded.set(new_state);
+            ontoggle.emit(new_state);
+        },
+    );
 
     let expanded = props.expanded.unwrap_or(*expanded);
 
@@ -206,14 +203,9 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
         class.extend(classes!("pf-m-detached"));
     }
 
-    let onclick = {
-        use_callback(
-            |_, ontoggle| {
-                ontoggle.emit(());
-            },
-            props.ontoggle.clone(),
-        )
-    };
+    let onclick = use_callback(props.ontoggle.clone(), |_, ontoggle| {
+        ontoggle.emit(());
+    });
 
     let mut toggle_icon_class = classes!("pf-v5-c-expandable-section__toggle-icon");
     toggle_icon_class.extend_from(&props.direction);

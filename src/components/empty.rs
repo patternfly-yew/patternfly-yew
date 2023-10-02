@@ -62,7 +62,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
                             { *icon }
                         </div>
                     }
-                    <Title size={ props.title_size() }>{&props.title}</Title>
+                    <Title size={ props.title_size() }>{ props.title.clone() }</Title>
                 </div>
                 <div class="pf-v5-c-empty-state__body">
                     { for props.children.iter() }

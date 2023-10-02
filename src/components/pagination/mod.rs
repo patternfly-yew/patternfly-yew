@@ -148,12 +148,9 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         );
 
     // toggle
-    let ontoggle = use_callback(
-        |_, expanded| {
-            expanded.set(!**expanded);
-        },
-        expanded.clone(),
-    );
+    let ontoggle = use_callback(expanded.clone(), |_, expanded| {
+        expanded.set(!**expanded);
+    });
 
     let node = use_node_ref();
     {
@@ -177,6 +174,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     }
 
     let onkeydown = use_on_enter(
+        (input.clone(), props.onnavigation.clone()),
         |(input, onnavigation)| {
             let mut page = **input;
             if page > 0 {
@@ -186,10 +184,15 @@ pub fn pagination(props: &PaginationProperties) -> Html {
             log::debug!("Emit page change: {page}");
             onnavigation.emit(Navigation::Page(page));
         },
-        (input.clone(), props.onnavigation.clone()),
     );
 
     let onchange = use_callback(
+        (
+            input.clone(),
+            input_text.clone(),
+            page_number_field_validator.clone(),
+            input_state.clone(),
+        ),
         |text: String, (input, input_text, page_number_field_validator, input_state)| {
             input_text.set(Some(text.clone()));
 
@@ -205,41 +208,32 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
             input_state.set(state);
         },
-        (
-            input.clone(),
-            input_text.clone(),
-            page_number_field_validator.clone(),
-            input_state.clone(),
-        ),
     );
 
     let onnavigation = use_callback(
+        (props.onnavigation.clone(), input_text.clone()),
         |nav, (onnavigation, input_text)| {
             input_text.set(None);
             onnavigation.emit(nav);
         },
-        (props.onnavigation.clone(), input_text.clone()),
     );
 
     // Page number can be changed through props, therefore input_text should watch props
     {
         let input_text = input_text.clone();
-        use_effect_with_deps(
-            move |tuple| {
-                let r = (tuple.0 as f64 / tuple.1 as f64).ceil() as usize;
-                input_text.set(Some((r + 1).to_string()));
-            },
-            (props.offset, props.selected_choice),
-        );
+        use_effect_with((props.offset, props.selected_choice), move |tuple| {
+            let r = (tuple.0 as f64 / tuple.1 as f64).ceil() as usize;
+            input_text.set(Some((r + 1).to_string()));
+        });
     }
 
     // on limit change
     let onlimit = use_callback(
+        (props.onlimit.clone(), input_text.clone()),
         |limit, (onlimit, input_text)| {
             input_text.set(None);
             onlimit.emit(limit);
         },
-        (props.onlimit.clone(), input_text.clone()),
     );
 
     // The main div

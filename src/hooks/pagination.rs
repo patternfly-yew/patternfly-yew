@@ -192,22 +192,17 @@ where
         total,
     });
 
-    use_effect_with_deps(
-        move |(total, state)| {
-            state.set((**state).change_total(*total));
-        },
-        (total, state.clone()),
-    );
+    use_effect_with((total, state.clone()), move |(total, state)| {
+        state.set((**state).change_total(*total));
+    });
 
-    let onnavigation = use_callback(
-        |nav: Navigation, state| state.set((**state).navigate(nav)),
-        state.clone(),
-    );
+    let onnavigation = use_callback(state.clone(), |nav: Navigation, state| {
+        state.set((**state).navigate(nav))
+    });
 
-    let onperpagechange = use_callback(
-        |per_page, state| state.set((**state).change_per_page(per_page)),
-        state.clone(),
-    );
+    let onperpagechange = use_callback(state.clone(), |per_page, state| {
+        state.set((**state).change_per_page(per_page))
+    });
 
     UsePagination {
         state,

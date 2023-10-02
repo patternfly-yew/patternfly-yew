@@ -145,7 +145,7 @@ pub fn card(props: &CardProperties) -> Html {
             { header(props, expanded.clone()) }
 
             if *expanded {
-                { props.children.clone() }
+                { for props.children.iter() }
 
                 if let Some(content) = &props.footer {
                     <div class="pf-v5-c-card__footer">

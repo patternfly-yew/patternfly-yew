@@ -134,7 +134,7 @@ where
                                 index={c.props.index.clone()}
                                 {onselect}
                             >
-                                { c.props.title.clone() }
+                                { c.props.title.to_html() }
                             </TabHeaderItem<T>>
                         )
                     }) }
@@ -207,10 +207,10 @@ where
     }
 
     let onclick = use_callback(
+        (props.index.clone(), props.onselect.clone()),
         |_, (index, onselect)| {
             onselect.emit(index.clone());
         },
-        (props.index.clone(), props.onselect.clone()),
     );
 
     html! (
@@ -258,9 +258,20 @@ impl IntoPropValue<TabTitle> for Html {
     }
 }
 
-impl From<TabTitle> for Html {
-    fn from(value: TabTitle) -> Self {
-        match value {
+impl ToHtml for TabTitle {
+    fn to_html(&self) -> Html {
+        match self {
+            TabTitle::String(s) => s.into(),
+            TabTitle::Children(children) => children.iter().collect(),
+            TabTitle::Html(html) => html.clone(),
+        }
+    }
+
+    fn into_html(self) -> Html
+    where
+        Self: Sized,
+    {
+        match self {
             TabTitle::String(s) => s.into(),
             TabTitle::Children(children) => children.into_iter().collect(),
             TabTitle::Html(html) => html,

@@ -82,11 +82,11 @@ where
     T: Clone + Eq + SelectItemRenderer + 'static,
 {
     let onclick = use_callback(
+        (props.entry.clone(), props.onselect.clone()),
         |_, (entry, onselect)| {
             log::info!("Emit: {}", entry.label());
             onselect.emit(entry.clone());
         },
-        (props.entry.clone(), props.onselect.clone()),
     );
 
     html!(

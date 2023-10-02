@@ -34,15 +34,15 @@ pub fn popover(props: &PopoverProperties) -> Html {
     let active = use_state_eq(|| false);
 
     let state = use_state_eq(PopperState::default);
-    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
+    let onstatechange = use_callback(state.clone(), |new_state, state| state.set(new_state));
 
     // a reference to the target the user clicks on
     let target_ref = use_node_ref();
     // a reference to the content
     let content_ref = use_node_ref();
 
-    let onclick = use_callback(|_, active| active.set(!**active), active.clone());
-    let onclose = use_callback(|_, active| active.set(false), active.clone());
+    let onclick = use_callback(active.clone(), |_, active| active.set(!**active));
+    let onclose = use_callback(active.clone(), |_, active| active.set(false));
 
     {
         let active = active.clone();

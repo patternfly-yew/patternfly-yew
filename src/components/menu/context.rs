@@ -62,5 +62,5 @@ pub fn use_close_menu() -> UseCloseMenu {
 #[hook]
 pub fn use_close_menu_callback() -> Callback<()> {
     let context = use_close_menu();
-    use_callback(|(), context| context.close(), context)
+    use_callback(context, |(), context| context.close())
 }

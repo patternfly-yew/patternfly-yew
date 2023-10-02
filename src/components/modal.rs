@@ -80,20 +80,17 @@ pub fn modal(props: &ModalProperties) -> Html {
 
     let backdrop = use_backdrop();
 
-    let onclose = use_memo(
-        |(onclose, backdrop)| {
-            let onclose = onclose.clone();
-            let backdrop = backdrop.clone();
-            Callback::from(move |()| {
-                if let Some(onclose) = &onclose {
-                    onclose.emit(());
-                } else if let Some(backdrop) = &backdrop {
-                    backdrop.close();
-                }
-            })
-        },
-        (props.onclose.clone(), backdrop),
-    );
+    let onclose = use_memo((props.onclose.clone(), backdrop), |(onclose, backdrop)| {
+        let onclose = onclose.clone();
+        let backdrop = backdrop.clone();
+        Callback::from(move |()| {
+            if let Some(onclose) = &onclose {
+                onclose.emit(());
+            } else if let Some(backdrop) = &backdrop {
+                backdrop.close();
+            }
+        })
+    });
 
     // escape key
     {

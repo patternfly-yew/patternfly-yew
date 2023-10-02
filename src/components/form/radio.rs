@@ -62,12 +62,9 @@ pub fn radio(props: &RadioProperties) -> Html {
         input_class.extend(classes!("pf-m-standalone"));
     }
 
-    let onchange = use_callback(
-        |_, onchange| {
-            onchange.emit(());
-        },
-        props.onchange.clone(),
-    );
+    let onchange = use_callback(props.onchange.clone(), |_, onchange| {
+        onchange.emit(());
+    });
 
     let mut first = html!(
         <input

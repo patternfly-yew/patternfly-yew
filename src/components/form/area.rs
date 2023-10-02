@@ -170,15 +170,12 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
     {
         let value = props.value.clone();
         let onvalidate = props.onvalidate.clone();
-        use_effect_with_deps(
-            move |()| {
-                onvalidate.emit(ValidationContext {
-                    value,
-                    initial: true,
-                });
-            },
-            (),
-        );
+        use_effect_with((), move |()| {
+            onvalidate.emit(ValidationContext {
+                value,
+                initial: true,
+            });
+        });
     }
 
     let (classes, aria_invalid) = props.state.convert(classes);
@@ -187,24 +184,21 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
 
     {
         let autofocus = props.autofocus;
-        use_effect_with_deps(
-            move |input_ref| {
-                if autofocus {
-                    focus(input_ref)
-                }
-            },
-            input_ref.clone(),
-        );
+        use_effect_with(input_ref.clone(), move |input_ref| {
+            if autofocus {
+                focus(input_ref)
+            }
+        });
     }
 
     // change events
 
     let onchange = use_callback(
+        (props.onchange.clone(), props.onvalidate.clone()),
         |new_value: String, (onchange, onvalidate)| {
             onchange.emit(new_value.clone());
             onvalidate.emit(new_value.into());
         },
-        (props.onchange.clone(), props.onvalidate.clone()),
     );
     let oninput = use_on_text_change(input_ref.clone(), props.oninput.clone(), onchange);
 

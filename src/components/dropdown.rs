@@ -43,10 +43,9 @@ pub struct DropdownProperties {
 #[function_component(Dropdown)]
 pub fn drop_down(props: &DropdownProperties) -> Html {
     let expanded = use_state_eq(|| false);
-    let ontoggle = use_callback(
-        move |_, expanded| expanded.set(!**expanded),
-        expanded.clone(),
-    );
+    let ontoggle = use_callback(expanded.clone(), move |_, expanded| {
+        expanded.set(!**expanded)
+    });
 
     // this defines what is "inside"
     let inside_ref = use_node_ref();
@@ -64,7 +63,7 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
     }
 
     let state = use_state_eq(PopperState::default);
-    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
+    let onstatechange = use_callback(state.clone(), |new_state, state| state.set(new_state));
 
     let placement = match props.position {
         Position::Left => Placement::BottomStart,
@@ -72,7 +71,7 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
         Position::Top => Placement::TopStart,
     };
 
-    let onclose = use_callback(|(), expanded| expanded.set(false), expanded.clone());
+    let onclose = use_callback(expanded.clone(), |(), expanded| expanded.set(false));
     let context = CloseMenuContext::new(onclose);
 
     html!(

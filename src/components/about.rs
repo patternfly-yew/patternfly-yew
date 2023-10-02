@@ -62,6 +62,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
     let backdrop = use_backdrop();
 
     let onclose = use_memo(
+        (props.onclose.clone(), backdrop.clone()),
         |(onclose, backdrop)| {
             let onclose = onclose.clone();
             let backdrop = backdrop.clone();
@@ -73,7 +74,6 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
                 }
             })
         },
-        (props.onclose.clone(), backdrop.clone()),
     );
 
     // escape key

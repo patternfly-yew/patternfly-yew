@@ -132,6 +132,7 @@ pub fn helper_text(props: &HelperTextProperties) -> Html {
     };
     let role = (props.component == HelperTextComponent::Ul).then_some("list");
     let _ = use_memo(
+        (props.component, props.aria_label.clone()),
         // Use memo so that warn doesnt keep getting called.
         |(component, label)| {
             if component == &HelperTextComponent::Ul && label.is_none() {
@@ -141,7 +142,6 @@ pub fn helper_text(props: &HelperTextProperties) -> Html {
                 );
             }
         },
-        (props.component, props.aria_label.clone()),
     );
 
     html!(
@@ -259,7 +259,8 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
     };
 
     let screen_reader = use_memo(
-        // Use memo so that warn doesnt keep getting called.
+        (props.screen_reader_text.clone(), props.dynamic),
+        // Use memo so that warn doesn't keep getting called.
         |(text, _)| {
             if !text.is_empty() {
                 if props.dynamic {
@@ -279,7 +280,6 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
                 None
             }
         },
-        (props.screen_reader_text.clone(), props.dynamic),
     );
 
     html!(

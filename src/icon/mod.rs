@@ -5,6 +5,7 @@ pub use generated::*;
 pub use state::*;
 
 use crate::{core::AsClasses, prelude::Styled};
+use yew::html::ChildrenRenderer;
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::VNode};
 
 impl Icon {
@@ -72,14 +73,20 @@ impl From<Icon> for VNode {
     }
 }
 
-impl IntoPropValue<Html> for Icon {
-    fn into_prop_value(self) -> Html {
+impl IntoPropValue<Option<Html>> for Icon {
+    fn into_prop_value(self) -> Option<Html> {
+        Some(self.as_html())
+    }
+}
+
+impl ToHtml for Icon {
+    fn to_html(&self) -> Html {
         self.as_html()
     }
 }
 
-impl IntoPropValue<Option<Html>> for Icon {
-    fn into_prop_value(self) -> Option<Html> {
-        Some(self.as_html())
+impl IntoPropValue<ChildrenRenderer<VNode>> for Icon {
+    fn into_prop_value(self) -> ChildrenRenderer<VNode> {
+        ChildrenRenderer::new(vec![self.into()])
     }
 }

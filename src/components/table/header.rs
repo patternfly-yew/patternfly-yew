@@ -47,12 +47,9 @@ where
     K: Clone + Eq + 'static,
 {
     let sortby: UseStateHandle<Option<TableHeaderSortBy<K>>> = use_state_eq(|| None);
-    let onsort = use_callback(
-        |val: TableHeaderSortBy<K>, sortby| {
-            sortby.set(Some(val));
-        },
-        sortby.clone(),
-    );
+    let onsort = use_callback(sortby.clone(), |val: TableHeaderSortBy<K>, sortby| {
+        sortby.set(Some(val));
+    });
 
     let table_header_context = TableHeaderContext {
         onsort,

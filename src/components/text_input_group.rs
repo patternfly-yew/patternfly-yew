@@ -118,14 +118,11 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
 
     {
         let autofocus = props.autofocus;
-        use_effect_with_deps(
-            move |input_ref| {
-                if autofocus {
-                    focus(input_ref)
-                }
-            },
-            node_ref.clone(),
-        );
+        use_effect_with(node_ref.clone(), move |input_ref| {
+            if autofocus {
+                focus(input_ref)
+            }
+        });
     }
 
     // render

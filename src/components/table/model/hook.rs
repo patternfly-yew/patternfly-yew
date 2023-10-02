@@ -82,13 +82,10 @@ where
     let state = use_mut_ref(HashSet::<M::Key>::new);
     let model = {
         let state = state.clone();
-        use_memo(
-            move |model| {
-                state.borrow_mut().retain(|key| model.contains(key));
-                StateModel::new(model.clone(), state)
-            },
-            data,
-        )
+        use_memo(data, move |model| {
+            state.borrow_mut().retain(|key| model.contains(key));
+            StateModel::new(model.clone(), state)
+        })
     };
 
     let trigger = use_force_update();

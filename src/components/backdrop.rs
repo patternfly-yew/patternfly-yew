@@ -119,28 +119,22 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
     // create the context, only once
     let ctx = {
         let open = open.clone();
-        use_memo(
-            |()| Backdropper {
-                callback: Callback::from(move |msg| match msg {
-                    Msg::Open(backdrop) => open.set(Some(backdrop)),
-                    Msg::Close => open.set(None),
-                }),
-            },
-            (),
-        )
+        use_memo((), |()| Backdropper {
+            callback: Callback::from(move |msg| match msg {
+                Msg::Open(backdrop) => open.set(Some(backdrop)),
+                Msg::Close => open.set(None),
+            }),
+        })
     };
 
     // when the open state changes, change the overlay
-    use_effect_with_deps(
-        |open| {
-            match open {
-                true => body_open(),
-                false => body_close(),
-            }
-            body_close
-        },
-        open.is_some(),
-    );
+    use_effect_with(open.is_some(), |open| {
+        match open {
+            true => body_open(),
+            false => body_close(),
+        }
+        body_close
+    });
 
     // render
     html!(

@@ -162,6 +162,7 @@ pub fn button(props: &ButtonProperties) -> Html {
     }
 
     let label = use_memo(
+        (props.label.clone(), props.icon, props.align),
         |(label, icon, align)| {
             let mut classes = Classes::from("pf-v5-c-button__icon");
 
@@ -186,7 +187,6 @@ pub fn button(props: &ButtonProperties) -> Html {
                 Align::End => vec![label, icon],
             }
         },
-        (props.label.clone(), props.icon, props.align),
     );
 
     let onclick = {

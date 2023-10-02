@@ -57,7 +57,7 @@ pub(crate) struct MenuListProperties {
 pub(crate) fn menu_list(props: &MenuListProperties) -> Html {
     html!(
         <ul class="pf-v5-c-menu__list" role="menu">
-            { props.children.clone() }
+            { for props.children.iter() }
         </ul>
     )
 }

@@ -40,13 +40,10 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
     let callback_change_value = {
         let value = value.clone();
         let onchange = props.onchange.clone();
-        use_callback(
-            move |new_date: NaiveDate, value| {
-                value.set(Some(new_date.to_string()));
-                onchange.emit(new_date);
-            },
-            value,
-        )
+        use_callback(value, move |new_date: NaiveDate, value| {
+            value.set(Some(new_date.to_string()));
+            onchange.emit(new_date);
+        })
     };
 
     let target = html! {

@@ -13,12 +13,12 @@ rust-version = "1.65"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
-gloo-events = "0.1.2"
-gloo-timers = "0.2.4"
-gloo-utils = "0.1.4"
+gloo-events = "0.2.0"
+gloo-timers = "0.3.0"
+gloo-utils = "0.2.0"
 js-sys = "0.3.64"
 log = "0.4"
-popper-rs = { version = "0.1.0", features = ["yew"] }
+popper-rs = { version = "0.3.0", features = ["yew"] }
 serde = "1"
 serde_json = "1"
 strum = "0.25.0"
@@ -26,9 +26,9 @@ strum_macros = "0.25.0"
 uuid = { version = "1", features = ["v4", "js"] }
 wasm-bindgen = "0.2.87"
 wasm-bindgen-futures = "0.4"
-yew = "0.20"
-yew-hooks = "0.2"
-yew-nested-router = { version = "0.3.0", optional = true }
+yew = "0.21"
+yew-hooks = "0.3"
+yew-nested-router = { version = "0.4.0", optional = true }
 
 web-sys = { version = "0.3", features = [
     "HtmlCollection",
@@ -61,3 +61,4 @@ icons-fab = []
 #yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
 #popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
+yew-hooks = { git = "https://github.com/ctron/yew-hooks", rev = "0ba4f5c5f331650b1608ad830dfac0ef63700e8d" }

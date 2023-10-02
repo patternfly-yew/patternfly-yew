@@ -24,13 +24,13 @@ pub fn tooltip(props: &TooltipProperties) -> Html {
     let active = use_state_eq(|| false);
     let state = use_state_eq(State::default);
 
-    let onmouseenter = use_callback(|_, active| active.set(true), active.clone());
-    let onmouseleave = use_callback(|_, active| active.set(false), active.clone());
+    let onmouseenter = use_callback(active.clone(), |_, active| active.set(true));
+    let onmouseleave = use_callback(active.clone(), |_, active| active.set(false));
 
     let content_ref = use_node_ref();
     let target_ref = use_node_ref();
 
-    let onstatechange = use_callback(|new_state, state| state.set(new_state), state.clone());
+    let onstatechange = use_callback(state.clone(), |new_state, state| state.set(new_state));
 
     html! (
         <>

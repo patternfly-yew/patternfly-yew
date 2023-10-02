@@ -61,15 +61,13 @@ where
 
     class.extend_from(&props.mode);
 
-    let headers = use_memo(
-        |header| collect_columns(&header),
-        props.header.props.clone(),
-    );
+    let headers = use_memo(props.header.props.clone(), |header| {
+        collect_columns(&header)
+    });
 
-    let content = use_memo(
-        |(model, headers)| render_model(model, headers.clone()),
-        (props.model.clone(), headers),
-    );
+    let content = use_memo((props.model.clone(), headers), |(model, headers)| {
+        render_model(model, headers.clone())
+    });
 
     html!(
         <table

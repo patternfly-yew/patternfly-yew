@@ -16,12 +16,12 @@ pub fn use_on_text_change(
     onchange: Callback<String>,
 ) -> Callback<InputEvent> {
     use_callback(
+        (node, oninput, onchange),
         |evt, (node, oninput, onchange)| {
             oninput.emit(evt);
             if let Some(value) = value(node) {
                 onchange.emit(value);
             }
         },
-        (node, oninput, onchange),
     )
 }

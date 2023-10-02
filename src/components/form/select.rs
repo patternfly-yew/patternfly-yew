@@ -67,17 +67,17 @@ where
     {
         let node_ref = node_ref.clone();
 
-        use_effect_with_deps(
-            move |value| {
-                if let Some(ele) = node_ref.cast::<HtmlSelectElement>() {
-                    ele.set_value(value);
-                }
-            },
+        use_effect_with(
             props
                 .value
                 .as_ref()
                 .map(ToString::to_string)
                 .unwrap_or_default(),
+            move |value| {
+                if let Some(ele) = node_ref.cast::<HtmlSelectElement>() {
+                    ele.set_value(value);
+                }
+            },
         );
     }
 

@@ -58,68 +58,49 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     // the month of the selected date, used for selector
     let month = use_state_eq(|| Month::from_u32(props.date.month()).unwrap());
 
-    let callback_month_select = {
-        let show_date = show_date.clone();
-        let month = month.clone();
-        use_callback(
-            move |new_month: String, show_date| {
-                if let Ok(m) = new_month.parse::<Month>() {
-                    if let Some(d) = NaiveDate::from_ymd_opt(
-                        show_date.year(),
-                        m.number_from_month(),
-                        show_date.day(),
-                    ) {
-                        show_date.set(d);
-                        month.set(m);
-                    }
-                }
-            },
-            show_date,
-        )
-    };
-
-    let callback_years = {
-        let show_date = show_date.clone();
-        use_callback(
-            move |new_year: String, show_date| {
-                if let Ok(y) = i32::from_str(&new_year) {
-                    if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day())
-                    {
-                        show_date.set(d)
-                    }
-                }
-            },
-            show_date,
-        )
-    };
-
-    let callback_prev = {
-        let show_date = show_date.clone();
-        let month = month.clone();
-        use_callback(
-            move |_, show_date| {
-                if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
+    let callback_month_select = use_callback(
+        (show_date.clone(), month.clone()),
+        move |new_month: String, (show_date, month)| {
+            if let Ok(m) = new_month.parse::<Month>() {
+                if let Some(d) = NaiveDate::from_ymd_opt(
+                    show_date.year(),
+                    m.number_from_month(),
+                    show_date.day(),
+                ) {
                     show_date.set(d);
-                    month.set(month.pred());
+                    month.set(m);
                 }
-            },
-            show_date,
-        )
-    };
+            }
+        },
+    );
 
-    let callback_next = {
-        let show_date = show_date.clone();
-        let month = month.clone();
-        use_callback(
-            move |_, show_date| {
-                if let Some(d) = show_date.checked_add_months(Months::new(1)) {
-                    show_date.set(d);
-                    month.set(month.succ());
-                }
-            },
-            show_date,
-        )
-    };
+    let callback_years = use_callback(show_date.clone(), move |new_year: String, show_date| {
+        if let Ok(y) = i32::from_str(&new_year) {
+            if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day()) {
+                show_date.set(d)
+            }
+        }
+    });
+
+    let callback_prev = use_callback(
+        (show_date.clone(), month.clone()),
+        move |_, (show_date, month)| {
+            if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
+                show_date.set(d);
+                month.set(month.pred());
+            }
+        },
+    );
+
+    let callback_next = use_callback(
+        (show_date.clone(), month.clone()),
+        move |_, (show_date, month)| {
+            if let Some(d) = show_date.checked_add_months(Months::new(1)) {
+                show_date.set(d);
+                month.set(month.succ());
+            }
+        },
+    );
 
     html! {
         <div class="pf-v5-c-calendar-month">

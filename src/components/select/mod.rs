@@ -206,7 +206,7 @@ where
 
         match &ctx.props().variant {
             SelectVariant::Single(_) => {
-                html! (<span class="pf-v5-c-select__toggle-text">{ &selection[0] }</span>)
+                html! (<span class="pf-v5-c-select__toggle-text">{ selection[0].to_string() }</span>)
             }
             SelectVariant::Checkbox(_) | SelectVariant::Multiple(_) => {
                 html! (
@@ -542,7 +542,7 @@ where
                 { if let Some(description) = &ctx.props().description {
                     html!{
                         <>
-                        <span class="pf-v5-c-select__menu-item-main">{ &ctx.props().value }</span>
+                        <span class="pf-v5-c-select__menu-item-main">{ ctx.props().value.to_string() }</span>
                         <span class="pf-v5-c-select__menu-item-description">{ &description }</span>
                         { self.render_selected(ctx) }
                         </>
@@ -584,7 +584,7 @@ where
                     checked={ctx.props().selected}
                     onclick={ctx.link().callback(|_|SelectOptionMsg::Clicked)}
                     />
-                <span class="pf-v5-c-check__label">{ &ctx.props().value }</span>
+                <span class="pf-v5-c-check__label">{ ctx.props().value.to_string() }</span>
 
                 {if let Some(description) = &ctx.props().description {
                         html!{
