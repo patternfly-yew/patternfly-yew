@@ -18,7 +18,7 @@ jobs:
       matrix:
         toolchain:
           - stable
-          - "1.65"
+          - "1.70"
 
     steps:
       - uses: actions/checkout@v3
