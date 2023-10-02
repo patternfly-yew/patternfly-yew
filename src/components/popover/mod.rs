@@ -18,6 +18,15 @@ pub struct PopoverProperties {
 
     /// The body content of the popover.
     pub body: VChild<PopoverBody>,
+
+    #[prop_or_default]
+    pub no_padding: bool,
+
+    #[prop_or_default]
+    pub no_close: bool,
+
+    #[prop_or_default]
+    pub width_auto: bool,
 }
 
 /// Popover component
@@ -82,6 +91,9 @@ pub fn popover(props: &PopoverProperties) -> Html {
                 ]}
             >
                 <PopoverPopup
+                    width_auto={props.width_auto}
+                    no_padding={props.no_padding}
+                    no_close={props.no_close}
                     r#ref={content_ref}
                     style={&state.styles.popper.extend_with("z-index", "1000")}
                     {orientation}
@@ -101,6 +113,15 @@ pub struct PopoverPopupProperties {
     pub body: VChild<PopoverBody>,
 
     pub orientation: Orientation,
+
+    #[prop_or_default]
+    pub no_padding: bool,
+    #[prop_or_default]
+    pub no_close: bool,
+
+    #[prop_or_default]
+    pub width_auto: bool,
+
     #[prop_or_default]
     pub hidden: bool,
     #[prop_or_default]
@@ -120,6 +141,14 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
     let mut class = classes!("pf-v5-c-popover");
 
     class.extend_from(&props.orientation);
+
+    if props.width_auto {
+        class.extend(classes!("pf-m-width-auto"));
+    }
+
+    if props.no_padding {
+        class.extend(classes!("pf-m-no-padding"));
+    }
 
     let style = if props.hidden {
         "display: none;".to_string()
@@ -144,14 +173,16 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
         >
             <div class="pf-v5-c-popover__arrow"></div>
             <div class="pf-v5-c-popover__content">
-                <div class="pf-v5-c-popover__close">
-                    <Button
-                        variant={ButtonVariant::Plain}
-                        icon={Icon::Times}
-                        aria_label="Close"
-                        onclick={onclose}
-                    />
-                </div>
+                if !props.no_close {
+                    <div class="pf-v5-c-popover__close">
+                        <Button
+                            variant={ButtonVariant::Plain}
+                            icon={Icon::Times}
+                            aria_label="Close"
+                            onclick={onclose}
+                        />
+                    </div>
+                }
 
                 { props.body.clone() }
 

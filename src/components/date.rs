@@ -1,9 +1,6 @@
 use crate::prelude::{CalendarView, InputGroup, InputGroupItem, Popover, PopoverBody, TextInput};
 use chrono::{NaiveDate, Weekday};
-use std::ops::Deref;
-use yew::{
-    function_component, html, html_nested, use_callback, use_state_eq, Callback, Html, Properties,
-};
+use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct DatePickerProperties {
@@ -16,7 +13,7 @@ pub struct DatePickerProperties {
     #[prop_or_default]
     pub rangestart: Option<NaiveDate>,
     #[prop_or_default]
-    pub value: Option<String>,
+    pub value: Option<NaiveDate>,
     #[prop_or(Weekday::Mon)]
     pub weekday_start: Weekday,
 }
@@ -24,26 +21,19 @@ pub struct DatePickerProperties {
 #[function_component(DatePicker)]
 pub fn date_picker(props: &DatePickerProperties) -> Html {
     let value = use_state_eq(|| props.value.clone());
-    let date = {
-        let value = value.clone();
-        if let Some(s) = value.deref() {
-            if let Ok(d) = s.parse::<NaiveDate>() {
-                Some(d)
-            } else {
-                None
-            }
-        } else {
-            None
-        }
-    };
+    let string_value =
+        use_state_eq(|| props.value.map(|date| date.to_string()).unwrap_or_default());
 
     let callback_change_value = {
-        let value = value.clone();
         let onchange = props.onchange.clone();
-        use_callback(value, move |new_date: NaiveDate, value| {
-            value.set(Some(new_date.to_string()));
-            onchange.emit(new_date);
-        })
+        use_callback(
+            (value.clone(), string_value.clone()),
+            move |new_date: NaiveDate, (value, string_value)| {
+                value.set(Some(new_date));
+                string_value.set(new_date.to_string());
+                onchange.emit(new_date);
+            },
+        )
     };
 
     let target = html! {
@@ -59,7 +49,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
 
     let body = html_nested! {
         <PopoverBody>
-            if let Some(d) = date {
+            if let Some(d) = *value {
                 <CalendarView
                     date={d}
                     weekday_start={props.weekday_start}
@@ -76,24 +66,35 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         </PopoverBody>
     };
 
-    let input = {
-        let value = value.clone();
-        if let Some(value) = value.deref() {
-            html! {
-                <TextInput
-                    disabled={props.disabled}
-                value={String::from(value)}
-                />
-            }
-        } else {
-            html! {
-                <TextInput
-                    disabled={props.disabled}
-                placeholder={props.placeholder.clone()}
-                />
-            }
-        }
-    };
+    let input_change = use_callback(string_value.clone(), |value, string_value| {
+        string_value.set(value);
+    });
+    {
+        let onchange = props.onchange.clone();
+        use_effect_with(
+            ((*string_value).clone(), value.clone()),
+            move |(string_value, value)| {
+                let new = match NaiveDate::parse_from_str(&string_value, "%Y-%m-%d") {
+                    Ok(v) => Some(v),
+                    Err(_err) => None,
+                };
+
+                value.set(new);
+                if let Some(new) = new {
+                    onchange.emit(new);
+                }
+            },
+        );
+    }
+
+    let input = html! (
+        <TextInput
+            onchange={input_change}
+            disabled={props.disabled}
+            value={(*string_value).clone()}
+            placeholder={props.placeholder.clone()}
+        />
+    );
 
     html! {
         <div class="pf-v5-c-date-picker">
@@ -103,7 +104,12 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
                         {input}
                     </InputGroupItem>
                     <InputGroupItem>
-                        <Popover {target} {body} />
+                        <Popover
+                            {target} {body}
+                            no_padding=true
+                            no_close=true
+                            width_auto=true
+                        />
                     </InputGroupItem>
                 </InputGroup>
             </div>
