@@ -1,23 +1,40 @@
-use crate::prelude::{CalendarView, InputGroup, InputGroupItem, Popover, PopoverBody, TextInput};
-use chrono::{NaiveDate, Weekday};
+use crate::prelude::{
+    CalendarView, InputGroup, InputGroupItem, Popover, PopoverBody, PopoverContext, TextInput,
+};
+use chrono::{Local, NaiveDate, Weekday};
 use yew::prelude::*;
 
+/// Properties for [`DatePicker`].
 #[derive(Clone, PartialEq, Properties)]
 pub struct DatePickerProperties {
+    /// Disable the component
     #[prop_or_default]
     pub disabled: bool,
+    /// The change callback
     #[prop_or_default]
     pub onchange: Callback<NaiveDate>,
+    /// The placeholder string
     #[prop_or(String::from("YYYY-MM-DD"))]
     pub placeholder: String,
     #[prop_or_default]
     pub rangestart: Option<NaiveDate>,
+    /// The currently selected value
     #[prop_or_default]
     pub value: Option<NaiveDate>,
+    /// The day to start the week with
     #[prop_or(Weekday::Mon)]
     pub weekday_start: Weekday,
 }
 
+/// Date picker component
+///
+/// > A *date picker* helps users enter or select a specific date from a calendar.
+///
+/// See: <https://www.patternfly.org/components/date-and-time/date-picker>
+///
+/// ## Properties
+///
+/// Defined by [`DatePickerProperties`].
 #[function_component(DatePicker)]
 pub fn date_picker(props: &DatePickerProperties) -> Html {
     let value = use_state_eq(|| props.value.clone());
@@ -47,28 +64,23 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         </button>
     };
 
-    let body = html_nested! {
-        <PopoverBody>
-            if let Some(d) = *value {
-                <CalendarView
-                    date={d}
-                    weekday_start={props.weekday_start}
-                    rangestart={props.rangestart}
-                    onchange={callback_change_value}
-                />
-            } else {
-                <CalendarView
-                    weekday_start={props.weekday_start}
-                    rangestart={props.rangestart}
-                    onchange={callback_change_value}
-                />
-            }
-        </PopoverBody>
-    };
+    let body = html_nested! (
+        // We need to extract the body component, as we need the PopoverContext using use_context.
+        // However, that only works if the call of use_context comes from a component wrapped by
+        // Popover.
+        <PopoverBody> <Body
+                date={value.unwrap_or_else(|| Local::now().date_naive())}
+                weekday_start={props.weekday_start}
+                rangestart={props.rangestart}
+                onchange={callback_change_value}
+        /> </PopoverBody>
+    );
 
+    // short circuit the text input to the text value
     let input_change = use_callback(string_value.clone(), |value, string_value| {
         string_value.set(value);
     });
+    // when the text value changes, try updating the date value
     {
         let onchange = props.onchange.clone();
         use_effect_with(
@@ -76,6 +88,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
             move |(string_value, value)| {
                 let new = match NaiveDate::parse_from_str(&string_value, "%Y-%m-%d") {
                     Ok(v) => Some(v),
+                    // FIXME: should extract an "error" state from this
                     Err(_err) => None,
                 };
 
@@ -87,6 +100,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         );
     }
 
+    // The text input
     let input = html! (
         <TextInput
             onchange={input_change}
@@ -115,4 +129,36 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
             </div>
         </div>
     }
+}
+
+/// the body component, using the popover context
+#[derive(PartialEq, Properties)]
+struct BodyProperties {
+    date: NaiveDate,
+    weekday_start: Weekday,
+    rangestart: Option<NaiveDate>,
+    onchange: Callback<NaiveDate>,
+}
+
+#[function_component(Body)]
+fn body(props: &BodyProperties) -> Html {
+    let context = use_context::<PopoverContext>();
+    let onchange = use_callback(
+        (context, props.onchange.clone()),
+        |value, (context, callback)| {
+            if let Some(context) = context {
+                context.close();
+            }
+            callback.emit(value);
+        },
+    );
+
+    html!(
+        <CalendarView
+            date={props.date}
+            weekday_start={props.weekday_start}
+            rangestart={props.rangestart}
+            {onchange}
+        />
+    )
 }
