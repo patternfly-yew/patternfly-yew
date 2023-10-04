@@ -77,7 +77,7 @@ pub fn check(props: &CheckProperties) -> Html {
 
             if !standalone {
                 <label class={label_class} for={(*id).clone()}>
-                    { for props.children.iter() }
+                    { props.children.clone() }
                     if props.required {
                         <span class="pf-v5-c-check__label-required" aria-hidden="true"> { "&#42;" } </span>
                     }

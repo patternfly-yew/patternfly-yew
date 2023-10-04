@@ -11,7 +11,7 @@ use yew::{
 /// Properties for [`FormGroup`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormGroupProperties {
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub label: String,
     #[prop_or_default]
@@ -30,7 +30,7 @@ pub enum LabelIcon {
     /// Help
     Help(VChild<PopoverBody>),
     /// Any children
-    Children(Children),
+    Children(Html),
 }
 
 /// Helper text information for a [`FormGroup`]
@@ -148,14 +148,14 @@ impl Component for FormGroup {
                                         <Popover target={html!(Icon::QuestionCircle)} body={popover.clone()} />
                                     </span>
                                 ),
-                                LabelIcon::Children(children) => children.iter().collect(),
+                                LabelIcon::Children(children) => children.clone(),
                             }
                         }
                     </div>
                 }
 
                 <div class="pf-v5-c-form__group-control">
-                    { for ctx.props().children.iter() }
+                    { ctx.props().children.clone() }
                     if let Some(text) = &ctx.props().helper_text {
                         { FormGroupHelpText(text) }
                     }

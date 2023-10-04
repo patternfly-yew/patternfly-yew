@@ -6,7 +6,7 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ExpandableSectionProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or("Show more".into())]
     pub toggle_text_hidden: AttrValue,
@@ -143,7 +143,7 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
             }
           <div
                 class="pf-v5-c-expandable-section__content" hidden={!expanded}
-          >{ for props.children.iter() }</div>
+          >{ props.children.clone() }</div>
         </div>
     )
 }
@@ -222,7 +222,7 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
             </span>
             <span class="pf-v5-c-expandable-section__toggle-text">
                 if !props.children.is_empty() {
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 } else {
                     { if props.expanded { &props.toggle_text_expanded } else { &props.toggle_text_hidden } }
                 }

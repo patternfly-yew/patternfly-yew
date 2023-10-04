@@ -12,7 +12,7 @@ pub struct InputGroupProperties {
     #[prop_or_default]
     pub style: Option<AttrValue>,
 
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub plain: bool,
@@ -47,7 +47,7 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
 
     html! (
         <div {class} aria-label={&props.aria_label} style={&props.style}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -57,7 +57,7 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
 pub fn input_group_text(props: &ChildrenProperties) -> Html {
     html!(
         <span class={"pf-v5-c-input-group__text"}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </span>
     )
 }
@@ -87,7 +87,7 @@ pub struct InputGroupItemProperties {
     pub disabled: bool,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Additional item on an input group.
@@ -115,7 +115,7 @@ pub fn input_group_item(props: &InputGroupItemProperties) -> Html {
 
     html!(
         <div {class} id={&props.id} style={&props.style}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

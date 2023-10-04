@@ -102,7 +102,7 @@ impl Backdropper {
 /// Properties for [``BackdropViewer]
 #[derive(Clone, PartialEq, Properties)]
 pub struct BackdropProperties {
-    pub children: Children,
+    pub children: Html,
 }
 
 #[doc(hidden)]
@@ -144,7 +144,7 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
                     { open.content.clone() }
                 </div>
             }
-            { for props.children.iter() }
+            { props.children.clone() }
         </ContextProvider<Backdropper>>
     )
 }

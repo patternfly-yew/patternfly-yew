@@ -18,7 +18,7 @@ pub enum Level {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TitleProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub level: Level,
     #[prop_or_default]
@@ -56,5 +56,5 @@ pub fn title(props: &TitleProperties) -> Html {
         Level::H6 => "h6",
     };
 
-    html! { <@{element} {class}>{ for props.children.iter() }</@> }
+    html! { <@{element} {class}>{ props.children.clone() }</@> }
 }

@@ -5,7 +5,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct FormSectionProperties {
     pub title: Option<String>,
-    pub children: Children,
+    pub children: Html,
 }
 
 /// A group of fields on a [`Form`](crate::prelude::Form)
@@ -25,7 +25,7 @@ pub fn section(props: &FormSectionProperties) -> Html {
                 </div>
             }
 
-            { for props.children.iter() }
+            { props.children.clone() }
         </section>
     )
 }

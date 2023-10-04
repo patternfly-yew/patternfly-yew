@@ -124,7 +124,7 @@ pub struct ButtonProperties {
     pub expanded: bool,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Button component
@@ -221,7 +221,7 @@ pub fn button(props: &ButtonProperties) -> Html {
              }
 
              { (*label).clone() }
-             { for props.children.iter() }
+             { props.children.clone() }
 
          </button>
     )

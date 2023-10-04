@@ -63,7 +63,7 @@ pub struct BreadcrumbItemProperties {
     #[prop_or_default]
     pub target: AttrValue,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     current: bool,
 }
@@ -79,9 +79,7 @@ pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
     }
 
     if props.href.is_empty() {
-        html!(
-            { for props.children.iter() }
-        )
+        props.children.clone()
     } else {
         html!(
             <a
@@ -90,7 +88,7 @@ pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
                 target={&props.target}
                 aria-current={aria_current}
             >
-                    { for props.children.iter() }
+                    { props.children.clone() }
             </a>
         )
     }

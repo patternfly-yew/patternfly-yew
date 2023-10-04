@@ -179,7 +179,7 @@ where
     T: PartialEq + Eq + Clone + 'static,
 {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub icon: Option<Icon>,
@@ -220,7 +220,7 @@ where
                     <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
                 }
                 <span class="pf-v5-c-tabs__item-text">
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </span>
             </button>
         </li>
@@ -230,7 +230,6 @@ where
 #[derive(Clone, PartialEq)]
 pub enum TabTitle {
     String(Cow<'static, str>),
-    Children(Children),
     Html(Html),
 }
 
@@ -246,12 +245,6 @@ impl IntoPropValue<TabTitle> for &'static str {
     }
 }
 
-impl IntoPropValue<TabTitle> for Children {
-    fn into_prop_value(self) -> TabTitle {
-        TabTitle::Children(self)
-    }
-}
-
 impl IntoPropValue<TabTitle> for Html {
     fn into_prop_value(self) -> TabTitle {
         TabTitle::Html(self)
@@ -262,7 +255,6 @@ impl ToHtml for TabTitle {
     fn to_html(&self) -> Html {
         match self {
             TabTitle::String(s) => s.into(),
-            TabTitle::Children(children) => children.iter().collect(),
             TabTitle::Html(html) => html.clone(),
         }
     }
@@ -273,7 +265,6 @@ impl ToHtml for TabTitle {
     {
         match self {
             TabTitle::String(s) => s.into(),
-            TabTitle::Children(children) => children.into_iter().collect(),
             TabTitle::Html(html) => html,
         }
     }
@@ -291,7 +282,7 @@ where
     pub icon: Option<Icon>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     pub index: T,
 }
@@ -309,7 +300,7 @@ where
 
     html! (
         <TabContent hidden={!current}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </TabContent>
     )
 }

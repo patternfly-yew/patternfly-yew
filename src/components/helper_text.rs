@@ -193,7 +193,7 @@ pub enum HelperTextItemIcon {
 pub struct HelperTextItemProperties {
     /// Content to be rendered inside the [`HelperTextItem`].
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     /// Additional classes to be applied to the [`HelperTextItem`].
     #[prop_or_default]
     pub class: Classes,
@@ -284,7 +284,7 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
         <@{component} id={ &props.id } { class }>
             { item_icon }
             <div class="pf-v5-c-helper-text__item-text">
-                { for props.children.iter() }
+                { props.children.clone() }
                 { (*screen_reader).clone() }
             </div>
         </@>

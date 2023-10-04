@@ -150,7 +150,7 @@ pub fn modal(props: &ModalProperties) -> Html {
 
             { for props.children.iter().map(|c|{
                { html! (
-                <div class="pf-v5-c-modal-box__body" id="modal-description">{c}</div>
+                    <div class="pf-v5-c-modal-box__body" id="modal-description">{c}</div>
                ) }
             }) }
 

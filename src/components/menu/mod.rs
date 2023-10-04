@@ -56,7 +56,7 @@ pub fn menu(props: &MenuProperties) -> Html {
             {class}
         >
             <div class="pf-v5-c-menu__content">
-                <MenuList>{ for props.children.iter() }</MenuList>
+                <MenuList>{ props.children.clone() }</MenuList>
             </div>
         </div>
     )

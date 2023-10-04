@@ -36,7 +36,7 @@ pub fn gallery(props: &GalleryProperties) -> Html {
         { for props.children.iter().map(|child|{
             html!{
                 <div class="pf-v5-l-gallery__item">
-                    { child }
+                    { child.clone() }
                 </div>
             }
         }) }

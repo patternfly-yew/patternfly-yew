@@ -7,7 +7,7 @@ use crate::prelude::{Action, Button, ButtonVariant, ExtendClasses, Icon, Size, T
 #[derive(Clone, PartialEq, Properties)]
 pub struct EmptyStateProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub title: String,
     #[prop_or_default]
@@ -65,7 +65,7 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
                     <Title size={ props.title_size() }>{ props.title.clone() }</Title>
                 </div>
                 <div class="pf-v5-c-empty-state__body">
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </div>
                 <div class="pf-v5-c-empty-state__footer">
                     if let Some(action) = &props.primary {

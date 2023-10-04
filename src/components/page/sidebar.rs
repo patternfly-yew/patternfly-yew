@@ -4,7 +4,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageSidebarProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or(true)]
     pub open: bool,
 }
@@ -28,7 +28,7 @@ pub fn page_sidebar(props: &PageSidebarProperties) -> Html {
             aria-hidden={(!props.open).to_string()}
             class={classes}>
             <div class="pf-v5-c-page__sidebar-body">
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
         </div>
     )

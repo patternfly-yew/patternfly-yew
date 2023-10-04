@@ -197,7 +197,7 @@ pub fn flex(props: &FlexProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct FlexItemProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub modifiers: WithBreakpoints<FlexModifier>,
     #[prop_or_default]
@@ -218,7 +218,7 @@ pub fn flex_item(props: &FlexItemProperties) -> Html {
 
     html! (
         <div class={classes}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

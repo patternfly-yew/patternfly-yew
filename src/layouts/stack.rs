@@ -5,7 +5,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct StackProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub gutter: bool,
 }
@@ -34,7 +34,7 @@ pub fn stack(props: &StackProperties) -> Html {
 
     html! (
         <div class={classes}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -42,7 +42,7 @@ pub fn stack(props: &StackProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct StackItemProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub fill: bool,
 }
@@ -62,7 +62,7 @@ pub fn stack_item(props: &StackItemProperties) -> Html {
 
     html! (
         <div class={classes}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

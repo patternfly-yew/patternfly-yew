@@ -9,7 +9,7 @@ pub struct DescriptionListProperties {
     pub id: AttrValue,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub mode: DescriptionListMode,
@@ -76,7 +76,7 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
             id={&props.id}
             class={classes}
         >
-            { for props.children.iter() }
+            { props.children.clone() }
         </dl>
     )
 }
@@ -88,7 +88,7 @@ pub struct DescriptionGroupProperties {
     pub term: AttrValue,
     /// The definition
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// A [`DescriptionList`] entry.
@@ -103,7 +103,7 @@ pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
             </dt>
             <dd class="pf-v5-c-description-list__description">
                 <div class="pf-v5-c-description-list__text">
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </div>
             </dd>
         </div>

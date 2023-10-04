@@ -13,7 +13,7 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TabContentBodyProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub padding: bool,
@@ -36,7 +36,7 @@ pub fn tab_content_body(props: &TabContentBodyProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -51,7 +51,7 @@ pub struct TabContentProperties {
     pub hidden: bool,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Tabs component body.
@@ -75,7 +75,7 @@ pub fn tab_content(props: &TabContentProperties) -> Html {
             tabindex="0"
             role="tabpanel"
         >
-            { for props.children.iter() }
+            { props.children.clone() }
         </section>
     )
 }

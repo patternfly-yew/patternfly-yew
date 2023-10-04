@@ -96,7 +96,7 @@ pub fn list(props: &ListProperties) -> Html {
     l(html! (
         {
          for props.children.iter()
-            .map(|item|html!{<li>{item}</li>})
+            .map(|item|html!{<li>{item.clone()}</li>})
         }
     ))
 }

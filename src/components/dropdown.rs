@@ -91,7 +91,7 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
                             r#ref={menu_ref}
                             style={&state.styles.popper.extend_with("z-index", "1000")}
                         >
-                            { for props.children.iter() }
+                            { props.children.clone() }
                         </Menu>
                     </ContextProvider<CloseMenuContext>>
                 </InlinePopper>

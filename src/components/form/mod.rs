@@ -59,7 +59,7 @@ pub struct FormProperties {
     pub limit_width: bool,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub alert: Option<FormAlert>,
@@ -250,7 +250,7 @@ impl Component for Form {
                         </div>
                     }
 
-                    { for ctx.props().children.iter() }
+                    { ctx.props().children.clone() }
 
                 </form>
             </ContextProvider<ValidationFormContext>>

@@ -7,7 +7,7 @@ pub struct CodeBlockProperties {
     #[prop_or_default]
     pub expandable: bool,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub actions: ChildrenWithProps<CodeBlockAction>,
 }
@@ -60,7 +60,7 @@ pub fn code_block(props: &CodeBlockProperties) -> Html {
             }
 
             <div class="pf-v5-c-code-block__content">
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
         </div>
     )
@@ -70,7 +70,7 @@ pub fn code_block(props: &CodeBlockProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct CodeBlockCodeProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// The actual code component of the Code Block component.
@@ -82,7 +82,7 @@ pub struct CodeBlockCodeProperties {
 pub fn code_block_code(props: &CodeBlockCodeProperties) -> Html {
     html!(
         <pre class="pf-v5-c-code-block__pre">
-            <code class="pf-v5-c-code-block__code">{ for props.children.iter() }</code>
+            <code class="pf-v5-c-code-block__code">{ props.children.clone() }</code>
         </pre>
     )
 }
@@ -91,7 +91,7 @@ pub fn code_block_code(props: &CodeBlockCodeProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct CodeBlockActionProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// An action of a [`CodeBlock`]
@@ -99,7 +99,7 @@ pub struct CodeBlockActionProperties {
 pub fn code_block_action(props: &CodeBlockActionProperties) -> Html {
     html!(
         <div class="pf-v5-c-code-block__actions-item">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

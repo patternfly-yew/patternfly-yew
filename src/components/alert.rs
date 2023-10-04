@@ -137,7 +137,7 @@ pub fn alert(props: &AlertProperties) -> Html {
 
             if !props.children.is_empty() {
                 <div class="pf-v5-c-alert__description">
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </div>
             }
 

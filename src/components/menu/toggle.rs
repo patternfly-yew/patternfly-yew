@@ -31,7 +31,7 @@ pub struct MenuToggleProperties {
     pub ontoggle: Callback<()>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default)]
@@ -113,7 +113,7 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
                 </span>
             }
 
-            { for props.children.iter() }
+            { props.children.clone() }
 
         </button>
     )

@@ -9,7 +9,7 @@ pub struct AboutModalProperties {
     /// Required Attributes
     pub brand_image_src: AttrValue,
     pub brand_image_alt: AttrValue,
-    pub children: Children,
+    pub children: Html,
 
     /// Optional Attributes
     #[prop_or(AttrValue::from("About Dialog"))]
@@ -158,7 +158,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
 
             <div class="pf-v5-c-about-modal-box__content">
                 <div class="pf-v5-c-about-modal-box__body">
-                    { for props.children.clone() }
+                    { props.children.clone() }
                 </div>
                 if !props.trademark.is_empty() {
                     <p class="pf-v5-c-about-modal-box__strapline">{ props.trademark.clone() }</p>

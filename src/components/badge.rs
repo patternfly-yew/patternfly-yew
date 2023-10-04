@@ -6,7 +6,7 @@ use yew::prelude::*;
 pub struct BadgeProperties {
     /// Optional Attributes
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]

@@ -274,7 +274,7 @@ fn card_title(props: &OptionalContentProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct CardBodyProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub style: Option<AttrValue>,
     #[prop_or_default]

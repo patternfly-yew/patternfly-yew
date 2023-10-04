@@ -3,7 +3,7 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct FileUploadProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub drag_over: bool,
     #[prop_or_default]
@@ -29,7 +29,7 @@ pub fn file_upload(props: &FileUploadProperties) -> Html {
 
     html! (
         <div {class} ref={props.r#ref.clone()}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -37,14 +37,14 @@ pub fn file_upload(props: &FileUploadProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct FileUploadSelectProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(FileUploadSelect)]
 pub fn file_upload_select(props: &FileUploadSelectProperties) -> Html {
     html!(
         <div class="pf-v5-c-file-upload__file-select">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -53,7 +53,7 @@ pub fn file_upload_select(props: &FileUploadSelectProperties) -> Html {
 pub struct FileUploadDetailsProperties {
     /// The details section, supposed to be a single [`crate::components::TextArea`].
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     /// Set flag if upload is processing.
     ///
@@ -70,7 +70,7 @@ pub struct FileUploadDetailsProperties {
 pub fn file_upload_select(props: &FileUploadDetailsProperties) -> Html {
     html!(
         <div class="pf-v5-c-file-upload__file-details">
-            { for props.children.iter() }
+            { props.children.clone() }
             if props.processing {
                 <div class="pf-v5-c-file-upload__file-details-spinner">
                     <span

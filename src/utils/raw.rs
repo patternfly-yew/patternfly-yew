@@ -20,5 +20,5 @@ use yew::prelude::*;
 /// The components accepts any and any number of components.
 #[function_component(Raw)]
 pub fn raw(props: &ChildrenProperties) -> Html {
-    props.children.iter().collect()
+    props.children.clone()
 }

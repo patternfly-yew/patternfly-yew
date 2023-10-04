@@ -24,7 +24,7 @@ impl PopoverContext {
 pub struct PopoverProperties {
     /// The target, rendered by the component, to which the popover will be aligned to.
     #[prop_or_default]
-    pub target: Children,
+    pub target: Html,
 
     /// The body content of the popover.
     pub body: VChild<PopoverBody>,
@@ -210,34 +210,34 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PopoverBodyProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
-    pub header: Children,
+    pub header: Option<Html>,
     #[prop_or_default]
-    pub footer: Children,
+    pub footer: Option<Html>,
 }
 
 #[function_component(PopoverBody)]
 pub fn popover_body(props: &PopoverBodyProperties) -> Html {
     html!(
         <>
-            if !props.header.is_empty() {
+            if let Some(header) = &props.header {
                 <header class="pf-v5-c-popover__header">
                     <div class="pf-v5-c-popover__title">
                         <h1 class="pf-v5-c-title pf-m-md">
-                            { for props.header.iter() }
+                            { header.clone() }
                         </h1>
                     </div>
                 </header>
             }
 
             <div class="pf-v5-c-popover__body">
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
 
-            if !props.footer.is_empty() {
+            if let Some(footer) = &props.footer {
                 <footer class="pf-v5-c-popover__footer">
-                    { for props.footer.iter() }
+                    { footer.clone() }
                 </footer>
             }
         </>

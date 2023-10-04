@@ -13,11 +13,11 @@ pub use sidebar::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub sidebar: ChildrenWithProps<PageSidebar>,
     #[prop_or_default]
-    pub tools: Children,
+    pub tools: Html,
 
     /// The brand section.
     ///
@@ -25,10 +25,10 @@ pub struct PageProperties {
     ///
     /// NOTE: Future versions might enforce the child requirement without prior deprecation.
     #[prop_or_default]
-    pub brand: Children,
+    pub brand: Html,
 
     #[prop_or_default]
-    pub nav: Children,
+    pub nav: Html,
     #[prop_or(true)]
     pub open: bool,
     #[prop_or_default]
@@ -81,12 +81,12 @@ pub fn page(props: &PageProperties) -> Html {
                 </span>
 
                 <div class="pf-v5-c-masthead__main">
-                    {for props.brand.iter()}
+                    { props.brand.clone() }
                 </div>
 
                 <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
-                    {for props.nav.iter()}
-                    {for props.tools.iter()}
+                    { props.nav.clone() }
+                    { props.tools.clone() }
                 </div>
 
             </header>
@@ -98,7 +98,7 @@ pub fn page(props: &PageProperties) -> Html {
             }) }
 
             <main class="pf-v5-c-page__main" tabindex="-1">
-                { for props.children.iter() }
+                { props.children.clone() }
             </main>
         </div>
     )
@@ -110,7 +110,7 @@ pub struct MastheadBrandProperties {
     ///
     /// NOTE: Future versions might enforce the child requirement without prior deprecation.
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     /// Called when the user clicks on the brand logo.
     #[prop_or_default]
@@ -134,14 +134,14 @@ pub fn masthead_brand(props: &MastheadBrandProperties) -> Html {
             let onclick = onclick.reform(|_| ());
             html!(
                 <a class="pf-v5-c-masthead__brand" href="#" {onclick}>
-                    {for props.children.iter()}
+                    { props.children.clone() }
                 </a>
             )
         }
         None => {
             html!(
                 <div class="pf-v5-c-masthead__brand">
-                    {for props.children.iter()}
+                    { props.children.clone() }
                 </div>
             )
         }

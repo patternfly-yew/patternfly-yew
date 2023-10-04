@@ -8,7 +8,7 @@ use yew_nested_router::{components::Link, prelude::*};
 pub struct BreadcrumbRouterItemProperties<T: Target> {
     pub to: T,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     current: bool,
 }
@@ -43,7 +43,7 @@ pub fn breadcrumb_router_item<T: Target>(props: &BreadcrumbRouterItemProperties<
             {class}
             target={props.to.clone()}
         >
-            { for props.children.iter() }
+            { props.children.clone() }
         </Link<T>>
     )
 }

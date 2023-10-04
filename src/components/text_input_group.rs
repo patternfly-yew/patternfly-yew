@@ -15,7 +15,7 @@ pub struct TextInputGroupProperties {
     pub style: Option<AttrValue>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub disabled: bool,
@@ -46,7 +46,7 @@ pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
 
     html!(
         <div {class} id={&props.id} style={&props.style}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -159,14 +159,14 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TextInputGroupUtilitiesProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(TextInputGroupUtilities)]
 pub fn text_input_group_utilities(props: &TextInputGroupUtilitiesProperties) -> Html {
     html! (
         <div class="pf-v5-c-text-input-group__utilities">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

@@ -12,7 +12,7 @@ pub struct HintProperties {
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Hint component
@@ -37,9 +37,7 @@ pub fn hint(props: &HintProperties) -> Html {
             if let Some(actions) = &props.actions {
                 <div class="pf-v5-c-hint__actions">{ actions.clone() }</div>
             }
-            if !props.children.is_empty() {
-                { for props.children.iter() }
-            }
+            { props.children.clone() }
         </div>
     )
 }
@@ -52,7 +50,7 @@ pub struct HintTitleProperties {
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// HintTitle component
@@ -70,9 +68,7 @@ pub fn hint_title(props: &HintTitleProperties) -> Html {
             id={props.id.clone()}
             {class}
         >
-            if !props.children.is_empty() {
-                { for props.children.iter() }
-            }
+            { props.children.clone() }
         </div>
     )
 }
@@ -85,7 +81,7 @@ pub struct HintBodyProperties {
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// HintBody component
@@ -103,9 +99,7 @@ pub fn hint_body(props: &HintBodyProperties) -> Html {
             id={props.id.clone()}
             {class}
         >
-            if !props.children.is_empty() {
-                { for props.children.iter() }
-            }
+            { props.children.clone() }
         </div>
     )
 }
@@ -118,7 +112,7 @@ pub struct HintFooterProperties {
     #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// HintFooter component
@@ -136,9 +130,7 @@ pub fn hint_footer(props: &HintFooterProperties) -> Html {
             id={props.id.clone()}
             {class}
         >
-            if !props.children.is_empty() {
-                { for props.children.iter() }
-            }
+            { props.children.clone() }
         </div>
     )
 }

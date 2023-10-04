@@ -8,7 +8,7 @@ pub struct ContentProperties {
     pub id: Option<AttrValue>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Content wrapper component
@@ -29,7 +29,7 @@ pub fn content(props: &ContentProperties) -> Html {
             class="pf-v5-c-content"
             id={&props.id}
         >
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     }
 }

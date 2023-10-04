@@ -6,7 +6,7 @@ use yew::prelude::*;
 /// Properties for [`Tooltip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct TooltipProperties {
-    pub children: Children,
+    pub children: Html,
     pub text: String,
 }
 
@@ -35,7 +35,7 @@ pub fn tooltip(props: &TooltipProperties) -> Html {
     html! (
         <>
             <span {onmouseenter} {onmouseleave} ref={target_ref.clone()}>
-                { for props.children.iter() }
+                { props.children.clone() }
             </span>
             <PortalPopper
                 visible={*active}

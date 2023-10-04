@@ -16,7 +16,7 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct NavProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// A navigation component.
@@ -24,7 +24,7 @@ pub struct NavProperties {
 pub fn nav(props: &NavProperties) -> Html {
     html! {
         <nav class="pf-v5-c-nav" aria-label="Global">
-            { for props.children.iter() }
+            { props.children.clone() }
         </nav>
     }
 }
@@ -35,14 +35,14 @@ pub fn nav(props: &NavProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavListProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(NavList)]
 pub fn nav_list(props: &NavListProperties) -> Html {
     html! {
         <ul class="pf-v5-c-nav__list" role="list">
-            { for props.children.iter() }
+            { props.children.clone() }
         </ul>
     }
 }
@@ -53,7 +53,7 @@ pub fn nav_list(props: &NavListProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavGroupProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub title: String,
 }
@@ -64,7 +64,7 @@ pub fn nav_group(props: &NavGroupProperties) -> Html {
         <section class="pf-v5-c-nav__section">
             <h2 class="pf-v5-c-nav__section-title">{ props.title.clone() }</h2>
             <NavList>
-                { for props.children.iter() }
+                { props.children.clone() }
             </NavList>
         </section>
     }
@@ -76,7 +76,7 @@ pub fn nav_group(props: &NavGroupProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavItemProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub onclick: Callback<()>,
 }
@@ -91,7 +91,7 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
                 class="pf-v5-c-nav__link"
                 onclick={props.onclick.reform(|_|())}
             >
-                { for props.children.iter() }
+                { props.children.clone() }
             </a>
         </li>
     )
@@ -101,7 +101,7 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavLinkProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub href: AttrValue,
     #[prop_or_default]
@@ -118,7 +118,7 @@ pub fn nav_link(props: &NavLinkProperties) -> Html {
                 class="pf-v5-c-nav__link"
                 target={&props.target}
             >
-                { for props.children.iter() }
+                { props.children.clone() }
             </a>
         </li>
     )
@@ -141,7 +141,7 @@ impl Expandable {
 #[derive(Clone, PartialEq, Properties)]
 pub struct NavExpandableProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub title: String,
     #[prop_or_default]
@@ -246,7 +246,7 @@ impl Component for NavExpandable {
 
                     <section class="pf-v5-c-nav__subnav" hidden={!expanded}>
                         <NavList>
-                            { for ctx.props().children.iter() }
+                            { ctx.props().children.clone() }
                         </NavList>
                     </section>
                 </li>

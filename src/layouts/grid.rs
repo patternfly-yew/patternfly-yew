@@ -6,7 +6,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq, Properties)]
 pub struct GridProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub gutter: bool,
     #[prop_or_default]
@@ -37,7 +37,7 @@ pub fn grid(props: &GridProperties) -> Html {
 
     html! {
         <div class={classes}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     }
 }
@@ -45,7 +45,7 @@ pub fn grid(props: &GridProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct GridItemProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub cols: WithBreakpoints<u16>,
@@ -74,7 +74,7 @@ pub fn grid_item(props: &GridItemProperties) -> Html {
 
     html! {
             <div class={classes}>
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
     }
 }

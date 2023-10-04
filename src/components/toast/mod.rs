@@ -117,7 +117,7 @@ impl Toaster {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub children: Children,
+    pub children: Html,
 }
 
 pub struct ToastEntry {
@@ -178,7 +178,7 @@ impl Component for ToastViewer {
                 <AlertGroup toast=true>
                     { for self.alerts.iter().map(|entry|entry.alert.clone()) }
                 </AlertGroup>
-                { for ctx.props().children.iter() }
+                { ctx.props().children.clone() }
             </ContextProvider<Toaster>>
         }
     }

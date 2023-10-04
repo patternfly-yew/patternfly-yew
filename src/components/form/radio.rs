@@ -30,11 +30,11 @@ pub struct RadioProperties {
 
     /// A longer description text.
     #[prop_or_default]
-    pub description: Children,
+    pub description: Option<Html>,
 
     /// Additional content aligned with the label.
     #[prop_or_default]
-    pub body: Children,
+    pub body: Option<Html>,
 
     /// Event fired when the radio button is checked (but not when unchecked).
     #[prop_or_default]
@@ -91,7 +91,7 @@ pub fn radio(props: &RadioProperties) -> Html {
                     class={label_class}
                     for={(*id).clone()}
                 >
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </label>
             }
         </>
@@ -105,15 +105,15 @@ pub fn radio(props: &RadioProperties) -> Html {
         <div {class}>
             {first} {second}
 
-            if !props.description.is_empty() {
+            if let Some(description) = &props.description {
                 <span class="pf-v5-c-radio__description">
-                    { for props.description.iter() }
+                    { description.clone() }
                 </span>
             }
 
-            if !props.body.is_empty() {
+            if  let Some(body) = &props.body {
                 <span class="pf-v5-c-radio__body">
-                    { for props.body.iter() }
+                    { body.clone() }
                 </span>
             }
         </div>

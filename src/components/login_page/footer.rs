@@ -13,7 +13,7 @@ pub struct LoginMainFooterLinkProperties {
     #[prop_or_default]
     pub target: Option<AttrValue>,
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(LoginMainFooterLink)]
@@ -26,7 +26,7 @@ pub fn login_main_footer_link(props: &LoginMainFooterLinkProperties) -> Html {
             target={props.target.clone()}
             aria_label={props.label.clone()}
             >
-            { for props.children.iter() }
+            { props.children.clone() }
         </a>
     );
 
@@ -45,7 +45,7 @@ pub fn login_main_footer_link(props: &LoginMainFooterLinkProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct LoginMainFooterProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub band: Children,
     #[prop_or_default]
@@ -56,7 +56,7 @@ pub struct LoginMainFooterProperties {
 pub fn login_main_footer(props: &LoginMainFooterProperties) -> Html {
     html! (
         <footer class="pf-v5-c-login__main-footer">
-            { for props.children.iter() }
+            { props.children.clone() }
 
             if !props.links.is_empty() {
                 <ul class="pf-v5-c-login__main-footer-links">
@@ -69,7 +69,7 @@ pub fn login_main_footer(props: &LoginMainFooterProperties) -> Html {
             if !props.band.is_empty() {
                 <div class="pf-v5-c-login__main-footer-band">
                 { for props.band.iter().map(|item|{
-                    html!{ <p class="pf-v5-c-login__main-footer-band-item">{item}</p> }
+                    html!{ <p class="pf-v5-c-login__main-footer-band-item">{item.clone()}</p> }
                 }) }
                 </div>
             }

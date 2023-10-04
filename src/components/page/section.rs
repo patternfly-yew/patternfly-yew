@@ -50,7 +50,7 @@ impl AsClasses for PageSectionType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct PageSectionProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub r#type: PageSectionType,
     #[prop_or_default]
@@ -193,10 +193,10 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
         <section {class} id={&props.id} hidden={props.hidden}>
                  if props.r#type == PageSectionType::Default && props.limit_width {
                     <div class="pf-v5-c-page__main-body">
-                        { for props.children.iter() }
+                        { props.children.clone() }
                     </div>
                 } else {
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 }
          </section>
     )
@@ -205,7 +205,7 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
 /// Properties for [`PageSectionGroup`]
 #[derive(PartialEq, Properties)]
 pub struct PageSectionGroupProperties {
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub shadow: PageSectionShadow,
     #[prop_or_default]
@@ -227,7 +227,7 @@ pub fn page_section_group(props: &PageSectionGroupProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

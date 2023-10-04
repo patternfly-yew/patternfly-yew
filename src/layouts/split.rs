@@ -55,7 +55,7 @@ pub fn split(props: &SplitProperties) -> Html {
 
     html! (
         <div class={classes}>
-        { for props.children.iter() }
+            { for props.children.iter() }
         </div>
     )
 }
@@ -63,7 +63,7 @@ pub fn split(props: &SplitProperties) -> Html {
 #[derive(Clone, PartialEq, Properties)]
 pub struct SplitItemProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     #[prop_or_default]
     pub fill: bool,
 }

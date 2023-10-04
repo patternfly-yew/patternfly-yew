@@ -261,7 +261,7 @@ where
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 struct MainCellProperties {
-    children: Children,
+    children: Html,
 
     has_children: bool,
     expanded: bool,
@@ -303,7 +303,7 @@ fn main_cell(props: &MainCellProperties) -> Html {
                     class="pf-v5-c-table__text"
                     id={ *id_label }
                 >
-                    { for props.children.iter() }
+                    { props.children.clone() }
                 </span>
             </div>
             // TODO: not sure why this is needed

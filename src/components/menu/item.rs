@@ -4,7 +4,7 @@ use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 struct MenuItemProperties {
-    pub children: Children,
+    pub children: Html,
     pub icon: Option<Html>,
     pub danger: bool,
     pub disabled: bool,
@@ -87,7 +87,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                             <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
                         }
 
-                        <span class="pf-v5-c-menu__item-text">{ for props.children.iter() }</span>
+                        <span class="pf-v5-c-menu__item-text">{ props.children.clone() }</span>
 
                         if props.selected {
                             <span class="pf-v5-c-menu__item-select-icon">{ Icon::Check }</span>
@@ -105,7 +105,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuActionProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub description: Option<String>,
@@ -156,7 +156,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuLinkProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub description: Option<String>,

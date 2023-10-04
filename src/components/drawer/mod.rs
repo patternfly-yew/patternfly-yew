@@ -46,7 +46,7 @@ pub struct DrawerProperties {
     pub r#static: WithBreakpoints<bool>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 /// Drawer component
@@ -129,7 +129,7 @@ pub fn drawer(props: &DrawerProperties) -> Html {
     html!(
         <ContextProvider<DrawerContext> {context}>
             <div {class}>
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
         </ContextProvider<DrawerContext>>
     )
@@ -138,10 +138,10 @@ pub fn drawer(props: &DrawerProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerContentProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
-    pub panel_content: Children,
+    pub panel_content: Html,
 }
 
 #[function_component(DrawerContent)]
@@ -155,10 +155,10 @@ pub fn drawer_content(props: &DrawerContentProperties) -> Html {
     html!(
         <div class={classes!("pf-v5-c-drawer__main")}>
             <div class={content_class}>
-                { for props.children.iter() }
+                { props.children.clone() }
             </div>
             <div class={panel_class} {hidden}>
-                { for props.panel_content.iter() }
+                { props.panel_content.clone() }
             </div>
         </div>
     )
@@ -167,7 +167,7 @@ pub fn drawer_content(props: &DrawerContentProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerContentBodyProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(DrawerContentBody)]
@@ -176,7 +176,7 @@ pub fn drawer_content_body(props: &DrawerContentBodyProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -184,7 +184,7 @@ pub fn drawer_content_body(props: &DrawerContentBodyProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerPanelContentProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(DrawerPanelContent)]
@@ -193,7 +193,7 @@ pub fn drawer_panel_content(props: &DrawerPanelContentProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -201,7 +201,7 @@ pub fn drawer_panel_content(props: &DrawerPanelContentProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerHeadProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(DrawerHead)]
@@ -210,7 +210,7 @@ pub fn drawer_panel_content(props: &DrawerHeadProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -218,7 +218,7 @@ pub fn drawer_panel_content(props: &DrawerHeadProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerActionsProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(DrawerActions)]
@@ -227,7 +227,7 @@ pub fn drawer_actions(props: &DrawerActionsProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -257,7 +257,7 @@ pub fn drawer_panel_content(props: &DrawerCloseButtonProperties) -> Html {
 #[derive(PartialEq, Properties)]
 pub struct DrawerSectionProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }
 
 #[function_component(DrawerSection)]
@@ -266,7 +266,7 @@ pub fn drawer_content_body(props: &DrawerSectionProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

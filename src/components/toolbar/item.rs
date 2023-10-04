@@ -37,7 +37,7 @@ pub struct ToolbarItemProperties {
     pub id: Option<AttrValue>,
 
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub modifiers: WithBreakpoints<ToolbarElementModifier>,
@@ -84,7 +84,7 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
             {class}
             {style}
         >
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

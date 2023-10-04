@@ -4,5 +4,5 @@ use yew::prelude::*;
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ChildrenProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
 }

@@ -6,7 +6,7 @@ use yew::prelude::*;
 /// Properties for [`Panel`]
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct PanelProperties {
-    pub children: Children,
+    pub children: Html,
 
     #[prop_or_default]
     pub variant: PanelVariant,
@@ -72,7 +72,7 @@ pub fn panel(props: &PanelProperties) -> Html {
 
     html!(
         <div {class}>
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -81,7 +81,7 @@ pub fn panel(props: &PanelProperties) -> Html {
 pub fn panel_main(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__main">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -90,7 +90,7 @@ pub fn panel_main(props: &ChildrenProperties) -> Html {
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__main-body">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -99,7 +99,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 pub fn panel_header(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__header">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }
@@ -108,7 +108,7 @@ pub fn panel_header(props: &ChildrenProperties) -> Html {
 pub fn panel_footer(props: &ChildrenProperties) -> Html {
     html!(
         <div class="pf-v5-c-panel__footer">
-            { for props.children.iter() }
+            { props.children.clone() }
         </div>
     )
 }

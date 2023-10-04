@@ -12,7 +12,7 @@ where
     R: Target,
 {
     #[prop_or_default]
-    pub children: Children,
+    pub children: Html,
     pub to: R,
 
     #[prop_or_default]
@@ -47,7 +47,7 @@ where
     html! {
         <li class="pf-v5-c-nav__item">
             <Link<R> target={props.to.clone()} class={classes}>
-                { for props.children.iter() }
+                { props.children.clone() }
             </Link<R>>
         </li>
     }
