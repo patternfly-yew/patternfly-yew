@@ -24,8 +24,11 @@ where
 
     /// Render the details section for a specific column.
     ///
+    /// Used in combination with [`super::TableMode::Expandable`] or [`super::TableMode::CompactExpandable`] when one
+    /// or more headers is marked `expandable=true`.
+    ///
     /// Defaults to not having details.
-    fn render_column_details(&self, _column: &C) -> Vec<Span> {
+    fn render_column_details(&self, #[allow(unused)] column: &C) -> Vec<Span> {
         vec![]
     }
 

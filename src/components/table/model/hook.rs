@@ -121,19 +121,14 @@ where
 
     // FIXME: allow toggling entries without re-evaluating the whole table: https://github.com/patternfly-yew/patternfly-yew/issues/69
     let ontoggle = Callback::from(move |(key, expansion_state)| {
-        log::debug!("Toggle state: {key:?}, {expansion_state:?}");
-
         match state.borrow_mut().entry(key) {
             Entry::Vacant(entry) => {
-                log::debug!("Insert");
                 entry.insert(expansion_state);
             }
             Entry::Occupied(mut entry) => {
                 if entry.get() != &expansion_state {
-                    log::debug!("Replace");
                     entry.insert(expansion_state);
                 } else {
-                    log::debug!("Remove");
                     entry.remove();
                 }
             }
