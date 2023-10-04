@@ -37,7 +37,7 @@ pub struct DatePickerProperties {
 /// Defined by [`DatePickerProperties`].
 #[function_component(DatePicker)]
 pub fn date_picker(props: &DatePickerProperties) -> Html {
-    let value = use_state_eq(|| props.value.clone());
+    let value = use_state_eq(|| props.value);
     let string_value =
         use_state_eq(|| props.value.map(|date| date.to_string()).unwrap_or_default());
 
@@ -86,7 +86,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         use_effect_with(
             ((*string_value).clone(), value.clone()),
             move |(string_value, value)| {
-                let new = match NaiveDate::parse_from_str(&string_value, "%Y-%m-%d") {
+                let new = match NaiveDate::parse_from_str(string_value, "%Y-%m-%d") {
                     Ok(v) => Some(v),
                     // FIXME: should extract an "error" state from this
                     Err(_err) => None,

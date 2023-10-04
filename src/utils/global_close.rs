@@ -27,13 +27,12 @@ pub struct GlobalClose {
 impl GlobalClose {
     pub fn new(node_ref: NodeRef, callback: Callback<()>) -> Self {
         let cloned_ref = node_ref.clone();
-        let listener = Closure::wrap(Box::new(move |e: MouseEvent| match cloned_ref.get() {
-            Some(control_ref) => {
+        let listener = Closure::wrap(Box::new(move |e: MouseEvent| {
+            if let Some(control_ref) = cloned_ref.get() {
                 if !control_ref.contains(e.target().as_ref().and_then(|t| t.dyn_ref())) {
                     callback.emit(());
                 }
             }
-            _ => {}
         }) as Box<dyn Fn(MouseEvent)>);
 
         if let Some(cb) = listener.as_ref().dyn_ref() {

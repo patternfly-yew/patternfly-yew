@@ -416,12 +416,12 @@ where
     }
 }
 
-impl<K> Into<Html> for SelectChildVariant<K>
+impl<K> From<SelectChildVariant<K>> for Html
 where
     K: 'static + Clone + PartialEq + Display,
 {
-    fn into(self) -> Html {
-        match self.props {
+    fn from(value: SelectChildVariant<K>) -> Self {
+        match value.props {
             SelectChild::Option(props) => VComp::new::<SelectOption<K>>(props, None).into(),
             SelectChild::Divider(props) => VComp::new::<ListDivider>(props, None).into(),
             SelectChild::Group(props) => VComp::new::<SelectGroup<K>>(props, None).into(),

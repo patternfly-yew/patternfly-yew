@@ -73,10 +73,8 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
         class.push(classes!("pf-m-full-height"));
     }
 
-    if matches!(props.variant, MenuToggleVariant::Plain) {
-        if props.text.is_some() {
-            class.push(classes!("pf-m-text"));
-        }
+    if matches!(props.variant, MenuToggleVariant::Plain) && props.text.is_some() {
+        class.push(classes!("pf-m-text"));
     }
 
     class.extend_from(&props.variant);

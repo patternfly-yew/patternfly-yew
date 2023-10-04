@@ -70,10 +70,7 @@ impl From<ValidationResult> for Option<FormHelperText> {
                 message: result.message.unwrap_or_default(),
                 input_state: result.state,
                 custom_icon: None,
-                no_icon: match result.state {
-                    InputState::Default => true,
-                    _ => false,
-                },
+                no_icon: matches!(result.state, InputState::Default),
                 is_dynamic: true,
             })
         }

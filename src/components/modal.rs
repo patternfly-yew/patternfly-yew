@@ -3,8 +3,9 @@ use crate::prelude::use_backdrop;
 use yew::prelude::*;
 use yew_hooks::{use_click_away, use_event_with_window};
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum ModalVariant {
+    #[default]
     None,
     Small,
     Medium,
@@ -19,12 +20,6 @@ impl ModalVariant {
             ModalVariant::Medium => classes!("pf-m-md"),
             ModalVariant::Large => classes!("pf-m-lg"),
         }
-    }
-}
-
-impl Default for ModalVariant {
-    fn default() -> Self {
-        ModalVariant::None
     }
 }
 

@@ -280,13 +280,16 @@ impl Clipboard {
         log::debug!("New value: {}", value);
 
         // sync back
-        if self.expanded {
-            if let Some(ele) = self.text_ref.cast::<HtmlInputElement>() {
-                ele.set_value(&value);
+        match self.expanded {
+            true => {
+                if let Some(ele) = self.text_ref.cast::<HtmlInputElement>() {
+                    ele.set_value(&value);
+                }
             }
-        } else {
-            if let Some(ele) = self.details_ref.cast::<Element>() {
-                ele.set_text_content(Some(&value));
+            false => {
+                if let Some(ele) = self.details_ref.cast::<Element>() {
+                    ele.set_text_content(Some(&value));
+                }
             }
         }
 

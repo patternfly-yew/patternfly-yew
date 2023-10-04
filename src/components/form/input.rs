@@ -201,15 +201,13 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     );
     let oninput = use_on_text_change(input_ref.clone(), props.oninput.clone(), onchange);
 
-    let icon_html = if let Some(icon) = props.icon {
-        Some(html!(
-            <div class="pf-v5-c-form-control__icon">
+    let icon_html = props.icon.map(|icon| {
+        html!(
+           <div class="pf-v5-c-form-control__icon">
                 { icon }
             </div>
-        ))
-    } else {
-        None
-    };
+        )
+    });
 
     let status_html = if props.state != InputState::Default {
         Some(html!(

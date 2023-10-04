@@ -176,11 +176,9 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let onkeydown = use_on_enter(
         (input.clone(), props.onnavigation.clone()),
         |(input, onnavigation)| {
-            let mut page = **input;
-            if page > 0 {
-                // humans start with 1, we use 0.
-                page -= 1;
-            }
+            let mut page: usize = **input;
+            // humans start with 1, we use 0.
+            page = page.saturating_sub(1);
             log::debug!("Emit page change: {page}");
             onnavigation.emit(Navigation::Page(page));
         },
@@ -256,7 +254,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         <div
             id={&props.id}
             class={pagination_classes}
-            style={vec![pagination_styles, props.style.to_string()].join(" ")}
+            style={[pagination_styles, props.style.to_string()].join(" ")}
             ref={node}
         >
 

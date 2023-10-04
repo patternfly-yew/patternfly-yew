@@ -248,15 +248,13 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
         (HelperTextItemIcon::Custom(icon), ..) => Some(icon),
     };
 
-    let item_icon = if let Some(icon) = icon {
-        Some(html!(
+    let item_icon = icon.map(|icon| {
+        html!(
             <span class="pf-v5-c-helper-text__item-icon">
                 { icon }
             </span>
-        ))
-    } else {
-        None
-    };
+        )
+    });
 
     let screen_reader = use_memo(
         (props.screen_reader_text.clone(), props.dynamic),

@@ -53,11 +53,16 @@ pub struct Toast {
     pub actions: Vec<Action>,
 }
 
-impl Toast {
-    /// Create a simple toast from a string
-    pub fn from_str(title: String) -> Self {
+impl From<&str> for Toast {
+    fn from(value: &str) -> Self {
+        Self::from(value.to_string())
+    }
+}
+
+impl From<String> for Toast {
+    fn from(value: String) -> Self {
         Self {
-            title,
+            title: value,
             timeout: None,
             body: Default::default(),
             r#type: Default::default(),
@@ -66,21 +71,9 @@ impl Toast {
     }
 }
 
-impl From<&str> for Toast {
-    fn from(value: &str) -> Self {
-        Self::from_str(value.to_string())
-    }
-}
-
-impl From<String> for Toast {
-    fn from(value: String) -> Self {
-        Self::from_str(value)
-    }
-}
-
 impl From<&String> for Toast {
     fn from(value: &String) -> Self {
-        Self::from_str(value.clone())
+        Self::from(value.clone())
     }
 }
 
@@ -94,7 +87,7 @@ where
     T: Display,
 {
     fn to_toast(&self) -> Toast {
-        Toast::from_str(self.to_string())
+        Toast::from(self.to_string())
     }
 }
 

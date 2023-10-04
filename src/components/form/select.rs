@@ -154,12 +154,12 @@ where
     }
 }
 
-impl<K> Into<Html> for FormSelectChildVariant<K>
+impl<K> From<FormSelectChildVariant<K>> for Html
 where
     K: 'static + Clone + PartialEq + Display,
 {
-    fn into(self) -> Html {
-        match self.props {
+    fn from(value: FormSelectChildVariant<K>) -> Self {
+        match value.props {
             FormSelectChild::Option(props) => VComp::new::<FormSelectOption<K>>(props, None).into(),
             FormSelectChild::Group(props) => VComp::new::<FormSelectGroup<K>>(props, None).into(),
         }

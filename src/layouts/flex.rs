@@ -128,9 +128,9 @@ where
     }
 }
 
-impl Into<Html> for FlexChildVariant {
-    fn into(self) -> Html {
-        match self.props {
+impl From<FlexChildVariant> for Html {
+    fn from(value: FlexChildVariant) -> Self {
+        match value.props {
             FlexChild::Flex(props) => VComp::new::<Flex>(props, None).into(),
             FlexChild::FlexItem(props) => VComp::new::<FlexItem>(props, None).into(),
             FlexChild::Raw(props) => VComp::new::<Raw>(props, None).into(),

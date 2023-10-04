@@ -86,29 +86,21 @@ pub struct SkeletonProperties {
 #[function_component(Skeleton)]
 pub fn skeleton(props: &SkeletonProperties) -> Html {
     let mut skeleton_classes = classes!("pf-v5-c-skeleton");
-    match props.font_size {
-        Some(val) => skeleton_classes.extend_from(&val),
-        _ => {}
+    if let Some(val) = props.font_size {
+        skeleton_classes.extend_from(&val)
     }
-    match props.shape {
-        Some(val) => skeleton_classes.extend_from(&val),
-        _ => {}
+    if let Some(val) = props.shape {
+        skeleton_classes.extend_from(&val)
     }
 
     let mut skeleton_styles = vec![props.style.to_string()];
-    match &props.width {
-        Some(val) => {
-            let style = format!("--pf-v5-c-skeleton--Width: {};", val);
-            skeleton_styles.push(style.to_string());
-        }
-        _ => {}
+    if let Some(val) = &props.width {
+        let style = format!("--pf-v5-c-skeleton--Width: {};", val);
+        skeleton_styles.push(style.to_string());
     }
-    match &props.height {
-        Some(val) => {
-            let style = format!("--pf-v5-c-skeleton--Height: {};", val);
-            skeleton_styles.push(style.to_string());
-        }
-        _ => {}
+    if let Some(val) = &props.height {
+        let style = format!("--pf-v5-c-skeleton--Height: {};", val);
+        skeleton_styles.push(style.to_string());
     }
 
     html!(

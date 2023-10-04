@@ -48,9 +48,9 @@ where
     }
 }
 
-impl Into<Html> for ToolbarChildVariant {
-    fn into(self) -> Html {
-        match self.props {
+impl From<ToolbarChildVariant> for Html {
+    fn from(value: ToolbarChildVariant) -> Self {
+        match value.props {
             ToolbarChild::Item(props) => VComp::new::<ToolbarItem>(props, None).into(),
             ToolbarChild::Group(props) => VComp::new::<ToolbarGroup>(props, None).into(),
             ToolbarChild::Divider(props) => VComp::new::<ToolbarDivider>(props, None).into(),

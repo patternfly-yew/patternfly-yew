@@ -40,16 +40,11 @@ impl ButtonVariant {
     }
 }
 
-#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug)]
 pub enum Align {
+    #[default]
     Start,
     End,
-}
-
-impl Default for Align {
-    fn default() -> Self {
-        Align::Start
-    }
 }
 
 /// Button Type.

@@ -21,9 +21,9 @@ where
     }
 }
 
-impl Into<Html> for CardBodyVariant {
-    fn into(self) -> Html {
-        match self.props {
+impl From<CardBodyVariant> for Html {
+    fn from(value: CardBodyVariant) -> Self {
+        match value.props {
             CardBodyChild::Body(props) => VComp::new::<CardBody>(props, None).into(),
             CardBodyChild::Divider(props) => VComp::new::<CardDivider>(props, None).into(),
             CardBodyChild::Raw(props) => VComp::new::<Raw>(props, None).into(),

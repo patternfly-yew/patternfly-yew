@@ -63,8 +63,8 @@ where
     }
 }
 
-impl Into<Html> for BreadcrumbItemVariant {
-    fn into(self) -> Html {
-        self.props.creator.create(self.current)
+impl From<BreadcrumbItemVariant> for Html {
+    fn from(value: BreadcrumbItemVariant) -> Self {
+        value.props.creator.create(value.current)
     }
 }
