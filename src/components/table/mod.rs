@@ -178,6 +178,17 @@ where
         class.push(classes!("pf-m-no-border-rows"));
     }
 
+    let expandable_columns = use_memo((props.header.clone(), props.mode.is_expandable()), |(header, expandable)| {
+        if !expandable {
+            return vec![];
+        }
+
+        match header {
+            Some(header) => header.props.children.iter().filter_map(|c|c.props.expandable.then(||c.props.index.clone())).collect::<Vec<_>>(),
+            None => vec![],
+        }
+    });
+
     html! (
         <table
             id={&props.id}
@@ -188,7 +199,7 @@ where
                 <caption class="pf-v5-c-table__caption">{caption}</caption>
             }
             { render_header(props) }
-            { render_entries(props) }
+            { render_entries(props, &expandable_columns) }
         </table>
     )
 }
@@ -210,7 +221,7 @@ where
     }
 }
 
-fn render_entries<C, M>(props: &TableProperties<C, M>) -> Html
+fn render_entries<C, M>(props: &TableProperties<C, M>, expandable_columns: &[C]) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
@@ -219,16 +230,19 @@ where
         props
             .entries
             .iter()
-            .map(|entry| render_expandable_entry(props, entry))
+            .map(|entry| render_expandable_entry(props, entry, expandable_columns))
             .collect()
     } else {
         html!(
             <tbody class="pf-v5-c-table__tbody" role="rowgroup"> {
-                for props.entries.iter().map(|entry| html!(
-                    <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
-                        { render_row(props, entry.value)}
-                    </tr>
-                ))
+                for props.entries.iter().map(|entry| {
+                    let content = { render_row(props, &entry, |_| false)};
+                    html!(
+                        <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
+                            {content}
+                        </tr>
+                    )}
+                )
             } </tbody>
         )
     }
@@ -236,14 +250,17 @@ where
 
 fn render_expandable_entry<C, M>(
     props: &TableProperties<C, M>,
-    entry: TableModelEntry<M::Item, M::Key>,
+    entry: TableModelEntry<M::Item, M::Key, C>,
+    expandable_columns: &[C],
 ) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let expanded = entry.expanded;
-    let key = entry.key;
+    let expansion = entry.expansion.clone();
+    let expanded = expansion.is_some();
+
+    let key = entry.key.clone();
 
     let mut cols = props
         .header
@@ -253,7 +270,7 @@ where
 
     let mut cells: Vec<Html> = Vec::with_capacity(cols);
 
-    if !entry
+    if expandable_columns.is_empty() && !entry
         .value
         .is_full_width_details()
         .unwrap_or(props.full_width_details)
@@ -262,7 +279,13 @@ where
         cols -= 1;
     }
 
-    for cell in entry.value.render_details() {
+    let details = match expansion {
+        Some(ExpansionState::Row) => {entry.value.render_details()},
+        Some(ExpansionState::Column(col)) => {entry.value.render_column_details(&col)},
+        None => vec![],
+    };
+
+    for cell in details {
         let mut classes = classes!("pf-v5-c-table__td");
         classes.extend_from(&cell.modifiers);
 
@@ -300,20 +323,28 @@ where
 
     let onclick = {
         let key = key.clone();
-        props.onexpand.0.reform(move |_| (key.clone(), !expanded))
+        props.onexpand.0.reform(move |_| (key.clone(), ExpansionState::Row))
     };
+
+    let mut class = classes!("pf-v5-c-table__tr");
+
+    if !expandable_columns.is_empty() && props.mode.is_expandable() {
+        class.push(classes!("pf-v5-c-table__control-row"));
+    }
 
     html! (
         <tbody {key} role="rowgroup" class={tbody_class}>
-            <tr class="pf-v5-c-table__tr" role="row">
+            <tr {class} role="row">
 
                 // first column, the toggle
 
-                <TableRowToggle {expanded} {onclick} />
+                if expandable_columns.is_empty() {
+                    <TableRowToggle {expanded} {onclick} />
+                }
 
                 // then, the actual content
 
-                { render_row(props, entry.value) }
+                { render_row(props, &entry, |column| expandable_columns.contains(column)) }
             </tr>
 
             // the expanded row details
@@ -358,12 +389,13 @@ fn table_row_toggle(props: &TableRowToggleProperties) -> Html {
     )
 }
 
-fn render_row<C, M>(props: &TableProperties<C, M>, entry: &M::Item) -> Html
+fn render_row<C, M, F>(props: &TableProperties<C, M>, entry: &TableModelEntry<'_, M::Item, M::Key, C>, expandable: F) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
+    F: Fn(&C)-> bool,
 {
-    let actions = entry.actions();
+    let actions = entry.value.actions();
 
     let cols = props
         .header
@@ -372,9 +404,14 @@ where
 
     html!(<>
         { for cols.map(|column| {
+
+            let index = column.props.index.clone();
+            let expandable=  expandable(&index);
+
+
             // main cell content
             
-            let cell = entry.render_cell(CellContext {
+            let cell = entry.value.render_cell(CellContext {
                 column: &column.props.index,
             });
         
@@ -382,19 +419,45 @@ where
             
             let mut class = classes!("pf-v5-c-table__td");
             if cell.center {
-                class.push("pf-m-center")
+                class.push(classes!("pf-m-center"))
             }
             class.extend_from(&cell.text_modifier);
+            if expandable {
+                class.push(classes!("pf-v5-c-table__compound-expansion-toggle"));
+                match &entry.expansion {
+                    Some(ExpansionState::Column(i)) if i == &index => {
+                      class.push("pf-m-expanded");
+                    }
+                    _ => {},
+                }
+            }
     
             // data label
             
             let label = column.props.label.clone();
-            
+
+            // wrap with button when it's expandable
+            let mut content = cell.content;
+            if expandable {
+                let key = entry.key.clone();
+                let onclick = props.onexpand.0.reform(move |_| {
+                    let toggle = ExpansionState::Column(index.clone());
+                    (key.clone(), toggle)
+                });
+
+                content = html!(
+                    <button class="pf-v5-c-table__button" {onclick}>
+                        <span class="pf-v5-c-table__text">
+                            { content }
+                        </span>
+                    </button>
+                );
+            }
+
             // render
-            
             html!(
                 <td {class} role="cell" data-label={label.unwrap_or_default()}>
-                    { cell.content }
+                    { content }
                 </td>
             )
         })}

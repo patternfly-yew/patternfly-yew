@@ -20,6 +20,8 @@ where
     pub width: ColumnWidth,
     #[prop_or_default]
     pub text_modifier: Option<TextModifier>,
+    #[prop_or_default]
+    pub expandable: bool,
 
     #[doc(hidden)]
     #[prop_or_default]

@@ -64,18 +64,20 @@ where
     }
 }
 
-pub struct StateIter<'i, T, K>
+pub struct StateIter<'i, T, K, C>
 where
     K: Into<Key>,
+    C: Clone + Eq,
 {
-    iter: Box<dyn Iterator<Item = TableModelEntry<'i, T, K>> + 'i>,
+    iter: Box<dyn Iterator<Item = TableModelEntry<'i, T, K, C>> + 'i>,
 }
 
-impl<'i, T, K> Iterator for StateIter<'i, T, K>
+impl<'i, T, K, C> Iterator for StateIter<'i, T, K, C>
 where
     K: Into<Key>,
+    C: Clone + Eq,
 {
-    type Item = TableModelEntry<'i, T, K>;
+    type Item = TableModelEntry<'i, T, K, C>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.iter.next()

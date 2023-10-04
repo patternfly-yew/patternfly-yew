@@ -1,6 +1,7 @@
 use super::{TableDataModel, TableModelEntry};
+use crate::prelude::ExpansionState;
 use std::cell::RefCell;
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::hash::Hash;
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -14,7 +15,7 @@ where
 {
     _marker: PhantomData<C>,
     model: M,
-    state: Rc<RefCell<HashSet<M::Key>>>,
+    state: Rc<RefCell<HashMap<M::Key, ExpansionState<C>>>>,
 }
 
 impl<C, M> StateModel<C, M>
@@ -22,7 +23,7 @@ where
     C: Clone + Eq + 'static,
     M: TableDataModel<C>,
 {
-    pub fn new(model: M, state: Rc<RefCell<HashSet<M::Key>>>) -> Self {
+    pub fn new(model: M, state: Rc<RefCell<HashMap<M::Key, ExpansionState<C>>>>) -> Self {
         Self {
             model,
             state,
@@ -48,7 +49,7 @@ where
     M: TableDataModel<C> + 'static,
     M::Key: Hash,
 {
-    type Iterator<'i> = StateModelIter<'i, Self::Key, Self::Item>;
+    type Iterator<'i> = StateModelIter<'i, Self::Key, Self::Item, C>;
     type Item = M::Item;
     type Key = M::Key;
 
@@ -63,37 +64,40 @@ where
     fn iter(&self) -> Self::Iterator<'_> {
         let state = self.state.borrow().clone();
         StateModelIter::new(self.model.iter().map(move |(key, value)| {
-            let expanded = state.contains(&key);
+            let expansion = state.get(&key).cloned();
             TableModelEntry {
                 key,
                 value,
-                expanded,
+                expansion,
             }
         }))
     }
 }
 
-pub struct StateModelIter<'i, K, V>(Box<dyn Iterator<Item = TableModelEntry<'i, V, K>> + 'i>)
-where
-    K: Into<Key>;
-
-impl<'i, K, V> StateModelIter<'i, K, V>
+pub struct StateModelIter<'i, K, V, C>(Box<dyn Iterator<Item = TableModelEntry<'i, V, K, C>> + 'i>)
 where
     K: Into<Key>,
+    C: Clone + Eq;
+
+impl<'i, K, V, C> StateModelIter<'i, K, V, C>
+where
+    K: Into<Key>,
+    C: Clone + Eq,
 {
     pub fn new<I>(iter: I) -> Self
     where
-        I: Iterator<Item = TableModelEntry<'i, V, K>> + 'i,
+        I: Iterator<Item = TableModelEntry<'i, V, K, C>> + 'i,
     {
         Self(Box::new(iter))
     }
 }
 
-impl<'i, K, V> Iterator for StateModelIter<'i, K, V>
+impl<'i, K, V, C> Iterator for StateModelIter<'i, K, V, C>
 where
     K: Into<Key>,
+    C: Clone + Eq,
 {
-    type Item = TableModelEntry<'i, V, K>;
+    type Item = TableModelEntry<'i, V, K, C>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.next()

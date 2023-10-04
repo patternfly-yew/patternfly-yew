@@ -1,13 +1,42 @@
 use super::{StateModel, TableDataModel};
 use crate::prelude::{StateModelIter, TableModel};
-use std::collections::HashSet;
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::hash::Hash;
 use std::rc::Rc;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
-pub struct OnToggleCallback<C, M>(pub Callback<(M::Key, bool)>)
+pub type ExpansionCallback<K, C> = Callback<(K, ExpansionState<C>)>;
+
+#[derive(Clone, PartialEq, Eq)]
+pub enum ExpansionState<C>
+where
+    C: Clone + Eq,
+{
+    Row,
+    Column(C),
+}
+
+impl<C> Copy for ExpansionState<C> where C: Copy + Clone + Eq {}
+
+impl<C> Debug for ExpansionState<C>
+where
+    C: Clone + Eq,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Row => f.debug_tuple("ExpansionState::Row").finish(),
+            Self::Column(_) => f
+                .debug_tuple("ExpansionState::Column")
+                .field(&"..")
+                .finish(),
+        }
+    }
+}
+
+pub struct OnToggleCallback<C, M>(pub ExpansionCallback<M::Key, C>)
 where
     C: Clone + Eq + 'static,
     M: TableModel<C>;
@@ -52,7 +81,7 @@ where
     }
 }
 
-impl<C, M> IntoPropValue<OnToggleCallback<C, M>> for Callback<(M::Key, bool)>
+impl<C, M> IntoPropValue<OnToggleCallback<C, M>> for ExpansionCallback<M::Key, C>
 where
     C: Clone + Eq + 'static,
     M: TableModel<C>,
@@ -62,7 +91,7 @@ where
     }
 }
 
-impl<C, M> IntoPropValue<OnToggleCallback<C, M>> for Rc<Callback<(M::Key, bool)>>
+impl<C, M> IntoPropValue<OnToggleCallback<C, M>> for Rc<ExpansionCallback<M::Key, C>>
 where
     C: Clone + Eq + 'static,
     M: TableModel<C>,
@@ -73,17 +102,17 @@ where
 }
 
 #[hook]
-pub fn use_table_data<C, M>(data: M) -> (UseTableData<C, M>, Rc<Callback<(M::Key, bool)>>)
+pub fn use_table_data<C, M>(data: M) -> (UseTableData<C, M>, ExpansionCallback<M::Key, C>)
 where
     C: Clone + Eq + 'static,
     M: PartialEq + Clone + TableDataModel<C> + 'static,
     M::Key: Hash,
 {
-    let state = use_mut_ref(HashSet::<M::Key>::new);
+    let state = use_mut_ref(HashMap::<M::Key, ExpansionState<C>>::new);
     let model = {
         let state = state.clone();
         use_memo(data, move |model| {
-            state.borrow_mut().retain(|key| model.contains(key));
+            state.borrow_mut().retain(|key, _| model.contains(key));
             StateModel::new(model.clone(), state)
         })
     };
@@ -91,31 +120,27 @@ where
     let trigger = use_force_update();
 
     // FIXME: allow toggling entries without re-evaluating the whole table: https://github.com/patternfly-yew/patternfly-yew/issues/69
-    /*
-    let ontoggle = use_memo(
-        |()| {
-            Callback::from(move |(key, expanded): (M::Key, bool)| {
-                let changed = match expanded {
-                    true => state.borrow_mut().insert(key),
-                    false => state.borrow_mut().remove(&key),
-                };
-                if changed {
-                    trigger.force_update();
-                }
-            })
-        },
-        (),
-    );*/
+    let ontoggle = Callback::from(move |(key, expansion_state)| {
+        log::debug!("Toggle state: {key:?}, {expansion_state:?}");
 
-    let ontoggle = Rc::new(Callback::from(move |(key, expanded): (M::Key, bool)| {
-        let changed = match expanded {
-            true => state.borrow_mut().insert(key),
-            false => state.borrow_mut().remove(&key),
-        };
-        if changed {
-            trigger.force_update();
+        match state.borrow_mut().entry(key) {
+            Entry::Vacant(entry) => {
+                log::debug!("Insert");
+                entry.insert(expansion_state);
+            }
+            Entry::Occupied(mut entry) => {
+                if entry.get() != &expansion_state {
+                    log::debug!("Replace");
+                    entry.insert(expansion_state);
+                } else {
+                    log::debug!("Remove");
+                    entry.remove();
+                }
+            }
         }
-    }));
+
+        trigger.force_update();
+    });
 
     ({ UseTableData { model } }, ontoggle)
 }
@@ -135,7 +160,7 @@ where
     M: PartialEq + Clone + TableDataModel<C> + 'static,
     M::Key: Hash,
 {
-    type Iterator<'i> = StateModelIter<'i, M::Key, M::Item>;
+    type Iterator<'i> = StateModelIter<'i, M::Key, M::Item, C>;
     type Item = M::Item;
     type Key = M::Key;
 
@@ -195,7 +220,7 @@ mod test {
         }
 
         impl TableModel<()> for MockModel {
-            type Iterator<'i>  = std::vec::IntoIter<TableModelEntry<'i, Self::Item, Self::Key>> where
+            type Iterator<'i>  = std::vec::IntoIter<TableModelEntry<'i, Self::Item, Self::Key, ()>> where
             Self: 'i;
 
             type Item = String;

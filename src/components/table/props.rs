@@ -11,6 +11,12 @@ pub enum TableMode {
     Expandable,
 }
 
+impl TableMode {
+    pub fn is_expandable(&self) -> bool {
+        matches!(self, Self::CompactExpandable | Self::Expandable)
+    }
+}
+
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum TableGridMode {
     Medium,

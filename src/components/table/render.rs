@@ -15,8 +15,17 @@ where
 
     /// Render the details section.
     ///
+    /// Used in combination with [`super::TableMode::Expandable`] or [`super::TableMode::CompactExpandable`].
+    ///
     /// Defaults to not having details.
     fn render_details(&self) -> Vec<Span> {
+        vec![]
+    }
+
+    /// Render the details section for a specific column.
+    ///
+    /// Defaults to not having details.
+    fn render_column_details(&self, _column: &C) -> Vec<Span> {
         vec![]
     }
 

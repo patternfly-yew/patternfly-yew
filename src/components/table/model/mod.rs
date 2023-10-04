@@ -6,6 +6,7 @@ mod table;
 pub use hook::*;
 pub use memoized::*;
 pub use state::*;
+use std::fmt::Debug;
 pub use table::*;
 
 use super::TableEntryRenderer;
@@ -17,11 +18,11 @@ pub trait TableModel<C>
 where
     C: Clone + Eq + 'static,
 {
-    type Iterator<'i>: Iterator<Item = TableModelEntry<'i, Self::Item, Self::Key>>
+    type Iterator<'i>: Iterator<Item = TableModelEntry<'i, Self::Item, Self::Key, C>>
     where
         Self: 'i;
     type Item: TableEntryRenderer<C> + 'static;
-    type Key: Into<Key> + Clone + Eq + 'static;
+    type Key: Into<Key> + Clone + Debug + Eq + 'static;
 
     /// Get the number of items
     fn len(&self) -> usize;
@@ -65,7 +66,7 @@ where
     where
         Self: 'i;
     type Item: TableEntryRenderer<C> + 'static;
-    type Key: Into<Key> + Clone + Eq + 'static;
+    type Key: Into<Key> + Clone + Debug + Eq + 'static;
 
     /// Get the number of items
     fn len(&self) -> usize;
@@ -108,11 +109,12 @@ where
     }
 }
 
-pub struct TableModelEntry<'t, T, K>
+pub struct TableModelEntry<'t, T, K, C>
 where
     K: Into<Key>,
+    C: Clone + Eq,
 {
     pub value: &'t T,
     pub key: K,
-    pub expanded: bool,
+    pub expansion: Option<ExpansionState<C>>,
 }
