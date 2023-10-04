@@ -178,16 +178,24 @@ where
         class.push(classes!("pf-m-no-border-rows"));
     }
 
-    let expandable_columns = use_memo((props.header.clone(), props.mode.is_expandable()), |(header, expandable)| {
-        if !expandable {
-            return vec![];
-        }
+    let expandable_columns = use_memo(
+        (props.header.clone(), props.mode.is_expandable()),
+        |(header, expandable)| {
+            if !expandable {
+                return vec![];
+            }
 
-        match header {
-            Some(header) => header.props.children.iter().filter_map(|c|c.props.expandable.then(||c.props.index.clone())).collect::<Vec<_>>(),
-            None => vec![],
-        }
-    });
+            match header {
+                Some(header) => header
+                    .props
+                    .children
+                    .iter()
+                    .filter_map(|c| c.props.expandable.then(|| c.props.index.clone()))
+                    .collect::<Vec<_>>(),
+                None => vec![],
+            }
+        },
+    );
 
     html! (
         <table
@@ -270,18 +278,19 @@ where
 
     let mut cells: Vec<Html> = Vec::with_capacity(cols);
 
-    if expandable_columns.is_empty() && !entry
-        .value
-        .is_full_width_details()
-        .unwrap_or(props.full_width_details)
+    if expandable_columns.is_empty()
+        && !entry
+            .value
+            .is_full_width_details()
+            .unwrap_or(props.full_width_details)
     {
         cells.push(html! {<td class="pf-v5-c-table__td"></td>});
         cols -= 1;
     }
 
     let details = match expansion {
-        Some(ExpansionState::Row) => {entry.value.render_details()},
-        Some(ExpansionState::Column(col)) => {entry.value.render_column_details(&col)},
+        Some(ExpansionState::Row) => entry.value.render_details(),
+        Some(ExpansionState::Column(col)) => entry.value.render_column_details(&col),
         None => vec![],
     };
 
@@ -323,7 +332,10 @@ where
 
     let onclick = {
         let key = key.clone();
-        props.onexpand.0.reform(move |_| (key.clone(), ExpansionState::Row))
+        props
+            .onexpand
+            .0
+            .reform(move |_| (key.clone(), ExpansionState::Row))
     };
 
     let mut class = classes!("pf-v5-c-table__tr");
@@ -389,11 +401,15 @@ fn table_row_toggle(props: &TableRowToggleProperties) -> Html {
     )
 }
 
-fn render_row<C, M, F>(props: &TableProperties<C, M>, entry: &TableModelEntry<'_, M::Item, M::Key, C>, expandable: F) -> Html
+fn render_row<C, M, F>(
+    props: &TableProperties<C, M>,
+    entry: &TableModelEntry<'_, M::Item, M::Key, C>,
+    expandable: F,
+) -> Html
 where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
-    F: Fn(&C)-> bool,
+    F: Fn(&C) -> bool,
 {
     let actions = entry.value.actions();
 
@@ -483,7 +499,7 @@ fn row_actions(props: &RowActionsProperties) -> Html {
                     { props.actions.clone() }
                 </Dropdown>
             </td>
-        } 
+        }
     </>)
 }
 
