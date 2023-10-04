@@ -18,6 +18,7 @@ gloo-timers = "0.3.0"
 gloo-utils = "0.2.0"
 js-sys = "0.3.64"
 log = "0.4"
+num-traits = "0.2.16"
 popper-rs = { version = "0.3.0", features = ["yew"] }
 serde = "1"
 serde_json = "1"
@@ -44,7 +45,7 @@ web-sys = { version = "0.3", features = [
     "TouchEvent",
     "TouchList",
 ] }
-num-traits = "0.2.16"
+
 
 [features]
 default = ["router"]
@@ -61,4 +62,4 @@ icons-fab = []
 #yew-nested-router = { path = "../yew-nested-router" }
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
 #popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
-yew-hooks = { git = "https://github.com/ctron/yew-hooks", rev = "0ba4f5c5f331650b1608ad830dfac0ef63700e8d" }
+#yew-hooks = { git = "https://github.com/ctron/yew-hooks", rev = "0ba4f5c5f331650b1608ad830dfac0ef63700e8d" }
