@@ -45,6 +45,7 @@ pub use crate::components::page::*;
 pub use crate::components::pagination::*;
 pub use crate::components::panel::*;
 pub use crate::components::popover::*;
+pub use crate::components::progress::*;
 pub use crate::components::select::*;
 pub use crate::components::skeleton::*;
 pub use crate::components::slider::*;

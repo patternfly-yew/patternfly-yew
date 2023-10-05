@@ -40,6 +40,7 @@ pub mod page;
 pub mod pagination;
 pub mod panel;
 pub mod popover;
+pub mod progress;
 pub mod select;
 pub mod skeleton;
 pub mod slider;
