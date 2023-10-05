@@ -1,3 +1,5 @@
+//! Progress bar
+
 use crate::core::{AsClasses, ExtendClasses};
 use crate::icon::Icon;
 use crate::prelude::*;
