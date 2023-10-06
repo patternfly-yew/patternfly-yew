@@ -3,7 +3,8 @@
 use crate::core::{AsClasses, ExtendClasses};
 use crate::icon::Icon;
 use crate::prelude::*;
-use std::ops::Range;
+use std::ops::{Deref, Range};
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VChild;
 
@@ -95,6 +96,78 @@ impl ProgressVariant {
     }
 }
 
+#[derive(Default, PartialEq)]
+pub struct OptionalHtml(pub Option<Html>);
+
+impl Deref for OptionalHtml {
+    type Target = Option<Html>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl ToHtml for OptionalHtml {
+    fn to_html(&self) -> Html {
+        self.0.to_html()
+    }
+
+    fn into_html(self) -> Html
+    where
+        Self: Sized,
+    {
+        self.0.into_html()
+    }
+}
+
+impl From<Html> for OptionalHtml {
+    fn from(value: Html) -> Self {
+        Self(Some(value))
+    }
+}
+
+impl From<Option<Html>> for OptionalHtml {
+    fn from(value: Option<Html>) -> Self {
+        Self(value)
+    }
+}
+
+impl From<&str> for OptionalHtml {
+    fn from(value: &str) -> Self {
+        Self(Some(Html::from(value)))
+    }
+}
+
+impl From<String> for OptionalHtml {
+    fn from(value: String) -> Self {
+        Self(Some(Html::from(value)))
+    }
+}
+
+impl IntoPropValue<OptionalHtml> for &str {
+    fn into_prop_value(self) -> OptionalHtml {
+        self.into()
+    }
+}
+
+impl IntoPropValue<OptionalHtml> for String {
+    fn into_prop_value(self) -> OptionalHtml {
+        self.into()
+    }
+}
+
+impl IntoPropValue<OptionalHtml> for Html {
+    fn into_prop_value(self) -> OptionalHtml {
+        self.into()
+    }
+}
+
+impl IntoPropValue<OptionalHtml> for Option<Html> {
+    fn into_prop_value(self) -> OptionalHtml {
+        self.into()
+    }
+}
+
 /// Properties for [`Progress`]
 #[derive(PartialEq, Properties)]
 pub struct ProgressProperties {
@@ -109,7 +182,7 @@ pub struct ProgressProperties {
     pub range: Range<f64>,
 
     #[prop_or_default]
-    pub description: Option<String>,
+    pub description: OptionalHtml,
 
     /// Base ID of the element
     #[prop_or_default]
@@ -213,7 +286,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
 
     html!(
         <div {class} {id} style={props.style.clone()}>
-            if let Some(description) = &props.description {
+            if let Some(description) = &props.description.0 {
                 <div
                     class={description_class}
                     id={desc_id.clone()}
