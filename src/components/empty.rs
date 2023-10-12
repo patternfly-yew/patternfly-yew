@@ -67,23 +67,25 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
                 <div class="pf-v5-c-empty-state__body">
                     { props.children.clone() }
                 </div>
-                <div class="pf-v5-c-empty-state__footer">
-                    if let Some(action) = &props.primary {
-                        <div class="pf-v5-c-empty-state__actions">
-                            <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
-                        </div>
-                    }
+                if props.primary.is_some() || !props.secondaries.is_empty() {
+                    <div class="pf-v5-c-empty-state__footer">
+                        if let Some(action) = &props.primary {
+                            <div class="pf-v5-c-empty-state__actions">
+                                <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
+                            </div>
+                        }
 
-                    if !props.secondaries.is_empty() {
-                        <div class="pf-v5-c-empty-state__actions">
-                            { for props.secondaries.iter().map(|action|{
-                                html!{
-                                    <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
-                                }
-                            }) }
-                        </div>
-                    }
-                </div>
+                        if !props.secondaries.is_empty() {
+                            <div class="pf-v5-c-empty-state__actions">
+                                { for props.secondaries.iter().map(|action|{
+                                    html!{
+                                        <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>
+                                    }
+                                }) }
+                            </div>
+                        }
+                    </div>
+                }
             </div>
         </div>
     )
