@@ -1,4 +1,5 @@
 //! Description list
+use crate::core::WithBreakpoints;
 use crate::prelude::{AsClasses, ExtendClasses};
 use yew::prelude::*;
 
@@ -12,10 +13,40 @@ pub struct DescriptionListProperties {
     pub children: Html,
 
     #[prop_or_default]
-    pub mode: DescriptionListMode,
+    pub mode: WithBreakpoints<DescriptionListMode>,
 
     #[prop_or_default]
     pub compact: bool,
+
+    #[prop_or_default]
+    pub auto_column_widths: bool,
+
+    #[prop_or_default]
+    pub fill_columns: bool,
+
+    #[prop_or_default]
+    pub inline_grid: bool,
+
+    #[prop_or_default]
+    pub columns: WithBreakpoints<DescriptionListColumns>,
+}
+
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
+pub enum DescriptionListColumns {
+    #[default]
+    One,
+    Two,
+    Three,
+}
+
+impl AsClasses for DescriptionListColumns {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            Self::One => classes.extend(classes!("pf-m-1-col")),
+            Self::Two => classes.extend(classes!("pf-m-2-col")),
+            Self::Three => classes.extend(classes!("pf-m-3-col")),
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
@@ -63,18 +94,32 @@ impl AsClasses for DescriptionListMode {
 /// ```
 #[function_component(DescriptionList)]
 pub fn dl(props: &DescriptionListProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-description-list");
+    let mut class = Classes::from("pf-v5-c-description-list");
 
-    classes.extend_from(&props.mode);
+    class.extend_from(&props.mode);
 
     if props.compact {
-        classes.extend(classes!("pf-m-compact"));
+        class.extend(classes!("pf-m-compact"));
     }
+
+    if props.auto_column_widths {
+        class.extend(classes!("pf-m-auto-column-widths"));
+    }
+
+    if props.fill_columns {
+        class.extend(classes!("pf-m-fill-columns"));
+    }
+
+    if props.inline_grid {
+        class.extend(classes!("pf-m-inline-grid"));
+    }
+
+    class.extend_from(&props.columns);
 
     html! (
         <dl
             id={&props.id}
-            class={classes}
+            {class}
         >
             { props.children.clone() }
         </dl>
