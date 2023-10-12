@@ -10,6 +10,9 @@ pub struct DescriptionListProperties {
     pub id: AttrValue,
 
     #[prop_or_default]
+    pub style: Option<AttrValue>,
+
+    #[prop_or_default]
     pub children: Html,
 
     #[prop_or_default]
@@ -26,6 +29,9 @@ pub struct DescriptionListProperties {
 
     #[prop_or_default]
     pub inline_grid: bool,
+
+    #[prop_or_default]
+    pub auto_fit: bool,
 
     #[prop_or_default]
     pub columns: WithBreakpoints<DescriptionListColumns>,
@@ -114,12 +120,17 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
         class.extend(classes!("pf-m-inline-grid"));
     }
 
+    if props.auto_fit {
+        class.extend(classes!("pf-m-auto-fit"));
+    }
+
     class.extend_from(&props.columns);
 
     html! (
         <dl
-            id={&props.id}
+            id={ &props.id }
             {class}
+            style={ props.style.clone() }
         >
             { props.children.clone() }
         </dl>
