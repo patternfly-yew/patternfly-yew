@@ -374,7 +374,7 @@ where
 #[cfg(test)]
 mod test {
     use crate::prelude::{AsClasses, WithBreakpoints};
-    use yew::Classes;
+    use yew::prelude::*;
 
     use super::*;
 
@@ -383,6 +383,16 @@ mod test {
         Foo,
         Bar,
         Baz,
+    }
+
+    #[derive(PartialEq, Properties)]
+    struct MockComponentProperties {
+        pub variant: WithBreakpoints<MockVariant>,
+    }
+
+    #[function_component(MockComponent)]
+    fn component(props: &MockComponentProperties) -> Html {
+        html!()
     }
 
     impl AsClasses for MockVariant {
@@ -440,5 +450,11 @@ mod test {
                 .as_classes(),
             Classes::from("static static-on-lg")
         );
+    }
+
+    #[test]
+    fn compiles_assign_array() {
+        let _ = html!(<MockComponent variant={[MockVariant::Foo]} />);
+        let _ = html!(<MockComponent variant={[MockVariant::Foo, MockVariant::Bar]} />);
     }
 }
