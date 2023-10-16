@@ -63,6 +63,18 @@ where
             TableMode::Expandable | TableMode::CompactExpandable
         )
     }
+
+    pub fn are_columns_expandable(&self) -> bool {
+        if let Some(header) = &self.header {
+            header
+                .props
+                .children
+                .iter()
+                .any(|table_column| table_column.props.expandable)
+        } else {
+            false
+        }
+    }
 }
 
 /// Table component
@@ -217,7 +229,7 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let expandable = props.is_expandable();
+    let expandable = props.is_expandable() && !props.are_columns_expandable();
     match &props.header {
         Some(header) => {
             let mut header = header.clone();
