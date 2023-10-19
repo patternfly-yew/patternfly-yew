@@ -25,6 +25,9 @@ pub struct MenuToggleProperties {
     pub full_height: bool,
 
     #[prop_or_default]
+    pub full_width: bool,
+
+    #[prop_or_default]
     pub variant: MenuToggleVariant,
 
     #[prop_or_default]
@@ -71,6 +74,10 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
 
     if props.full_height {
         class.push(classes!("pf-m-full-height"));
+    }
+
+    if props.full_width {
+        class.push(classes!("pf-m-full-width"));
     }
 
     if matches!(props.variant, MenuToggleVariant::Plain) && props.text.is_some() {

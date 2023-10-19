@@ -23,6 +23,9 @@ pub struct DropdownProperties {
     pub full_height: bool,
 
     #[prop_or_default]
+    pub full_width: bool,
+
+    #[prop_or_default]
     pub variant: MenuToggleVariant,
 
     #[prop_or_default]
@@ -101,6 +104,7 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
                     icon={props.icon.clone()}
                     disabled={props.disabled}
                     full_height={props.full_height}
+                    full_width={props.full_width}
                     aria_label={&props.aria_label}
                     variant={props.variant}
                     expanded={*expanded}
