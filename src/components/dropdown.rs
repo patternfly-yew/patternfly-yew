@@ -83,41 +83,38 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
             style = style.extend_with("width", format!("{}px", elem.offset_width()));
         }
     }
-    // let style = use_state(|| style);
+    let style = use_state_eq(|| style);
 
-    // let modifier = {
-    //     let inside_ref = inside_ref.clone();
-    //     let state = state.clone();
-    //     let full_width = props.full_width;
-    //     let style = style.clone();
-    //     ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
-    //         move |_: popper_rs::sys::ModifierArguments| {
-    //             if full_width {
-    //                 if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-    //                     assert!(false);
-    //                     let new_style = state
-    //                         .styles
-    //                         .popper
-    //                         .extend_with("z-index", "1000")
-    //                         .extend_with("width", format!("{}px", elem.offset_width()));
-    //                     style.set(new_style);
-    //                 }
-    //             }
-    //         },
-    //     )))
-    // };
+    // This should only run if any of the width mods are enabled
+    // Make sure the "enabled" parameter is set correctly in the [`Modifier`] vector
+    let width_mods = {
+        let style = style.clone();
+        let inside_ref = inside_ref.clone();
+        let state = state.clone();
+        ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
+            move |_: popper_rs::sys::ModifierArguments| {
+                if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+                    let new_style = state
+                        .styles
+                        .popper
+                        .extend_with("z-index", "1000")
+                        .extend_with("width", format!("{}px", elem.offset_width()));
+                    style.set(new_style)
+                }
+            },
+        )))
+    };
 
-    // let modifiers = if props.full_width {
-    //     assert!(false);
-    //     Vec::from([Modifier::Custom {
-    //         name: "widthMods".into(),
-    //         phase: Some("beforeWrite".into()),
-    //         enabled: Some(props.full_width),
-    //         r#fn: Some(modifier)
-    //     }])
-    // } else {
-    //     Vec::new()
-    // };
+    let modifiers = if props.full_width {
+        Vec::from([Modifier::Custom {
+            name: "widthMods".into(),
+            phase: Some("beforeWrite".into()),
+            enabled: Some(props.full_width),
+            r#fn: Some(width_mods),
+        }])
+    } else {
+        Vec::new()
+    };
 
     html!(
         <>
@@ -128,14 +125,14 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
                     visible={*expanded}
                     {onstatechange}
                     {placement}
-                    // modifiers={modifiers}
+                    modifiers={modifiers}
                 >
                     <ContextProvider<CloseMenuContext>
                         {context}
                     >
                         <Menu
                             r#ref={menu_ref}
-                            style={&style}
+                            style={&(*style)}
                         >
                             { props.children.clone() }
                         </Menu>
