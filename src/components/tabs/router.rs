@@ -3,6 +3,8 @@ use std::fmt::Debug;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};
 
+use super::TabTitle;
+
 // tab router
 
 /// Properties for [`TabsRouter`]
@@ -60,13 +62,13 @@ where
 // tab router item
 
 /// Properties for [`TabRouterItem`]
-#[derive(Properties, Clone, Debug, PartialEq)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct TabRouterItemProperties<T>
 where
     T: Target,
 {
-    /// The tab label
-    pub label: String,
+    /// The tab title
+    pub title: TabTitle,
     /// The switch this item references to
     pub to: T,
     /// If tab is disabled
@@ -96,7 +98,7 @@ where
     html! (
         <li class={classes}>
             <Link<T> element="button" class={link_classes} target={props.to.clone()}>
-                <span class="pf-v5-c-tabs__item-text"> { &props.label } </span>
+                <span class="pf-v5-c-tabs__item-text"> { &props.title } </span>
             </Link<T>>
         </li>
     )
