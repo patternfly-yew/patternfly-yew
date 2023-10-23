@@ -71,6 +71,11 @@ pub struct PageSectionProperties {
     #[prop_or_default]
     pub id: Option<AttrValue>,
     #[prop_or_default]
+    pub class: Classes,
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+
+    #[prop_or_default]
     pub hidden: bool,
 }
 
@@ -187,10 +192,12 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
         class.push("pf-m-overflow-scroll"); // Can only be used with PageSectionType::Default
     }
 
+    class.extend(&props.class);
+
     // render
 
     html! (
-        <section {class} id={&props.id} hidden={props.hidden}>
+        <section {class} id={&props.id} hidden={props.hidden} style={props.style.clone()}>
                  if props.r#type == PageSectionType::Default && props.limit_width {
                     <div class="pf-v5-c-page__main-body">
                         { props.children.clone() }
