@@ -188,6 +188,9 @@ where
     pub onselect: Callback<T>,
 
     pub index: T,
+
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
 }
 
 #[function_component(TabHeaderItem)]
@@ -214,7 +217,7 @@ where
     );
 
     html! (
-        <li {class}>
+        <li {class} id={props.id.clone()}>
             <button class="pf-v5-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {
                     <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
@@ -285,6 +288,15 @@ where
     pub children: Html,
 
     pub index: T,
+
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
 }
 
 /// A tab in a [`Tabs`] component
@@ -299,7 +311,12 @@ where
         .unwrap_or_default();
 
     html! (
-        <TabContent hidden={!current}>
+        <TabContent
+            hidden={!current}
+            id={props.id.clone()}
+            class={props.class.clone()}
+            style={props.style.clone()}
+        >
             { props.children.clone() }
         </TabContent>
     )

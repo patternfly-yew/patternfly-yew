@@ -52,6 +52,12 @@ pub struct TabContentProperties {
 
     #[prop_or_default]
     pub children: Html,
+
+    #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
 }
 
 /// Tabs component body.
@@ -65,7 +71,9 @@ pub struct TabContentProperties {
 /// Defined by [`TabContentProperties`].
 #[function_component(TabContent)]
 pub fn tab_content(props: &TabContentProperties) -> Html {
-    let class = Classes::from("pf-v5-c-tab-content");
+    let mut class = Classes::from("pf-v5-c-tab-content");
+
+    class.extend(&props.class);
 
     html!(
         <section
@@ -74,6 +82,7 @@ pub fn tab_content(props: &TabContentProperties) -> Html {
             hidden={props.hidden}
             tabindex="0"
             role="tabpanel"
+            style={props.style.clone()}
         >
             { props.children.clone() }
         </section>
