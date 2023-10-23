@@ -51,6 +51,9 @@ web-sys = { version = "0.3", features = [
 default = ["router"]
 router = ["yew-nested-router"]
 
+# things which go away any minute
+legacy = []
+
 experimental = ["tree"]
 tree = []
 
