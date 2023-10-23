@@ -78,43 +78,36 @@ pub fn drop_down(props: &DropdownProperties) -> Html {
     let context = CloseMenuContext::new(onclose);
 
     let mut style = state.styles.popper.extend_with("z-index", "1000");
-    if props.full_width {
-        if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-            style = style.extend_with("width", format!("{}px", elem.offset_width()));
-        }
+    if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+        style = style.extend_with("width", format!("{}px", elem.offset_width()));
     }
     let style = use_state_eq(|| style);
 
-    // This should only run if any of the width mods are enabled
-    // Make sure the "enabled" parameter is set correctly in the [`Modifier`] vector
     let width_mods = {
         let style = style.clone();
         let inside_ref = inside_ref.clone();
         let state = state.clone();
+        let full_width = props.full_width;
         ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
             move |_: popper_rs::sys::ModifierArguments| {
                 if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-                    let new_style = state
-                        .styles
-                        .popper
-                        .extend_with("z-index", "1000")
-                        .extend_with("width", format!("{}px", elem.offset_width()));
+                    let mut new_style = state.styles.popper.extend_with("z-index", "1000");
+                    if full_width {
+                        new_style =
+                            new_style.extend_with("width", format!("{}px", elem.offset_width()));
+                    }
                     style.set(new_style)
                 }
             },
         )))
     };
 
-    let modifiers = if props.full_width {
-        Vec::from([Modifier::Custom {
-            name: "widthMods".into(),
-            phase: Some("beforeWrite".into()),
-            enabled: Some(props.full_width),
-            r#fn: Some(width_mods),
-        }])
-    } else {
-        Vec::new()
-    };
+    let modifiers = Vec::from([Modifier::Custom {
+        name: "widthMods".into(),
+        phase: Some("beforeWrite".into()),
+        enabled: Some(true),
+        r#fn: Some(width_mods),
+    }]);
 
     html!(
         <>
