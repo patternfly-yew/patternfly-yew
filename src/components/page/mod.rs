@@ -35,7 +35,7 @@ pub struct PageProperties {
     pub full_height: bool,
 
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
 }
 
 /// A full page

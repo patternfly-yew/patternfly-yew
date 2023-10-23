@@ -69,7 +69,7 @@ pub struct PageSectionProperties {
     pub sticky: WithBreakpoints<PageSectionSticky>,
 
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
     #[prop_or_default]
     pub hidden: bool,
 }
