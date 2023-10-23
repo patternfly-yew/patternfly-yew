@@ -1,20 +1,40 @@
 use super::column::TableColumn;
+use crate::core::Order;
 use std::fmt::Debug;
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Copy)]
 pub struct TableHeaderSortBy<K>
 where
-    K: Clone + Eq + 'static,
+    K: Clone + Eq,
 {
     pub index: K,
-    pub asc: bool,
+    pub order: Order,
+}
+
+impl<K> TableHeaderSortBy<K>
+where
+    K: Clone + Eq,
+{
+    pub fn ascending(index: K) -> Self {
+        Self {
+            index,
+            order: Order::Ascending,
+        }
+    }
+
+    pub fn descending(index: K) -> Self {
+        Self {
+            index,
+            order: Order::Descending,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TableHeaderContext<K>
 where
-    K: Clone + Eq + 'static,
+    K: Clone + Eq,
 {
     pub sortby: Option<TableHeaderSortBy<K>>,
     pub onsort: Callback<TableHeaderSortBy<K>>,

@@ -1,5 +1,5 @@
 use crate::prelude::{
-    AsClasses, ExtendClasses, Icon, TableHeaderContext, TableHeaderSortBy, TextModifier,
+    AsClasses, ExtendClasses, Icon, Order, TableHeaderContext, TableHeaderSortBy, TextModifier,
 };
 use std::fmt::Debug;
 use yew::prelude::*;
@@ -124,17 +124,16 @@ where
                         }
 
                         if val.index == props.index {
-                            let icon = if val.asc {
-                                Icon::LongArrowAltUp
-                            } else {
-                                Icon::LongArrowAltDown
+                            let icon = match val.order {
+                                Order::Ascending => Icon::LongArrowAltUp,
+                                Order::Descending => Icon::LongArrowAltDown,
                             };
-                            (icon, val.asc)
+                            (icon, val.order)
                         } else {
-                            (Icon::ArrowsAltV, false)
+                            (Icon::ArrowsAltV, Order::Descending)
                         }
                     }
-                    None => (Icon::ArrowsAltV, false),
+                    None => (Icon::ArrowsAltV, Order::Descending),
                 };
 
                 html_nested!(
@@ -148,12 +147,12 @@ where
                                 let onsort = onsort.clone();
 
                                 let index = props.index.clone();
-                                let asc = sort_by_next_status.1;
+                                let order = sort_by_next_status.1;
 
                                 Callback::from(move |_| {
                                     let sort_by = TableHeaderSortBy {
                                         index: index.clone(),
-                                        asc: !asc
+                                        order: !order
                                     };
                                     onsort_context.emit(sort_by.clone());
                                     onsort.emit(sort_by.clone());
