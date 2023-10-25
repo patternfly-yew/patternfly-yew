@@ -131,12 +131,9 @@ pub fn list(props: &ListProperties) -> Html {
         }
     };
 
-    l(html! (
-        {
-         for props.children.iter()
-            .map(|item|html!{<li>{item.clone()}</li>})
-        }
-    ))
+    l(html! ({
+         for props.children.clone()
+    }))
 }
 
 #[derive(PartialEq, Properties)]
