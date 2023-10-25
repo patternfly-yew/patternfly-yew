@@ -391,7 +391,7 @@ mod test {
     }
 
     #[function_component(MockComponent)]
-    fn component(props: &MockComponentProperties) -> Html {
+    fn component(_props: &MockComponentProperties) -> Html {
         html!()
     }
 
