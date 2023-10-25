@@ -21,7 +21,7 @@ jobs:
           - "1.70"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Rust ${{ matrix.toolchain }}
         run: |
