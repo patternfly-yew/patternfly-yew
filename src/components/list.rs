@@ -1,4 +1,5 @@
 //! List
+use crate::icon::Icon;
 use crate::prelude::{AsClasses, ExtendClasses};
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
@@ -57,12 +58,30 @@ impl IntoPropValue<Option<AttrValue>> for ListOrder {
 }
 
 /// Properties for [`List`]
-#[derive(Clone, PartialEq, Properties)]
+#[derive(PartialEq, Properties)]
 pub struct ListProperties {
     #[prop_or_default]
-    pub children: Children,
+    pub children: ChildrenWithProps<ListItem>,
     #[prop_or_default]
     pub r#type: ListType,
+    #[prop_or_default]
+    pub icon_size: ListIconSize,
+}
+
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug)]
+pub enum ListIconSize {
+    #[default]
+    Default,
+    Large,
+}
+
+impl AsClasses for ListIconSize {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            Self::Default => {}
+            Self::Large => classes.extend(classes!("pf-m-icon-lg")),
+        }
+    }
 }
 
 /// List component
@@ -77,12 +96,31 @@ pub struct ListProperties {
 ///
 /// ## Children
 ///
-/// Each children will be wrapped into an list item element.
+/// Requires to use [`ListItem`] as children.
+///
+/// ## Example
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   html!(
+///     <List>
+///       <ListItem>{"Foo"}</ListItem>
+///       <ListItem>{"Bar"}</ListItem>
+///       <ListItem>{"Baz"}</ListItem>
+///     </List>
+///   )
+/// }
+/// ```
 #[function_component(List)]
 pub fn list(props: &ListProperties) -> Html {
     let mut classes = Classes::from("pf-v5-c-list");
 
     classes.extend_from(&props.r#type);
+    classes.extend_from(&props.icon_size);
 
     let l = |items| match props.r#type {
         ListType::Basic | ListType::Inline | ListType::Plain | ListType::Bordered => {
@@ -99,4 +137,32 @@ pub fn list(props: &ListProperties) -> Html {
             .map(|item|html!{<li>{item.clone()}</li>})
         }
     ))
+}
+
+#[derive(PartialEq, Properties)]
+pub struct ListItemProperties {
+    #[prop_or_default]
+    pub children: Html,
+    #[prop_or_default]
+    pub icon: Option<Icon>,
+}
+
+#[function_component(ListItem)]
+pub fn list_item(props: &ListItemProperties) -> Html {
+    match props.icon {
+        Some(icon) => {
+            let class = classes!("pf-v5-c-list__item");
+            html!(
+                <li {class}>
+                    <span class={classes!("pf-v5-c-list__item-icon")}>
+                        { icon }
+                    </span>
+                    <span class={classes!("pf-v5-c-list__item-text")}>
+                        { props.children.clone() }
+                    </span>
+                </li>
+            )
+        }
+        None => html!( <li> { props.children.clone() } </li> ),
+    }
 }
