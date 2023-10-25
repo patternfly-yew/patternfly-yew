@@ -1,6 +1,9 @@
 //! List
 use crate::icon::Icon;
 use crate::prelude::{AsClasses, ExtendClasses};
+use crate::utils::Raw;
+use yew::html::ChildrenRenderer;
+use yew::virtual_dom::VChild;
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -61,7 +64,7 @@ impl IntoPropValue<Option<AttrValue>> for ListOrder {
 #[derive(PartialEq, Properties)]
 pub struct ListProperties {
     #[prop_or_default]
-    pub children: ChildrenWithProps<ListItem>,
+    pub children: ChildrenRenderer<ListChildVariant>,
     #[prop_or_default]
     pub r#type: ListType,
     #[prop_or_default]
@@ -110,7 +113,10 @@ impl AsClasses for ListIconSize {
 ///     <List>
 ///       <ListItem>{"Foo"}</ListItem>
 ///       <ListItem>{"Bar"}</ListItem>
-///       <ListItem>{"Baz"}</ListItem>
+///       // you can also inject a "raw" item, just be sure to add the `li` element.
+///       <Raw>
+///         <li>{"Baz"}</li>
+///       </Raw>
 ///     </List>
 ///   )
 /// }
@@ -161,5 +167,32 @@ pub fn list_item(props: &ListItemProperties) -> Html {
             )
         }
         None => html!( <li> { props.children.clone() } </li> ),
+    }
+}
+
+#[derive(Clone, PartialEq)]
+pub enum ListChildVariant {
+    Item(VChild<ListItem>),
+    Raw(VChild<Raw>),
+}
+
+impl From<VChild<ListItem>> for ListChildVariant {
+    fn from(value: VChild<ListItem>) -> Self {
+        Self::Item(value)
+    }
+}
+
+impl From<VChild<Raw>> for ListChildVariant {
+    fn from(value: VChild<Raw>) -> Self {
+        Self::Raw(value)
+    }
+}
+
+impl From<ListChildVariant> for Html {
+    fn from(value: ListChildVariant) -> Self {
+        match value {
+            ListChildVariant::Item(child) => child.into(),
+            ListChildVariant::Raw(child) => child.into(),
+        }
     }
 }
