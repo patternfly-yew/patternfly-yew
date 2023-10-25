@@ -113,7 +113,7 @@ impl AsClasses for ListIconSize {
 ///     <List>
 ///       <ListItem>{"Foo"}</ListItem>
 ///       <ListItem>{"Bar"}</ListItem>
-///       // you can also inject a "raw" item, just be sure to add the `li` element.
+///       // you can also inject a "raw" item, just be sure to add the `li` or `ListItem` element.
 ///       <Raw>
 ///         <li>{"Baz"}</li>
 ///       </Raw>
