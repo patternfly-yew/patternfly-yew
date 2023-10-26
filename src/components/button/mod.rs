@@ -125,6 +125,9 @@ pub struct ButtonProperties {
 
     #[prop_or_default]
     pub children: Html,
+
+    #[prop_or_default]
+    pub tabindex: Option<isize>,
 }
 
 /// Button component
@@ -195,6 +198,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             onclick.emit(evt);
         })
     };
+    let tabindex: Option<AttrValue> = props.tabindex.map(|i| i.to_string().into());
 
     html! (
          <button
@@ -213,6 +217,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             aria-haspopup={&props.aria_haspopup}
             aria-expanded={&props.aria_expanded}
             aria-controls={&props.aria_controls}
+            {tabindex}
          >
              if props.loading {
                  <span class="pf-v5-c-button__progress">
