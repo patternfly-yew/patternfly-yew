@@ -12,7 +12,6 @@ pub use crate::components::backdrop::*;
 pub use crate::components::background::*;
 pub use crate::components::badge::*;
 pub use crate::components::brand::*;
-pub use crate::components::brand::*;
 pub use crate::components::breadcrumb::*;
 pub use crate::components::button::*;
 pub use crate::components::calendar::*;
