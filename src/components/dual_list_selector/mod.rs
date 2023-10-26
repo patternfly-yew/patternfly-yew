@@ -1,6 +1,6 @@
 //! The dynamic and composable [dual list selector](https://www.patternfly.org/components/dual-list-selector)
 
-use crate::icon::Icon;
+use crate::{components::tooltip::TooltipProperties, icon::Icon};
 use yew::prelude::*;
 
 mod control;
@@ -45,15 +45,27 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
     /// Tooltip content for the dynamically built add selected button.
     #[prop_or_default]
     pub add_selected_tooltip: Option<AttrValue>,
+    /// Additonal tooltip properties to the dynamically built add selected tooltip.
+    #[prop_or_default]
+    pub add_selected_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built add all button.
     #[prop_or_default]
     pub add_all_available_tooltip: Option<AttrValue>,
+    /// Additonal tooltip properties to the dynamically built add all tooltip.
+    #[prop_or_default]
+    pub add_all_available_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built remove selected button.
     #[prop_or_default]
     pub remove_selected_tooltip: Option<AttrValue>,
+    /// Additonal tooltip properties to the dynamically built remove selected tooltip.
+    #[prop_or_default]
+    pub remove_selected_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built remove all button.
     #[prop_or_default]
     pub remove_all_chosen_tooltip: Option<AttrValue>,
+    /// Additonal tooltip properties to the dynamically built remove selected tooltip.
+    #[prop_or_default]
+    pub remove_all_chosen_tooltip_props: Option<TooltipProperties>,
 
     /// Callback fired every time dynamically built options are chosen or removed.
     /// Inputs are the mouse event as well as the available and chosen options after the change.
@@ -239,6 +251,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     tooltip={props.add_selected_tooltip.clone()}
                     disabled={props.disabled}
                     onclick={control_option(State::add_selected)}
+                    tooltip_props={props.add_selected_tooltip_props.clone()}
                 >
                     // TODO: This seems to be off-center but it's rendered correctly when
                     //  serving the SVG, do we have it somewhere?
@@ -248,6 +261,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     tooltip={props.add_all_available_tooltip.clone()}
                     disabled={props.disabled}
                     onclick={control_option(State::add_all_visible)}
+                    tooltip_props={props.add_all_available_tooltip_props.clone()}
                 >
                     { Icon::AngleDoubleRight.as_html() }
                 </DualListSelectorControl>
@@ -255,6 +269,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     tooltip={props.remove_all_chosen_tooltip.clone()}
                     disabled={props.disabled}
                     onclick={control_option(State::remove_all_visible)}
+                    tooltip_props={props.remove_all_chosen_tooltip_props.clone()}
                 >
                     { Icon::AngleDoubleLeft.as_html() }
                 </DualListSelectorControl>
@@ -262,6 +277,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     tooltip={props.remove_selected_tooltip.clone()}
                     disabled={props.disabled}
                     onclick={control_option(State::remove_selected)}
+                    tooltip_props={props.remove_selected_tooltip_props.clone()}
                 >
                     // TODO: This seems to be off-center but it's rendered correctly when
                     //  serving the SVG, do we have it somewhere?

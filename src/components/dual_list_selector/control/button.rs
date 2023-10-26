@@ -1,8 +1,11 @@
 //! The DualListSelectorControl component.
 
-use crate::components::{
-    button::{Button, ButtonVariant},
-    tooltip::Tooltip,
+use crate::{
+    components::{
+        button::{Button, ButtonVariant},
+        tooltip::Tooltip,
+    },
+    prelude::TooltipProperties,
 };
 use yew::prelude::*;
 
@@ -18,10 +21,10 @@ pub struct DualListSelectorControlProps {
     #[prop_or_default]
     pub tooltip: Option<AttrValue>,
 
-    // TODO
-    // /// Additional tooltip properties passed to the tooltip.
-    // #[prop_or_default]
-    // tooltip_props: anymap2::AnyMap,
+    /// Additional tooltip properties passed to the tooltip.
+    #[prop_or_default]
+    pub tooltip_props: Option<TooltipProperties>,
+
     /// Flag indicating the control is disabled.
     #[prop_or(true)]
     pub disabled: bool,
@@ -49,9 +52,15 @@ pub fn control(props: &DualListSelectorControlProps) -> Html {
     };
     let inner = if let Some(text) = &props.tooltip {
         html! {
-            <Tooltip text={text.to_string()}>
-                { button }
-            </Tooltip>
+            if let Some(props) = &props.tooltip_props {
+                <Tooltip text={text.to_string()} ..props.clone()>
+                    { button }
+                </Tooltip>
+            } else {
+                <Tooltip text={text.to_string()}>
+                    { button }
+                </Tooltip>
+            }
         }
     } else {
         button
