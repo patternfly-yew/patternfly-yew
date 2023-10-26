@@ -31,7 +31,7 @@ pub fn list_item(props: &DualListSelectorItemProps) -> Html {
         item_class.push("pf-m-disabled")
     }
     html! {
-        <li class={item_class} onclick={props.onoptionselect.clone()} tabindex={-1}>
+        <li class={item_class} onclick={props.onoptionselect.clone()} tabindex="-1">
             <div class={row_class}>
                 <span class="pf-v5-c-dual-list-selector__item">
                     <span class="pf-v5-c-dual-list-selector__item-main">

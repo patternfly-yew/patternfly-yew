@@ -37,7 +37,7 @@ pub fn control(props: &DualListSelectorControlProps) -> Html {
         <Button
             disabled={props.disabled}
             variant={ButtonVariant::Plain}
-            // TODO tabindex=-1
+            tabindex={Some(-1)}
             onclick={props.onclick.clone()}
         >
             { props.children.clone() }
