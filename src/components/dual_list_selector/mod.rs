@@ -13,6 +13,10 @@ pub use item_renderer::*;
 pub use list::*;
 pub use pane::*;
 
+/// The inputs of the onlistchanged event. Has the corresponding mouse event of the
+/// button press, as well as the available and chosen options after the change.
+pub type DualListSelectorOnListChangedInputs<T> = (MouseEvent, Vec<T>, Vec<T>);
+
 /// Acts as a container for all other DualListSelector sub-components when using a
 /// composable dual list selector.
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -70,7 +74,7 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
     /// Callback fired every time dynamically built options are chosen or removed.
     /// Inputs are the mouse event as well as the available and chosen options after the change.
     #[prop_or_default]
-    pub onlistchange: Option<Callback<(MouseEvent, Vec<T>, Vec<T>)>>,
+    pub onlistchange: Option<Callback<DualListSelectorOnListChangedInputs<T>>>,
 
     /// Flag indicating if the dual list selector is in a disabled state
     #[prop_or_default]
@@ -89,7 +93,7 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
 /// of the options vectors.
 #[derive(Debug, Clone)]
 struct State<T: DualListSelectorItemRenderer> {
-    onlistchange: Option<Callback<(MouseEvent, Vec<T>, Vec<T>)>>,
+    onlistchange: Option<Callback<DualListSelectorOnListChangedInputs<T>>>,
     available_options: Vec<T>,
     available_options_selected: Vec<usize>,
     chosen_options: Vec<T>,
