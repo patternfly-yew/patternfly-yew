@@ -5,6 +5,10 @@ use yew::prelude::*;
 /// This is contained within the DualListSelectorList sub-component.
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct DualListSelectorItemProps {
+    /// Additional classes applied to the dual list selector.
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Flag indicating the list item is currently selected.
     #[prop_or_default]
     pub is_selected: bool,
@@ -22,7 +26,7 @@ pub struct DualListSelectorItemProps {
 
 #[function_component(DualListSelectorListItem)]
 pub fn list_item(props: &DualListSelectorItemProps) -> Html {
-    let mut row_class = classes!["pf-v5-c-dual-list-selector__list-item-row"];
+    let mut row_class = classes!["pf-v5-c-dual-list-selector__list-item-row", props.class.clone()];
     if props.is_selected {
         row_class.push("pf-m-selected");
     }

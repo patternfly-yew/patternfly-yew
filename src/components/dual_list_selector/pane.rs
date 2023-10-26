@@ -8,6 +8,10 @@ use super::{DualListSelectorItemRenderer, DualListSelectorList, DualListSelector
 /// depending on the pane type (available or chosen).
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct DualListSelectorPaneProps<T: DualListSelectorItemRenderer> {
+    /// Additional classes applied to the dual list selector pane.
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Options to list in the pane.
     #[prop_or_default]
     pub options: Vec<T>,
@@ -42,7 +46,7 @@ pub struct DualListSelectorPaneProps<T: DualListSelectorItemRenderer> {
 
 #[function_component(DualListSelectorPane)]
 pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T>) -> Html {
-    let mut class = classes!["pf-v5-c-dual-list-selector__pane"];
+    let mut class = classes!["pf-v5-c-dual-list-selector__pane", props.class.clone()];
     if props.is_chosen {
         class.push("pf-m-chosen")
     } else {

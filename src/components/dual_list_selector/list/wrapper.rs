@@ -6,6 +6,10 @@ use super::{super::DualListSelectorItemRenderer as ItemRenderer, DualListSelecto
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct DualListSelectorListWrapperProps<T: ItemRenderer> {
+    /// Additional classes applied to the dual list selector.
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Options to list in the pane.
     #[prop_or_default]
     pub options: Vec<T>,
@@ -43,7 +47,7 @@ pub fn wrapper<T: ItemRenderer>(props: &DualListSelectorListWrapperProps<T>) -> 
         disabled: props.disabled,
     };
     html! {
-        <div class={classes!["pf-v5-c-dual-list-selector__menu"]} tabindex=0>
+        <div class={classes!["pf-v5-c-dual-list-selector__menu", props.class.clone()]} tabindex=0>
             <ContextProvider<DualListSelectorListContext<T>> {context}>
                 if !props.children.is_empty() {
                     { props.children.clone() }
