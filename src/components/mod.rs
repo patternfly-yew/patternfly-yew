@@ -23,6 +23,7 @@ pub mod divider;
 pub mod dl;
 pub mod drawer;
 pub mod dropdown;
+pub mod dual_list_selector;
 pub mod empty;
 pub mod expandable_section;
 pub mod file_upload;
