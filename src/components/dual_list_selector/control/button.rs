@@ -10,6 +10,10 @@ use yew::prelude::*;
 /// dual list selector pane.
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct DualListSelectorControlProps {
+    /// Additional classes applied to the dual list selector control.
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Content to be displayed in a tooltip on hover of control.
     #[prop_or_default]
     pub tooltip: Option<AttrValue>,
@@ -53,7 +57,7 @@ pub fn control(props: &DualListSelectorControlProps) -> Html {
         button
     };
     html! {
-        <div class="pf-v5-c-dual-list-selector__controls-item">
+        <div class={classes!["pf-v5-c-dual-list-selector__controls-item", props.class.clone()]}>
             { inner }
         </div>
     }

@@ -17,6 +17,10 @@ pub use pane::*;
 /// composable dual list selector.
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
+    /// Additional classes applied to the dual list selector.
+    #[prop_or_default]
+    pub class: Classes,
+
     /// Title applied to the dynamically built available options pane.
     #[prop_or_default]
     pub available_options_title: Option<AttrValue>,
@@ -215,7 +219,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
         })
     };
     html! {
-      <div class="pf-v5-c-dual-list-selector">
+      <div class={classes!["pf-v5-c-dual-list-selector", props.class.clone()]}>
         if !props.children.is_empty() {
             { props.children.clone() }
         } else {
