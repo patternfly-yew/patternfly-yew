@@ -26,7 +26,10 @@ pub struct DualListSelectorItemProps {
 
 #[function_component(DualListSelectorListItem)]
 pub fn list_item(props: &DualListSelectorItemProps) -> Html {
-    let mut row_class = classes!["pf-v5-c-dual-list-selector__list-item-row", props.class.clone()];
+    let mut row_class = classes![
+        "pf-v5-c-dual-list-selector__list-item-row",
+        props.class.clone()
+    ];
     if props.is_selected {
         row_class.push("pf-m-selected");
     }
