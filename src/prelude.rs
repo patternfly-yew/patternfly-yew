@@ -27,6 +27,7 @@ pub use crate::components::divider::*;
 pub use crate::components::dl::*;
 pub use crate::components::drawer::*;
 pub use crate::components::dropdown::*;
+#[cfg(feature = "dual_list_selector")]
 pub use crate::components::dual_list_selector::*;
 pub use crate::components::empty::*;
 pub use crate::components::expandable_section::*;
