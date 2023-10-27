@@ -337,9 +337,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::add_selected)}
                     tooltip_props={props.add_selected_tooltip_props.clone()}
                 >
-                    // This will be left-aligned instead of centered
-                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
-                    { Icon::AngleRight }
+                    { Icon::AngleRight.with_style("width:1em;display:block;") }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.add_all_available_tooltip.clone()}
@@ -347,9 +345,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::add_all_visible)}
                     tooltip_props={props.add_all_available_tooltip_props.clone()}
                 >
-                    // This will be left-aligned instead of centered
-                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
-                    { Icon::AngleDoubleRight }
+                    { Icon::AngleDoubleRight.with_style("width:1em;display:block;") }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.remove_all_chosen_tooltip.clone()}
@@ -357,9 +353,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::remove_all_visible)}
                     tooltip_props={props.remove_all_chosen_tooltip_props.clone()}
                 >
-                    // This will be left-aligned instead of centered
-                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
-                    { Icon::AngleDoubleLeft }
+                    { Icon::AngleDoubleLeft.with_style("width:1em;display:block;") }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.remove_selected_tooltip.clone()}
@@ -367,9 +361,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::remove_selected)}
                     tooltip_props={props.remove_selected_tooltip_props.clone()}
                 >
-                    // This will be left-aligned instead of centered
-                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
-                    { Icon::AngleLeft }
+                    { Icon::AngleLeft.with_style("width:1em;display:block;") }
                 </DualListSelectorControl>
             </DualListSelectorControlsWrapper>
             <DualListSelectorPane<T>
