@@ -52,24 +52,36 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
     /// Additional tooltip properties to the dynamically built add selected tooltip.
     #[prop_or_default]
     pub add_selected_tooltip_props: Option<TooltipProperties>,
+    /// Optional callback for the dynamically built add selected button.
+    #[prop_or_default]
+    pub add_selected: Option<Callback<(Vec<T>, Vec<T>)>>,
     /// Tooltip content for the dynamically built add all button.
     #[prop_or_default]
     pub add_all_available_tooltip: Option<AttrValue>,
     /// Additional tooltip properties to the dynamically built add all tooltip.
     #[prop_or_default]
     pub add_all_available_tooltip_props: Option<TooltipProperties>,
+    /// Optional callback for the dynamically built add all button.
+    #[prop_or_default]
+    pub add_all: Option<Callback<(Vec<T>, Vec<T>)>>,
     /// Tooltip content for the dynamically built remove selected button.
     #[prop_or_default]
     pub remove_selected_tooltip: Option<AttrValue>,
     /// Additional tooltip properties to the dynamically built remove selected tooltip.
     #[prop_or_default]
     pub remove_selected_tooltip_props: Option<TooltipProperties>,
+    /// Optional callback for the dynamically built remove selected button.
+    #[prop_or_default]
+    pub remove_selected: Option<Callback<(Vec<T>, Vec<T>)>>,
     /// Tooltip content for the dynamically built remove all button.
     #[prop_or_default]
     pub remove_all_chosen_tooltip: Option<AttrValue>,
     /// Additional tooltip properties to the dynamically built remove selected tooltip.
     #[prop_or_default]
     pub remove_all_chosen_tooltip_props: Option<TooltipProperties>,
+    /// Optional callback for the dynamically built remove all button.
+    #[prop_or_default]
+    pub remove_all: Option<Callback<(Vec<T>, Vec<T>)>>,
 
     /// Callback fired every time dynamically built options are chosen or removed.
     /// Inputs are the mouse event as well as the available and chosen options after the change.
@@ -98,6 +110,10 @@ struct State<T: DualListSelectorItemRenderer> {
     available_options_selected: Vec<usize>,
     chosen_options: Vec<T>,
     chosen_options_selected: Vec<usize>,
+    add_selected: Option<Callback<(Vec<T>, Vec<T>)>>,
+    add_all: Option<Callback<(Vec<T>, Vec<T>)>>,
+    remove_all: Option<Callback<(Vec<T>, Vec<T>)>>,
+    remove_selected: Option<Callback<(Vec<T>, Vec<T>)>>,
 }
 
 impl<T: DualListSelectorItemRenderer> State<T> {
@@ -115,7 +131,8 @@ impl<T: DualListSelectorItemRenderer> State<T> {
             &mut self.available_options,
             &mut self.chosen_options,
         );
-        self.emit_onlistchange(e)
+        self.emit_onlistchange(e);
+        self.emit_callback(&self.add_all);
     }
 
     pub fn add_selected(&mut self, e: MouseEvent) {
@@ -124,7 +141,8 @@ impl<T: DualListSelectorItemRenderer> State<T> {
             &mut self.available_options,
             &mut self.chosen_options,
         );
-        self.emit_onlistchange(e)
+        self.emit_onlistchange(e);
+        self.emit_callback(&self.add_selected);
     }
 
     pub fn remove_selected(&mut self, e: MouseEvent) {
@@ -133,7 +151,8 @@ impl<T: DualListSelectorItemRenderer> State<T> {
             &mut self.chosen_options,
             &mut self.available_options,
         );
-        self.emit_onlistchange(e)
+        self.emit_onlistchange(e);
+        self.emit_callback(&self.remove_selected);
     }
 
     pub fn remove_all_visible(&mut self, e: MouseEvent) {
@@ -142,7 +161,8 @@ impl<T: DualListSelectorItemRenderer> State<T> {
             &mut self.chosen_options,
             &mut self.available_options,
         );
-        self.emit_onlistchange(e)
+        self.emit_onlistchange(e);
+        self.emit_callback(&self.remove_all);
     }
 
     fn move_all(src_selected: &mut Vec<usize>, src_options: &mut Vec<T>, dst_options: &mut Vec<T>) {
@@ -185,6 +205,12 @@ impl<T: DualListSelectorItemRenderer> State<T> {
             ))
         }
     }
+
+    fn emit_callback(&self, f: &Option<Callback<(Vec<T>, Vec<T>)>>) {
+        if let Some(f) = f {
+            f.emit((self.available_options.clone(), self.chosen_options.clone()));
+        }
+    }
 }
 
 #[function_component(DualListSelector)]
@@ -192,6 +218,10 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
     props: &DualListSelectorProps<T>,
 ) -> Html {
     let state = use_state(|| State {
+        add_selected: props.add_all.clone(),
+        add_all: props.add_all.clone(),
+        remove_all: props.remove_all.clone(),
+        remove_selected: props.remove_selected.clone(),
         onlistchange: props.onlistchange.clone(),
         available_options: props.available.clone(),
         available_options_selected: Vec::new(),
