@@ -287,9 +287,9 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::add_selected)}
                     tooltip_props={props.add_selected_tooltip_props.clone()}
                 >
-                    // TODO: This seems to be off-center but it's rendered correctly when
-                    //  serving the SVG, do we have it somewhere?
-                    { Icon::AngleRight.as_html() }
+                    // This will be left-aligned instead of centered
+                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
+                    { Icon::AngleRight }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.add_all_available_tooltip.clone()}
@@ -297,7 +297,9 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::add_all_visible)}
                     tooltip_props={props.add_all_available_tooltip_props.clone()}
                 >
-                    { Icon::AngleDoubleRight.as_html() }
+                    // This will be left-aligned instead of centered
+                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
+                    { Icon::AngleDoubleRight }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.remove_all_chosen_tooltip.clone()}
@@ -305,7 +307,9 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::remove_all_visible)}
                     tooltip_props={props.remove_all_chosen_tooltip_props.clone()}
                 >
-                    { Icon::AngleDoubleLeft.as_html() }
+                    // This will be left-aligned instead of centered
+                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
+                    { Icon::AngleDoubleLeft }
                 </DualListSelectorControl>
                 <DualListSelectorControl
                     tooltip={props.remove_selected_tooltip.clone()}
@@ -313,9 +317,9 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                     onclick={control_option(State::remove_selected)}
                     tooltip_props={props.remove_selected_tooltip_props.clone()}
                 >
-                    // TODO: This seems to be off-center but it's rendered correctly when
-                    //  serving the SVG, do we have it somewhere?
-                    { Icon::AngleLeft.as_html() }
+                    // This will be left-aligned instead of centered
+                    // View https://github.com/patternfly-yew/patternfly-yew/issues/83
+                    { Icon::AngleLeft }
                 </DualListSelectorControl>
             </DualListSelectorControlsWrapper>
             <DualListSelectorPane<T>
