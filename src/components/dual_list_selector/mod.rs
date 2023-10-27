@@ -17,6 +17,50 @@ pub use pane::*;
 /// button press, as well as the available and chosen options after the change.
 pub type DualListSelectorOnListChangedInputs<T> = (MouseEvent, Vec<T>, Vec<T>);
 
+/// The event causing an option to be selected
+#[derive(Debug, Clone, PartialEq)]
+pub enum OnOptionSelectEvent {
+    Mouse(MouseEvent),
+    Keyboard(KeyboardEvent),
+}
+
+impl From<MouseEvent> for OnOptionSelectEvent {
+    fn from(e: MouseEvent) -> Self {
+        Self::Mouse(e)
+    }
+}
+
+impl From<KeyboardEvent> for OnOptionSelectEvent {
+    fn from(e: KeyboardEvent) -> Self {
+        Self::Keyboard(e)
+    }
+}
+
+/// The arguments passed to an onoptionselect event.
+#[derive(Debug, Clone, PartialEq)]
+pub struct OnOptionSelectArgs {
+    pub event: OnOptionSelectEvent,
+    pub index: usize,
+    pub is_chosen: bool,
+}
+
+/// Same as [`OnOptionsSelectArgs`] but without the `chosen` field
+/// because that is passed in from the outside.
+pub struct OnOptionSelectArgsNoChosen {
+    pub event: OnOptionSelectEvent,
+    pub index: usize,
+}
+
+impl OnOptionSelectArgsNoChosen {
+    fn with_chosen(self, is_chosen: bool) -> OnOptionSelectArgs {
+        OnOptionSelectArgs {
+            event: self.event,
+            index: self.index,
+            is_chosen,
+        }
+    }
+}
+
 /// Acts as a container for all other DualListSelector sub-components when using a
 /// composable dual list selector.
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -87,6 +131,9 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
     /// Inputs are the mouse event as well as the available and chosen options after the change.
     #[prop_or_default]
     pub onlistchange: Option<Callback<DualListSelectorOnListChangedInputs<T>>>,
+    /// Optional callback fired when a dynamically built option is selected.
+    #[prop_or_default]
+    pub onoptionselect: Option<Callback<OnOptionSelectArgs>>,
 
     /// Flag indicating if the dual list selector is in a disabled state
     #[prop_or_default]
@@ -230,14 +277,17 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
     });
     let onoptionselect = {
         let state = state.clone();
-        Callback::from(move |(_e, index, is_chosen)| {
+        let onoptionselect = props.onoptionselect.clone();
+        Callback::from(move |args: OnOptionSelectArgs| {
             let mut new_state = (*state).clone();
-            if is_chosen {
-                new_state.toggle_chosen_option(index);
+            let onoptionselect = onoptionselect.clone();
+            if args.is_chosen {
+                new_state.toggle_chosen_option(args.index);
             } else {
-                new_state.toggle_available_option(index);
+                new_state.toggle_available_option(args.index);
             }
             state.set(new_state);
+            onoptionselect.map(|f| f.emit(args.clone()));
         })
     };
     let available_options_status = props.available_options_status.clone().unwrap_or_else(|| {
@@ -275,7 +325,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                 options={state.available_options.clone()}
                 onoptionselect={
                     let onoptionselect = onoptionselect.clone();
-                    Callback::from(move |(e, elem)| onoptionselect.emit((e, elem, false)))
+                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(false)))
                 }
                 selected_options={state.available_options_selected.clone()}
                 disabled={props.disabled}
@@ -329,7 +379,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                 options={state.chosen_options.clone()}
                 onoptionselect={
                     let onoptionselect = onoptionselect.clone();
-                    Callback::from(move |(e, elem)| onoptionselect.emit((e, elem, true)))
+                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(true)))
                 }
                 selected_options={state.chosen_options_selected.clone()}
                 disabled={props.disabled}

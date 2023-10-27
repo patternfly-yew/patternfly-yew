@@ -3,8 +3,9 @@
 use yew::prelude::*;
 
 use super::{
-    super::DualListSelectorItemRenderer as ItemRenderer, DualListSelectorListContext as Context,
-    DualListSelectorListItem,
+    super::DualListSelectorItemRenderer as ItemRenderer,
+    super::{OnOptionSelectArgsNoChosen, OnOptionSelectEvent},
+    DualListSelectorListContext as Context, DualListSelectorListItem,
 };
 
 /// Acts as the container for DualListSelectorListItem sub-components.
@@ -26,7 +27,14 @@ pub fn list<T: ItemRenderer>(props: &DualListSelectorListProps) -> Html {
                 { for context.options.iter().enumerate().map(|(key, option)| {
                     let onoptionselect = {
                         let onoptionselect = context.onoptionselect.clone();
-                        Callback::from(move |e| onoptionselect.emit((e, key)))
+                        Callback::from(move |e: MouseEvent| {
+                            let e: OnOptionSelectEvent = e.into();
+                            let args = OnOptionSelectArgsNoChosen {
+                                event: e,
+                                index: key,
+                            };
+                            onoptionselect.emit(args)
+                        })
                     };
                     let is_selected = context.selected_options.contains(&key);
                     html_nested! {
