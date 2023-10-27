@@ -49,25 +49,25 @@ pub struct DualListSelectorProps<T: DualListSelectorItemRenderer> {
     /// Tooltip content for the dynamically built add selected button.
     #[prop_or_default]
     pub add_selected_tooltip: Option<AttrValue>,
-    /// Additonal tooltip properties to the dynamically built add selected tooltip.
+    /// Additional tooltip properties to the dynamically built add selected tooltip.
     #[prop_or_default]
     pub add_selected_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built add all button.
     #[prop_or_default]
     pub add_all_available_tooltip: Option<AttrValue>,
-    /// Additonal tooltip properties to the dynamically built add all tooltip.
+    /// Additional tooltip properties to the dynamically built add all tooltip.
     #[prop_or_default]
     pub add_all_available_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built remove selected button.
     #[prop_or_default]
     pub remove_selected_tooltip: Option<AttrValue>,
-    /// Additonal tooltip properties to the dynamically built remove selected tooltip.
+    /// Additional tooltip properties to the dynamically built remove selected tooltip.
     #[prop_or_default]
     pub remove_selected_tooltip_props: Option<TooltipProperties>,
     /// Tooltip content for the dynamically built remove all button.
     #[prop_or_default]
     pub remove_all_chosen_tooltip: Option<AttrValue>,
-    /// Additonal tooltip properties to the dynamically built remove selected tooltip.
+    /// Additional tooltip properties to the dynamically built remove selected tooltip.
     #[prop_or_default]
     pub remove_all_chosen_tooltip_props: Option<TooltipProperties>,
 
