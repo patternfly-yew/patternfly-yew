@@ -2,6 +2,8 @@
 
 use yew::prelude::*;
 
+use crate::components::dual_list_selector::OnOptionSelectArgsNoChosen;
+
 use super::{super::DualListSelectorItemRenderer as ItemRenderer, DualListSelectorList};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -19,7 +21,7 @@ pub struct DualListSelectorListWrapperProps<T: ItemRenderer> {
     pub selected_options: Vec<usize>,
 
     /// Callback for when an option is selected. Optionally used only when options prop is provided.
-    pub onoptionselect: Callback<(MouseEvent, usize)>,
+    pub onoptionselect: Callback<OnOptionSelectArgsNoChosen>,
 
     /// Flag indicating whether the component is disabled.
     #[prop_or_default]
@@ -34,7 +36,7 @@ pub struct DualListSelectorListWrapperProps<T: ItemRenderer> {
 pub struct DualListSelectorListContext<T: ItemRenderer> {
     pub options: Vec<T>,
     pub selected_options: Vec<usize>,
-    pub onoptionselect: Callback<(MouseEvent, usize)>,
+    pub onoptionselect: Callback<OnOptionSelectArgsNoChosen>,
     pub disabled: bool,
 }
 

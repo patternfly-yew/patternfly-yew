@@ -21,7 +21,7 @@ pub struct DualListSelectorPaneProps<T: DualListSelectorItemRenderer> {
     pub selected_options: Vec<usize>,
 
     /// Callback for when an option is selected. Optionally used only when options prop is provided.
-    pub onoptionselect: Callback<(MouseEvent, usize)>,
+    pub onoptionselect: Callback<super::OnOptionSelectArgsNoChosen>,
 
     /// Title of the pane.
     #[prop_or_default]
