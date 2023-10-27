@@ -265,7 +265,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
     props: &DualListSelectorProps<T>,
 ) -> Html {
     let state = use_state(|| State {
-        add_selected: props.add_all.clone(),
+        add_selected: props.add_selected.clone(),
         add_all: props.add_all.clone(),
         remove_all: props.remove_all.clone(),
         remove_selected: props.remove_selected.clone(),
