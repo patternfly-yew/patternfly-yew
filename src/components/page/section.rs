@@ -198,13 +198,13 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
 
     html! (
         <section {class} id={&props.id} hidden={props.hidden} style={props.style.clone()}>
-                 if props.r#type == PageSectionType::Default && props.limit_width {
-                    <div class="pf-v5-c-page__main-body">
-                        { props.children.clone() }
-                    </div>
-                } else {
+            if props.limit_width {
+                <div class="pf-v5-c-page__main-body">
                     { props.children.clone() }
-                }
+                </div>
+            } else {
+                { props.children.clone() }
+            }
          </section>
     )
 }
