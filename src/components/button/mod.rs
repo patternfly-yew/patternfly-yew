@@ -128,6 +128,9 @@ pub struct ButtonProperties {
 
     #[prop_or_default]
     pub tabindex: Option<isize>,
+
+    #[prop_or_default]
+    pub r#ref: Option<NodeRef>,
 }
 
 /// Button component
@@ -142,6 +145,7 @@ pub struct ButtonProperties {
 #[function_component(Button)]
 pub fn button(props: &ButtonProperties) -> Html {
     let node_ref = use_node_ref();
+    let node_ref = props.r#ref.as_ref().unwrap_or(&node_ref);
 
     let mut classes: Classes = classes!(
         "pf-v5-c-button",
