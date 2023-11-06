@@ -74,85 +74,75 @@ pub struct CheckboxProps {
     pub component: String,
 }
 
-pub struct Checkbox {
-    node_ref: NodeRef,
-}
-
-impl Component for Checkbox {
-    type Message = ();
-    type Properties = CheckboxProps;
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            node_ref: NodeRef::default(),
-        }
+#[function_component(Checkbox)]
+pub fn checkbox(props: &CheckboxProps) -> Html {
+    let mut outer_class = classes!["pf-v5-c-check", props.class.clone()];
+    if props.label.is_none() {
+        outer_class.push("pf-m-standalone")
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut outer_class = classes!["pf-v5-c-check", ctx.props().class.clone()];
-        if ctx.props().label.is_none() {
-            outer_class.push("pf-m-standalone")
+    let onchange = {
+        let onchange = props.onchange.clone();
+        Callback::from(move |e: Event| {
+            let checked = e
+                .current_target()
+                // We wouldn't be receiving this event if the event didn't have a target.
+                .unwrap()
+                // We know that this is an input element.
+                .unchecked_into::<HtmlInputElement>()
+                .checked()
+                .into();
+            onchange.emit((e, checked));
+        })
+    };
+    let node_ref = use_node_ref();
+    {
+        let node_ref = node_ref.clone();
+        let checked = props.checked;
+        use_effect(move || {
+            if let Some(elem) = node_ref.cast::<HtmlInputElement>() {
+                elem.set_indeterminate(checked == CheckboxState::Indeterminate)
+            }
+        });
+    }
+    let label = if let Some(label) = &props.label {
+        let mut class = classes!["pf-v5-v-c-check__label"];
+        if props.disabled {
+            class.push("pf-m-disabled");
         }
-
-        let onchange = {
-            let onchange = ctx.props().onchange.clone();
-            Callback::from(move |e: Event| {
-                let checked = e
-                    .current_target()
-                    // We wouldn't be receiving this event if the event didn't have a target.
-                    .unwrap()
-                    // We know that this is an input element.
-                    .unchecked_into::<HtmlInputElement>()
-                    .checked()
-                    .into();
-                onchange.emit((e, checked));
-            })
-        };
-        let label = if let Some(label) = &ctx.props().label {
-            let mut class = classes!["pf-v5-v-c-check__label"];
-            if ctx.props().disabled {
-                class.push("pf-m-disabled");
-            }
-            html! {
-                <label {class} for={ctx.props().id.clone()}>
-                    {label.clone()}
-                    if ctx.props().required {
-                        <span class="pf-v5-c-check__label-required" aria-hidden="true">{"*"}</span>
-                    }
-                </label>
-            }
-        } else {
-            html! {}
-        };
-
         html! {
-            <@{ctx.props().component.clone()} class={outer_class}>
-                <input
-                    class={classes!["pf-v5-c-check__input", ctx.props().input_class.clone()]}
-                    type="checkbox"
-                    {onchange}
-                    aria-invalid={ctx.props().valid.to_string()}
-                    aria-label={ctx.props().aria_label.clone()}
-                    disabled={ctx.props().disabled}
-                    required={ctx.props().required}
-                    id={ctx.props().id.clone()}
-                    ref={self.node_ref.clone()}
-                    checked={ctx.props().checked != CheckboxState::Unchecked}
-                />
-                {label}
-                if let Some(description) = &ctx.props().description {
-                    <span class="pf-v5-c-check__description">{description.clone()}</span>
+            <label {class} for={props.id.clone()}>
+                {label.clone()}
+                if props.required {
+                    <span class="pf-v5-c-check__label-required" aria-hidden="true">{"*"}</span>
                 }
-                if let Some(body) = &ctx.props().body {
-                    <span class="pf-v5-c-check__body">{body.clone()}</span>
-                }
-            </@>
+            </label>
         }
-    }
+    } else {
+        html! {}
+    };
 
-    fn rendered(&mut self, ctx: &Context<Self>, _first_render: bool) {
-        if let Some(elem) = self.node_ref.cast::<HtmlInputElement>() {
-            elem.set_indeterminate(ctx.props().checked == CheckboxState::Indeterminate)
-        }
+    html! {
+        <@{props.component.clone()} class={outer_class}>
+            <input
+                class={classes!["pf-v5-c-check__input", props.input_class.clone()]}
+                type="checkbox"
+                {onchange}
+                aria-invalid={props.valid.to_string()}
+                aria-label={props.aria_label.clone()}
+                disabled={props.disabled}
+                required={props.required}
+                id={props.id.clone()}
+                ref={node_ref.clone()}
+                checked={props.checked != CheckboxState::Unchecked}
+            />
+            {label}
+            if let Some(description) = &props.description {
+                <span class="pf-v5-c-check__description">{description.clone()}</span>
+            }
+            if let Some(body) = &props.body {
+                <span class="pf-v5-c-check__body">{body.clone()}</span>
+            }
+        </@>
     }
 }
