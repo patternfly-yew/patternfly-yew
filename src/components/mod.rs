@@ -12,7 +12,6 @@ pub mod breadcrumb;
 pub mod button;
 pub mod calendar;
 pub mod card;
-pub mod checkbox;
 pub mod chip;
 pub mod chip_group;
 pub mod clipboard;
