@@ -3,6 +3,9 @@ use yew::prelude::*;
 
 use crate::hooks::id::use_prop_id;
 
+#[deprecated]
+pub type Check = Checkbox;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum CheckboxState {
     Checked,
@@ -21,7 +24,7 @@ impl From<bool> for CheckboxState {
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
-pub struct CheckProps {
+pub struct CheckboxProperties {
     /// Id of the checkbox
     pub id: Option<String>,
 
@@ -78,8 +81,8 @@ pub struct CheckProps {
     pub component: String,
 }
 
-#[function_component(Check)]
-pub fn checkbox(props: &CheckProps) -> Html {
+#[function_component(Checkbox)]
+pub fn checkbox(props: &CheckboxProperties) -> Html {
     let id = use_prop_id(props.id.clone());
     let mut outer_class = classes!["pf-v5-c-check", props.class.clone()];
     if props.label.is_none() {

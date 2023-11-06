@@ -1,6 +1,6 @@
 //! Form controls
 mod area;
-mod check;
+mod checkbox;
 mod group;
 mod input;
 mod radio;
@@ -9,7 +9,7 @@ mod select;
 mod validation;
 
 pub use area::*;
-pub use check::*;
+pub use checkbox::*;
 pub use group::*;
 pub use input::*;
 pub use radio::*;
