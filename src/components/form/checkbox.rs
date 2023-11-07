@@ -26,6 +26,7 @@ impl From<bool> for CheckboxState {
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct CheckboxProperties {
     /// Id of the checkbox
+    #[prop_or_default]
     pub id: Option<String>,
 
     /// The name of the input field
@@ -76,7 +77,7 @@ pub struct CheckboxProperties {
     #[prop_or_default]
     pub body: Option<Html>,
 
-    /// Sets the input wraper component to render.
+    /// Sets the input wrapper component to render.
     #[prop_or(String::from("div"))]
     pub component: String,
 }
@@ -86,7 +87,7 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
     let id = use_prop_id(props.id.clone());
     let mut outer_class = classes!["pf-v5-c-check", props.class.clone()];
     if props.label.is_none() {
-        outer_class.push("pf-m-standalone")
+        outer_class.push("pf-m-standalone");
     }
     let node_ref = use_node_ref();
     {
@@ -99,19 +100,19 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
         });
     }
 
-    let onchange = {
-        let onchange = props.onchange.clone();
-        let node_ref = node_ref.clone();
-        Callback::from(move |e: Event| {
+    let onchange = use_callback(
+        (props.onchange.clone(), node_ref.clone()),
+        |e: Event, (onchange, node_ref)| {
             let checked = node_ref
                 .cast::<HtmlInputElement>()
                 .map(|input| input.checked().into())
                 .unwrap_or_default();
             onchange.emit((e, checked));
-        })
-    };
-    let label = if let Some(label) = &props.label {
-        let mut class = classes!["pf-v5-v-c-check__label"];
+        },
+    );
+
+    let label = if let Some(label) = &props.label.0 {
+        let mut class = classes!["pf-v5-c-check__label"];
         if props.disabled {
             class.push("pf-m-disabled");
         }
