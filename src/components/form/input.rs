@@ -120,7 +120,7 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 ///
 /// > A **text input** is used to gather free-form text from a user.
 ///
-/// See: <https://www.patternfly.org/v4/components/text-input>
+/// See: <https://www.patternfly.org/components/text-input>
 ///
 /// ## Properties
 ///

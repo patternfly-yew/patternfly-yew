@@ -42,7 +42,7 @@ pub struct PageProperties {
 ///
 /// > The page component is used to define the basic layout of a page with either vertical or horizontal navigation.
 ///
-/// See: <https://www.patternfly.org/v4/components/page>
+/// See: <https://www.patternfly.org/components/page>
 ///
 /// ## Properties
 ///

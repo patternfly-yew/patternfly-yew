@@ -38,7 +38,7 @@ impl EmptyStateProperties {
 ///
 /// > An **empty state** is a screen that is not yet populated with data or information. Empty states typically contain a short message and next steps for the user.
 ///
-/// See: <https://www.patternfly.org/v4/components/empty-state>
+/// See: <https://www.patternfly.org/components/empty-state>
 ///
 /// ## Properties
 ///

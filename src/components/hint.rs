@@ -19,7 +19,7 @@ pub struct HintProperties {
 ///
 /// > A **hint** is in-app messaging that provides a one-step reminder, explanation, or call to action for a page or modal.
 ///
-/// See: <https://www.patternfly.org/v4/components/hint>
+/// See: <https://www.patternfly.org/components/hint>
 ///
 /// ## Properties
 ///

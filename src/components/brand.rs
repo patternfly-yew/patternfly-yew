@@ -38,7 +38,7 @@ pub fn brand_source(props: &BrandSourceProperties) -> Html {
 ///
 /// > A **brand** is used to place a product logotype on a screen.
 ///
-/// See: <https://pf5.patternfly.org/components/brand>
+/// See: <https://www.patternfly.org/components/brand>
 ///
 /// Both basic and responsive modes are supported. If the list of sources is empty, then the basic
 /// mode is used. Otherwise it will use the response mode, with the default image as fallback.

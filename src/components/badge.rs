@@ -19,7 +19,7 @@ pub struct BadgeProperties {
 ///
 /// > A **badge** is used to annotate other information like a label or an object name.
 ///
-/// See: <https://pf5.patternfly.org/components/badge>
+/// See: <https://www.patternfly.org/components/badge>
 ///
 /// ## Properties
 ///

@@ -49,7 +49,7 @@ where
 ///
 /// > **Tabs** allow users to navigate between views within the same page or context.
 ///
-/// See: <https://www.patternfly.org/v4/components/tabs>
+/// See: <https://www.patternfly.org/components/tabs>
 ///
 /// ## Properties
 ///

@@ -59,7 +59,7 @@ impl AsClasses for MenuToggleVariant {
 
 /// Menu toggle component
 ///
-/// See: <https://pf5.patternfly.org/components/menus/menu-toggle>
+/// See: <https://www.patternfly.org/components/menus/menu-toggle>
 ///
 /// ## Properties
 ///

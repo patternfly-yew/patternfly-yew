@@ -75,7 +75,7 @@ pub struct AlertProperties {
 ///
 /// > An **alert** is a notification that provides brief information to the user without blocking their workflow.
 ///
-/// See: <https://www.patternfly.org/v4/components/alert>
+/// See: <https://www.patternfly.org/components/alert>
 ///
 /// ## Properties
 ///

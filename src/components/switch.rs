@@ -30,7 +30,7 @@ pub struct SwitchProperties {
 ///
 /// > A **switch** toggles the state of a setting (between on and off). Switches and checkboxes can often be used interchangeably, but the switch provides a more explicit, visible representation on a setting.
 ///
-/// See: <https://www.patternfly.org/v4/components/switch>
+/// See: <https://www.patternfly.org/components/switch>
 ///
 /// ## Properties
 ///

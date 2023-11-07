@@ -15,7 +15,7 @@ pub struct GridProperties {
 
 /// Grid layout
 ///
-/// See: <https://www.patternfly.org/v4/layouts/grid>
+/// See: <https://www.patternfly.org/layouts/grid>
 ///
 /// ## Properties
 ///

@@ -47,7 +47,7 @@ pub struct DividerProperties {
 ///
 /// > A **divider** is a horizontal or vertical line that is placed between screen elements to create visual divisions and content groupings.
 ///
-/// See: <https://www.patternfly.org/v4/components/divider>
+/// See: <https://www.patternfly.org/components/divider>
 ///
 /// ## Properties
 ///

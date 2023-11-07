@@ -15,7 +15,7 @@ pub struct GalleryProperties {
 ///
 /// > Use a **Gallery** layout to arrange content in a responsive grid. Content will wrap responsively to create uniform rows and columns.
 ///
-/// See: <https://www.patternfly.org/v4/layouts/gallery>
+/// See: <https://www.patternfly.org/layouts/gallery>
 ///
 /// ## Properties
 ///

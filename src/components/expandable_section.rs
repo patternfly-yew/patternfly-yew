@@ -76,7 +76,7 @@ impl AsClasses for ExpandableSectionVariant {
 ///
 /// > An **expandable section** component is used to support progressive disclosure in a form or page by hiding additional content when you don't want it to be shown by default. An expandable section can contain any type of content such as plain text, form inputs, and charts.
 ///
-/// See: <https://www.patternfly.org/v4/components/expandable-section>
+/// See: <https://www.patternfly.org/components/expandable-section>
 ///
 /// ## Properties
 ///

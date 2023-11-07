@@ -17,7 +17,7 @@ pub struct BullseyeProperties {
 ///
 /// > Use a **Bullseye** layout to center content, both vertically and horizontally within a container.
 ///
-/// See: <https://www.patternfly.org/v4/layouts/bullseye>
+/// See: <https://www.patternfly.org/layouts/bullseye>
 #[function_component(Bullseye)]
 pub fn bullseye(props: &BullseyeProperties) -> Html {
     html! {

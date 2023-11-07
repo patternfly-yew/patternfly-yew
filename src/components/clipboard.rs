@@ -67,7 +67,7 @@ const OK_MESSAGE: &str = "Copied!";
 ///
 /// > The **clipboard copy** component allows users to quickly and easily copy content to their clipboard.
 ///
-/// See: <https://www.patternfly.org/v4/components/clipboard-copy>
+/// See: <https://www.patternfly.org/components/clipboard-copy>
 ///
 /// ## Properties
 ///

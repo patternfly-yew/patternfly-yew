@@ -77,7 +77,7 @@ where
 ///
 /// > A **select** list enables users to select one or more items from a list. Use a select list when options are dynamic or variable.
 ///
-/// See: <https://www.patternfly.org/v4/components/select>
+/// See: <https://www.patternfly.org/components/select>
 ///
 /// ## Properties
 ///

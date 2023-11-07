@@ -62,7 +62,7 @@ pub struct LabelProperties {
 ///
 /// > The **label** component allows users to add specific element captions for user clarity and convenience.
 ///
-/// See: <https://www.patternfly.org/v4/components/label/html>
+/// See: <https://www.patternfly.org/components/label/html>
 ///
 /// ## Properties
 ///

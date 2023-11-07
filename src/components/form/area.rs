@@ -122,7 +122,7 @@ impl ValidatingComponentProperties<String> for TextAreaProperties {
 ///
 /// > A **text area** component is used for entering a paragraph of text that is longer than one line.
 ///
-/// See: <https://www.patternfly.org/v4/components/text-area>
+/// See: <https://www.patternfly.org/components/text-area>
 ///
 /// ## Properties
 ///

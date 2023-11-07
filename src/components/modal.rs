@@ -56,7 +56,7 @@ pub struct ModalProperties {
 ///
 /// > A **modal** displays important information to a user without requiring them to navigate to a new page.
 ///
-/// See: <https://www.patternfly.org/v4/components/modal>
+/// See: <https://www.patternfly.org/components/modal>
 ///
 /// ## Properties
 ///

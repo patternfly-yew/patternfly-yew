@@ -43,7 +43,7 @@ pub struct PopoverProperties {
 ///
 /// > A **popover** is in-app messaging that provides more information on specific product areas. Popovers display content in a new window that overlays the current page. Unlike modals, popovers don't block the current page.
 ///
-/// See: <https://www.patternfly.org/v4/components/popover>
+/// See: <https://www.patternfly.org/components/popover>
 ///
 /// ## Properties
 ///

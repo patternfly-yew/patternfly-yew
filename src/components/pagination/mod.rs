@@ -84,7 +84,7 @@ pub enum Navigation {
 ///
 /// > A **pagination** component gives users more navigational capability on pages with content views.
 ///
-/// See: <https://www.patternfly.org/v4/components/pagination>
+/// See: <https://www.patternfly.org/components/pagination>
 ///
 /// ## Properties
 ///

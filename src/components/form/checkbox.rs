@@ -56,6 +56,7 @@ impl IntoPropValue<CheckboxState> for bool {
     }
 }
 
+/// Properties for [`Checkbox`].
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct CheckboxProperties {
     /// Id of the checkbox
@@ -115,6 +116,15 @@ pub struct CheckboxProperties {
     pub component: String,
 }
 
+/// Checkbox component
+///
+/// > A **checkbox** is used to select a single item or multiple items, typically to choose elements to perform an action or to reflect a binary setting.
+///
+/// See: <https://www.patternfly.org/components/forms/checkbox>
+///
+/// ## Properties
+///
+/// Defined by [`FormGroupProperties`].
 #[function_component(Checkbox)]
 pub fn checkbox(props: &CheckboxProperties) -> Html {
     let id = use_prop_id(props.id.clone());

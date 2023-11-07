@@ -49,7 +49,7 @@ pub struct ToolbarProperties {
 ///
 /// > A **toolbar** allows a user to manage and manipulate a data set. Data can be presented in any valid presentation, a table, a list, or a data visualization (chart), for example. The toolbar responsively accommodates controls and displays applied filters in chip groups.
 ///
-/// See: <https://www.patternfly.org/v4/components/toolbar>
+/// See: <https://www.patternfly.org/components/toolbar>
 ///
 /// ## Properties
 ///

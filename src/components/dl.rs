@@ -77,7 +77,7 @@ impl AsClasses for DescriptionListMode {
 ///
 /// > A **description list** contains terms and their corresponding descriptions.
 ///
-/// See: <https://pf5.patternfly.org/components/description-list>
+/// See: <https://www.patternfly.org/components/description-list>
 ///
 /// ## Properties
 ///

@@ -93,7 +93,7 @@ pub struct HelperTextProperties {
 ///
 /// > **HelperText** is an on-screen field guideline that helps provide context regarding field inputs.
 ///
-/// See: <https://www.patternfly.org/v4/components/helper-text>
+/// See: <https://www.patternfly.org/components/helper-text>
 ///
 /// ## Properties
 ///

@@ -43,7 +43,7 @@ pub struct AboutModalProperties {
 ///
 /// > An **about modal** displays information about an application like product version number(s), as well as any appropriate legal text.
 ///
-/// See: <https://www.patternfly.org/v4/components/about-modal>
+/// See: <https://www.patternfly.org/components/about-modal>
 ///
 /// For a complete example, see the PatternFly Yew quickstart.
 ///

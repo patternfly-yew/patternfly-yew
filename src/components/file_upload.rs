@@ -14,7 +14,7 @@ pub struct FileUploadProperties {
 ///
 /// > A **file upload** component allows the users to upload a single file into the browser.
 ///
-/// See: <https://www.patternfly.org/v4/components/file-upload>
+/// See: <https://www.patternfly.org/components/file-upload>
 ///
 /// # Properties
 ///

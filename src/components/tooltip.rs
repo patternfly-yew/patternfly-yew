@@ -14,7 +14,7 @@ pub struct TooltipProperties {
 ///
 /// > A **tooltip** is in-app messaging used to identify elements on a page with short, clarifying text.
 ///
-/// See: <https://www.patternfly.org/v4/components/tooltip>
+/// See: <https://www.patternfly.org/components/tooltip>
 ///
 /// ## Properties
 ///

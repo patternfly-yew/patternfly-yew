@@ -91,7 +91,7 @@ impl AsClasses for ListIconSize {
 ///
 /// > A **list** component embeds a formatted list (bulleted or numbered list) into page content.
 ///
-/// See: <https://www.patternfly.org/v4/components/list>
+/// See: <https://www.patternfly.org/components/list>
 ///
 /// ## Properties
 ///

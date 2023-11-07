@@ -15,7 +15,7 @@ pub struct SplitProperties {
 ///
 /// > Use a **Split** layout to position items horizontally in a container, with one item filling the remaining horizontal space as the viewport is resized.
 ///
-/// See: <https://www.patternfly.org/v4/layouts/split>
+/// See: <https://www.patternfly.org/layouts/split>
 ///
 /// ## Properties
 ///

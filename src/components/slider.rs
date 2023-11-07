@@ -119,7 +119,7 @@ pub enum Input {
 ///
 /// > A **slider** provides a quick and effective way for users to set and adjust a numeric value from a defined range of values.
 ///
-/// See: <https://www.patternfly.org/v4/components/slider>
+/// See: <https://www.patternfly.org/components/slider>
 ///
 /// ## Properties
 ///

@@ -24,7 +24,7 @@ pub struct ChipProperties {
 ///
 /// > A **chip** is used to communicate a value or a set of attribute-value pairs within workflows that involve filtering a set of objects.
 ///
-/// See: <https://www.patternfly.org/v4/components/chip>
+/// See: <https://www.patternfly.org/components/chip>
 ///
 /// ## Properties
 ///

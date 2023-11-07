@@ -25,7 +25,7 @@ pub struct InputGroupProperties {
 ///
 /// > An **input group** groups multiple related controls or inputs together so they appear as one control.
 ///
-/// See: <https://www.patternfly.org/v4/components/input-group>
+/// See: <https://www.patternfly.org/components/input-group>
 ///
 /// ## Properties
 ///

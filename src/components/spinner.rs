@@ -39,7 +39,7 @@ pub struct SpinnerProperties {
 ///
 /// > A **spinner** is used to indicate to users that an action is in progress. For actions that may take a long time, use a progress bar instead.
 ///
-/// See: <https://www.patternfly.org/v4/components/spinner>
+/// See: <https://www.patternfly.org/components/spinner>
 ///
 /// ## Properties
 ///

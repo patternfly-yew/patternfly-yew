@@ -149,7 +149,7 @@ pub struct GroupValidationResult(pub String, pub Option<ValidationResult>);
 ///
 /// > A **form** is a group of elements used to collect information from a user in a variety of contexts including in a modal, in a wizard, or on a page. Use cases for forms include tasks reliant on user-inputted information for completion like logging in, registering, configuring settings, or completing surveys.
 ///
-/// See: <https://www.patternfly.org/v4/components/form>
+/// See: <https://www.patternfly.org/components/form>
 ///
 /// ## Properties
 ///

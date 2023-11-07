@@ -67,7 +67,7 @@ pub struct AvatarProperties {
 ///
 /// > An **avatar** is a visual used to represent a user. It may contain an image or a placeholder graphic.
 ///
-/// See: <https://pf5.patternfly.org/components/avatar>
+/// See: <https://www.patternfly.org/components/avatar>
 ///
 /// ## Properties
 ///

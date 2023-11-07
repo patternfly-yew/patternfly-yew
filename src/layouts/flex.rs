@@ -168,7 +168,7 @@ pub struct FlexProperties {
 ///
 /// > The Flex layout is a tool to build your own custom layout that builds-in the PatternFly spacer and breakpoint systems.
 ///
-/// See: <https://www.patternfly.org/v4/layouts/flex>
+/// See: <https://www.patternfly.org/layouts/flex>
 ///
 /// ## Properties
 ///

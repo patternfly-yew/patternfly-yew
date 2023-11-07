@@ -68,7 +68,7 @@ pub struct SkeletonProperties {
 ///
 /// > A **skeleton** is a type of loading state that allows you to expose content incrementally. For content that may take a long time to load, use a progress bar in place of a skeleton.
 ///
-/// See: <https://www.patternfly.org/v4/components/skeleton>
+/// See: <https://www.patternfly.org/components/skeleton>
 ///
 /// ## Example
 ///

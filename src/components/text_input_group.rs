@@ -25,7 +25,7 @@ pub struct TextInputGroupProperties {
 ///
 /// > A **text input** group is a more flexible composable version of a text input. It enables consumers of PatternFly to build custom inputs for filtering and similar use cases by placing elements like icons, chips groups and buttons within a text input.
 ///
-/// See: <https://www.patternfly.org/v4/components/text-input-group>
+/// See: <https://www.patternfly.org/components/text-input-group>
 ///
 /// ## Properties
 ///
