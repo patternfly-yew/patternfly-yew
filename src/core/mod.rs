@@ -2,6 +2,7 @@
 
 mod breakpoint;
 mod classes;
+mod content;
 mod inset;
 mod order;
 mod orientation;
@@ -12,6 +13,7 @@ mod visibility;
 
 pub use breakpoint::*;
 pub use classes::*;
+pub use content::*;
 pub use inset::*;
 pub use order::*;
 pub use orientation::*;
