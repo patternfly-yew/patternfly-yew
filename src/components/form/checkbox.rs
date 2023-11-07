@@ -1,11 +1,19 @@
+use crate::{core::OptionalHtml, hooks::id::use_prop_id};
 use web_sys::HtmlInputElement;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
-
-use crate::hooks::id::use_prop_id;
 
 #[deprecated]
 pub type Check = Checkbox;
 
+/// The state of a checkbox.
+///
+/// In addition to the obvious two states (checked and unchecked), a checkbox can also have an
+/// "indeterminate" state.
+///
+/// This enum helps to work with this tri-state value. A boolean can easily converted into the
+/// `CheckboxState`. When converting back to a boolean, only [`CheckboxState::Checked`] will turn
+/// into `true`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum CheckboxState {
     Checked,
@@ -20,6 +28,31 @@ impl From<bool> for CheckboxState {
             true => Self::Checked,
             false => Self::Unchecked,
         }
+    }
+}
+
+impl From<CheckboxState> for bool {
+    fn from(value: CheckboxState) -> Self {
+        match value {
+            CheckboxState::Checked => true,
+            CheckboxState::Indeterminate | CheckboxState::Unchecked => false,
+        }
+    }
+}
+
+impl From<CheckboxState> for Option<bool> {
+    fn from(value: CheckboxState) -> Self {
+        match value {
+            CheckboxState::Checked => Some(true),
+            CheckboxState::Unchecked => Some(false),
+            CheckboxState::Indeterminate => None,
+        }
+    }
+}
+
+impl IntoPropValue<CheckboxState> for bool {
+    fn into_prop_value(self) -> CheckboxState {
+        self.into()
     }
 }
 
@@ -63,7 +96,7 @@ pub struct CheckboxProperties {
 
     /// Label text of the checkbox.
     #[prop_or_default]
-    pub label: Option<Html>,
+    pub label: OptionalHtml,
 
     /// Aria-label of the checkbox.
     #[prop_or_default]
@@ -71,7 +104,7 @@ pub struct CheckboxProperties {
 
     /// Description text of the checkbox.
     #[prop_or_default]
-    pub description: Option<Html>,
+    pub description: OptionalHtml,
 
     /// Body text of the checkbox.
     #[prop_or_default]
@@ -86,10 +119,13 @@ pub struct CheckboxProperties {
 pub fn checkbox(props: &CheckboxProperties) -> Html {
     let id = use_prop_id(props.id.clone());
     let mut outer_class = classes!["pf-v5-c-check", props.class.clone()];
+
     if props.label.is_none() {
         outer_class.push("pf-m-standalone");
     }
+
     let node_ref = use_node_ref();
+
     {
         let node_ref = node_ref.clone();
         let checked = props.checked;
@@ -116,19 +152,19 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
         if props.disabled {
             class.push("pf-m-disabled");
         }
-        html! {
+        html! (
             <label {class} for={(*id).clone()}>
                 {label.clone()}
                 if props.required {
                     <span class="pf-v5-c-check__label-required" aria-hidden="true">{"*"}</span>
                 }
             </label>
-        }
+        )
     } else {
-        html! {}
+        html!()
     };
 
-    html! {
+    html! (
         <@{props.component.clone()} class={outer_class}>
             <input
                 class={classes!["pf-v5-c-check__input", props.input_class.clone()]}
@@ -143,12 +179,12 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
                 checked={props.checked != CheckboxState::Unchecked}
             />
             {label}
-            if let Some(description) = &props.description {
+            if let Some(description) = &props.description.0 {
                 <span class="pf-v5-c-check__description">{description.clone()}</span>
             }
             if let Some(body) = &props.body {
                 <span class="pf-v5-c-check__body">{body.clone()}</span>
             }
         </@>
-    }
+    )
 }
