@@ -3,7 +3,7 @@ use web_sys::HtmlInputElement;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
-#[deprecated]
+#[deprecated(since = "0.5.0", note = "The component got renamed to `Checkbox`")]
 pub type Check = Checkbox;
 
 /// The state of a checkbox.
