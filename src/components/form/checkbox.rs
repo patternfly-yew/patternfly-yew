@@ -93,7 +93,7 @@ pub struct CheckboxProperties {
 
     /// A callback for when the checkbox selection changes.
     #[prop_or_default]
-    pub onchange: Callback<(Event, CheckboxState)>,
+    pub onchange: Callback<CheckboxState>,
 
     /// Label text of the checkbox.
     #[prop_or_default]
@@ -153,7 +153,7 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
                 .cast::<HtmlInputElement>()
                 .map(|input| input.checked().into())
                 .unwrap_or_default();
-            onchange.emit((e, checked));
+            onchange.emit(checked);
         },
     );
 
