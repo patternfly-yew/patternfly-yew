@@ -1,6 +1,7 @@
 //! Utilities
 
 mod action;
+mod attr_value;
 mod context;
 mod global_close;
 mod html;
@@ -9,6 +10,7 @@ mod raw;
 mod styled;
 
 pub use action::*;
+pub use attr_value::*;
 pub use context::*;
 pub use global_close::*;
 pub use html::*;

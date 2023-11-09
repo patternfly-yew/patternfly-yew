@@ -1,4 +1,5 @@
-use std::borrow::Cow;
+use crate::prelude::attr_value_to_static_cow;
+use implicit_clone::unsync::IString;
 use yew::prelude::*;
 
 /// Properties for [`Visible`].
@@ -21,7 +22,7 @@ pub struct VisibleProperties {
 
     /// The element to wrap the content with. Defaults to `div`.
     #[prop_or("div".into())]
-    pub element: Cow<'static, str>,
+    pub element: IString,
 }
 
 /// A component hiding its content when not being visible.
@@ -64,7 +65,7 @@ pub fn visible(props: &VisibleProperties) -> Html {
     class.extend(&props.class);
 
     html!(
-        <@{props.element.clone()}
+        <@{attr_value_to_static_cow(&props.element)}
             {class}
             style={props.style.clone()}
             id={props.id.clone()}
@@ -81,6 +82,7 @@ mod test {
     #[test]
     fn test_ele() {
         let element: String = "div".into();
-        let _ = html!(<Visible visible={true} element={Cow::from(element)} / >);
+        let _ = html!(<Visible visible={true} {element} / >);
+        let _ = html!(<Visible visible={true} element={"div"} / >);
     }
 }
