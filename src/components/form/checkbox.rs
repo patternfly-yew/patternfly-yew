@@ -148,7 +148,7 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
 
     let onchange = use_callback(
         (props.onchange.clone(), node_ref.clone()),
-        |e: Event, (onchange, node_ref)| {
+        |_: Event, (onchange, node_ref)| {
             let checked = node_ref
                 .cast::<HtmlInputElement>()
                 .map(|input| input.checked().into())
