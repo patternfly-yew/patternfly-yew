@@ -61,6 +61,7 @@ pub use crate::components::toolbar::*;
 pub use crate::components::tooltip::*;
 #[cfg(feature = "tree")]
 pub use crate::components::tree::*;
+pub use crate::components::visible::*;
 
 pub use crate::layouts::bullseye::*;
 pub use crate::layouts::flex::*;
