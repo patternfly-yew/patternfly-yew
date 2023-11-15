@@ -5,7 +5,7 @@ use yew::prelude::*;
 /// Properties for [`Visible`].
 #[derive(PartialEq, Properties)]
 pub struct VisibleProperties {
-    /// The visibilty flag
+    /// The visibility flag
     pub visible: bool,
 
     /// The content to show/hide
