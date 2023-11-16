@@ -96,6 +96,12 @@ pub struct TextInputGroupMainProperties {
 
     #[prop_or_default]
     pub autofocus: bool,
+
+    #[prop_or_default]
+    pub inner_ref: Option<NodeRef>,
+
+    #[prop_or_default]
+    pub hint: Option<AttrValue>,
 }
 
 #[function_component(TextInputGroupMain)]
@@ -108,6 +114,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     }
 
     let node_ref = use_node_ref();
+    let node_ref = props.inner_ref.as_ref().unwrap_or(&node_ref);
     let oninput = use_on_text_change(
         node_ref.clone(),
         props.oninput.clone(),
@@ -134,6 +141,15 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
             style={&props.style}
         >
             <span class="pf-v5-c-text-input-group__text">
+                if let Some(hint) = &props.hint {
+                    <input
+                        class="pf-v5-c-text-input-group__text-input pf-m-hint"
+                        type="text"
+                        disabled=true
+                        aria-hidden="true"
+                        value={hint}
+                    />
+                }
                 if let Some(icon) = &props.icon {
                     <span class="pf-v5-c-text-input-group__icon">
                         { icon.clone() }

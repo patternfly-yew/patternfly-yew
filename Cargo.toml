@@ -55,9 +55,10 @@ router = ["yew-nested-router"]
 # things which go away any minute
 legacy = []
 
-experimental = ["tree", "dual_list_selector"]
+experimental = ["tree", "dual_list_selector", "search_input"]
 tree = []
 dual_list_selector = []
+search_input = []
 
 # Enable FontAwesome regular (FAR) and/or brand (FAB) icons, remember to import the font in your application
 icons-far = []

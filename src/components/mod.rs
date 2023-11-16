@@ -23,6 +23,8 @@ pub mod divider;
 pub mod dl;
 pub mod drawer;
 pub mod dropdown;
+#[cfg(feature = "dual_list_selector")]
+pub mod dual_list_selector;
 pub mod empty;
 pub mod expandable_section;
 pub mod file_upload;
@@ -41,6 +43,8 @@ pub mod pagination;
 pub mod panel;
 pub mod popover;
 pub mod progress;
+#[cfg(feature = "search_input")]
+pub mod search_input;
 pub mod select;
 pub mod skeleton;
 pub mod slider;
@@ -57,6 +61,3 @@ pub mod visible;
 
 #[cfg(feature = "tree")]
 pub mod tree;
-
-#[cfg(feature = "dual_list_selector")]
-pub mod dual_list_selector;
