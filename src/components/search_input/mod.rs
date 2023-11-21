@@ -147,6 +147,10 @@ pub struct SearchInputExpandableProperties {
 #[function_component(SearchInput)]
 pub fn search_input(props: &SearchInputProps) -> Html {
     let search_value = use_state(|| props.value.clone());
+    use_effect_with(
+        (props.value.clone(), search_value.clone()),
+        move |(prop_val, search_value)| search_value.set(prop_val.clone()),
+    );
     let focus_after_expand_change = use_state(|| false);
     let is_search_menu_open = use_state(|| false);
     let node_ref = use_node_ref();
