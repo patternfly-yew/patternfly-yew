@@ -336,7 +336,6 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                     disabled={props.props.disabled}
                     aria_label={props.props.reset_button_label.clone()}
                     onclick={onclearinput}
-                    r#ref={props.input_ref.clone()}
                 >
                     {Icon::Times}
                 </Button>
