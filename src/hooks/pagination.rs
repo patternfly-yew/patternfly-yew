@@ -2,6 +2,7 @@
 
 use crate::prelude::Navigation;
 use std::ops::{Deref, DerefMut, Range};
+use std::rc::Rc;
 use yew::prelude::*;
 
 pub const DEFAULT_PER_PAGE: usize = 10;
@@ -209,6 +210,31 @@ where
         onnavigation,
         onperpagechange,
     }
+}
+
+/// Apply pagination state to a set of data.
+///
+/// Ideally, pagination is applied on the source of the data. Like a database query. However,
+/// sometimes it can be convenient to even paginate a fully loaded dataset.
+///
+/// This hook takes a full dataset and returns the currently selected page. It will update
+/// whenever the entries or pagination control state changes.
+#[hook]
+fn use_apply_pagination<T>(entries: Rc<Vec<T>>, control: PaginationControl) -> Rc<Vec<T>>
+where
+    T: Clone + PartialEq + 'static,
+{
+    use_memo((entries, control), |(entries, control)| {
+        let offset = control.per_page * control.page;
+        let limit = control.per_page;
+        entries
+            .iter()
+            // apply pagination window
+            .skip(offset)
+            .take(limit)
+            .cloned()
+            .collect::<Vec<_>>()
+    })
 }
 
 #[cfg(test)]
