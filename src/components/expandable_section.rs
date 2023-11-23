@@ -8,6 +8,9 @@ pub struct ExpandableSectionProperties {
     #[prop_or_default]
     pub children: Html,
 
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
+
     #[prop_or("Show more".into())]
     pub toggle_text_hidden: AttrValue,
     #[prop_or("Show less".into())]
@@ -129,21 +132,48 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
         class.extend(classes!("pf-m-expanded"));
     }
 
+    let content = html!(
+        <div
+            class="pf-v5-c-expandable-section__content" hidden={!expanded}
+        >{ props.children.clone() }</div>
+    );
+
+    let truncating = props.variant == ExpandableSectionVariant::Truncate;
+    let toggle = match props.detached {
+        true => html!(),
+        false => html!(
+            <ExpandableSectionToggle
+                {ontoggle}
+                {expanded}
+                toggle_text_hidden={&props.toggle_text_hidden}
+                toggle_text_expanded={&props.toggle_text_expanded}
+                detached=false
+                direction={ExpandableSectionToggleDirection::Down}
+                no_icon={truncating}
+            />
+        ),
+    };
+
+    // when using the truncating variant, the toggle is below the content
+    let content = match truncating {
+        false => html!(
+            <>
+                {toggle} {content}
+            </>
+        ),
+        true => html!(
+            <>
+                 {content} {toggle}
+            </>
+        ),
+    };
+
     html!(
-        <div {class}>
-            if !props.detached {
-                <ExpandableSectionToggle
-                    {ontoggle}
-                    expanded={expanded}
-                    toggle_text_hidden={&props.toggle_text_hidden}
-                    toggle_text_expanded={&props.toggle_text_expanded}
-                    detached=false
-                    direction={ExpandableSectionToggleDirection::Down}
-                />
-            }
-          <div
-                class="pf-v5-c-expandable-section__content" hidden={!expanded}
-          >{ props.children.clone() }</div>
+        <div
+            {class}
+            id={props.id.clone()}
+        >
+            { content }
         </div>
     )
 }
@@ -173,6 +203,9 @@ pub struct ExpandableSectionToggleProperties {
 
     #[prop_or_default]
     pub ontoggle: Callback<()>,
+
+    #[prop_or_default]
+    pub no_icon: bool,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -217,9 +250,11 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
             aria-expanded={props.expanded.to_string()}
             {onclick}
         >
-            <span class={toggle_icon_class}>
-                { Icon::AngleRight }
-            </span>
+            if !props.no_icon {
+                <span class={toggle_icon_class}>
+                    { Icon::AngleRight }
+                </span>
+            }
             <span class="pf-v5-c-expandable-section__toggle-text">
                 if !props.children.is_empty() {
                     { props.children.clone() }
