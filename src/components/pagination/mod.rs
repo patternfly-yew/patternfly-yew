@@ -105,25 +105,43 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         menu_classes.push("pf-m-expanded");
     }
 
+    // if the dataset is empty
+    let empty = props
+        .total_entries
+        .map(|total| total == 0)
+        .unwrap_or_default();
+
     // The default rust div operator does floor(), we need ceil, so we cast to float before doing the operation
     let max_page = props
         .total_entries
         .map(|m| (m as f64 / props.selected_choice as f64).ceil() as usize);
-    let current_page = (props.offset as f64 / props.selected_choice as f64).ceil() as usize;
 
+    // the current page
+    let current_page = match empty {
+        true => 0,
+        false => (props.offset as f64 / props.selected_choice as f64).ceil() as usize,
+    };
+
+    // if this is the  last page
     let is_last_page = if let Some(max) = props.total_entries {
         props.offset + props.selected_choice >= max
     } else {
         false
     };
 
+    // total entries string
     let total_entries = props
         .total_entries
         .map(|m| format!("{}", m))
         .unwrap_or_else(|| String::from("many"));
 
-    // +1 because humans don't count from 0 :)
-    let start = props.offset + 1;
+    // first entry number (one based)
+    let start = match empty {
+        true => 0,
+        // +1 because humans don't count from 0 :)
+        false => props.offset + 1,
+    };
+
     let mut end = props.offset + props.selected_choice;
     if let Some(total) = props.total_entries {
         end = end.min(total);
@@ -219,10 +237,18 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     // Page number can be changed through props, therefore input_text should watch props
     {
         let input_text = input_text.clone();
-        use_effect_with((props.offset, props.selected_choice), move |tuple| {
-            let r = (tuple.0 as f64 / tuple.1 as f64).ceil() as usize;
-            input_text.set(Some((r + 1).to_string()));
-        });
+        use_effect_with(
+            (props.offset, props.selected_choice, props.total_entries),
+            move |(offset, selected, total)| {
+                let r = (*offset as f64 / *selected as f64).ceil() as usize;
+
+                if *total == Some(0) {
+                    input_text.set(Some("0".to_string()));
+                } else {
+                    input_text.set(Some((r + 1).to_string()));
+                }
+            },
+        );
     }
 
     // on limit change
@@ -340,7 +366,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {onkeydown}
                         state={*input_state}
                         value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string()) }
-                        disabled={props.disabled}
+                        disabled={ props.disabled || empty }
                     />
                 if let Some(max_page) = max_page {
                     <span aria-hidden="true">{ "of "} { max_page }</span>
@@ -362,7 +388,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Last)}
-                        disabled={ props.disabled || unbound || is_last_page}
+                        disabled={ props.disabled || unbound || is_last_page }
                     >
                         { Icon::AngleDoubleRight }
                     </Button>
