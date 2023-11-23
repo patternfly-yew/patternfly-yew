@@ -46,7 +46,8 @@ impl IntoPropValue<TruncateContent> for &str {
 pub trait IntoTruncateContent {
     /// Truncate at the start of the content.
     fn truncate_start(self) -> TruncateContent;
-    /// Truncate `num` characters before the end of the string
+
+    /// Truncate `num` characters before the end of the string.
     fn truncate_before(self, num: usize) -> TruncateContent;
 }
 
@@ -55,6 +56,24 @@ impl<T: ToString> IntoTruncateContent for T {
         TruncateContent::Start(self.to_string())
     }
 
+    /// This function is supposed to truncate `num` characters before the end of the string.
+    ///
+    /// ## Bytes, Code Points, and Grapheme Clusters
+    ///
+    /// However, what it actually does is to truncate the string at the next Unicode code point,
+    /// after `num` bytes (not characters). This is quick and should work reasonably well with
+    /// the Latin 1 character set (or, UTF-8 characters which are represented by a single byte).
+    ///
+    /// Given a string with multi-byte code points, or even grapheme clusters (user-perceived
+    /// characters, which may consists of multiple Unicode code points), this will split at the
+    /// wrong location.
+    ///
+    /// It will still split, and not skip any data. But it might lead to an unexpected (shorter)
+    /// end section.
+    ///
+    /// What about an actual correct implementation? That would be possible by using an additional
+    /// dependency. It would also need to count all code points and grapheme clusters from the
+    /// start of the string. The question is: is that worth it? Maybe, maybe not!?
     fn truncate_before(self, num: usize) -> TruncateContent {
         let s = self.to_string();
         let len = s.len();
