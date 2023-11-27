@@ -57,6 +57,7 @@ pub fn simple_pagination(props: &SimplePaginationProperties) -> Html {
             onlimit={&onperpagechange}
             onnavigation={&onnavigation}
             style={&props.style}
+            position={props.position}
             id={&props.id}
             disabled={props.disabled}
         />
