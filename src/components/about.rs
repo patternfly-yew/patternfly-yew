@@ -1,5 +1,5 @@
 //! About modal
-use crate::prelude::{use_backdrop, Button, ButtonVariant, Icon};
+use crate::prelude::{use_backdrop, use_random_id, Button, ButtonVariant, Icon};
 use yew::prelude::*;
 use yew_hooks::{use_click_away, use_event_with_window};
 
@@ -109,15 +109,19 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
         ))
     };
 
+    let header_id = use_random_id();
+
     let (aria_labelledby, aria_label, header) = if props.product_name.is_empty() {
-        (props.id.clone(), props.aria_label.clone(), html!())
+        // if we don't have a product name, use the aria label
+        (None::<String>, Some(props.aria_label.clone()), html!())
     } else {
+        // if we have a product name, use it for the header, set the header id and ignore the label
         (
-            AttrValue::from("about-modal-title"),
-            AttrValue::default(),
+            Some((*header_id).to_string()),
+            None,
             html!(
                 <div class="pf-v5-c-about-modal-box__header">
-                    <h1 class="pf-v5-c-title pf-m-4xl" id="about-modal-title">{ props.product_name.clone() }</h1>
+                    <h1 class="pf-v5-c-title pf-m-4xl" id={*header_id}>{ props.product_name.clone() }</h1>
                 </div>
             ),
         )
