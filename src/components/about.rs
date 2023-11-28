@@ -36,7 +36,7 @@ pub struct AboutModalProperties {
     pub disable_close_click_outside: bool,
     /// Id of the outermost element
     #[prop_or_default]
-    pub id: AttrValue,
+    pub id: Option<AttrValue>,
 }
 
 /// About modal component
