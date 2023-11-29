@@ -192,9 +192,14 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     }
 
     let onkeydown = use_on_enter(
-        (input.clone(), props.onnavigation.clone()),
-        |(input, onnavigation)| {
+        (input.clone(), props.onnavigation.clone(), max_page),
+        |(input, onnavigation, max_page)| {
             let mut page: usize = **input;
+            if let Some(max_page) = max_page {
+                if page > *max_page {
+                    page = *max_page;
+                }
+            }
             // humans start with 1, we use 0.
             page = page.saturating_sub(1);
             log::debug!("Emit page change: {page}");
