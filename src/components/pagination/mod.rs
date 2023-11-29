@@ -4,8 +4,7 @@ mod simple;
 pub use simple::*;
 
 use crate::prelude::{
-    use_on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, InputState, TextInput,
-    TextInputType, ValidationContext, Validator,
+    use_on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, TextInput, TextInputType,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;
@@ -150,21 +149,6 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     let limit_choices = props.entries_per_page_choices.clone();
 
-    // todo also add max page
-    let page_number_field_validator =
-        Validator::from(
-            |ctx: ValidationContext<String>| match ctx.value.parse::<usize>() {
-                Ok(value) => {
-                    if value > 0 {
-                        InputState::Default
-                    } else {
-                        InputState::Error
-                    }
-                }
-                Err(_) => InputState::Error,
-            },
-        );
-
     // toggle
     let ontoggle = use_callback(expanded.clone(), |_, expanded| {
         expanded.set(!**expanded);
@@ -180,8 +164,6 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // page input field
 
-    // the validation state of the input
-    let input_state = use_state_eq(InputState::default);
     // the parsed input (zero based)
     let input = use_state_eq(|| 0);
     // the raw input of the page number field
@@ -208,28 +190,36 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     );
 
     let onchange = use_callback(
-        (
-            input.clone(),
-            input_text.clone(),
-            page_number_field_validator.clone(),
-            input_state.clone(),
-        ),
-        |text: String, (input, input_text, page_number_field_validator, input_state)| {
+        (input.clone(), input_text.clone(), max_page, current_page),
+        |text: String, (input, input_text, max_page, current_page)| {
             input_text.set(Some(text.clone()));
 
-            let state = page_number_field_validator
-                .run(ValidationContext::from(text.clone()))
-                .unwrap_or_default();
+            let value = match text.parse::<usize>() {
+                Ok(value) => {
+                    let max_page = max_page.unwrap_or(usize::MAX);
+                    if value > 0 && value < max_page {
+                        Some(value)
+                    } else {
+                        None
+                    }
+                }
+                Err(_) => None,
+            };
 
-            if let InputState::Default = &state {
-                input.set(text.parse().unwrap_or_default());
+            if let Some(value) = value {
+                input.set(value);
+            } else {
+                // +1 because humans
+                input.set(current_page.saturating_add(1));
             }
 
             log::debug!("New prepared page value: {:?} / {}", **input_text, **input);
-
-            input_state.set(state);
         },
     );
+
+    let onblur = use_callback(input_text.clone(), |_, input_text| {
+        input_text.set(None);
+    });
 
     let onnavigation = use_callback(
         (props.onnavigation.clone(), input_text.clone()),
@@ -367,9 +357,10 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 <div class="pf-v5-c-pagination__nav-page-select">
                     <TextInput
                         r#type={TextInputType::Number}
+                        inputmode="number"
                         {onchange}
                         {onkeydown}
-                        state={*input_state}
+                        {onblur}
                         value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string()) }
                         disabled={ props.disabled || empty }
                     />

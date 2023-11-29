@@ -99,6 +99,9 @@ pub struct TextInputProperties {
     pub onkeydown: Callback<KeyboardEvent>,
 
     #[prop_or_default]
+    pub onblur: Callback<FocusEvent>,
+
+    #[prop_or_default]
     pub r#ref: NodeRef,
 }
 
@@ -238,6 +241,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 autocomplete={&props.autocomplete}
                 {oninput}
                 onkeydown={&props.onkeydown}
+                onblur={&props.onblur}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
             />
