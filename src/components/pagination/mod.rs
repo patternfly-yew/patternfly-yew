@@ -197,7 +197,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
             let value = match text.parse::<usize>() {
                 Ok(value) => {
                     let max_page = max_page.unwrap_or(usize::MAX);
-                    if value > 0 && value < max_page {
+                    if value > 0 && value <= max_page {
                         Some(value)
                     } else {
                         None
