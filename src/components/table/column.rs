@@ -100,7 +100,7 @@ where
     }
 
     class.extend_from(&props.width);
-    class.extend_from(&props.text_modifier);
+    class.extend_from(&props.text_modifier);    
 
     match &props.label {
         None => html! (<th></th>),
@@ -138,6 +138,7 @@ where
 
                 html_nested!(
                     <button
+                        title={label.clone()}
                         type="button"
                         class="pf-v5-c-table__button"
                         onclick={
@@ -175,7 +176,7 @@ where
             };
 
             html!(
-                <th {class} scope="col" role="columnheader">
+                <th title={label.clone()} {class} scope="col" role="columnheader">
                     {th_content}
                 </th>
             )
