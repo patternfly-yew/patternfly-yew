@@ -61,7 +61,7 @@ pub struct ValidationResult {
 
 impl From<ValidationResult> for Option<FormHelperText> {
     fn from(result: ValidationResult) -> Self {
-        if matches!(result.state, InputState::Default) && result.message.is_none() {
+        if matches!(result.state, InputState::Default) || result.message.is_none() {
             // default state and no message
             None
         } else {
