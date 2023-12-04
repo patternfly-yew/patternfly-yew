@@ -93,7 +93,7 @@ pub struct SearchInputProperties {
     #[prop_or_default]
     pub value: String,
 
-    // Navigatable results
+    // Navigable results
     /// The number of search results returned. View `[ResultsCount]`.
     #[prop_or_default]
     pub results_count: Option<ResultsCount>,
