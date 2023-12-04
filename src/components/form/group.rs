@@ -222,6 +222,8 @@ where
     #[prop_or_default]
     pub label: String,
     #[prop_or_default]
+    pub label_icon: LabelIcon,
+    #[prop_or_default]
     pub required: bool,
     pub validator: Validator<C::Value, ValidationResult>,
 
@@ -302,6 +304,7 @@ where
         html!(
             <FormGroup
                 label={ctx.props().label.clone()}
+                label_icon={ctx.props().label_icon.clone()}
                 required={ctx.props().required}
                 helper_text={self.state.clone().and_then(|s|s.into())}
             >
