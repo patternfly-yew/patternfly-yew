@@ -57,7 +57,7 @@ impl From<KeyboardEvent> for OnSearchEvent {
 
 /// The main search input component.
 #[derive(Debug, Clone, PartialEq, Properties)]
-pub struct SearchInputProps {
+pub struct SearchInputProperties {
     /// An accessible label for the search input.
     #[prop_or_default]
     pub aria_label: AttrValue,
@@ -145,7 +145,7 @@ pub struct SearchInputExpandableProperties {
 }
 
 #[function_component(SearchInput)]
-pub fn search_input(props: &SearchInputProps) -> Html {
+pub fn search_input(props: &SearchInputProperties) -> Html {
     let search_value = use_state(|| props.value.clone());
     use_effect_with(
         (props.value.clone(), search_value.clone()),
@@ -176,12 +176,9 @@ pub fn search_input(props: &SearchInputProps) -> Html {
         },
     );
 
-    let ontoggle = {
-        let is_search_menu_open = is_search_menu_open.clone();
-        Callback::from(move |_| {
-            is_search_menu_open.set(!*is_search_menu_open);
-        })
-    };
+    let ontoggle = use_callback(is_search_menu_open.clone(), |_, is_search_menu_open| {
+        is_search_menu_open.set(!**is_search_menu_open);
+    });
     let expand_toggle = if let Some(expandable) = &props.expandable {
         let onclick = {
             let value = search_value.clone();
@@ -206,6 +203,7 @@ pub fn search_input(props: &SearchInputProps) -> Html {
     } else {
         html! {}
     };
+
     if let Some(SearchInputExpandableProperties {
         expanded: false, ..
     }) = props.expandable
@@ -252,7 +250,7 @@ struct ExpandableInputGroupProps {
     search_value: UseStateHandle<String>,
     expand_toggle: Html,
     input_ref: NodeRef,
-    props: SearchInputProps,
+    props: SearchInputProperties,
 }
 
 #[function_component(ExpandableInputGroup)]
@@ -275,19 +273,19 @@ fn expandable_input_group(props: &ExpandableInputGroupProps) -> Html {
 struct InnerTextInputGroupProps {
     search_value: UseStateHandle<String>,
     input_ref: NodeRef,
-    props: SearchInputProps,
+    props: SearchInputProperties,
 }
 
 #[function_component(InnerTextInputGroup)]
 fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
-    let onchange = {
-        let search_value = props.search_value.clone();
-        let onchange = props.props.onchange.clone();
-        Callback::from(move |value: String| {
+    let onchange = use_callback(
+        (props.search_value.clone(), props.props.onchange.clone()),
+        |value: String, (search_value, onchange)| {
             onchange.as_ref().map(|f| f.emit(value.clone()));
             search_value.set(value)
-        })
-    };
+        },
+    );
+
     let render_utilities = !props.props.value.is_empty()
         && (props.props.results_count.is_some()
             || (props.props.onnextclick.is_some() && props.props.onpreviousclick.is_some())
@@ -323,14 +321,13 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
             };
         }
     }
-    let onclearinput = {
-        let onclear = props.props.onclear.clone();
-        let input_ref = props.input_ref.clone();
-        Callback::from(move |e| {
+    let onclearinput = use_callback(
+        (props.props.onclear.clone(), props.input_ref.clone()),
+        |e, (onclear, input_ref)| {
             onclear.as_ref().map(|f| f.emit(e));
             input_ref.cast::<HtmlElement>().map(|e| e.focus());
-        })
-    };
+        },
+    );
     let mut clearnav = html! {};
     if props.props.onclear.is_some() {
         if props.props.expandable.is_none() {
@@ -376,21 +373,23 @@ struct TextInputGroupWithExtraButtonsProps {
     input_ref: NodeRef,
     ontoggle: Callback<MouseEvent>,
     expand_toggle: Html,
-    props: SearchInputProps,
+    props: SearchInputProperties,
 }
 
 #[function_component(TextInputGroupWithExtraButtons)]
 fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsProps) -> Html {
-    let onsearchhandler = {
-        let onsearch = props.props.onsearch.clone();
-        let value = props.props.value.clone();
-        let is_search_menu_open = props.is_search_menu_open.clone();
-        Callback::from(move |e: OnSearchEvent| {
+    let onsearchhandler = use_callback(
+        (
+            props.props.onsearch.clone(),
+            props.props.value.clone(),
+            props.is_search_menu_open.clone(),
+        ),
+        |e: OnSearchEvent, (onsearch, value, is_search_menu_open)| {
             e.prevent_default();
             onsearch.as_ref().map(|f| f.emit((e, value.clone())));
             is_search_menu_open.set(false);
-        })
-    };
+        },
+    );
     {
         let onsearchhandler = onsearchhandler.clone();
         use_event_with_window("keydown", move |e: KeyboardEvent| {
@@ -419,7 +418,8 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
     } else {
         html! {}
     };
-    html! {
+
+    html! (
         <InputGroup class={props.props.class.clone()}>
             <InputGroupItem fill=true>
                 <InnerTextInputGroup
@@ -433,5 +433,5 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
                 {props.expand_toggle.clone()}
             }
         </InputGroup>
-    }
+    )
 }
