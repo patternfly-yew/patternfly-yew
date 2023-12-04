@@ -100,7 +100,7 @@ where
     }
 
     class.extend_from(&props.width);
-    class.extend_from(&props.text_modifier);    
+    class.extend_from(&props.text_modifier);
 
     match &props.label {
         None => html! (<th></th>),
