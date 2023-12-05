@@ -58,6 +58,9 @@ impl From<KeyboardEvent> for OnSearchEvent {
 /// The main search input component.
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct SearchInputProperties {
+    /// Id of the outermost element
+    #[prop_or_default]
+    pub id: Option<AttrValue>,
     /// An accessible label for the search input.
     #[prop_or_default]
     pub aria_label: AttrValue,
@@ -256,7 +259,10 @@ struct ExpandableInputGroupProps {
 #[function_component(ExpandableInputGroup)]
 fn expandable_input_group(props: &ExpandableInputGroupProps) -> Html {
     html! {
-        <InputGroup class={props.props.class.clone()}>
+        <InputGroup
+            id={&props.props.id}
+            class={props.props.class.clone()}
+        >
             <InputGroupItem fill=true>
                 <InnerTextInputGroup
                     props={props.props.clone()}
@@ -344,7 +350,11 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
         }
     };
     html! {
-        <TextInputGroup class={props.props.class.clone()} disabled={props.props.disabled}>
+        <TextInputGroup
+            id={&props.props.id}
+            class={props.props.class.clone()}
+            disabled={props.props.disabled}
+        >
             <TextInputGroupMain
                 hint={props.props.hint.clone()}
                 icon={Icon::Search}
@@ -420,7 +430,10 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
     };
 
     html! (
-        <InputGroup class={props.props.class.clone()}>
+        <InputGroup
+            id={&props.props.id}
+            class={props.props.class.clone()}
+        >
             <InputGroupItem fill=true>
                 <InnerTextInputGroup
                     props={props.props.clone()}

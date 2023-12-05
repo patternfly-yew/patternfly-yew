@@ -11,6 +11,8 @@ struct MenuItemProperties {
     pub selected: bool,
     pub r#type: MenuItemType,
     pub description: Option<String>,
+    pub style: Option<AttrValue>,
+    pub additional_class: Classes,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -45,6 +47,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                     class={item_class}
                     type="button"
                     role="menuitem"
+                    tabindex="-1"
                     disabled={props.disabled}
                     onclick={callback.reform(move |_| {
                         onclose.emit(());
@@ -75,8 +78,10 @@ fn menu_item(props: &MenuItemProperties) -> Html {
         }
     };
 
+    class.extend(&props.additional_class);
+
     html!(
-        <div {class}>
+        <li {class} style={&props.style}>
             { element(html!(
                 <>
                     <span class="pf-v5-c-menu__item-main">
@@ -98,7 +103,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
                     }
                 </>
             )) }
-        </div>
+        </li>
     )
 }
 
@@ -124,6 +129,12 @@ pub struct MenuActionProperties {
 
     #[prop_or_default]
     pub selected: bool,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub additional_class: Classes,
 }
 
 #[function_component(MenuAction)]
@@ -138,6 +149,8 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         onclick,
         description,
         selected,
+        style,
+        additional_class,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -148,6 +161,8 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         r#type: MenuItemType::Button(onclick),
         description,
         selected,
+        style,
+        additional_class,
     };
 
     html!(<MenuItem ..props />)
@@ -177,6 +192,12 @@ pub struct MenuLinkProperties {
 
     #[prop_or_default]
     pub selected: bool,
+
+    #[prop_or_default]
+    pub style: Option<AttrValue>,
+
+    #[prop_or_default]
+    pub additional_class: Classes,
 }
 
 #[function_component(MenuLink)]
@@ -192,6 +213,8 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         target,
         description,
         selected,
+        style,
+        additional_class,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -202,6 +225,8 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         r#type: MenuItemType::Link { href, target },
         description,
         selected,
+        style,
+        additional_class,
     };
 
     html!(<MenuItem ..props />)
