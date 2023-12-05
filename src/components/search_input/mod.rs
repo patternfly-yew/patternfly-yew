@@ -5,7 +5,7 @@ use crate::components::button::*;
 use crate::components::input_group::*;
 use crate::components::text_input_group::*;
 use crate::icon::Icon;
-use web_sys::HtmlElement;
+use crate::utils::HtmlElementSupport;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
 
@@ -169,9 +169,9 @@ pub fn search_input(props: &SearchInputProperties) -> Html {
                 return;
             }
             if expandable.as_ref().is_some_and(|e| e.expanded) {
-                input_ref.cast::<HtmlElement>().map(|e| e.focus());
+                input_ref.focus();
             } else {
-                toggle_ref.cast::<HtmlElement>().map(|e| e.focus());
+                toggle_ref.focus();
             }
         },
     );
@@ -325,7 +325,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
         (props.props.onclear.clone(), props.input_ref.clone()),
         |e, (onclear, input_ref)| {
             onclear.as_ref().map(|f| f.emit(e));
-            input_ref.cast::<HtmlElement>().map(|e| e.focus());
+            input_ref.focus();
         },
     );
     let mut clearnav = html! {};
