@@ -10,8 +10,12 @@ pub struct InputGroupProperties {
     pub class: Classes,
 
     #[prop_or_default]
+    pub id: Option<AttrValue>,
+
+    #[prop_or_default]
     pub style: Option<AttrValue>,
 
+    #[prop_or_default]
     pub children: Html,
 
     #[prop_or_default]
@@ -46,7 +50,12 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
     }
 
     html! (
-        <div {class} aria-label={&props.aria_label} style={&props.style}>
+        <div
+            {class}
+            aria-label={&props.aria_label}
+            style={&props.style}
+            id={&props.id}
+        >
             { props.children.clone() }
         </div>
     )
