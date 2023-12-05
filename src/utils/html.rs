@@ -20,15 +20,14 @@ pub fn value(node_ref: &NodeRef) -> Option<String> {
 
 /// Support working with [`web_sys::Element`]
 pub trait ElementSupport {
+    /// Call [`Element::contains`], or return `false` if this is not an [`Element`].
     fn contains(&self, target: Option<web_sys::EventTarget>) -> bool;
 }
 
 impl ElementSupport for NodeRef {
     fn contains(&self, target: Option<web_sys::EventTarget>) -> bool {
-        let target = target
-            .as_ref()
-            .and_then(|target| target.dyn_ref::<web_sys::Node>());
-        if let Some(element) = self.cast::<web_sys::Element>() {
+        let target = target.as_ref().and_then(|target| target.dyn_ref::<Node>());
+        if let Some(element) = self.cast::<Element>() {
             element.contains(target)
         } else {
             false
@@ -38,6 +37,7 @@ impl ElementSupport for NodeRef {
 
 /// Support working with [`web_sys::HtmlElement`]
 pub trait HtmlElementSupport {
+    /// Call [`HtmlElement::focus`] if this is an [`HtmlElement`].
     fn focus(&self);
 }
 
@@ -49,6 +49,7 @@ impl HtmlElementSupport for NodeRef {
     }
 }
 
+/// Allow iterating over a [`NodeList`].
 pub struct IterableNodeList<'a>(pub &'a NodeList);
 
 impl<'a> IntoIterator for IterableNodeList<'a> {
@@ -60,6 +61,7 @@ impl<'a> IntoIterator for IterableNodeList<'a> {
     }
 }
 
+#[doc(hidden)]
 pub struct NodeListIter<'a> {
     list: &'a NodeList,
     index: u32,
@@ -81,6 +83,7 @@ impl<'a> Iterator for NodeListIter<'a> {
     }
 }
 
+/// Allow iterating over an [`HtmlCollection`].
 pub struct IterableHtmlCollection<'a>(pub &'a HtmlCollection);
 
 impl<'a> IntoIterator for IterableHtmlCollection<'a> {
@@ -92,6 +95,7 @@ impl<'a> IntoIterator for IterableHtmlCollection<'a> {
     }
 }
 
+#[doc(hidden)]
 pub struct HtmlCollectionIter<'a> {
     list: &'a HtmlCollection,
     index: u32,
