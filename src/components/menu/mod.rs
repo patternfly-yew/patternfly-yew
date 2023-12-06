@@ -96,9 +96,9 @@ pub(crate) fn menu_list(props: &MenuListProperties) -> Html {
 fn focusable_element(element: &HtmlElement) -> Option<HtmlElement> {
     element
         .query_selector("a, button, input")
+        .ok()??
+        .dyn_into::<HtmlElement>()
         .ok()
-        .flatten()
-        .and_then(|element| element.dyn_into::<HtmlElement>().ok())
 }
 
 fn handle_key(node: &NodeRef, e: KeyboardEvent) {
@@ -125,59 +125,60 @@ fn handle_arrows(node: &NodeRef, e: KeyboardEvent) {
         .active_element()
         .and_then(|element| element.dyn_into::<HtmlElement>().ok());
 
-    if let Some(elements) = node
+    let elements = match node
         .cast::<Element>()
         .map(|ele| ele.get_elements_by_tag_name("LI"))
     {
-        let items = IterableHtmlCollection(&elements)
-            .into_iter()
-            .filter_map(|node| node.dyn_into::<HtmlElement>().ok())
-            .filter(|element| {
-                !element.class_list().contains("pf-m-disabled")
-                    && !element.class_list().contains("pf-v5-c-divider")
-            })
-            .collect::<Vec<_>>();
+        Some(elements) => elements,
+        None => return,
+    };
 
-        let len = items.len();
+    let items = IterableHtmlCollection(&elements)
+        .into_iter()
+        .filter_map(|node| node.dyn_into::<HtmlElement>().ok())
+        .filter(|element| {
+            !element.class_list().contains("pf-m-disabled")
+                && !element.class_list().contains("pf-v5-c-divider")
+        })
+        .collect::<Vec<_>>();
 
-        let (index, _) = items
-            .iter()
-            .enumerate()
-            .find(|(_, node)| focusable_element(node) == active)
-            .unzip();
+    let len = items.len();
 
-        let offset: isize = if e.key() == "ArrowDown" { 1 } else { -1 };
+    let index = items
+        .iter()
+        .position(|node| focusable_element(node) == active);
 
-        let next_index = index
-            // apply offset
-            .map(|index| index as isize + offset)
-            // handle overflow
-            .map(|index| {
-                if index < 0 {
-                    len.saturating_sub(1)
-                } else if index as usize >= len {
-                    0
-                } else {
-                    index as _
-                }
-            })
-            // or default
-            .unwrap_or_else(|| if offset > 0 { 0 } else { len.saturating_sub(1) });
+    let offset: isize = if e.key() == "ArrowDown" { 1 } else { -1 };
 
-        // get as node
-        let next_node = items
-            .get(next_index)
-            .and_then(focusable_element)
-            .and_then(|ele| ele.dyn_into::<HtmlElement>().ok());
-
-        // apply
-        if let Some(node) = &next_node {
-            if let Some(active) = &active {
-                active.set_tab_index(-1);
+    let next_index = index
+        // apply offset
+        .map(|index| index as isize + offset)
+        // handle overflow
+        .map(|index| {
+            if index < 0 {
+                len.saturating_sub(1)
+            } else if index as usize >= len {
+                0
+            } else {
+                index as _
             }
+        })
+        // or default
+        .unwrap_or_else(|| if offset > 0 { 0 } else { len.saturating_sub(1) });
 
-            node.set_tab_index(0);
-            let _ = node.focus();
+    // get as node
+    let next_node = items
+        .get(next_index)
+        .and_then(focusable_element)
+        .and_then(|ele| ele.dyn_into::<HtmlElement>().ok());
+
+    // apply
+    if let Some(node) = &next_node {
+        if let Some(active) = &active {
+            active.set_tab_index(-1);
         }
+
+        node.set_tab_index(0);
+        let _ = node.focus();
     }
 }
