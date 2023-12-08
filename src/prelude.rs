@@ -42,6 +42,7 @@ pub use crate::components::login_page::*;
 pub use crate::components::menu::*;
 pub use crate::components::modal::*;
 pub use crate::components::nav::*;
+pub use crate::components::number_input::*;
 pub use crate::components::page::*;
 pub use crate::components::pagination::*;
 pub use crate::components::panel::*;

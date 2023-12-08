@@ -38,6 +38,7 @@ pub mod login_page;
 pub mod menu;
 pub mod modal;
 pub mod nav;
+pub mod number_input;
 pub mod page;
 pub mod pagination;
 pub mod panel;
