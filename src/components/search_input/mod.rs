@@ -289,7 +289,9 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
     let onchange = use_callback(
         (props.search_value.clone(), props.props.onchange.clone()),
         |value: String, (search_value, onchange)| {
-            onchange.as_ref().map(|f| f.emit(value.clone()));
+            if let Some(f) = onchange.as_ref() {
+                f.emit(value.clone())
+            }
             search_value.set(value)
         },
     );
@@ -312,7 +314,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                     <Button
                         variant={ButtonVariant::Plain}
                         aria_label={props.props.previous_navigation_button_aria_label.clone()}
-                        disabled={props.props.disabled || props.props.previous_navigation_button_disabled.clone()}
+                        disabled={props.props.disabled || props.props.previous_navigation_button_disabled}
                         onclick={onprevclick}
                     >
                         {Icon::AngleUp}
@@ -332,24 +334,24 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
     let onclearinput = use_callback(
         (props.props.onclear.clone(), props.input_ref.clone()),
         |e, (onclear, input_ref)| {
-            onclear.as_ref().map(|f| f.emit(e));
+            if let Some(f) = onclear.as_ref() {
+                f.emit(e)
+            }
             input_ref.focus();
         },
     );
     let mut clearnav = html! {};
-    if props.props.onclear.is_some() {
-        if props.props.expandable.is_none() {
-            clearnav = html! {
-                <Button
-                    variant={ButtonVariant::Plain}
-                    disabled={props.props.disabled}
-                    aria_label={props.props.reset_button_label.clone()}
-                    onclick={onclearinput}
-                >
-                    {Icon::Times}
-                </Button>
-            };
-        }
+    if props.props.onclear.is_some() && props.props.expandable.is_none() {
+        clearnav = html! {
+            <Button
+                variant={ButtonVariant::Plain}
+                disabled={props.props.disabled}
+                aria_label={props.props.reset_button_label.clone()}
+                onclick={onclearinput}
+            >
+                {Icon::Times}
+            </Button>
+        };
     };
     html! {
         <TextInputGroup
@@ -399,7 +401,9 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
         ),
         |e: OnSearchEvent, (onsearch, value, is_search_menu_open)| {
             e.prevent_default();
-            onsearch.as_ref().map(|f| f.emit((e, value.clone())));
+            if let Some(f) = onsearch.as_ref() {
+                f.emit((e, value.clone()))
+            }
             is_search_menu_open.set(false);
         },
     );
