@@ -1,6 +1,6 @@
 //! Text Input Group
 
-use crate::prelude::{focus, use_on_text_change};
+use crate::{prelude::use_on_text_change, utils::HtmlElementSupport};
 use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -127,7 +127,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
         let autofocus = props.autofocus;
         use_effect_with(node_ref.clone(), move |input_ref| {
             if autofocus {
-                focus(input_ref)
+                input_ref.focus();
             }
         });
     }
