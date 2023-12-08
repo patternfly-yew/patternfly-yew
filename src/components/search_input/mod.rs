@@ -95,6 +95,8 @@ pub struct SearchInputProperties {
     /// Value of the search input.
     #[prop_or_default]
     pub value: String,
+    #[prop_or_default]
+    pub autofocus: bool,
 
     // Navigable results
     /// The number of search results returned. View `[ResultsCount]`.
@@ -363,6 +365,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                 aria_label={props.props.aria_label.clone()}
                 {onchange}
                 inner_ref={props.input_ref.clone()}
+                autofocus={props.props.autofocus}
             />
             if render_utilities || props.props.utilities_displayed {
                 <TextInputGroupUtilities>
