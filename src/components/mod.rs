@@ -43,7 +43,6 @@ pub mod pagination;
 pub mod panel;
 pub mod popover;
 pub mod progress;
-#[cfg(feature = "search_input")]
 pub mod search_input;
 pub mod select;
 pub mod skeleton;
