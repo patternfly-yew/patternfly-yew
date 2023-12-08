@@ -28,6 +28,7 @@ impl From<MenuChildVariant> for Html {
             MenuChild::Action(props) => VComp::new::<MenuAction>(props, None).into(),
             MenuChild::Link(props) => VComp::new::<MenuLink>(props, None).into(),
             MenuChild::Group(props) => VComp::new::<MenuGroup>(props, None).into(),
+            MenuChild::Loading(props) => VComp::new::<MenuLoading>(props, None).into(),
             MenuChild::Divider(props) => VComp::new::<ListDivider>(props, None).into(),
             MenuChild::Raw(props) => VComp::new::<Raw>(props, None).into(),
         }

@@ -3,6 +3,7 @@ mod child;
 mod context;
 mod group;
 mod item;
+mod loading;
 mod toggle;
 mod variant;
 
@@ -10,6 +11,7 @@ pub use child::*;
 pub use context::*;
 pub use group::*;
 pub use item::*;
+pub use loading::*;
 pub use toggle::*;
 pub use variant::*;
 
