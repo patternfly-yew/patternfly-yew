@@ -15,9 +15,9 @@ pub use loading::*;
 pub use toggle::*;
 pub use variant::*;
 
-use crate::prelude::{ElementSupport, IterableHtmlCollection};
 use wasm_bindgen::JsCast;
 use web_sys::{Element, HtmlElement};
+use web_tools::prelude::*;
 use yew::{html::ChildrenRenderer, prelude::*};
 use yew_hooks::use_event_with_window;
 
