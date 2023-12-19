@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.5.5"
+version = "0.5.6"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -31,7 +31,7 @@ wasm-bindgen-futures = "0.4.39"
 web-tools = { version = "0.2", features = ["yew"] }
 yew = "0.21"
 yew-hooks = "0.3"
-yew-nested-router = { version = ">=0.4,<0.6", optional = true }
+yew-nested-router = { version = ">=0.4,<0.7", optional = true }
 
 web-sys = { version = "0.3.66", features = [
     "HtmlCollection",
