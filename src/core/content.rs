@@ -80,3 +80,10 @@ impl IntoPropValue<OptionalHtml> for Option<Html> {
         self.into()
     }
 }
+
+impl<COMP: BaseComponent> IntoPropValue<OptionalHtml> for yew::virtual_dom::VChild<COMP> {
+    fn into_prop_value(self) -> OptionalHtml {
+        let html: Html = self.into();
+        html.into()
+    }
+}

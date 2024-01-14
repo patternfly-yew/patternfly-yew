@@ -5,6 +5,14 @@ use yew::prelude::*;
 /// Properties for [`Radio`].
 #[derive(PartialEq, Properties)]
 pub struct RadioProperties {
+    /// Additional classes added to the radio button.
+    #[prop_or_default]
+    pub class: Classes,
+
+    /// Additional classes added to the underlying input tag.
+    #[prop_or_default]
+    pub input_class: Classes,
+
     #[prop_or_default]
     pub id: Option<String>,
 
@@ -39,6 +47,15 @@ pub struct RadioProperties {
     /// Event fired when the radio button is checked (but not when unchecked).
     #[prop_or_default]
     pub onchange: Callback<()>,
+
+    /// Event fired when any part of the input is clicked. If you only want something to happen
+    /// when the radio button itself is clicked then use `onchange`.
+    #[prop_or_default]
+    pub input_onclick: Option<Callback<MouseEvent>>,
+
+    /// Creates a non-standalone input with a label, even if there are no children to this radio.
+    #[prop_or_default]
+    pub force_label: bool,
 }
 
 /// Radio button component
@@ -52,13 +69,13 @@ pub struct RadioProperties {
 /// Defined by [`RadioProperties`].
 #[function_component(Radio)]
 pub fn radio(props: &RadioProperties) -> Html {
-    let class = classes!("pf-v5-c-radio");
+    let class = classes!("pf-v5-c-radio", props.class.clone());
 
     let id = use_prop_id(props.id.clone());
 
-    let mut input_class = classes!("pf-v5-c-radio__input");
+    let mut input_class = classes!(props.input_class.clone(), "pf-v5-c-radio__input");
 
-    if props.children.is_empty() {
+    if props.children.is_empty() && !props.force_label {
         input_class.extend(classes!("pf-m-standalone"));
     }
 
@@ -76,6 +93,7 @@ pub fn radio(props: &RadioProperties) -> Html {
             disabled={props.disabled}
             value={&props.value}
             {onchange}
+            onclick={props.input_onclick.clone()}
         />
     );
 
@@ -86,7 +104,7 @@ pub fn radio(props: &RadioProperties) -> Html {
 
     let mut second = html!(
         <>
-            if !props.children.is_empty() {
+            if !props.children.is_empty() || props.force_label {
                 <label
                     class={label_class}
                     for={(*id).clone()}
