@@ -7,9 +7,6 @@ use yew::prelude::*;
 
 const OUIA: Ouia = Ouia::new("Alert");
 
-#[deprecated(since = "0.4.0", note = "This type has been renamed to 'AlertType'")]
-pub type Type = AlertType;
-
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd)]
 pub enum AlertType {
     #[default]
