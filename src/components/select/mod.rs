@@ -1,11 +1,5 @@
 //! Select control
 
-#[cfg(feature = "legacy")]
-mod legacy;
-
-#[cfg(feature = "legacy")]
-pub use legacy::*;
-
 use crate::prelude::*;
 use yew::prelude::*;
 
