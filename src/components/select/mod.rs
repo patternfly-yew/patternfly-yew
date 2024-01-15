@@ -46,8 +46,6 @@ where
 ///
 /// See: <https://www.patternfly.org/components/menus/select>
 ///
-/// **Note:** This is a replacement for the now deprecated [`Select`] component. It is rebuild on
-/// the PatternFly 5 menu system, but lacks some features compared to the previous implementation.
 #[function_component(SimpleSelect)]
 pub fn simple_select<T>(props: &SimpleSelectProperties<T>) -> Html
 where
