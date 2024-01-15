@@ -2,7 +2,7 @@
 
 Generate Icons from the set of icons listed on the PatterFly website.
 
-Source: https://github.com/patternfly/patternfly-org/blob/main/packages/v4/patternfly-docs/content/design-guidelines/styles/icons/icons.js
+Source: https://raw.githubusercontent.com/patternfly/patternfly-org/v5/packages/documentation-site/patternfly-docs/content/design-guidelines/styles/icons/icons.js
 
 ## Update
 
