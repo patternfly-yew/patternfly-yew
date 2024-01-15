@@ -23,7 +23,6 @@ pub mod divider;
 pub mod dl;
 pub mod drawer;
 pub mod dropdown;
-#[cfg(feature = "dual_list_selector")]
 pub mod dual_list_selector;
 pub mod empty;
 pub mod expandable_section;
