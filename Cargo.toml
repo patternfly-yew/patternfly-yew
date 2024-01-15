@@ -31,7 +31,7 @@ wasm-bindgen-futures = "0.4.39"
 web-tools = { version = "0.2", features = ["yew"] }
 yew = "0.21"
 yew-hooks = "0.3"
-yew-nested-router = { version = ">=0.4,<0.7", optional = true }
+yew-nested-router = { version = "0.6", optional = true }
 
 web-sys = { version = "0.3.66", features = [
     "HtmlCollection",
@@ -60,7 +60,6 @@ legacy = []
 experimental = ["tree", "dual_list_selector"]
 tree = []
 dual_list_selector = []
-search_input = [] # TODO: no longer experimental, remove feature in next release
 
 # Enable FontAwesome regular (FAR) and/or brand (FAB) icons, remember to import the font in your application
 icons-far = []
