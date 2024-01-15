@@ -5,9 +5,6 @@ use yew::prelude::*;
 
 const OUIA: Ouia = Ouia::new("Checkbox");
 
-#[deprecated(since = "0.5.0", note = "The component got renamed to `Checkbox`")]
-pub type Check = Checkbox;
-
 /// The state of a checkbox.
 ///
 /// In addition to the obvious two states (checked and unchecked), a checkbox can also have an
