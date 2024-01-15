@@ -2,10 +2,13 @@
 use crate::icon::*;
 use crate::prelude::TextInput;
 use crate::prelude::*;
+use crate::utils::Ouia;
 use gloo_timers::callback::Timeout;
 use wasm_bindgen::prelude::*;
 use web_sys::{Element, HtmlInputElement};
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Clipboard");
 
 /// Properties for [``Clipboard]
 #[derive(Clone, PartialEq, Properties)]
@@ -22,6 +25,15 @@ pub struct ClipboardProperties {
     pub name: String,
     #[prop_or_default]
     pub id: String,
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[derive(Clone, Default, PartialEq, Eq, Debug)]
@@ -138,7 +150,12 @@ impl Component for Clipboard {
         let value = self.value(ctx);
 
         html! {
-            <div class={classes}>
+            <div
+                class={classes}
+                data-ouia-component-id={ctx.props().ouia_id.clone()}
+                data-ouia-component-type={ctx.props().ouia_type.clone()}
+                data-ouia-safe={ctx.props().ouia_safe.to_string()}
+            >
                 { match ctx.props().variant {
                     ClipboardVariant::Inline => {
                         html!{
@@ -310,7 +327,7 @@ export function copy_to_clipboard(value) {
 }
 "#)]
 #[rustfmt::skip] // required to keep the "async" keyword
-extern "C" { 
+extern "C" {
     #[wasm_bindgen(catch)]
     async fn copy_to_clipboard(value: String) -> Result<(), JsValue>;
 }

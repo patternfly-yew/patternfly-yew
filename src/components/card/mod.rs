@@ -1,5 +1,8 @@
 use crate::prelude::{Divider, DividerType};
+use crate::utils::Ouia;
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Card");
 
 mod actions;
 mod body;
@@ -77,6 +80,16 @@ pub struct CardProperties {
     /// Add additional styles to the Card.
     #[prop_or_default]
     pub style: Option<AttrValue>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -184,7 +197,14 @@ pub fn card(props: &CardProperties) -> Html {
 
     html! (
         <ContextProvider<CardContext> {context}>
-            <@{props.component.clone()} id={props.id.clone()} {class} style={props.style.clone()}>
+            <@{props.component.clone()}
+                id={props.id.clone()}
+                {class}
+                style={props.style.clone()}
+                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-type={props.ouia_type.clone()}
+                data-ouia-safe={props.ouia_safe.to_string()}
+            >
                 {props.children.clone()}
             </@>
         </ContextProvider<CardContext>>

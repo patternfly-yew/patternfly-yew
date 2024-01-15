@@ -10,7 +10,10 @@ pub use group::*;
 pub use item::*;
 
 use crate::prelude::AsClasses;
+use crate::utils::Ouia;
 use yew::{html::ChildrenRenderer, prelude::*};
+
+const OUIA: Ouia = Ouia::new("Toolbar");
 
 /// Modifier for toolbar elements.
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
@@ -43,6 +46,18 @@ pub struct ToolbarProperties {
 
     #[prop_or_default]
     pub full_height: bool,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Toolbar component
@@ -70,6 +85,9 @@ pub fn toolbar(props: &ToolbarProperties) -> Html {
         <div
             id={&props.id}
             {class}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
         >
             { for props.children.iter() }
         </div>

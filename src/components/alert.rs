@@ -1,8 +1,11 @@
 //! Alert popup
 
 use crate::prelude::{Action, Button, ButtonVariant, Icon};
+use crate::utils::Ouia;
 
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Alert");
 
 #[deprecated(since = "0.4.0", note = "This type has been renamed to 'AlertType'")]
 pub type Type = AlertType;
@@ -69,6 +72,16 @@ pub struct AlertProperties {
     pub actions: Vec<Action>,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Alert component
@@ -120,7 +133,14 @@ pub fn alert(props: &AlertProperties) -> Html {
     };
 
     html! (
-        <div id={props.id.clone()} class={classes} aria_label={t.aria_label()}>
+        <div
+            id={props.id.clone()}
+            class={classes}
+            aria_label={t.aria_label()}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
             <p class={title_classes}>
                 <span class="pf-v5-screen-reader">{ t.aria_label() }{":"}</span>

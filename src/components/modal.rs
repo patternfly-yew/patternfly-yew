@@ -1,7 +1,10 @@
 //! Modal
 use crate::prelude::use_backdrop;
+use crate::utils::Ouia;
 use yew::prelude::*;
 use yew_hooks::{use_click_away, use_event_with_window};
+
+const OUIA: Ouia = Ouia::new("ModalContent");
 
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum ModalVariant {
@@ -50,6 +53,18 @@ pub struct ModalProperties {
     /// Disable closing the modal when the user clicks outside the modal
     #[prop_or_default]
     pub disable_close_click_outside: bool,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Modal component
@@ -120,6 +135,9 @@ pub fn modal(props: &ModalProperties) -> Html {
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
             ref={node_ref}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
         >
             if props.show_close {
                 <div class="pf-v5-c-modal-box__close">
