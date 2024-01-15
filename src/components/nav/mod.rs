@@ -7,8 +7,12 @@ pub use router::*;
 use std::collections::HashSet;
 
 use crate::prelude::{Icon, Id};
+use crate::utils::Ouia;
 use std::fmt::Debug;
 use yew::prelude::*;
+
+const OUIA_NAV: Ouia = Ouia::new("Nav");
+const OUIA_NAV_ITEM: Ouia = Ouia::new("NavItem");
 
 // nav
 
@@ -17,13 +21,31 @@ use yew::prelude::*;
 pub struct NavProperties {
     #[prop_or_default]
     pub children: Html,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA_NAV.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA_NAV.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// A navigation component.
 #[function_component(Nav)]
 pub fn nav(props: &NavProperties) -> Html {
     html! {
-        <nav class="pf-v5-c-nav" aria-label="Global">
+        <nav
+            class="pf-v5-c-nav"
+            aria-label="Global"
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             { props.children.clone() }
         </nav>
     }
@@ -79,13 +101,30 @@ pub struct NavItemProperties {
     pub children: Html,
     #[prop_or_default]
     pub onclick: Callback<()>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA_NAV_ITEM.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA_NAV_ITEM.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// A navigation item, which triggers a callback when clicked.
 #[function_component(NavItem)]
 pub fn nav_item(props: &NavItemProperties) -> Html {
     html! (
-        <li class="pf-v5-c-nav__item">
+        <li
+            class="pf-v5-c-nav__item"
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             <a
                 href="#"
                 class="pf-v5-c-nav__link"

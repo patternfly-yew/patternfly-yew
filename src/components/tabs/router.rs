@@ -1,7 +1,10 @@
 use crate::prelude::{AsClasses, Inset};
+use crate::utils::Ouia;
 use std::fmt::Debug;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};
+
+const OUIA: Ouia = Ouia::new("Tabs");
 
 use super::TabTitle;
 
@@ -25,6 +28,18 @@ where
 
     #[prop_or_default]
     pub children: ChildrenWithProps<TabRouterItem<T>>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[function_component(TabsRouter)]
@@ -51,7 +66,12 @@ where
     }
 
     html! (
-        <div class={classes}>
+        <div
+            class={classes}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             <ul class="pf-v5-c-tabs__list">
                 { for props.children.iter() }
             </ul>

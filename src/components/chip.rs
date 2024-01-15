@@ -1,7 +1,10 @@
 //! Chip
 use crate::prelude::{Button, ButtonVariant, Icon};
+use crate::utils::Ouia;
 use std::fmt::Debug;
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Chip");
 
 /// Properties for [`Chip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -18,6 +21,15 @@ pub struct ChipProperties {
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
     pub icon: Option<Icon>,
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Chip component
@@ -52,11 +64,17 @@ pub fn chip(props: &ChipProperties) -> Html {
             </span>
         </>
     };
+    let component = if props.overflow { "button" } else { "div" };
 
-    if props.overflow {
-        html! {<button class={classes}>{body}</button>}
-    } else {
-        html! {<div class={classes}>{body}</div>}
+    html! {
+        <@{component}
+            class={classes}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
+            {body}
+        </@>
     }
 }
 

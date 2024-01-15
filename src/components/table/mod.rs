@@ -13,11 +13,14 @@ pub use props::*;
 pub use render::*;
 
 use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuChildVariant, MenuToggleVariant};
+use crate::utils::Ouia;
 use std::rc::Rc;
 use yew::{
     prelude::*,
     virtual_dom::{VChild, VNode},
 };
+
+const OUIA: Ouia = Ouia::new("Table");
 
 /// Properties for [`Table`]
 #[derive(PartialEq, Clone, Properties)]
@@ -50,6 +53,18 @@ where
 
     #[prop_or_default]
     pub onexpand: OnToggleCallback<C, M>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 impl<C, M> TableProperties<C, M>
@@ -214,6 +229,9 @@ where
             id={&props.id}
             {class}
             role="grid"
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
         >
             if let Some(caption) = &props.caption {
                 <caption class="pf-v5-c-table__caption">{caption}</caption>
@@ -438,13 +456,13 @@ where
 
 
             // main cell content
-            
+
             let cell = entry.value.render_cell(CellContext {
                 column: &column.props.index,
             });
-        
+
             // cell attributes
-            
+
             let mut class = classes!("pf-v5-c-table__td");
             if cell.center {
                 class.push(classes!("pf-m-center"))
@@ -459,9 +477,9 @@ where
                     _ => {},
                 }
             }
-    
+
             // data label
-            
+
             let label = column.props.label.clone();
 
             // wrap with button when it's expandable

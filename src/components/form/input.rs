@@ -2,10 +2,13 @@ use crate::prelude::{
     focus, use_on_text_change, Icon, InputState, ValidatingComponent,
     ValidatingComponentProperties, ValidationContext,
 };
+use crate::utils::Ouia;
 
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
+
+const OUIA: Ouia = Ouia::new("TextInput");
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum TextInputType {
@@ -103,6 +106,18 @@ pub struct TextInputProperties {
 
     #[prop_or_default]
     pub r#ref: NodeRef,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 impl ValidatingComponent for TextInput {
@@ -244,6 +259,9 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 onblur={&props.onblur}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
+                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-type={props.ouia_type.clone()}
+                data-ouia-safe={props.ouia_safe.to_string()}
             />
 
                 { None::<VNode> }

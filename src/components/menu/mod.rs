@@ -15,11 +15,14 @@ pub use loading::*;
 pub use toggle::*;
 pub use variant::*;
 
+use crate::utils::Ouia;
 use wasm_bindgen::JsCast;
 use web_sys::{Element, HtmlElement};
 use web_tools::prelude::*;
 use yew::{html::ChildrenRenderer, prelude::*};
 use yew_hooks::use_event_with_window;
+
+const OUIA: Ouia = Ouia::new("Menu");
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MenuProperties {
@@ -40,6 +43,18 @@ pub struct MenuProperties {
 
     #[prop_or_default]
     pub children: ChildrenRenderer<MenuChildVariant>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[function_component(Menu)]
@@ -60,6 +75,9 @@ pub fn menu(props: &MenuProperties) -> Html {
             id={props.id.clone()}
             style={&props.style}
             {class}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
         >
             <div class="pf-v5-c-menu__content">
                 <MenuList>{ props.children.clone() }</MenuList>

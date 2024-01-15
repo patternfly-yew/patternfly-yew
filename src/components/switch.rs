@@ -1,7 +1,10 @@
 //! Switch control
 use crate::prelude::{random_id, Icon};
+use crate::utils::Ouia;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Switch");
 
 /// Properties for [`Switch`]
 #[derive(Clone, PartialEq, Properties)]
@@ -24,6 +27,18 @@ pub struct SwitchProperties {
 
     #[prop_or_default]
     pub aria_label: String,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Switch component
@@ -77,7 +92,13 @@ impl Component for Switch {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! (
-            <label class="pf-v5-c-switch" for={self.id.clone()}>
+            <label
+                class="pf-v5-c-switch"
+                for={self.id.clone()}
+                data-ouia-component-id={ctx.props().ouia_id.clone()}
+                data-ouia-component-type={ctx.props().ouia_type.clone()}
+                data-ouia-safe={ctx.props().ouia_safe.to_string()}
+            >
                 <input
                     ref={self.input_ref.clone()}
                     class="pf-v5-c-switch__input"

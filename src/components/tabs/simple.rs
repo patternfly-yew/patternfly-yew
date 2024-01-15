@@ -1,8 +1,12 @@
 use super::TabContent;
 use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
+use crate::utils::Ouia;
 use std::borrow::Cow;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
+
+const OUIA: Ouia = Ouia::new("Tabs");
+const OUIA_BUTTON: Ouia = Ouia::new("TabButton");
 
 #[derive(PartialEq, Eq, Clone)]
 pub struct TabsContext<T>
@@ -43,6 +47,18 @@ where
 
     /// Set the current active tab, overrides the internal state.
     pub selected: T,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 /// Tabs component
@@ -116,12 +132,18 @@ where
             <div
                 {class}
                 id={props.id.clone()}
+                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-type={props.ouia_type.clone()}
+                data-ouia-safe={props.ouia_safe.to_string()}
             >
                 <button
                     class="pf-v5-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll left"
+                    data-ouia-component-type={OUIA_BUTTON.component_type()}
+                    data-ouia-safe="true"
+                    data-ouia-component-id={OUIA_BUTTON.generated_id()}
                 >
                     { Icon::AngleLeft }
                 </button>
