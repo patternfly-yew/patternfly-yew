@@ -85,12 +85,12 @@ struct CommonProps {
     id: Option<String>,
     name: Option<AttrValue>,
     disabled: bool,
-    input_class: &'static str,
+    base_class: &'static str,
 }
 
 fn get_common_props(base: &CardSelectableActionsObjectBase, context: &CardContext) -> CommonProps {
     CommonProps {
-        input_class: "pf-m-standalone",
+        base_class: "pf-m-standalone",
         id: base.id.as_ref().map(|s| s.to_string()),
         name: base.name.as_ref().cloned(),
         disabled: context.disabled,
@@ -111,7 +111,7 @@ fn single_select_action_radio(props: &SingleSelectActionRadioProperties) -> Html
     let common = get_common_props(&props.base, &context);
     html! {
         <Radio
-            input_class={common.input_class}
+            class={common.base_class}
             id={common.id}
             name={common.name}
             disabled={common.disabled}
@@ -134,7 +134,7 @@ fn multi_select_action_checkbox(props: &MultiSelectActionCheckboxProperties) -> 
     let common = get_common_props(&props.base, &context);
     html! {
         <Checkbox
-            input_class={common.input_class}
+            class={common.base_class}
             id={common.id}
             name={common.name}
             disabled={common.disabled}
@@ -160,10 +160,11 @@ fn clickable_input_action_radio(props: &ClickableInputProperties) -> Html {
     let common = get_common_props(&props.base, &context);
     html! {
         <Radio
-            input_class={common.input_class}
+            class={common.base_class}
             id={common.id}
             name={common.name}
             disabled={common.disabled}
+            input_class="pf-v5-screen-reader"
             input_onclick={props.onclick.clone()}
             force_label=true
         />
