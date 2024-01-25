@@ -4,7 +4,7 @@ use std::fmt::Debug;
 use yew::prelude::*;
 use yew_nested_router::{components::Link, prelude::*};
 
-const OUIA: Ouia = Ouia::new("Tabs");
+const OUIA_TABS: Ouia = Ouia::new("Tabs");
 
 use super::TabTitle;
 
@@ -30,11 +30,11 @@ where
     pub children: ChildrenWithProps<TabRouterItem<T>>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
+    #[prop_or_else(|| OUIA_TABS.generated_id())]
     pub ouia_id: String,
 
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
+    #[prop_or_else(|| OUIA_TABS.component_type())]
     pub ouia_type: String,
 
     /// OUIA Component Safe
@@ -80,6 +80,7 @@ where
 }
 
 // tab router item
+const OUIA_ITEM: Ouia = Ouia::new("TabsItem");
 
 /// Properties for [`TabRouterItem`]
 #[derive(Properties, Clone, PartialEq)]
@@ -94,6 +95,18 @@ where
     /// If tab is disabled
     #[prop_or(false)]
     pub disabled: bool,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA_ITEM.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA_ITEM.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[function_component(TabRouterItem)]
@@ -116,7 +129,12 @@ where
     }
 
     html! (
-        <li class={classes}>
+        <li
+            class={classes}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             <Link<T> element="button" class={link_classes} target={props.to.clone()}>
                 <span class="pf-v5-c-tabs__item-text"> { &props.title } </span>
             </Link<T>>
