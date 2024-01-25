@@ -6,7 +6,8 @@ use yew::html::IntoPropValue;
 use yew::prelude::*;
 
 const OUIA: Ouia = Ouia::new("Tabs");
-const OUIA_BUTTON: Ouia = Ouia::new("TabButton");
+const OUIA_BUTTON: Ouia = Ouia::new("TabsButton");
+const OUIA_ITEM: Ouia = Ouia::new("TabsItem");
 
 #[derive(PartialEq, Eq, Clone)]
 pub struct TabsContext<T>
@@ -213,6 +214,18 @@ where
 
     #[prop_or_default]
     pub id: Option<AttrValue>,
+
+    /// OUIA Component id
+    #[prop_or_else(|| OUIA_ITEM.generated_id())]
+    pub ouia_id: String,
+
+    /// OUIA Component Type
+    #[prop_or_else(|| OUIA_ITEM.component_type())]
+    pub ouia_type: String,
+
+    /// OUIA Component Safe
+    #[prop_or(true)]
+    pub ouia_safe: bool,
 }
 
 #[function_component(TabHeaderItem)]
@@ -239,7 +252,13 @@ where
     );
 
     html! (
-        <li {class} id={props.id.clone()}>
+        <li
+            {class}
+            id={props.id.clone()}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type.clone()}
+            data-ouia-safe={props.ouia_safe.to_string()}
+        >
             <button class="pf-v5-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {
                     <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
