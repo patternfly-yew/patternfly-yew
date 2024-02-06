@@ -49,6 +49,7 @@ pub use crate::components::popover::*;
 pub use crate::components::progress::*;
 pub use crate::components::search_input::*;
 pub use crate::components::select::*;
+pub use crate::components::simple_list::*;
 pub use crate::components::skeleton::*;
 pub use crate::components::slider::*;
 pub use crate::components::spinner::*;
