@@ -45,6 +45,7 @@ pub mod popover;
 pub mod progress;
 pub mod search_input;
 pub mod select;
+pub mod simple_list;
 pub mod skeleton;
 pub mod slider;
 pub mod spinner;
