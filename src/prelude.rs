@@ -58,6 +58,7 @@ pub use crate::components::tabs::*;
 pub use crate::components::text_input_group::*;
 pub use crate::components::title::*;
 pub use crate::components::toast::*;
+pub use crate::components::toggle_group::*;
 pub use crate::components::toolbar::*;
 pub use crate::components::tooltip::*;
 #[cfg(feature = "tree")]
