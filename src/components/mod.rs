@@ -54,6 +54,7 @@ pub mod tabs;
 pub mod text_input_group;
 pub mod title;
 pub mod toast;
+pub mod toggle_group;
 pub mod toolbar;
 pub mod tooltip;
 pub mod truncate;
