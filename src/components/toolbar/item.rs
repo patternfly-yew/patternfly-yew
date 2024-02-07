@@ -55,7 +55,7 @@ pub struct ToolbarItemProperties {
 
     /// Additional classes
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
 }
 
 #[function_component(ToolbarItem)]
@@ -64,7 +64,7 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
 
     class.extend_from(&props.r#type);
     class.extend_from(&props.modifiers);
-    class.extend(props.additional_class.clone());
+    class.extend(props.class.clone());
 
     let style = props
         .width

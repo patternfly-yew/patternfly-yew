@@ -143,7 +143,7 @@ pub struct ProgressProperties {
 
     /// Additional classes for the main element.
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
 
     /// Additional CSS style
     #[prop_or_default]
@@ -181,7 +181,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
     if props.description.is_none() {
         class.extend(classes!("pf-m-single"));
     }
-    class.extend(&props.additional_class);
+    class.extend(&props.class);
 
     let mut measure = match props.location {
         ProgressMeasureLocation::None => None,

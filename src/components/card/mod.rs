@@ -41,7 +41,7 @@ pub struct CardProperties {
     pub id: AttrValue,
     /// Additional classes added to the card.
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
     /// Sets the base component to render. Defaults to "div".
     #[prop_or(String::from("div"))]
     pub component: String,
@@ -186,7 +186,7 @@ pub fn card(props: &CardProperties) -> Html {
             class.push("pf-m-selected");
         }
     }
-    class.extend(props.additional_class.clone());
+    class.extend(props.class.clone());
 
     let context = CardContext {
         card_id: props.id.clone(),

@@ -36,7 +36,7 @@ pub struct ToolbarGroupProperties {
 
     /// Additional classes
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
 }
 
 /// A group item for a toolbar
@@ -46,7 +46,7 @@ pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
 
     class.extend_from(&props.modifiers);
     class.extend_from(&props.variant);
-    class.extend(props.additional_class.clone());
+    class.extend(props.class.clone());
 
     html! {
         <div
