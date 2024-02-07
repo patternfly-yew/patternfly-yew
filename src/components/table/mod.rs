@@ -12,15 +12,16 @@ pub use model::*;
 pub use props::*;
 pub use render::*;
 
+use crate::ouia;
 use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuChildVariant, MenuToggleVariant};
-use crate::utils::Ouia;
+use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use std::rc::Rc;
 use yew::{
     prelude::*,
     virtual_dom::{VChild, VNode},
 };
 
-const OUIA: Ouia = Ouia::new("Table");
+const OUIA: Ouia = ouia!("Table");
 
 /// Properties for [`Table`]
 #[derive(PartialEq, Clone, Properties)]
@@ -57,14 +58,12 @@ where
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 impl<C, M> TableProperties<C, M>
@@ -230,8 +229,8 @@ where
             {class}
             role="grid"
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             if let Some(caption) = &props.caption {
                 <caption class="pf-v5-c-table__caption">{caption}</caption>

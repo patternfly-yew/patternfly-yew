@@ -1,9 +1,12 @@
+use crate::ouia;
+use crate::prelude::OuiaComponentType;
+use crate::utils::OuiaSafe;
 use crate::{core::OptionalHtml, hooks::id::use_prop_id, utils::Ouia};
 use web_sys::HtmlInputElement;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Checkbox");
+const OUIA: Ouia = ouia!("Checkbox");
 
 /// The state of a checkbox.
 ///
@@ -117,14 +120,12 @@ pub struct CheckboxProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Checkbox component
@@ -199,8 +200,8 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
                 ref={node_ref.clone()}
                 checked={props.checked != CheckboxState::Unchecked}
                 data-ouia-component-id={props.ouia_id.clone()}
-                data-ouia-component-type={props.ouia_type.clone()}
-                data-ouia-safe={props.ouia_safe.to_string()}
+                data-ouia-component-type={props.ouia_type}
+                data-ouia-safe={props.ouia_safe}
             />
             {label}
             if let Some(description) = &props.description.0 {

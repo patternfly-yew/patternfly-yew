@@ -1,10 +1,11 @@
 //! Switch control
-use crate::prelude::{random_id, Icon};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{random_id, Icon, OuiaComponentType};
+use crate::utils::{Ouia, OuiaSafe};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Switch");
+const OUIA: Ouia = ouia!("Switch");
 
 /// Properties for [`Switch`]
 #[derive(Clone, PartialEq, Properties)]
@@ -31,14 +32,12 @@ pub struct SwitchProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Switch component
@@ -96,8 +95,8 @@ impl Component for Switch {
                 class="pf-v5-c-switch"
                 for={self.id.clone()}
                 data-ouia-component-id={ctx.props().ouia_id.clone()}
-                data-ouia-component-type={ctx.props().ouia_type.clone()}
-                data-ouia-safe={ctx.props().ouia_safe.to_string()}
+                data-ouia-component-type={ctx.props().ouia_type}
+                data-ouia-safe={ctx.props().ouia_safe}
             >
                 <input
                     ref={self.input_ref.clone()}

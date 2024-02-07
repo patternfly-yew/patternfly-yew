@@ -6,13 +6,14 @@ mod router;
 pub use router::*;
 use std::collections::HashSet;
 
-use crate::prelude::{Icon, Id};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{Icon, Id, OuiaComponentType};
+use crate::utils::{Ouia, OuiaSafe};
 use std::fmt::Debug;
 use yew::prelude::*;
 
-const OUIA_NAV: Ouia = Ouia::new("Nav");
-const OUIA_NAV_ITEM: Ouia = Ouia::new("NavItem");
+const OUIA_NAV: Ouia = ouia!("Nav");
+const OUIA_NAV_ITEM: Ouia = ouia!("NavItem");
 
 // nav
 
@@ -25,14 +26,12 @@ pub struct NavProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA_NAV.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA_NAV.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA_NAV.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// A navigation component.
@@ -43,8 +42,8 @@ pub fn nav(props: &NavProperties) -> Html {
             class="pf-v5-c-nav"
             aria-label="Global"
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             { props.children.clone() }
         </nav>
@@ -105,14 +104,12 @@ pub struct NavItemProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA_NAV_ITEM.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA_NAV_ITEM.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA_NAV_ITEM.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// A navigation item, which triggers a callback when clicked.
@@ -122,8 +119,8 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
         <li
             class="pf-v5-c-nav__item"
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             <a
                 href="#"

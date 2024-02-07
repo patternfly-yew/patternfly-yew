@@ -1,14 +1,14 @@
+use crate::ouia;
 use crate::prelude::{
     focus, use_on_text_change, Icon, InputState, ValidatingComponent,
     ValidatingComponentProperties, ValidationContext,
 };
-use crate::utils::Ouia;
-
+use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
 
-const OUIA: Ouia = Ouia::new("TextInput");
+const OUIA: Ouia = ouia!("TextInput");
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum TextInputType {
@@ -110,14 +110,12 @@ pub struct TextInputProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 impl ValidatingComponent for TextInput {
@@ -260,8 +258,8 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
                 data-ouia-component-id={props.ouia_id.clone()}
-                data-ouia-component-type={props.ouia_type.clone()}
-                data-ouia-safe={props.ouia_safe.to_string()}
+                data-ouia-component-type={props.ouia_type}
+                data-ouia-safe={props.ouia_safe}
             />
 
                 { None::<VNode> }

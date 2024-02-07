@@ -287,7 +287,9 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
                 new_state.toggle_available_option(args.index);
             }
             state.set(new_state);
-            onoptionselect.map(|f| f.emit(args.clone()));
+            if let Some(f) = onoptionselect {
+                f.emit(args.clone())
+            }
         })
     };
     let available_options_status = props.available_options_status.clone().unwrap_or_else(|| {

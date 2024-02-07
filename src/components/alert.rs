@@ -1,11 +1,11 @@
 //! Alert popup
 
+use crate::ouia;
 use crate::prelude::{Action, Button, ButtonVariant, Icon};
-use crate::utils::Ouia;
-
+use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Alert");
+const OUIA: Ouia = ouia!("Alert");
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd)]
 pub enum AlertType {
@@ -74,11 +74,11 @@ pub struct AlertProperties {
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Alert component
@@ -135,8 +135,8 @@ pub fn alert(props: &AlertProperties) -> Html {
             class={classes}
             aria_label={t.aria_label()}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
             <p class={title_classes}>

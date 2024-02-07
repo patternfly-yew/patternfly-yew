@@ -1,8 +1,11 @@
+use crate::ouia;
+use crate::prelude::OuiaComponentType;
+use crate::utils::OuiaSafe;
 use crate::{prelude::use_prop_id, utils::Ouia};
 use std::mem::swap;
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Radio");
+const OUIA: Ouia = ouia!("Radio");
 
 /// Properties for [`Radio`].
 #[derive(PartialEq, Properties)]
@@ -58,17 +61,16 @@ pub struct RadioProperties {
     /// Creates a non-standalone input with a label, even if there are no children to this radio.
     #[prop_or_default]
     pub force_label: bool,
+
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Radio button component
@@ -108,8 +110,8 @@ pub fn radio(props: &RadioProperties) -> Html {
             {onchange}
             onclick={props.input_onclick.clone()}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         />
     );
 
