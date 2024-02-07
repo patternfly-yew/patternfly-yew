@@ -12,7 +12,7 @@ struct MenuItemProperties {
     pub r#type: MenuItemType,
     pub description: Option<String>,
     pub style: Option<AttrValue>,
-    pub additional_class: Classes,
+    pub class: Classes,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -78,7 +78,7 @@ fn menu_item(props: &MenuItemProperties) -> Html {
         }
     };
 
-    class.extend(&props.additional_class);
+    class.extend(&props.class);
 
     html!(
         <li {class} style={&props.style}>
@@ -134,7 +134,7 @@ pub struct MenuActionProperties {
     pub style: Option<AttrValue>,
 
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
 }
 
 #[function_component(MenuAction)]
@@ -150,7 +150,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         description,
         selected,
         style,
-        additional_class,
+        class,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -162,7 +162,7 @@ pub fn menu_action(props: &MenuActionProperties) -> Html {
         description,
         selected,
         style,
-        additional_class,
+        class,
     };
 
     html!(<MenuItem ..props />)
@@ -197,7 +197,7 @@ pub struct MenuLinkProperties {
     pub style: Option<AttrValue>,
 
     #[prop_or_default]
-    pub additional_class: Classes,
+    pub class: Classes,
 }
 
 #[function_component(MenuLink)]
@@ -214,7 +214,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         description,
         selected,
         style,
-        additional_class,
+        class,
     } = props.clone();
 
     let props = MenuItemProperties {
@@ -226,7 +226,7 @@ pub fn menu_link(props: &MenuLinkProperties) -> Html {
         description,
         selected,
         style,
-        additional_class,
+        class,
     };
 
     html!(<MenuItem ..props />)
