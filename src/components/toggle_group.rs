@@ -26,7 +26,7 @@ pub fn toggle_group(props: &ToggleGroupProperties) -> Html {
         class.push("pf-m-compact");
     };
     html! {
-        <div {class} role="group" id="blub">
+        <div {class} role="group">
             {for props.children.iter().map(|mut item| {
                 let item_props = Rc::make_mut(&mut item.props);
                 item_props.disabled |= props.all_disabled;
