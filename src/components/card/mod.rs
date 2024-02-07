@@ -1,8 +1,8 @@
-use crate::prelude::{Divider, DividerType};
-use crate::utils::Ouia;
+use crate::prelude::{Divider, DividerType, OuiaComponentType};
+use crate::utils::{Ouia, OuiaSafe};
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Card");
+const OUIA: Ouia = ouia!("Card");
 
 mod actions;
 mod body;
@@ -12,6 +12,7 @@ mod header;
 mod selectable_actions;
 mod title;
 
+use crate::ouia;
 pub use actions::*;
 pub use body::*;
 pub use expandable_content::*;
@@ -85,11 +86,11 @@ pub struct CardProperties {
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -202,8 +203,8 @@ pub fn card(props: &CardProperties) -> Html {
                 {class}
                 style={props.style.clone()}
                 data-ouia-component-id={props.ouia_id.clone()}
-                data-ouia-component-type={props.ouia_type.clone()}
-                data-ouia-safe={props.ouia_safe.to_string()}
+                data-ouia-component-type={props.ouia_type}
+                data-ouia-safe={props.ouia_safe}
             >
                 {props.children.clone()}
             </@>

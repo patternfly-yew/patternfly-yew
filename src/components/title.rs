@@ -1,9 +1,10 @@
 //! Title
-use crate::prelude::{ExtendClasses, Size};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{ExtendClasses, OuiaComponentType, Size};
+use crate::utils::{Ouia, OuiaSafe};
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Title");
+const OUIA: Ouia = ouia!("Title");
 
 /// Title level
 #[derive(Clone, Default, PartialEq, Eq, Ord, PartialOrd, Copy, Debug)]
@@ -30,14 +31,12 @@ pub struct TitleProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Title component
@@ -75,8 +74,8 @@ pub fn title(props: &TitleProperties) -> Html {
         <@{element}
             {class}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             { props.children.clone() }
         </@>

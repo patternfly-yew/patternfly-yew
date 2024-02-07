@@ -9,11 +9,12 @@ pub use divider::*;
 pub use group::*;
 pub use item::*;
 
+use crate::ouia;
 use crate::prelude::AsClasses;
-use crate::utils::Ouia;
+use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::{html::ChildrenRenderer, prelude::*};
 
-const OUIA: Ouia = Ouia::new("Toolbar");
+const OUIA: Ouia = ouia!("Toolbar");
 
 /// Modifier for toolbar elements.
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
@@ -50,14 +51,12 @@ pub struct ToolbarProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Toolbar component
@@ -86,8 +85,8 @@ pub fn toolbar(props: &ToolbarProperties) -> Html {
             id={&props.id}
             {class}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             { for props.children.iter() }
         </div>

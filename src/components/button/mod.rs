@@ -1,13 +1,14 @@
 //! Button
 
+use crate::ouia;
 use crate::prelude::{Icon, Spinner, SpinnerSize};
-use crate::utils::Ouia;
+use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
-const OUIA: Ouia = Ouia::new("Button");
+const OUIA: Ouia = ouia!("Button");
 
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum ButtonVariant {
@@ -138,14 +139,12 @@ pub struct ButtonProperties {
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Button component
@@ -238,8 +237,8 @@ pub fn button(props: &ButtonProperties) -> Html {
             aria-controls={&props.aria_controls}
             {tabindex}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
          >
              if props.loading {
                  <span class="pf-v5-c-button__progress">

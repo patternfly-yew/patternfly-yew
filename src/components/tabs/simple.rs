@@ -1,13 +1,14 @@
 use super::TabContent;
-use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, WithBreakpoints};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{AsClasses, ExtendClasses, Icon, Inset, OuiaComponentType, WithBreakpoints};
+use crate::utils::{Ouia, OuiaSafe};
 use std::borrow::Cow;
 use yew::html::IntoPropValue;
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Tabs");
-const OUIA_BUTTON: Ouia = Ouia::new("TabsButton");
-const OUIA_ITEM: Ouia = Ouia::new("TabsItem");
+const OUIA: Ouia = ouia!("Tabs");
+const OUIA_BUTTON: Ouia = ouia!("TabsButton");
+const OUIA_ITEM: Ouia = ouia!("TabsItem");
 
 #[derive(PartialEq, Eq, Clone)]
 pub struct TabsContext<T>
@@ -52,14 +53,12 @@ where
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Tabs component
@@ -134,8 +133,8 @@ where
                 {class}
                 id={props.id.clone()}
                 data-ouia-component-id={props.ouia_id.clone()}
-                data-ouia-component-type={props.ouia_type.clone()}
-                data-ouia-safe={props.ouia_safe.to_string()}
+                data-ouia-component-type={props.ouia_type}
+                data-ouia-safe={props.ouia_safe}
             >
                 <button
                     class="pf-v5-c-tabs__scroll-button"
@@ -218,14 +217,12 @@ where
     /// OUIA Component id
     #[prop_or_else(|| OUIA_ITEM.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA_ITEM.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA_ITEM.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 #[function_component(TabHeaderItem)]
@@ -256,8 +253,8 @@ where
             {class}
             id={props.id.clone()}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             <button class="pf-v5-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {

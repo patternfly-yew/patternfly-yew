@@ -1,10 +1,11 @@
 //! Chip
-use crate::prelude::{Button, ButtonVariant, Icon};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{Button, ButtonVariant, Icon, OuiaComponentType};
+use crate::utils::{Ouia, OuiaSafe};
 use std::fmt::Debug;
 use yew::prelude::*;
 
-const OUIA: Ouia = Ouia::new("Chip");
+const OUIA: Ouia = ouia!("Chip");
 
 /// Properties for [`Chip`]
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -21,15 +22,16 @@ pub struct ChipProperties {
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
     pub icon: Option<Icon>,
+
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// Chip component
@@ -70,8 +72,8 @@ pub fn chip(props: &ChipProperties) -> Html {
         <@{component}
             class={classes}
             data-ouia-component-id={props.ouia_id.clone()}
-            data-ouia-component-type={props.ouia_type.clone()}
-            data-ouia-safe={props.ouia_safe.to_string()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
         >
             {body}
         </@>

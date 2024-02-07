@@ -1,5 +1,6 @@
-use crate::prelude::{Icon, ValidationContext};
-use crate::utils::Ouia;
+use crate::ouia;
+use crate::prelude::{Icon, OuiaComponentType, ValidationContext};
+use crate::utils::{Ouia, OuiaSafe};
 use std::fmt::Display;
 use std::rc::Rc;
 use std::str::FromStr;
@@ -10,7 +11,7 @@ use yew::{
     virtual_dom::{VChild, VComp},
 };
 
-const OUIA: Ouia = Ouia::new("FormSelect");
+const OUIA: Ouia = ouia!("FormSelect");
 
 /// Properties for [`FormSelect`]
 #[derive(Clone, PartialEq, Properties)]
@@ -46,14 +47,12 @@ pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + FromS
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
-
     /// OUIA Component Type
-    #[prop_or_else(|| OUIA.component_type())]
-    pub ouia_type: String,
-
+    #[prop_or(OUIA.component_type())]
+    pub ouia_type: OuiaComponentType,
     /// OUIA Component Safe
-    #[prop_or(true)]
-    pub ouia_safe: bool,
+    #[prop_or(OuiaSafe::TRUE)]
+    pub ouia_safe: OuiaSafe,
 }
 
 /// A select component in a [`Form`](crate::prelude::Form)
@@ -105,8 +104,8 @@ where
                 ref={node_ref}
                 required={props.required}
                 data-ouia-component-id={props.ouia_id.clone()}
-                data-ouia-component-type={props.ouia_type.clone()}
-                data-ouia-safe={props.ouia_safe.to_string()}
+                data-ouia-component-type={props.ouia_type}
+                data-ouia-safe={props.ouia_safe}
             >
                 if let Some(placeholder) = &props.placeholder {
                     <option value="">{ placeholder }</option>
