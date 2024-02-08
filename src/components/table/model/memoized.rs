@@ -37,7 +37,7 @@ impl<T> PartialEq for MemoizedTableModel<T> {
 impl<C, T> super::TableDataModel<C> for MemoizedTableModel<T>
 where
     C: Clone + Eq + 'static,
-    T: TableEntryRenderer<C> + 'static,
+    T: TableEntryRenderer<C> + Clone + 'static,
 {
     type Iterator<'i> = Enumerate<core::slice::Iter<'i, Self::Item>>;
     type Item = T;
