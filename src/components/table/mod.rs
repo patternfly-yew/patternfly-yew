@@ -31,6 +31,9 @@ where
     M: PartialEq + TableModel<C> + 'static,
 {
     #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
     pub id: AttrValue,
 
     #[prop_or_default]
@@ -175,7 +178,7 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let mut class = classes!("pf-v5-c-table");
+    let mut class = classes!("pf-v5-c-table", props.class.clone());
 
     if props
         .header
