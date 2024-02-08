@@ -21,7 +21,7 @@ where
     type Iterator<'i>: Iterator<Item = TableModelEntry<'i, Self::Item, Self::Key, C>>
     where
         Self: 'i;
-    type Item: TableEntryRenderer<C> + 'static;
+    type Item: TableEntryRenderer<C> + Clone + 'static;
     type Key: Into<Key> + Clone + Debug + Eq + 'static;
 
     /// Get the number of items
@@ -65,7 +65,7 @@ where
     type Iterator<'i>: Iterator<Item = (Self::Key, &'i Self::Item)>
     where
         Self: 'i;
-    type Item: TableEntryRenderer<C> + 'static;
+    type Item: TableEntryRenderer<C> + Clone + 'static;
     type Key: Into<Key> + Clone + Debug + Eq + 'static;
 
     /// Get the number of items

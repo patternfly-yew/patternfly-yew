@@ -41,7 +41,7 @@ where
 impl<C, T> super::TableDataModel<C> for UseStateTableModel<T>
 where
     C: Clone + Eq + 'static,
-    T: PartialEq + TableEntryRenderer<C> + 'static,
+    T: PartialEq + TableEntryRenderer<C> + Clone + 'static,
 {
     type Iterator<'i> = Enumerate<core::slice::Iter<'i, Self::Item>>;
     type Item = T;

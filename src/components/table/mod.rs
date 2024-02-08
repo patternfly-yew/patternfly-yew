@@ -55,6 +55,12 @@ where
     #[prop_or_default]
     pub onexpand: OnToggleCallback<C, M>,
 
+    #[prop_or_default]
+    pub onrowclick: Option<Callback<<M as TableModel<C>>::Item>>,
+    /// Callback stating whether a given row is selected or not.
+    #[prop_or_default]
+    pub row_selected: Option<Callback<<M as TableModel<C>>::Item, bool>>,
+
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
@@ -122,6 +128,7 @@ where
 ///
 /// #[derive(Copy, Clone, Eq, PartialEq)]
 /// enum Column { First, Second };
+/// #[derive(Clone)]
 /// struct ExampleEntry { foo: String };
 ///
 /// impl TableEntryRenderer<Column> for ExampleEntry {
@@ -270,12 +277,34 @@ where
             .map(|entry| render_expandable_entry(props, entry, expandable_columns))
             .collect()
     } else {
+        let row_click_cb = {
+            let onrowclick = props.onrowclick.clone();
+            Callback::from(move |entry| {
+                if let Some(f) = onrowclick.as_ref() {
+                    f.emit(entry)
+                }
+            })
+        };
         html!(
             <tbody class="pf-v5-c-table__tbody" role="rowgroup"> {
                 for props.entries.iter().map(|entry| {
+                    let mut class = classes!("pf-v5-c-table__tr");
+                    if props.onrowclick.is_some() {
+                        class.push("pf-m-clickable");
+                    }
+                    if props.row_selected.as_ref().is_some_and(|f| f.emit(entry.value.clone())) {
+                        class.push("pf-m-selected");
+                    }
                     let content = { render_row(props, &entry, |_| false)};
+                    let onclick = if props.onrowclick.is_some() {
+                        let cb = row_click_cb.clone();
+                        let val: M::Item = entry.value.clone();
+                        Some(Callback::from(move |_| cb.emit(val.clone())))
+                    } else {
+                        None
+                    };
                     html!(
-                        <tr class="pf-v5-c-table__tr" role="row" key={entry.key}>
+                        <tr class={class.clone()} role="row" key={entry.key} {onclick}>
                             {content}
                         </tr>
                     )}
