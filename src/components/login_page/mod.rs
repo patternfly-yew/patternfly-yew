@@ -53,12 +53,15 @@ pub fn login(props: &LoginProperties) -> Html {
 pub struct LoginMainProperties {
     #[prop_or_default]
     pub children: Html,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 #[function_component(LoginMain)]
 pub fn login_main(props: &LoginMainProperties) -> Html {
+    let class = classes!("pf-v5-c-login__main", props.class.clone());
     html! {
-        <main class="pf-v5-c-login__main">
+        <main {class}>
             { props.children.clone() }
         </main>
     }
@@ -89,12 +92,15 @@ pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
 pub struct LoginMainBodyProperties {
     #[prop_or_default]
     pub children: Html,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 #[function_component(LoginMainBody)]
 pub fn login_main_body(props: &LoginMainBodyProperties) -> Html {
+    let class = classes!("pf-v5-c-login__main-body", props.class.clone());
     html! {
-        <div class="pf-v5-c-login__main-body">
+        <div {class}>
             { props.children.clone() }
         </div>
     }
