@@ -28,7 +28,7 @@ strum_macros = "0.25.0"
 uuid = { version = "1", features = ["v4", "js"] }
 wasm-bindgen = "0.2.89"
 wasm-bindgen-futures = "0.4.39"
-web-tools = { version = "0.2", features = ["yew"] }
+web-tools = { version = "0.2.3", features = ["yew"] }
 yew = "0.21"
 yew-hooks = "0.3"
 yew-nested-router = { version = "0.6", optional = true }

@@ -1,8 +1,8 @@
 //! Switch control
 use crate::ouia;
-use crate::prelude::{random_id, Icon, OuiaComponentType};
+use crate::prelude::{Icon, OuiaComponentType};
 use crate::utils::{Ouia, OuiaSafe};
-use web_sys::HtmlInputElement;
+use web_tools::prelude::*;
 use yew::prelude::*;
 
 const OUIA: Ouia = ouia!("Switch");
@@ -49,88 +49,46 @@ pub struct SwitchProperties {
 /// ## Properties
 ///
 /// Defined by [`SwitchProperties`].
-pub struct Switch {
-    id: String,
-    input_ref: NodeRef,
-}
+#[function_component(Switch)]
+pub fn switch(props: &SwitchProperties) -> Html {
+    let input_ref = use_node_ref();
 
-pub enum SwitchMsg {
-    Changed,
-}
+    let onchange = use_callback(
+        (input_ref.clone(), props.onchange.clone()),
+        |_evt, (input_ref, onchange)| onchange.emit(input_ref.checked()),
+    );
 
-impl Component for Switch {
-    type Message = SwitchMsg;
-    type Properties = SwitchProperties;
-
-    fn create(ctx: &Context<Self>) -> Self {
-        let id = ctx.props().id.as_ref().cloned().unwrap_or_else(random_id);
-        Self {
-            id,
-            input_ref: Default::default(),
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            SwitchMsg::Changed => {
-                ctx.props().onchange.emit(self.current_state());
-                false
-            }
-        }
-    }
-
-    fn changed(&mut self, ctx: &Context<Self>, _: &Self::Properties) -> bool {
-        self.id = ctx
-            .props()
-            .id
-            .as_ref()
-            .cloned()
-            .unwrap_or_else(|| self.id.clone());
-        true
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        html! (
-            <label
-                class="pf-v5-c-switch"
-                for={self.id.clone()}
-                data-ouia-component-id={ctx.props().ouia_id.clone()}
-                data-ouia-component-type={ctx.props().ouia_type}
-                data-ouia-safe={ctx.props().ouia_safe}
-            >
-                <input
-                    ref={self.input_ref.clone()}
-                    class="pf-v5-c-switch__input"
-                    type="checkbox"
-                    id={self.id.clone()}
-                    aria-label={ctx.props().aria_label.clone()}
-                    checked={ctx.props().checked}
-                    disabled={ctx.props().disabled}
-                    onchange={ctx.link().callback(|_|SwitchMsg::Changed)}
-                />
-                <span class="pf-v5-c-switch__toggle">
-                    if ctx.props().label.is_none() {
-                        <span class="pf-v5-c-switch__toggle-icon">
-                            { Icon::Check }
-                        </span>
-                    }
-                </span>
-                if let Some(ref label) = ctx.props().label {
-                    <>
-                        <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
-                        <span class="pf-v5-c-switch__label pf-m-off">{ ctx.props().label_off.as_ref().unwrap_or(label) }</span>
-                    </>
+    html! (
+        <label
+            class="pf-v5-c-switch"
+            for={props.id.clone()}
+            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-type={props.ouia_type}
+            data-ouia-safe={props.ouia_safe}
+        >
+            <input
+                ref={input_ref.clone()}
+                class="pf-v5-c-switch__input"
+                type="checkbox"
+                id={props.id.clone()}
+                aria-label={props.aria_label.clone()}
+                checked={props.checked}
+                disabled={props.disabled}
+                {onchange}
+            />
+            <span class="pf-v5-c-switch__toggle">
+                if props.label.is_none() {
+                    <span class="pf-v5-c-switch__toggle-icon">
+                        { Icon::Check }
+                    </span>
                 }
-            </label>
-        )
-    }
-}
-
-impl Switch {
-    fn current_state(&self) -> bool {
-        self.input_ref
-            .cast::<HtmlInputElement>()
-            .map(|input| input.checked())
-            .unwrap_or_default()
-    }
+            </span>
+            if let Some(ref label) = props.label {
+                <>
+                    <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
+                    <span class="pf-v5-c-switch__label pf-m-off">{ props.label_off.as_ref().unwrap_or(label) }</span>
+                </>
+            }
+        </label>
+    )
 }
