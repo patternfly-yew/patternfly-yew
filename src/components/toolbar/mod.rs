@@ -63,6 +63,9 @@ impl AsClasses for ToolbarInset {
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarProperties {
     #[prop_or_default]
+    pub class: Classes,
+
+    #[prop_or_default]
     pub children: ChildrenWithProps<ToolbarContent>,
 
     #[prop_or_default]
@@ -100,7 +103,7 @@ pub struct ToolbarProperties {
 /// The toolbar requires one or more [`ToolbarContent`] children.
 #[function_component(Toolbar)]
 pub fn toolbar(props: &ToolbarProperties) -> Html {
-    let mut class = classes!("pf-v5-c-toolbar");
+    let mut class = classes!("pf-v5-c-toolbar", props.class.clone());
     class.extend_from(&props.insets);
 
     if props.full_height {
