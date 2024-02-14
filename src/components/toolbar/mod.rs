@@ -10,7 +10,7 @@ pub use group::*;
 pub use item::*;
 
 use crate::ouia;
-use crate::prelude::AsClasses;
+use crate::prelude::{AsClasses, ExtendClasses, WithBreakpoints};
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::{html::ChildrenRenderer, prelude::*};
 
@@ -36,6 +36,29 @@ impl AsClasses for ToolbarElementModifier {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ToolbarInset {
+    None,
+    Small,
+    Medium,
+    Large,
+    XLarge,
+    XXLarge,
+}
+
+impl AsClasses for ToolbarInset {
+    fn extend_classes(&self, classes: &mut Classes) {
+        classes.push(match self {
+            ToolbarInset::None => "pf-m-inset-none",
+            ToolbarInset::Small => "pf-m-inset-sm",
+            ToolbarInset::Medium => "pf-m-inset-md",
+            ToolbarInset::Large => "pf-m-inset-lg",
+            ToolbarInset::XLarge => "pf-m-inset-xl",
+            ToolbarInset::XXLarge => "pf-m-inset-2xl",
+        });
+    }
+}
+
 /// Properties for [`Toolbar`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ToolbarProperties {
@@ -50,6 +73,9 @@ pub struct ToolbarProperties {
 
     #[prop_or_default]
     pub full_height: bool,
+
+    #[prop_or_default]
+    pub insets: WithBreakpoints<ToolbarInset>,
 
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
@@ -78,6 +104,7 @@ pub struct ToolbarProperties {
 #[function_component(Toolbar)]
 pub fn toolbar(props: &ToolbarProperties) -> Html {
     let mut class = classes!("pf-v5-c-toolbar", props.class.clone());
+    class.extend_from(&props.insets);
 
     if props.full_height {
         class.push("pf-m-full-height")
