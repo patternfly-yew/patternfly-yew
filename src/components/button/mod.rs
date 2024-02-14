@@ -1,7 +1,7 @@
 //! Button
 
 use crate::ouia;
-use crate::prelude::{Icon, Spinner, SpinnerSize};
+use crate::prelude::{AsClasses, Icon, Spinner, SpinnerSize};
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
@@ -72,6 +72,24 @@ impl IntoPropValue<Option<AttrValue>> for ButtonType {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum ButtonSize {
+    Small,
+    #[default]
+    Medium,
+    Large,
+}
+
+impl AsClasses for ButtonSize {
+    fn extend_classes(&self, classes: &mut Classes) {
+        match self {
+            ButtonSize::Small => classes.push("pf-m-small"),
+            ButtonSize::Medium => (),
+            ButtonSize::Large => classes.push("pf-m-display-lg"),
+        };
+    }
+}
+
 /// Properties for [`Button`]
 #[derive(Clone, PartialEq, Properties)]
 pub struct ButtonProperties {
@@ -136,6 +154,9 @@ pub struct ButtonProperties {
     #[prop_or_default]
     pub r#ref: Option<NodeRef>,
 
+    #[prop_or_default]
+    pub size: ButtonSize,
+
     /// OUIA Component id
     #[prop_or_else(|| OUIA.generated_id())]
     pub ouia_id: String,
@@ -164,7 +185,8 @@ pub fn button(props: &ButtonProperties) -> Html {
     let mut classes: Classes = classes!(
         "pf-v5-c-button",
         props.class.clone(),
-        props.variant.as_classes()
+        props.variant.as_classes(),
+        props.size.as_classes(),
     );
 
     if props.expanded {
