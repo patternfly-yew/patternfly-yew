@@ -96,7 +96,7 @@ pub struct ButtonProperties {
     #[prop_or_default]
     pub id: Option<AttrValue>,
     #[prop_or_default]
-    pub class: Option<String>,
+    pub class: Classes,
     #[prop_or_default]
     pub style: Option<AttrValue>,
 
