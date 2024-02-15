@@ -179,7 +179,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
     class.extend_from(&props.location);
     class.extend_from(&props.variant);
     if props.description.is_none() {
-        class.extend(classes!("pf-m-single"));
+        class.extend(classes!("pf-m-singleline"));
     }
     class.extend(&props.class);
 
