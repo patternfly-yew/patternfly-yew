@@ -48,6 +48,8 @@ impl IntoPropValue<Option<AttrValue>> for TextInputType {
 #[derive(Clone, PartialEq, Properties)]
 pub struct TextInputProperties {
     #[prop_or_default]
+    pub class: Classes,
+    #[prop_or_default]
     pub name: Option<AttrValue>,
     #[prop_or_default]
     pub id: Option<AttrValue>,
@@ -168,7 +170,7 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 #[function_component(TextInput)]
 pub fn text_input(props: &TextInputProperties) -> Html {
     let input_ref = props.r#ref.clone();
-    let mut classes = classes!("pf-v5-c-form-control");
+    let mut classes = classes!("pf-v5-c-form-control", props.class.clone());
 
     if props.disabled {
         classes.push("pf-m-disabled")
