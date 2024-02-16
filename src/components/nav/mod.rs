@@ -24,8 +24,8 @@ pub struct NavProperties {
     pub children: Html,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA_NAV.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA_NAV.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -37,11 +37,14 @@ pub struct NavProperties {
 /// A navigation component.
 #[function_component(Nav)]
 pub fn nav(props: &NavProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA_NAV.generated_id())
+    });
     html! {
         <nav
             class="pf-v5-c-nav"
             aria-label="Global"
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
@@ -102,8 +105,8 @@ pub struct NavItemProperties {
     pub onclick: Callback<()>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA_NAV_ITEM.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA_NAV_ITEM.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -115,10 +118,13 @@ pub struct NavItemProperties {
 /// A navigation item, which triggers a callback when clicked.
 #[function_component(NavItem)]
 pub fn nav_item(props: &NavItemProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA_NAV_ITEM.generated_id())
+    });
     html! (
         <li
             class="pf-v5-c-nav__item"
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

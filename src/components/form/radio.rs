@@ -63,8 +63,8 @@ pub struct RadioProperties {
     pub force_label: bool,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -84,6 +84,9 @@ pub struct RadioProperties {
 /// Defined by [`RadioProperties`].
 #[function_component(Radio)]
 pub fn radio(props: &RadioProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let class = classes!("pf-v5-c-radio", props.class.clone());
 
     let id = use_prop_id(props.id.clone());
@@ -109,7 +112,7 @@ pub fn radio(props: &RadioProperties) -> Html {
             value={&props.value}
             {onchange}
             onclick={props.input_onclick.clone()}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         />

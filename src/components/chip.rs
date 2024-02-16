@@ -24,8 +24,8 @@ pub struct ChipProperties {
     pub icon: Option<Icon>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -45,6 +45,9 @@ pub struct ChipProperties {
 /// Defined by [`ChipProperties`].
 #[function_component(Chip)]
 pub fn chip(props: &ChipProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut classes = Classes::from("pf-v5-c-chip");
 
     if props.draggable {
@@ -71,7 +74,7 @@ pub fn chip(props: &ChipProperties) -> Html {
     html! {
         <@{component}
             class={classes}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

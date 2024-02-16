@@ -21,8 +21,8 @@ pub struct BreadcrumbProperties {
     pub children: ChildrenRenderer<BreadcrumbItemVariant>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -43,13 +43,16 @@ pub struct BreadcrumbProperties {
 ///
 #[function_component(Breadcrumb)]
 pub fn breadcrumb(props: &BreadcrumbProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let last = props.children.len() - 1;
 
     html!(
         <nav
             class="pf-v5-c-breadcrumb"
             aria-label={"breadcrumb"}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

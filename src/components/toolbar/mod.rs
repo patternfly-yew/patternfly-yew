@@ -78,8 +78,8 @@ pub struct ToolbarProperties {
     pub insets: WithBreakpoints<ToolbarInset>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -103,6 +103,9 @@ pub struct ToolbarProperties {
 /// The toolbar requires one or more [`ToolbarContent`] children.
 #[function_component(Toolbar)]
 pub fn toolbar(props: &ToolbarProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut class = classes!("pf-v5-c-toolbar", props.class.clone());
     class.extend_from(&props.insets);
 
@@ -114,7 +117,7 @@ pub fn toolbar(props: &ToolbarProperties) -> Html {
         <div
             id={&props.id}
             {class}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

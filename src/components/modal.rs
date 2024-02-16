@@ -56,8 +56,8 @@ pub struct ModalProperties {
     pub disable_close_click_outside: bool,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -84,6 +84,9 @@ pub struct ModalProperties {
 ///
 #[function_component(Modal)]
 pub fn modal(props: &ModalProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut classes = props.variant.as_classes();
     classes.push("pf-v5-c-modal-box");
 
@@ -134,7 +137,7 @@ pub fn modal(props: &ModalProperties) -> Html {
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
             ref={node_ref}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

@@ -110,8 +110,8 @@ pub struct TextInputProperties {
     pub r#ref: NodeRef,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -169,6 +169,9 @@ impl ValidatingComponentProperties<String> for TextInputProperties {
 /// ```
 #[function_component(TextInput)]
 pub fn text_input(props: &TextInputProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let input_ref = props.r#ref.clone();
     let mut classes = classes!("pf-v5-c-form-control", props.class.clone());
 
@@ -259,7 +262,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 onblur={&props.onblur}
                 inputmode={&props.inputmode}
                 enterkeyhint={&props.enterkeyhint}
-                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-id={(*ouia_id).clone()}
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             />

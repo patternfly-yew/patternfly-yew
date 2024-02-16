@@ -47,8 +47,8 @@ pub struct MenuProperties {
     pub children: ChildrenRenderer<MenuChildVariant>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -59,6 +59,9 @@ pub struct MenuProperties {
 
 #[function_component(Menu)]
 pub fn menu(props: &MenuProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut class = classes!("pf-v5-c-menu");
 
     if props.scrollable {
@@ -75,7 +78,7 @@ pub fn menu(props: &MenuProperties) -> Html {
             id={props.id.clone()}
             style={&props.style}
             {class}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

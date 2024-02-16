@@ -158,8 +158,8 @@ pub struct ButtonProperties {
     pub size: ButtonSize,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -179,6 +179,9 @@ pub struct ButtonProperties {
 /// Defined by [`ButtonProperties`].
 #[function_component(Button)]
 pub fn button(props: &ButtonProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let node_ref = use_node_ref();
     let node_ref = props.r#ref.as_ref().unwrap_or(&node_ref);
 
@@ -258,7 +261,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             aria-expanded={&props.aria_expanded}
             aria-controls={&props.aria_controls}
             {tabindex}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
          >

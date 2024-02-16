@@ -45,8 +45,8 @@ pub struct FormSelectProperties<K: 'static + Clone + PartialEq + Display + FromS
     pub onvalidate: Callback<ValidationContext<Vec<K>>>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -61,6 +61,9 @@ pub fn form_select<K>(props: &FormSelectProperties<K>) -> Html
 where
     K: 'static + Clone + PartialEq + Display + FromStr,
 {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let node_ref = use_node_ref();
 
     let oninput = {
@@ -103,7 +106,7 @@ where
                 id={&props.id}
                 ref={node_ref}
                 required={props.required}
-                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-id={(*ouia_id).clone()}
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             >

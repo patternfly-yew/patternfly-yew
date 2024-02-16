@@ -29,8 +29,8 @@ pub struct TitleProperties {
     pub size: Option<Size>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -50,6 +50,9 @@ pub struct TitleProperties {
 /// Defined by [`TitleProperties`].
 #[function_component(Title)]
 pub fn title(props: &TitleProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut class = Classes::from("pf-v5-c-title");
 
     class.extend_from(&props.size.unwrap_or(match props.level {
@@ -73,7 +76,7 @@ pub fn title(props: &TitleProperties) -> Html {
     html! {
         <@{element}
             {class}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

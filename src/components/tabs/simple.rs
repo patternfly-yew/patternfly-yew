@@ -51,8 +51,8 @@ where
     pub selected: T,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -107,6 +107,9 @@ pub fn tabs<T>(props: &TabsProperties<T>) -> Html
 where
     T: PartialEq + Eq + Clone + 'static,
 {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut class = classes!("pf-v5-c-tabs");
 
     if props.r#box {
@@ -132,7 +135,7 @@ where
             <div
                 {class}
                 id={props.id.clone()}
-                data-ouia-component-id={props.ouia_id.clone()}
+                data-ouia-component-id={(*ouia_id).clone()}
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             >
@@ -215,8 +218,8 @@ where
     pub id: Option<AttrValue>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA_ITEM.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA_ITEM.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -230,6 +233,9 @@ fn tab_header_item<T>(props: &TabHeaderItemProperties<T>) -> Html
 where
     T: PartialEq + Eq + Clone + 'static,
 {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA_ITEM.generated_id())
+    });
     let context = use_context::<TabsContext<T>>();
     let current = context
         .map(|context| context.selected == props.index)
@@ -252,7 +258,7 @@ where
         <li
             {class}
             id={props.id.clone()}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

@@ -30,8 +30,8 @@ pub struct SwitchProperties {
     pub aria_label: String,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -51,6 +51,9 @@ pub struct SwitchProperties {
 /// Defined by [`SwitchProperties`].
 #[function_component(Switch)]
 pub fn switch(props: &SwitchProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let input_ref = use_node_ref();
 
     let onchange = use_callback(
@@ -62,7 +65,7 @@ pub fn switch(props: &SwitchProperties) -> Html {
         <label
             class="pf-v5-c-switch"
             for={props.id.clone()}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
