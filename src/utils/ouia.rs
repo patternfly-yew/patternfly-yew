@@ -12,7 +12,7 @@ macro_rules! ouia {
     };
 }
 
-pub struct Ouia(&'static str, OuiaComponentType);
+pub struct Ouia(OuiaComponentType);
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct OuiaComponentType(&'static str);
@@ -66,7 +66,7 @@ impl IntoPropValue<Option<AttrValue>> for OuiaComponentType {
 
 impl Ouia {
     pub const fn with_full(full_component_name: &'static str) -> Self {
-        Self(full_component_name, OuiaComponentType(full_component_name))
+        Self(OuiaComponentType(full_component_name))
     }
 
     pub fn generated_id(&self) -> String {
@@ -75,7 +75,7 @@ impl Ouia {
     }
 
     pub const fn component_type(&self) -> OuiaComponentType {
-        self.1
+        self.0
     }
 }
 
