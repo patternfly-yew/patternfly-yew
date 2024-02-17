@@ -1,5 +1,6 @@
 mod cell;
 mod column;
+mod composable;
 mod header;
 mod model;
 mod props;
@@ -7,6 +8,7 @@ mod render;
 
 pub use cell::*;
 pub use column::*;
+pub use composable::*;
 pub use header::*;
 pub use model::*;
 pub use props::*;
@@ -15,11 +17,7 @@ pub use render::*;
 use crate::ouia;
 use crate::prelude::{Dropdown, ExtendClasses, Icon, MenuChildVariant, MenuToggleVariant};
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
-use std::rc::Rc;
-use yew::{
-    prelude::*,
-    virtual_dom::{VChild, VNode},
-};
+use yew::{prelude::*, virtual_dom::VChild};
 
 const OUIA: Ouia = ouia!("Table");
 
@@ -123,6 +121,10 @@ where
 /// * Create a table state model (e.g. using [`MemoizedTableModel`]).
 /// * Wire up the table state model (e.g. using [`use_table_data`]).
 ///
+/// If the table is too limiting (one example is wanting to save state per row) you may have to
+/// use [`ComposableTable`].
+/// However, it is recommended to use [`Table`] where possible.
+///
 /// ## Example
 ///
 /// ```rust
@@ -178,45 +180,6 @@ where
     C: Clone + Eq + 'static,
     M: PartialEq + TableModel<C> + 'static,
 {
-    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
-        id.clone().unwrap_or(OUIA.generated_id())
-    });
-    let mut class = classes!("pf-v5-c-table", props.class.clone());
-
-    if props
-        .header
-        .as_ref()
-        .map_or(false, |header| header.props.sticky)
-    {
-        class.push(classes!("pf-m-sticky-header"));
-    }
-
-    class.extend_from(&props.grid);
-
-    match props.mode {
-        TableMode::Compact => {
-            class.push(classes!("pf-m-compact"));
-        }
-        TableMode::CompactNoBorders => {
-            class.push(classes!("pf-m-compact", "pf-m-no-border-rows"));
-        }
-        TableMode::CompactExpandable => {
-            class.push(classes!("pf-m-compact"));
-        }
-        TableMode::Expandable => {
-            class.push(classes!("pf-m-expandable"));
-        }
-        TableMode::Default => {}
-    }
-
-    if !props.borders {
-        class.push(classes!("pf-m-no-border-rows"));
-    }
-
-    if !props.borders {
-        class.push(classes!("pf-m-no-border-rows"));
-    }
-
     let expandable_columns = use_memo(
         (props.header.clone(), props.mode.is_expandable()),
         |(header, expandable)| {
@@ -236,39 +199,28 @@ where
         },
     );
 
+    let expandable = props.is_expandable() && !props.are_columns_expandable();
     html! (
-        <table
+        <ComposableTable
             id={&props.id}
-            {class}
-            role="grid"
-            data-ouia-component-id={(*ouia_id).clone()}
-            data-ouia-component-type={props.ouia_type}
-            data-ouia-safe={props.ouia_safe}
+            class={props.class.clone()}
+            sticky_header={props.header.as_ref().is_some_and(|header| header.props.sticky)}
+            mode={props.mode.clone()}
+            borders={props.borders}
+            grid={props.grid}
+            ouia_id={props.ouia_id.clone()}
+            ouia_type={props.ouia_type}
+            ouia_safe={props.ouia_safe}
         >
             if let Some(caption) = &props.caption {
-                <caption class="pf-v5-c-table__caption">{caption}</caption>
+                <Caption>{caption}</Caption>
             }
-            { render_header(props) }
+            if let Some(header) = props.header.clone() {
+                <TableHeader<C> {expandable} ..(*header.props).clone() />
+            }
             { render_entries(props, &expandable_columns) }
-        </table>
+        </ComposableTable>
     )
-}
-
-fn render_header<C, M>(props: &TableProperties<C, M>) -> Html
-where
-    C: Clone + Eq + 'static,
-    M: PartialEq + TableModel<C> + 'static,
-{
-    let expandable = props.is_expandable() && !props.are_columns_expandable();
-    match &props.header {
-        Some(header) => {
-            let mut header = header.clone();
-            let props = Rc::make_mut(&mut header.props);
-            props.expandable = expandable;
-            VNode::VComp(yew::virtual_dom::VComp::from(header))
-        }
-        None => html!(),
-    }
 }
 
 fn render_entries<C, M>(props: &TableProperties<C, M>, expandable_columns: &[C]) -> Html
@@ -292,15 +244,9 @@ where
             })
         };
         html!(
-            <tbody class="pf-v5-c-table__tbody" role="rowgroup"> {
+            <TableBody> {
                 for props.entries.iter().map(|entry| {
-                    let mut class = classes!("pf-v5-c-table__tr");
-                    if props.onrowclick.is_some() {
-                        class.push("pf-m-clickable");
-                    }
-                    if props.row_selected.as_ref().is_some_and(|f| f.emit(entry.value.clone())) {
-                        class.push("pf-m-selected");
-                    }
+                    let selected = props.row_selected.as_ref().is_some_and(|f| f.emit(entry.value.clone()));
                     let content = { render_row(props, &entry, |_| false)};
                     let onclick = if props.onrowclick.is_some() {
                         let cb = row_click_cb.clone();
@@ -309,13 +255,13 @@ where
                     } else {
                         None
                     };
-                    html!(
-                        <tr class={class.clone()} role="row" key={entry.key} {onclick}>
+                    html! {
+                        <TableRow {onclick} {selected}>
                             {content}
-                        </tr>
-                    )}
-                )
-            } </tbody>
+                        </TableRow>
+                    }
+                })
+            } </TableBody>
         )
     }
 }
@@ -348,7 +294,7 @@ where
             .is_full_width_details()
             .unwrap_or(props.full_width_details)
     {
-        cells.push(html! {<td class="pf-v5-c-table__td"></td>});
+        cells.push(html! {<TableData />});
         cols -= 1;
     }
 
@@ -359,15 +305,10 @@ where
     };
 
     for cell in details {
-        let mut classes = classes!("pf-v5-c-table__td");
-        classes.extend_from(&cell.modifiers);
-
         cells.push(html! {
-            <td class={classes} role="cell" colspan={cell.cols.to_string()}>
-                <div class="pf-v5-c-table__expandable-row-content">
-                    { cell.content }
-                </div>
-            </td>
+            <TableData span_modifiers={cell.modifiers.clone()} colspan={cell.cols}>
+                <ExpandableRowContent>{ cell.content }</ExpandableRowContent>
+            </TableData>
         });
 
         if cols > cell.cols {
@@ -382,16 +323,8 @@ where
 
     if cols > 0 {
         cells.push(html! (
-            <td class="pf-v5-c-table__td" colspan={cols.to_string()}></td>
+            <TableData colspan={cols}/>
         ));
-    }
-
-    let mut tbody_class = classes!("pf-v5-c-table__tbody");
-    let mut tr_class = classes!("pf-v5-c-table__tr", "pf-v5-c-table__expandable-row");
-
-    if expanded {
-        tbody_class.push(classes!("pf-m-expanded"));
-        tr_class.push(classes!("pf-m-expanded"));
     }
 
     let onclick = {
@@ -402,66 +335,26 @@ where
             .reform(move |_| (key.clone(), ExpansionState::Row))
     };
 
-    let mut class = classes!("pf-v5-c-table__tr");
-
-    if !expandable_columns.is_empty() && props.mode.is_expandable() {
-        class.push(classes!("pf-v5-c-table__control-row"));
-    }
-
     html! (
-        <tbody {key} role="rowgroup" class={tbody_class}>
-            <tr {class} role="row">
-
+        <TableBody {key} {expanded}>
+            <TableRow control_row={!expandable_columns.is_empty() && props.mode.is_expandable()}>
                 // first column, the toggle
-
                 if expandable_columns.is_empty() {
-                    <TableRowToggle {expanded} {onclick} />
+                    <TableData expandable={ExpandParams {
+                        r#type: ExpandType::Row,
+                        expanded,
+                        ontoggle: onclick,
+                    }} />
                 }
-
                 // then, the actual content
-
                 { render_row(props, &entry, |column| expandable_columns.contains(column)) }
-            </tr>
+            </TableRow>
 
             // the expanded row details
-
-            <tr class={tr_class} role="row">
+            <TableRow expandable=true {expanded}>
                 { cells }
-            </tr>
-        </tbody>
-    )
-}
-
-#[derive(PartialEq, Properties)]
-struct TableRowToggleProperties {
-    expanded: bool,
-    onclick: Callback<MouseEvent>,
-}
-
-#[function_component(TableRowToggle)]
-fn table_row_toggle(props: &TableRowToggleProperties) -> Html {
-    let aria_expanded = match props.expanded {
-        true => "true",
-        false => "false",
-    };
-
-    let mut toggle_class = classes!("pf-v5-c-button", "pf-m-plain");
-    if props.expanded {
-        toggle_class.push(classes!("pf-m-expanded"));
-    }
-
-    html!(
-        <td class="pf-v5-c-table__td pf-v5-c-table__toggle" role="cell">
-            <button
-                class={toggle_class}
-                onclick={props.onclick.clone()}
-                aria-expanded={aria_expanded}
-            >
-                <div class="pf-v5-c-table__toggle-icon">
-                    { Icon::AngleDown }
-                </div>
-            </button>
-        </td>
+            </TableRow>
+        </TableBody>
     )
 }
 
@@ -486,59 +379,35 @@ where
         { for cols.map(|column| {
 
             let index = column.props.index.clone();
-            let expandable=  expandable(&index);
-
+            let expandable = expandable(&index);
 
             // main cell content
-
             let cell = entry.value.render_cell(CellContext {
                 column: &column.props.index,
             });
 
-            // cell attributes
-
-            let mut class = classes!("pf-v5-c-table__td");
-            if cell.center {
-                class.push(classes!("pf-m-center"))
-            }
-            class.extend_from(&cell.text_modifier);
-            if expandable {
-                class.push(classes!("pf-v5-c-table__compound-expansion-toggle"));
-                match &entry.expansion {
-                    Some(ExpansionState::Column(i)) if i == &index => {
-                      class.push("pf-m-expanded");
+            let key = entry.key.clone();
+            let expandable = expandable.then(|| ExpandParams {
+                r#type: ExpandType::Column,
+                ontoggle: props.onexpand.0.reform({
+                    let index = index.clone();
+                    move |_| {
+                        let toggle = ExpansionState::Column(index.clone());
+                        (key.clone(), toggle)
                     }
-                    _ => {},
-                }
-            }
+                }),
+                expanded: entry.expansion == Some(ExpansionState::Column(index.clone())),
+            });
 
-            // data label
-
-            let label = column.props.label.clone();
-
-            // wrap with button when it's expandable
-            let mut content = cell.content;
-            if expandable {
-                let key = entry.key.clone();
-                let onclick = props.onexpand.0.reform(move |_| {
-                    let toggle = ExpansionState::Column(index.clone());
-                    (key.clone(), toggle)
-                });
-
-                content = html!(
-                    <button class="pf-v5-c-table__button" {onclick}>
-                        <span class="pf-v5-c-table__text">
-                            { content }
-                        </span>
-                    </button>
-                );
-            }
-
-            // render
             html!(
-                <td {class} role="cell" data-label={label.unwrap_or_default()}>
-                    { content }
-                </td>
+                <TableData
+                    data_label={column.props.label.clone().map(AttrValue::from)}
+                    {expandable}
+                    center={cell.center}
+                    text_modifier={cell.text_modifier}
+                >
+                    { cell.content.clone() }
+                </TableData>
             )
         })}
 
@@ -555,14 +424,14 @@ struct RowActionsProperties {
 fn row_actions(props: &RowActionsProperties) -> Html {
     html!(<>
         if !props.actions.is_empty() {
-            <td class="pf-v5-c-table__td pf-v5-c-table__action" role="cell">
+            <TableData action=true>
                 <Dropdown
                     variant={MenuToggleVariant::Plain}
                     icon={Icon::EllipsisV}
                 >
                     { props.actions.clone() }
                 </Dropdown>
-            </td>
+            </TableData>
         }
     </>)
 }
