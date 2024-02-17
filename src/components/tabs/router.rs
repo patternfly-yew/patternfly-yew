@@ -30,8 +30,8 @@ where
     pub children: ChildrenWithProps<TabRouterItem<T>>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA_TABS.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA_TABS.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -45,6 +45,9 @@ pub fn tabs_router<T>(props: &TabsRouterProperties<T>) -> Html
 where
     T: Target,
 {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA_TABS.generated_id())
+    });
     let mut classes = classes!("pf-v5-c-tabs");
 
     if props.r#box {
@@ -66,7 +69,7 @@ where
     html! (
         <div
             class={classes}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
@@ -95,8 +98,8 @@ where
     pub disabled: bool,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA_ITEM.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA_ITEM.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -110,6 +113,9 @@ pub fn tab_router_item<T>(props: &TabRouterItemProperties<T>) -> Html
 where
     T: Target,
 {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA_ITEM.generated_id())
+    });
     let router = use_router::<T>().expect("Must be used below a Router or Nested component");
 
     let mut classes = Classes::from("pf-v5-c-tabs__item");
@@ -127,7 +133,7 @@ where
     html! (
         <li
             class={classes}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >

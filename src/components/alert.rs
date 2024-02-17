@@ -71,8 +71,8 @@ pub struct AlertProperties {
     pub onclose: Option<Callback<()>>,
 
     /// OUIA Component id
-    #[prop_or_else(|| OUIA.generated_id())]
-    pub ouia_id: String,
+    #[prop_or_default]
+    pub ouia_id: Option<String>,
     /// OUIA Component Type
     #[prop_or(OUIA.component_type())]
     pub ouia_type: OuiaComponentType,
@@ -92,6 +92,9 @@ pub struct AlertProperties {
 /// Defined by [`AlertProperties`].
 #[function_component(Alert)]
 pub fn alert(props: &AlertProperties) -> Html {
+    let ouia_id = use_memo(props.ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
     let mut classes = classes!("pf-v5-c-alert");
 
     classes.extend(props.r#type.as_classes());
@@ -134,7 +137,7 @@ pub fn alert(props: &AlertProperties) -> Html {
             id={props.id.clone()}
             class={classes}
             aria_label={t.aria_label()}
-            data-ouia-component-id={props.ouia_id.clone()}
+            data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
