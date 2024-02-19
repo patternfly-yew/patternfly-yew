@@ -6,17 +6,62 @@ use crate::prelude::AsClasses;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use yew::html::IntoPropValue;
+use yew::prelude::*;
 use yew::Classes;
+use yew_hooks::use_event_with_window;
 
 /// Breakpoint definitions
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(usize)]
 pub enum Breakpoint {
-    None,
-    Small,
-    Medium,
-    Large,
-    XLarge,
-    XXLarge,
+    None = 0,
+    Small = 576,
+    Medium = 768,
+    Large = 992,
+    XLarge = 1200,
+    XXLarge = 1450,
+}
+
+impl Breakpoint {
+    pub fn current() -> Self {
+        let width = web_sys::window()
+            .expect("Couldn't get window")
+            .inner_width()
+            .expect("Couldn't retrieve with of window")
+            .as_f64()
+            .expect("Couldn't convert window size to number")
+            .round();
+        Self::from(ScreenWidth(width as usize))
+    }
+}
+
+#[derive(Debug)]
+#[repr(transparent)]
+struct ScreenWidth(usize);
+
+impl From<ScreenWidth> for Breakpoint {
+    fn from(value: ScreenWidth) -> Self {
+        match value.0 {
+            w if w < Breakpoint::Small as usize => Breakpoint::None,
+            w if w < Breakpoint::Medium as usize => Breakpoint::Small,
+            w if w < Breakpoint::Large as usize => Breakpoint::Medium,
+            w if w < Breakpoint::XLarge as usize => Breakpoint::Large,
+            w if w < Breakpoint::XXLarge as usize => Breakpoint::XLarge,
+            _ => Breakpoint::XXLarge,
+        }
+    }
+}
+
+#[hook]
+pub fn use_breakpoint() -> UseStateHandle<Breakpoint> {
+    let state = use_state_eq(Breakpoint::current);
+    {
+        let state = state.clone();
+        use_event_with_window("resize", move |_: Event| {
+            state.set(Breakpoint::current());
+        });
+    }
+    state.clone()
 }
 
 /// A combination of a style/variant for a specific [`Breakpoint`].
