@@ -58,7 +58,7 @@ pub struct PageProperties {
 ///
 #[function_component(Page)]
 pub fn page(props: &PageProperties) -> Html {
-    let open = use_state_eq(|| true);
+    let open = use_state_eq(|| props.open);
 
     let onclick = {
         let open = open.clone();
