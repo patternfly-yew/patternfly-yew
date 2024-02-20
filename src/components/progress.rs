@@ -145,6 +145,10 @@ pub struct ProgressProperties {
     #[prop_or_default]
     pub class: Classes,
 
+    /// Additional classes for the measure element
+    #[prop_or_default]
+    pub measure_class: Classes,
+
     /// Additional CSS style
     #[prop_or_default]
     pub style: Option<AttrValue>,
@@ -183,6 +187,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
     }
     class.extend(&props.class);
 
+    let measure_class = classes!("pf-v5-c-progress__measure", props.measure_class.clone());
     let mut measure = match props.location {
         ProgressMeasureLocation::None => None,
         _ => {
@@ -190,7 +195,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
                 .value_text
                 .clone()
                 .unwrap_or_else(|| props.format.format(props.value));
-            Some(html!(<span class="pf-v5-c-progress__measure"> { measure } </span>))
+            Some(html!(<span class={measure_class}> { measure } </span>))
         }
     };
 
