@@ -6,10 +6,11 @@ use crate::prelude::AsClasses;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use yew::html::IntoPropValue;
-use yew::Classes;
+use yew::prelude::*;
+use yew_more_hooks::prelude::Breakpoint as BreakpointTrait;
 
 /// Breakpoint definitions
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord)]
 pub enum Breakpoint {
     None,
     Small,
@@ -17,6 +18,41 @@ pub enum Breakpoint {
     Large,
     XLarge,
     XXLarge,
+}
+
+impl PartialOrd for Breakpoint {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.as_pixels().partial_cmp(&other.as_pixels())
+    }
+}
+
+impl BreakpointTrait for Breakpoint {
+    fn as_pixels(&self) -> usize {
+        match self {
+            Breakpoint::None => 0,
+            Breakpoint::Small => 576,
+            Breakpoint::Medium => 768,
+            Breakpoint::Large => 992,
+            Breakpoint::XLarge => 1200,
+            Breakpoint::XXLarge => 1450,
+        }
+    }
+
+    fn from_screen_width(pixels: usize) -> Self {
+        match pixels {
+            w if w < Breakpoint::Small.as_pixels() => Breakpoint::None,
+            w if w < Breakpoint::Medium.as_pixels() => Breakpoint::Small,
+            w if w < Breakpoint::Large.as_pixels() => Breakpoint::Medium,
+            w if w < Breakpoint::XLarge.as_pixels() => Breakpoint::Large,
+            w if w < Breakpoint::XXLarge.as_pixels() => Breakpoint::XLarge,
+            _ => Breakpoint::XXLarge,
+        }
+    }
+}
+
+#[hook]
+pub fn use_breakpoint() -> UseStateHandle<Breakpoint> {
+    yew_more_hooks::prelude::use_breakpoint()
 }
 
 /// A combination of a style/variant for a specific [`Breakpoint`].

@@ -31,6 +31,7 @@ wasm-bindgen-futures = "0.4.39"
 web-tools = { version = "0.2.3", features = ["yew"] }
 yew = "0.21"
 yew-hooks = "0.3"
+yew-more-hooks = { version = "0.3.3", features = ["breakpoint"] }
 yew-nested-router = { version = "0.6", optional = true }
 
 web-sys = { version = "0.3.66", features = [
