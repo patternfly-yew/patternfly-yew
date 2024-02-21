@@ -200,12 +200,12 @@ where
     );
 
     let expandable = props.is_expandable() && !props.are_columns_expandable();
-    html! (
+    html!(
         <ComposableTable
             id={&props.id}
             class={props.class.clone()}
             sticky_header={props.header.as_ref().is_some_and(|header| header.props.sticky)}
-            mode={props.mode.clone()}
+            mode={props.mode}
             borders={props.borders}
             grid={props.grid}
             ouia_id={props.ouia_id.clone()}
@@ -322,7 +322,7 @@ where
     }
 
     if cols > 0 {
-        cells.push(html! (
+        cells.push(html!(
             <TableData colspan={cols}/>
         ));
     }
@@ -335,7 +335,7 @@ where
             .reform(move |_| (key.clone(), ExpansionState::Row))
     };
 
-    html! (
+    html!(
         <TableBody {key} {expanded}>
             <TableRow control_row={!expandable_columns.is_empty() && props.mode.is_expandable()}>
                 // first column, the toggle
