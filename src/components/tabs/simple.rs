@@ -59,6 +59,16 @@ where
     /// OUIA Component Safe
     #[prop_or(OuiaSafe::TRUE)]
     pub ouia_safe: OuiaSafe,
+
+    /// OUIA Component id
+    #[prop_or_default]
+    pub scroll_button_ouia_id: Option<String>,
+    /// OUIA Component Type
+    #[prop_or(OUIA_BUTTON.component_type())]
+    pub scroll_button_ouia_type: OuiaComponentType,
+    /// OUIA Component Safe
+    #[prop_or(OuiaSafe::TRUE)]
+    pub scroll_button_ouia_safe: OuiaSafe,
 }
 
 /// Tabs component
@@ -130,7 +140,11 @@ where
         selected: props.selected.clone(),
     };
 
-    html! (
+    let button_ouia_id = use_memo(props.scroll_button_ouia_id.clone(), |id| {
+        id.clone().unwrap_or(OUIA.generated_id())
+    });
+
+    html!(
         <ContextProvider<TabsContext<T>> {context}>
             <div
                 {class}
@@ -144,9 +158,9 @@ where
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll left"
-                    data-ouia-component-type={OUIA_BUTTON.component_type()}
-                    data-ouia-safe="true"
-                    data-ouia-component-id={OUIA_BUTTON.generated_id()}
+                    data-ouia-component-type={props.scroll_button_ouia_type}
+                    data-ouia-safe={props.scroll_button_ouia_safe}
+                    data-ouia-component-id={(*button_ouia_id).clone()}
                 >
                     { Icon::AngleLeft }
                 </button>
@@ -254,7 +268,7 @@ where
         },
     );
 
-    html! (
+    html!(
         <li
             {class}
             id={props.id.clone()}
@@ -354,7 +368,7 @@ where
         .map(|context| context.selected == props.index)
         .unwrap_or_default();
 
-    html! (
+    html!(
         <TabContent
             hidden={!current}
             id={props.id.clone()}
