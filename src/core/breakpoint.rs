@@ -10,7 +10,7 @@ use yew::prelude::*;
 use yew_more_hooks::prelude::Breakpoint as BreakpointTrait;
 
 /// Breakpoint definitions
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Breakpoint {
     None,
     Small,
@@ -18,12 +18,6 @@ pub enum Breakpoint {
     Large,
     XLarge,
     XXLarge,
-}
-
-impl PartialOrd for Breakpoint {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.as_pixels().partial_cmp(&other.as_pixels())
-    }
 }
 
 impl BreakpointTrait for Breakpoint {
