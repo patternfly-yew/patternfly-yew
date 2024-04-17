@@ -33,7 +33,7 @@ yew = "0.21"
 yew-hooks = "0.3"
 yew-more-hooks = { version = "0.3.3", features = ["breakpoint"] }
 yew-nested-router = { version = "0.6", optional = true }
-
+yew-router = { version = "0.18.0", optional = true }
 web-sys = { version = "0.3.66", features = [
     "HtmlCollection",
     "Node",
@@ -54,6 +54,7 @@ web-sys = { version = "0.3.66", features = [
 [features]
 default = ["router"]
 router = ["yew-nested-router"]
+yew-router = ["dep:yew-router"]
 
 # things which go away any minute
 legacy = []

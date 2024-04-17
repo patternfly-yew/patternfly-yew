@@ -12,6 +12,12 @@ mod variant;
 #[cfg(feature = "router")]
 pub use router::*;
 
+#[cfg(feature = "yew-router")]
+mod yew_router;
+
+#[cfg(feature = "yew-router")]
+pub use yew_router::*;
+
 const OUIA: Ouia = ouia!("Breadcrumb");
 
 /// Properties for [`Breadcrumb`]

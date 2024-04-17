@@ -6,6 +6,12 @@ mod router;
 pub use router::*;
 use std::collections::HashSet;
 
+#[cfg(feature = "yew-router")]
+mod yew_router;
+
+#[cfg(feature = "yew-router")]
+pub use yew_router::*;
+
 use crate::ouia;
 use crate::prelude::{Icon, Id, OuiaComponentType};
 use crate::utils::{Ouia, OuiaSafe};
