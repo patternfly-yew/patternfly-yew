@@ -5,11 +5,11 @@ use crate::utils::{Ouia, OuiaSafe};
 use variant::BreadcrumbItemVariant;
 use yew::{html::ChildrenRenderer, prelude::*};
 
-#[cfg(feature = "router")]
+#[cfg(feature = "yew-nested-router")]
 mod router;
 mod variant;
 
-#[cfg(feature = "router")]
+#[cfg(feature = "yew-nested-router")]
 pub use router::*;
 
 const OUIA: Ouia = ouia!("Breadcrumb");

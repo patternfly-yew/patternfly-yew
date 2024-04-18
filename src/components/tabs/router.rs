@@ -137,7 +137,7 @@ where
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <Link<T> element="button" class={link_classes} target={props.to.clone()}>
+            <Link<T> element="button" class={link_classes} to={props.to.clone()}>
                 <span class="pf-v5-c-tabs__item-text"> { &props.title } </span>
             </Link<T>>
         </li>
