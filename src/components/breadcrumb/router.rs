@@ -41,7 +41,7 @@ pub fn breadcrumb_router_item<T: Target>(props: &BreadcrumbRouterItemProperties<
     html!(
         <Link<T>
             {class}
-            target={props.to.clone()}
+            to={props.to.clone()}
         >
             { props.children.clone() }
         </Link<T>>
