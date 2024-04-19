@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_call:
+  # But don't trigger on tags, as they are covered by the "release.yaml" workflow
 
 env:
   CARGO_TERM_COLOR: always
