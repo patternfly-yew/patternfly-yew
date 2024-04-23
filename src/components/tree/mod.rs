@@ -49,6 +49,9 @@ where
     pub header: VChild<TreeTableHeader<C>>,
 
     pub model: Rc<M>,
+
+    #[prop_or(true)]
+    pub default_expansion: bool,
 }
 
 #[function_component(TreeTable)]
@@ -65,9 +68,12 @@ where
         collect_columns(&header)
     });
 
-    let content = use_memo((props.model.clone(), headers), |(model, headers)| {
-        render_model(model, headers.clone())
-    });
+    let content = use_memo(
+        (props.model.clone(), headers, props.default_expansion),
+        |(model, headers, default_expansion)| {
+            render_model(model, headers.clone(), *default_expansion)
+        },
+    );
 
     html!(
         <table
@@ -130,12 +136,18 @@ impl Visibility {
     }
 }
 
-fn render_model<C, M>(model: &Rc<M>, headers: Rc<Vec<Column<C>>>) -> Html
+fn render_model<C, M>(model: &Rc<M>, headers: Rc<Vec<Column<C>>>, default_expansion: bool) -> Html
 where
     C: Clone + Eq + 'static,
     M: TreeTableModel<C>,
 {
-    render_nodes(1, model.children(), Visibility::new(), headers)
+    render_nodes(
+        1,
+        model.children(),
+        Visibility::new(),
+        headers,
+        default_expansion,
+    )
 }
 
 fn render_nodes<C>(
@@ -143,6 +155,7 @@ fn render_nodes<C>(
     nodes: Vec<Rc<dyn TreeNode<C>>>,
     visibility: Visibility,
     headers: Rc<Vec<Column<C>>>,
+    default_expansion: bool,
 ) -> Html
 where
     C: Clone + Eq + 'static,
@@ -153,7 +166,7 @@ where
             for nodes.iter()
                 .enumerate()
                 .map(|(position,node) | html!(
-                    <Row<C> {visibility} {size} {position} {level} node={node.clone()} headers={headers.clone()} />
+                    <Row<C> {visibility} {size} {position} {level} node={node.clone()} headers={headers.clone()} {default_expansion}/>
                 ))
         }
     )
@@ -170,6 +183,7 @@ where
     node: Rc<dyn TreeNode<C>>,
     visibility: Visibility,
     headers: Rc<Vec<Column<C>>>,
+    default_expansion: bool,
 }
 
 impl<C> PartialEq for RowProperties<C>
@@ -191,7 +205,7 @@ fn row<C>(props: &RowProperties<C>) -> Html
 where
     C: Clone + Eq + 'static,
 {
-    let expanded = use_state_eq(|| true);
+    let expanded = use_state_eq(|| props.default_expansion);
 
     let mut class = classes!("pf-v5-c-table__tr");
 
@@ -254,7 +268,9 @@ where
                 // cell for the actions
                 <td></td>
             </tr>
-            { render_nodes(props.level + 1, children, props.visibility.nested(*expanded), props.headers.clone()) }
+            if props.visibility.nested(*expanded).is_visible() {
+                { render_nodes(props.level + 1, children, props.visibility.nested(*expanded), props.headers.clone(), props.default_expansion) }
+            }
         </>
     )
 }
