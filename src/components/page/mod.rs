@@ -70,15 +70,19 @@ pub fn page(props: &PageProperties) -> Html {
     html! (
         <div class="pf-v5-c-page" id={&props.id} role="main" tabindex="-1">
             <header class="pf-v5-c-masthead">
-                <span class="pf-v5-c-masthead__toggle">
-                    <Button
-                        r#type={ButtonType::Button}
-                        variant={ButtonVariant::Plain}
-                        {onclick}
-                    >
-                        <i class="fas fa-bars" aria-hidden="true" />
-                    </Button>
-                </span>
+                // If the sidebar is empty then the toggle button is not 
+                // shown
+                if !props.sidebar.clone().is_empty() {
+                    <span class="pf-v5-c-masthead__toggle">
+                        <Button
+                            r#type={ButtonType::Button}
+                            variant={ButtonVariant::Plain}
+                            {onclick}
+                        >
+                            <i class="fas fa-bars" aria-hidden="true" />
+                        </Button>
+                    </span>
+                }
 
                 <div class="pf-v5-c-masthead__main">
                     { props.brand.clone() }
