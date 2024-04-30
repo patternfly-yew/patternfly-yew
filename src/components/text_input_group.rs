@@ -124,10 +124,10 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     // autofocus
 
     {
-        let autofocus = props.autofocus;
-        use_effect_with(node_ref.clone(), move |input_ref| {
-            if autofocus {
-                input_ref.focus();
+        let node_ref = node_ref.clone();
+        use_effect_with(props.autofocus, move |autofocus| {
+            if *autofocus {
+                node_ref.focus();
             }
         });
     }
