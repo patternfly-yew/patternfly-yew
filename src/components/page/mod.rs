@@ -70,9 +70,9 @@ pub fn page(props: &PageProperties) -> Html {
     html! (
         <div class="pf-v5-c-page" id={&props.id} role="main" tabindex="-1">
             <header class="pf-v5-c-masthead">
-                // If the sidebar is empty then the toggle button is not 
+                // If the sidebar is empty then the toggle button is not
                 // shown
-                if !props.sidebar.clone().is_empty() {
+                if !props.sidebar.is_empty() {
                     <span class="pf-v5-c-masthead__toggle">
                         <Button
                             r#type={ButtonType::Button}
