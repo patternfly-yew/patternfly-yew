@@ -204,10 +204,10 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     // autofocus
 
     {
-        let autofocus = props.autofocus;
-        use_effect_with(input_ref.clone(), move |input_ref| {
-            if autofocus {
-                focus(input_ref)
+        let input_ref = input_ref.clone();
+        use_effect_with(props.autofocus, move |autofocus| {
+            if *autofocus {
+                focus(&input_ref)
             }
         });
     }
