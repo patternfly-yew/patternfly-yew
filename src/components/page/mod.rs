@@ -36,6 +36,8 @@ pub struct PageProperties {
 
     #[prop_or_default]
     pub id: Option<AttrValue>,
+    #[prop_or_default]
+    pub on_main_scroll: Callback<Event>,
 }
 
 /// A full page
@@ -66,7 +68,7 @@ pub fn page(props: &PageProperties) -> Html {
             open.set(!(*open));
         })
     };
-
+    let onscroll = props.on_main_scroll.clone();
     html! (
         <div class="pf-v5-c-page" id={&props.id} role="main" tabindex="-1">
             <header class="pf-v5-c-masthead">
@@ -101,7 +103,7 @@ pub fn page(props: &PageProperties) -> Html {
                 s
             }) }
 
-            <main class="pf-v5-c-page__main" tabindex="-1">
+            <main class="pf-v5-c-page__main" tabindex="-1" {onscroll}>
                 { props.children.clone() }
             </main>
         </div>
