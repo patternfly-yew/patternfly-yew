@@ -33,9 +33,9 @@ pub fn gallery(props: &GalleryProperties) -> Html {
             class={classes}
             style={&props.style}
         >
-        { for props.children.iter().map(|child|{
+        { for props.children.iter().enumerate().map(|(i, child)|{
             html!{
-                <div class="pf-v5-l-gallery__item">
+                <div key={child.key().map(|k| k.clone()).unwrap_or_else(|| i.into())} class="pf-v5-l-gallery__item">
                     { child.clone() }
                 </div>
             }
