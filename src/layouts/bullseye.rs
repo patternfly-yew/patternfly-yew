@@ -1,5 +1,8 @@
 //! Bullseye
 use yew::prelude::*;
+use yew::virtual_dom::ApplyAttributeAs;
+
+use crate::prelude::wrap::wrapper_div_with_attributes;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct BullseyeProperties {
@@ -27,9 +30,9 @@ pub fn bullseye(props: &BullseyeProperties) -> Html {
                     // according to the PatternFly documentation wrapping element with the item
                     // shouldn't make a difference. In practice, sometimes it does.
                     c
-                } else {html!{
-                    <div class="pf-v5-l-bullseye__item">{c}</div>
-                }}
+                } else {
+                    wrapper_div_with_attributes(c, &[("class", "pf-v5-l-bullseye__item", ApplyAttributeAs::Attribute)])
+                }
             }) }
         </div>
     }
