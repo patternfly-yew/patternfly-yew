@@ -1,8 +1,10 @@
 //! Modal
 use crate::ouia;
 use crate::prelude::use_backdrop;
+use crate::prelude::wrap::wrapper_div_with_attributes;
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::prelude::*;
+use yew::virtual_dom::ApplyAttributeAs;
 use yew_hooks::{use_click_away, use_event_with_window};
 
 const OUIA: Ouia = ouia!("ModalContent");
@@ -169,9 +171,11 @@ pub fn modal(props: &ModalProperties) -> Html {
             }
 
             { for props.children.iter().map(|c|{
-               { html! (
-                    <div class="pf-v5-c-modal-box__body" id="modal-description">{c}</div>
-               ) }
+                wrapper_div_with_attributes(c,
+                    &[
+                        ("class", "pf-v5-l-gallery__item", ApplyAttributeAs::Attribute),
+                        ("id", "modal-description", ApplyAttributeAs::Attribute)
+                    ])
             }) }
 
             if let Some(footer) = &props.footer {
