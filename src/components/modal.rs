@@ -173,7 +173,7 @@ pub fn modal(props: &ModalProperties) -> Html {
             { for props.children.iter().map(|c|{
                 wrapper_div_with_attributes(c,
                     &[
-                        ("class", "pf-v5-l-gallery__item", ApplyAttributeAs::Attribute),
+                        ("class", "pf-v5-c-modal-box__body", ApplyAttributeAs::Attribute),
                         ("id", "modal-description", ApplyAttributeAs::Attribute)
                     ])
             }) }
