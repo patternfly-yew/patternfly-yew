@@ -12,7 +12,7 @@ readme = "README.md"
 rust-version = "1.70"
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
+chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock", "unstable-locales"] }
 gloo-events = "0.2.0"
 gloo-timers = "0.3.0"
 gloo-utils = "0.2.0"
@@ -50,6 +50,7 @@ web-sys = { version = "0.3.66", features = [
     "TouchEvent",
     "TouchList",
 ] }
+sys-locale = { version = "0.3.1", features = ["js"] }
 
 
 [features]

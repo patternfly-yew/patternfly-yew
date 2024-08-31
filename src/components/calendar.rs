@@ -2,12 +2,14 @@ use crate::prelude::{
     Button, ButtonType, ButtonVariant, Icon, InputGroup, InputGroupItem, SimpleSelect, TextInput,
     TextInputType,
 };
-use chrono::{Datelike, Days, Local, Month, Months, NaiveDate, Weekday};
+use chrono::{Datelike, Days, Duration, Local, Locale, Month, Months, NaiveDate, Weekday};
 use num_traits::cast::FromPrimitive;
-use std::str::FromStr;
+use std::{str::FromStr, sync::OnceLock};
 use yew::{
     classes, function_component, html, use_callback, use_state_eq, Callback, Html, Properties,
 };
+
+use super::select::SelectItemRenderer;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct CalendarMonthProperties {
@@ -20,6 +22,8 @@ pub struct CalendarMonthProperties {
     #[prop_or(Weekday::Mon)]
     pub weekday_start: Weekday,
 }
+
+static CURRENT_LOCALE_CELL: OnceLock<Locale> = OnceLock::new();
 
 // Build a vec (month) which contains vecs (weeks) of a month with the first
 // and last day of week, even if they aren't in the same month.
@@ -60,16 +64,14 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
 
     let callback_month_select = use_callback(
         (show_date.clone(), month.clone()),
-        move |new_month: String, (show_date, month)| {
-            if let Ok(m) = new_month.parse::<Month>() {
-                if let Some(d) = NaiveDate::from_ymd_opt(
-                    show_date.year(),
-                    m.number_from_month(),
-                    show_date.day(),
-                ) {
-                    show_date.set(d);
-                    month.set(m);
-                }
+        move |new_month: MonthLocal, (show_date, month)| {
+            if let Some(d) = NaiveDate::from_ymd_opt(
+                show_date.year(),
+                new_month.0.number_from_month(),
+                show_date.day(),
+            ) {
+                show_date.set(d);
+                month.set(new_month.0);
             }
         },
     );
@@ -117,22 +119,22 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 <InputGroup>
                     <InputGroupItem>
                         <div class="pf-v5-c-calendar-month__header-month">
-                            <SimpleSelect<String>
+                            <SimpleSelect<MonthLocal>
                                 entries={vec![
-                                    String::from(Month::January.name()),
-                                    String::from(Month::February.name()),
-                                    String::from(Month::March.name()),
-                                    String::from(Month::April.name()),
-                                    String::from(Month::May.name()),
-                                    String::from(Month::June.name()),
-                                    String::from(Month::July.name()),
-                                    String::from(Month::August.name()),
-                                    String::from(Month::September.name()),
-                                    String::from(Month::October.name()),
-                                    String::from(Month::November.name()),
-                                    String::from(Month::December.name())
+                                    MonthLocal(Month::January),
+                                    MonthLocal(Month::February),
+                                    MonthLocal(Month::March),
+                                    MonthLocal(Month::April),
+                                    MonthLocal(Month::May),
+                                    MonthLocal(Month::June),
+                                    MonthLocal(Month::July),
+                                    MonthLocal(Month::August),
+                                    MonthLocal(Month::September),
+                                    MonthLocal(Month::October),
+                                    MonthLocal(Month::November),
+                                    MonthLocal(Month::December)
                                 ]}
-                                selected={String::from(month.name())}
+                                selected={MonthLocal(*month)}
                                 onselect={callback_month_select}
                             />
                         </div>
@@ -165,8 +167,8 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         weeks[0].clone().into_iter().map(|day| {
                             html!{
                                 <th class="pf-v5-c-calendar-month__day">
-                                    <span class="pf-v5-screen-reader">{day.weekday().to_string()}</span>
-                                    <span aria-hidden="true">{day.weekday().to_string()}</span>
+                                    <span class="pf-v5-screen-reader">{localized_weekday_name(day.weekday())}</span>
+                                    <span aria-hidden="true">{localized_weekday_name(day.weekday())}</span>
                                 </th>
                             }
                         }).collect::<Html>()
@@ -258,4 +260,70 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
             </table>
         </div>
     }
+}
+
+/// A wrapper around [`chrono::Month`] to extend it
+#[derive(Clone, PartialEq, Eq)]
+struct MonthLocal(Month);
+
+impl SelectItemRenderer for MonthLocal {
+    type Item = String;
+
+    fn label(&self) -> Self::Item {
+        self.0.localized_name()
+    }
+}
+
+trait Localized {
+    fn localized_name(&self) -> String;
+}
+
+impl Localized for Month {
+    /// Convert to text in the current system language
+    fn localized_name(&self) -> String {
+        // Build a dummy NaiveDate with month whose name I'm interested in
+        let date = NaiveDate::from_ymd_opt(2024, self.number_from_month(), 1).unwrap();
+
+        // Get a localized full month name
+        date.format_localized("%B", current_locale()).to_string()
+    }
+}
+
+fn localized_weekday_name(weekday: Weekday) -> String {
+    // Get today NaiveDateTime
+    let today = Local::now().naive_local();
+
+    // Calculate the distance in days between today and the next 'weekday'
+    let days_until_weekday = (7 + weekday.num_days_from_monday() as i64
+        - today.weekday().num_days_from_monday() as i64)
+        % 7;
+
+    // Calculate the date of the next 'weekday'
+    let one_day = today + Duration::days(days_until_weekday);
+
+    // Get a localized 'weekday' short name
+    one_day
+        .date()
+        .format_localized("%a", current_locale())
+        .to_string()
+}
+
+fn current_locale() -> Locale {
+    CURRENT_LOCALE_CELL
+        .get_or_init(|| {
+            // Get the current system locale text representation
+            let current_locale = sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"));
+
+            // Convert the locale representation to snake case
+            let current_locale_snake_case = current_locale
+                .as_str()
+                .split('.')
+                .next()
+                .map(|s| s.replace('-', "_"))
+                .unwrap_or("en_US".to_string());
+
+            // Build the chono::Locale from locale text represantation
+            Locale::try_from(current_locale_snake_case.as_str()).unwrap_or(Locale::POSIX)
+        })
+        .to_owned()
 }
