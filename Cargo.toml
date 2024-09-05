@@ -12,7 +12,7 @@ readme = "README.md"
 rust-version = "1.70"
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock", "unstable-locales"] }
+chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
 gloo-events = "0.2.0"
 gloo-timers = "0.3.0"
 gloo-utils = "0.2.0"
@@ -50,7 +50,7 @@ web-sys = { version = "0.3.66", features = [
     "TouchEvent",
     "TouchList",
 ] }
-sys-locale = { version = "0.3.1", features = ["js"] }
+sys-locale = { version = "0.3.1", features = ["js"], optional = true }
 
 
 [features]
@@ -65,6 +65,9 @@ tree = []
 # Enable FontAwesome regular (FAR) and/or brand (FAB) icons, remember to import the font in your application
 icons-far = []
 icons-fab = []
+
+# Enables localization of the names of the months and days of the week
+localization = ["dep:sys-locale", "chrono/unstable-locales"]
 
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }

@@ -2,9 +2,10 @@ use crate::prelude::{
     Button, ButtonType, ButtonVariant, Icon, InputGroup, InputGroupItem, SimpleSelect, TextInput,
     TextInputType,
 };
-use chrono::{Datelike, Days, Duration, Local, Locale, Month, Months, NaiveDate, Weekday};
+use chrono::{Datelike, Days, Local, Month, Months, NaiveDate, Weekday};
 use num_traits::cast::FromPrimitive;
-use std::{str::FromStr, sync::OnceLock};
+use std::str::FromStr;
+
 use yew::{
     classes, function_component, html, use_callback, use_state_eq, Callback, Html, Properties,
 };
@@ -22,8 +23,6 @@ pub struct CalendarMonthProperties {
     #[prop_or(Weekday::Mon)]
     pub weekday_start: Weekday,
 }
-
-static CURRENT_LOCALE_CELL: OnceLock<Locale> = OnceLock::new();
 
 // Build a vec (month) which contains vecs (weeks) of a month with the first
 // and last day of week, even if they aren't in the same month.
@@ -167,8 +166,8 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         weeks[0].clone().into_iter().map(|day| {
                             html!{
                                 <th class="pf-v5-c-calendar-month__day">
-                                    <span class="pf-v5-screen-reader">{localized_weekday_name(day.weekday())}</span>
-                                    <span aria-hidden="true">{localized_weekday_name(day.weekday())}</span>
+                                    <span class="pf-v5-screen-reader">{weekday_name(day.weekday())}</span>
+                                    <span aria-hidden="true">{weekday_name(day.weekday())}</span>
                                 </th>
                             }
                         }).collect::<Html>()
@@ -269,15 +268,23 @@ struct MonthLocal(Month);
 impl SelectItemRenderer for MonthLocal {
     type Item = String;
 
+    #[cfg(feature = "localization")]
     fn label(&self) -> Self::Item {
         self.0.localized_name()
     }
+
+    #[cfg(not(feature = "localization"))]
+    fn label(&self) -> Self::Item {
+        self.0.name().to_string()
+    }
 }
 
+#[cfg(feature = "localization")]
 trait Localized {
     fn localized_name(&self) -> String;
 }
 
+#[cfg(feature = "localization")]
 impl Localized for Month {
     /// Convert to text in the current system language
     fn localized_name(&self) -> String {
@@ -289,9 +296,20 @@ impl Localized for Month {
     }
 }
 
+#[cfg(feature = "localization")]
+fn weekday_name(weekday: Weekday) -> String {
+    localized_weekday_name(weekday)
+}
+
+#[cfg(not(feature = "localization"))]
+fn weekday_name(weekday: Weekday) -> String {
+    weekday.to_string()
+}
+
+#[cfg(feature = "localization")]
 fn localized_weekday_name(weekday: Weekday) -> String {
     // Get today NaiveDateTime
-    let today = Local::now().naive_local();
+    let today = chrono::Local::now().naive_local();
 
     // Calculate the distance in days between today and the next 'weekday'
     let days_until_weekday = (7 + weekday.num_days_from_monday() as i64
@@ -299,7 +317,7 @@ fn localized_weekday_name(weekday: Weekday) -> String {
         % 7;
 
     // Calculate the date of the next 'weekday'
-    let one_day = today + Duration::days(days_until_weekday);
+    let one_day = today + chrono::Duration::days(days_until_weekday);
 
     // Get a localized 'weekday' short name
     one_day
@@ -308,7 +326,11 @@ fn localized_weekday_name(weekday: Weekday) -> String {
         .to_string()
 }
 
-fn current_locale() -> Locale {
+#[cfg(feature = "localization")]
+static CURRENT_LOCALE_CELL: std::sync::OnceLock<chrono::Locale> = std::sync::OnceLock::new();
+
+#[cfg(feature = "localization")]
+fn current_locale() -> chrono::Locale {
     CURRENT_LOCALE_CELL
         .get_or_init(|| {
             // Get the current system locale text representation
@@ -323,7 +345,8 @@ fn current_locale() -> Locale {
                 .unwrap_or("en_US".to_string());
 
             // Build the chono::Locale from locale text represantation
-            Locale::try_from(current_locale_snake_case.as_str()).unwrap_or(Locale::POSIX)
+            chrono::Locale::try_from(current_locale_snake_case.as_str())
+                .unwrap_or(chrono::Locale::POSIX)
         })
         .to_owned()
 }
