@@ -1,6 +1,8 @@
 //! Gallery
 
+use crate::prelude::wrap::wrapper_div_with_attributes;
 use yew::prelude::*;
+use yew::virtual_dom::ApplyAttributeAs;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct GalleryProperties {
@@ -34,11 +36,7 @@ pub fn gallery(props: &GalleryProperties) -> Html {
             style={&props.style}
         >
         { for props.children.iter().map(|child|{
-            html!{
-                <div class="pf-v5-l-gallery__item">
-                    { child.clone() }
-                </div>
-            }
+            wrapper_div_with_attributes(child, &[("class", "pf-v5-l-gallery__item", ApplyAttributeAs::Attribute)])
         }) }
         </div>
     )
