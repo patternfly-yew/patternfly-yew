@@ -196,11 +196,11 @@ where
 
     let mut class = classes!("pf-v6-c-table__tr");
 
-    if *expanded {
+    let children = props.node.children();
+
+    if *expanded && !children.is_empty() {
         class.extend(classes!("pf-m-expanded"));
     }
-
-    let children = props.node.children();
 
     html!(
         <>
