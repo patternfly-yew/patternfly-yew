@@ -111,3 +111,114 @@ fn render_close(props: &ChipProperties) -> Html {
         }
     )
 }
+  
+// -------------------------------------------------------------
+// Example: ChipDragExample - Demonstrates drag & drop behavior
+// -------------------------------------------------------------
+use web_sys::DragEvent;
+
+#[function_component(ChipDragExample)]
+pub fn chip_drag_example() -> Html {
+    let chips = use_state(|| vec!["Foo".to_string(), "Bar".to_string(), "Baz".to_string()]);
+    let drag_index = use_state(|| None::<usize>);
+    let drop_target = use_state(|| None::<usize>);
+    
+    let ondragstart = {
+        let drag_index = drag_index.clone();
+        move |idx: usize| {
+            let drag_index = drag_index.clone();
+            Callback::from(move |e: DragEvent| {
+                e.stop_propagation();
+                drag_index.set(Some(idx));
+                if let Some(dt) = e.data_transfer() {
+                    let _ = dt.set_effect_allowed("move");
+                }
+            })
+        }
+    };
+    
+    let ondragenter = {
+        let drop_target = drop_target.clone();
+        move |idx: usize| {
+            let drop_target = drop_target.clone();
+            Callback::from(move |e: DragEvent| {
+                e.prevent_default();
+                e.stop_propagation();
+                drop_target.set(Some(idx));
+            })
+        }
+    };
+    
+    let ondragover = {
+        Callback::from(move |e: DragEvent| {
+            e.prevent_default();
+            e.stop_propagation();
+        })
+    };
+    
+    let ondrop = {
+        let chips = chips.clone();
+        let drag_index = drag_index.clone();
+        let drop_target = drop_target.clone();
+        Callback::from(move |e: DragEvent| {
+            e.prevent_default();
+            e.stop_propagation();
+            
+            if let (Some(from), Some(to)) = (*drag_index, *drop_target) {
+                if from != to {
+                    let mut new_chips = (*chips).clone();
+                    let item = new_chips.remove(from);
+                    let insert_pos = if from < to { to } else { to };
+                    new_chips.insert(insert_pos, item);
+                    chips.set(new_chips);
+                }
+            }
+            
+            drag_index.set(None);
+            drop_target.set(None);
+        })
+    };
+    
+    let ondragend = {
+        let drag_index = drag_index.clone();
+        let drop_target = drop_target.clone();
+        Callback::from(move |_: DragEvent| {
+            drag_index.set(None);
+            drop_target.set(None);
+        })
+    };
+    
+    html! {
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; padding: 1rem; min-height: 60px;">
+            { for chips.iter().enumerate().map(|(idx, text)| {
+                let is_dragging = *drag_index == Some(idx);
+                let is_drop_target = *drop_target == Some(idx) && *drag_index != Some(idx);
+                
+                let mut wrapper_style = "display: inline-block; transition: all 0.2s ease;".to_string();
+                
+                if is_dragging {
+                    wrapper_style.push_str(" opacity: 0.4;");
+                }
+                
+                if is_drop_target {
+                    wrapper_style.push_str(" transform: translateX(4px);");
+                }
+                
+                html! {
+                    <div
+                        key={format!("{}-{}", idx, text)}
+                        draggable="true"
+                        ondragstart={ondragstart(idx)}
+                        ondragenter={ondragenter(idx)}
+                        ondragover={ondragover.clone()}
+                        ondrop={ondrop.clone()}
+                        ondragend={ondragend.clone()}
+                        style={wrapper_style}
+                    >
+                        <Chip text={text.clone()} />
+                    </div>
+                }
+            }) }
+        </div>
+    }
+}
