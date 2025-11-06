@@ -21,7 +21,7 @@ jobs:
         toolchain:
           - stable
           # MSRV for bumpalo
-          - "1.73.0"
+          - "1.82.0"
 
     steps:
       - uses: actions/checkout@v4
