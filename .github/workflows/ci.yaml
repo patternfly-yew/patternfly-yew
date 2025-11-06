@@ -53,4 +53,4 @@ jobs:
 
       - name: Check all features
         run: |
-          cargo check-all-features --target wasm32-unknown-unknown
+          cargo check-all-features -- --target wasm32-unknown-unknown
