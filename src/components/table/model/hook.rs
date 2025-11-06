@@ -215,8 +215,10 @@ mod test {
         }
 
         impl TableModel<()> for MockModel {
-            type Iterator<'i>  = std::vec::IntoIter<TableModelEntry<'i, Self::Item, Self::Key, ()>> where
-            Self: 'i;
+            type Iterator<'i>
+                = std::vec::IntoIter<TableModelEntry<'i, Self::Item, Self::Key, ()>>
+            where
+                Self: 'i;
 
             type Item = String;
             type Key = usize;
