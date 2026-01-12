@@ -16,7 +16,7 @@ chrono = { version = "0.4", default-features = false, features = ["wasmbind", "c
 gloo-events = "0.2.0"
 gloo-timers = "0.3.0"
 gloo-utils = "0.2.0"
-implicit-clone = "0.4"
+implicit-clone = "0.6"
 js-sys = "0.3.64"
 log = "0.4"
 num-traits = "0.2.16"
