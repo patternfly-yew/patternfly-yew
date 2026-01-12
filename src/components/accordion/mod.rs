@@ -1,6 +1,6 @@
 //! Accordion
 use yew::prelude::*;
-use yew::virtual_dom::ApplyAttributeAs;
+use yew::virtual_dom::AttributeOrProperty;
 
 use crate::prelude::wrap::wrapper_div_with_attributes;
 
@@ -87,7 +87,7 @@ pub fn accordion_item(props: &AccordionItemProperties) -> Html {
                 </button>
             </h3>
             <div class={content_class} hidden={!expanded}>
-                { for props.children.iter().map(|item| wrapper_div_with_attributes(item, &[("class", "pf-v5-c-accordion__expandable-content-body", ApplyAttributeAs::Attribute)])) }
+                { for props.children.iter().map(|item| wrapper_div_with_attributes(item, &[("class", AttributeOrProperty::Static("pf-v5-c-accordion__expandable-content-body"))])) }
             </div>
         </>
     )

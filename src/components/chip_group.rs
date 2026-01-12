@@ -3,7 +3,7 @@
 use crate::prelude::wrap::wrapper_elt_with_attributes;
 use crate::prelude::{use_prop_id, Chip};
 use yew::prelude::*;
-use yew::virtual_dom::ApplyAttributeAs;
+use yew::virtual_dom::AttributeOrProperty;
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct ChipGroupProperties {
@@ -54,7 +54,7 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
                     aria-labelledby={aria_labelled_by}
                 >
                     { for props.children.iter().map(|chip| {
-                        wrapper_elt_with_attributes(chip.into(), "li", &[("class", "pf-v5-c-chip-group__list-item", ApplyAttributeAs::Attribute)])
+                        wrapper_elt_with_attributes(chip.into(), "li", &[("class", AttributeOrProperty::Static("pf-v5-c-chip-group__list-item"))])
                     })}
                 </ul>
             </div>

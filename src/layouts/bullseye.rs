@@ -1,6 +1,6 @@
 //! Bullseye
 use yew::prelude::*;
-use yew::virtual_dom::ApplyAttributeAs;
+use yew::virtual_dom::AttributeOrProperty;
 
 use crate::prelude::wrap::wrapper_div_with_attributes;
 
@@ -31,7 +31,7 @@ pub fn bullseye(props: &BullseyeProperties) -> Html {
                     // shouldn't make a difference. In practice, sometimes it does.
                     c
                 } else {
-                    wrapper_div_with_attributes(c, &[("class", "pf-v5-l-bullseye__item", ApplyAttributeAs::Attribute)])
+                    wrapper_div_with_attributes(c, &[("class", AttributeOrProperty::Static("pf-v5-l-bullseye__item"))])
                 }
             }) }
         </div>

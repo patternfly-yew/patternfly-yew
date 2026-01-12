@@ -5,7 +5,7 @@ use crate::prelude::wrap::wrapper_elt_with_attributes;
 use crate::prelude::{Action, Button, ButtonVariant, Icon};
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::prelude::*;
-use yew::virtual_dom::ApplyAttributeAs;
+use yew::virtual_dom::AttributeOrProperty;
 
 const OUIA: Ouia = ouia!("Alert");
 
@@ -191,7 +191,7 @@ pub fn view(props: &GroupProperties) -> Html {
     html! (
         <ul class={classes} role="list">
             { for props.children.iter().map(|child|
-                wrapper_elt_with_attributes(child.into(), "li", &[("class", "pf-v5-c-alert-group__item", ApplyAttributeAs::Attribute)])
+                wrapper_elt_with_attributes(child.into(), "li", &[("class", AttributeOrProperty::Static("pf-v5-c-alert-group__item"))])
             )}
         </ul>
     )
