@@ -20,16 +20,9 @@ impl DerefMut for OptionalHtml {
     }
 }
 
-impl ToHtml for OptionalHtml {
-    fn to_html(&self) -> Html {
-        self.0.to_html()
-    }
-
-    fn into_html(self) -> Html
-    where
-        Self: Sized,
-    {
-        self.0.into_html()
+impl IntoPropValue<Option<Html>> for OptionalHtml {
+    fn into_prop_value(self) -> Option<Html> {
+        self.0
     }
 }
 

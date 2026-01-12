@@ -146,11 +146,11 @@ pub fn truncate(props: &TruncateProperties) -> Html {
             {
                 match &props.content {
                     TruncateContent::Default(value) => html!(
-                        <span class={start_class}>{ &value }</span>
+                        <span class={start_class}>{ value }</span>
                     ),
                     TruncateContent::Middle(start, end) => html!(<>
-                        <span class={start_class}>{ &start }</span>
-                        <span class={end_class}>{ &end }</span>
+                        <span class={start_class}>{ start }</span>
+                        <span class={end_class}>{ end }</span>
                     </>),
                     TruncateContent::Start(value) => html!(<>
                         <span class={end_class}>{ &value }{ "\u{200E}" }</span>

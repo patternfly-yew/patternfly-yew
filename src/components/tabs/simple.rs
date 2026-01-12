@@ -173,7 +173,7 @@ where
                                 index={c.props.index.clone()}
                                 {onselect}
                             >
-                                { c.props.title.to_html() }
+                                { c.props.title.clone() }
                             </TabHeaderItem<T>>
                         )
                     }) }
@@ -312,21 +312,11 @@ impl IntoPropValue<TabTitle> for Html {
     }
 }
 
-impl ToHtml for TabTitle {
-    fn to_html(&self) -> Html {
+impl IntoPropValue<Html> for TabTitle {
+    fn into_prop_value(self) -> Html {
         match self {
             TabTitle::String(s) => s.into(),
             TabTitle::Html(html) => html.clone(),
-        }
-    }
-
-    fn into_html(self) -> Html
-    where
-        Self: Sized,
-    {
-        match self {
-            TabTitle::String(s) => s.into(),
-            TabTitle::Html(html) => html,
         }
     }
 }

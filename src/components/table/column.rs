@@ -162,7 +162,7 @@ where
                         }
                     >
                         <div class="pf-v5-c-table__button-content">
-                            <span class="pf-v5-c-table__text">{ &label }</span>
+                            <span class="pf-v5-c-table__text">{ label }</span>
                             <span class="pf-v5-c-table__sort-indicator">
                                 {sort_by_next_status.0}
                             </span>
@@ -170,9 +170,7 @@ where
                     </button>
                 )
             } else {
-                html_nested!(
-                    <>{ &label }</>
-                )
+                html_nested!({ label.into() })
             };
 
             html!(

@@ -79,8 +79,8 @@ impl IntoPropValue<Option<Html>> for Icon {
     }
 }
 
-impl ToHtml for Icon {
-    fn to_html(&self) -> Html {
+impl IntoPropValue<Html> for Icon {
+    fn into_prop_value(self) -> Html {
         self.as_html()
     }
 }

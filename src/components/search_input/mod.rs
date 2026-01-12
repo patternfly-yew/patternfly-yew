@@ -6,6 +6,7 @@ use crate::components::input_group::*;
 use crate::components::text_input_group::*;
 use crate::icon::Icon;
 use crate::utils::HtmlElementSupport;
+use yew::html::IntoPropValue;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
 
@@ -18,8 +19,8 @@ pub enum ResultsCount {
     Fraction(usize, usize),
 }
 
-impl ToHtml for ResultsCount {
-    fn to_html(&self) -> Html {
+impl IntoPropValue<Html> for ResultsCount {
+    fn into_prop_value(self) -> Html {
         match self {
             Self::Absolute(i) => html!(i),
             Self::Fraction(i, j) => html!(format!("{i}/{j}")),
@@ -301,7 +302,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
             || (props.props.onnextclick.is_some() && props.props.onpreviousclick.is_some())
             || (props.props.onclear.is_some() && props.props.expandable.is_none()));
     let badge = if let Some(results_count) = &props.props.results_count {
-        html! { <Badge read=true>{results_count}</Badge> }
+        html! { <Badge read=true>{results_count.clone()}</Badge> }
     } else {
         html! {}
     };

@@ -44,7 +44,7 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
                         aria-hidden="true"
                         id={format!("{id}-label")}
                     >
-                        { &label }
+                        { label }
                     </span>
                 }
                 <ul
@@ -54,7 +54,7 @@ pub fn chip_group(props: &ChipGroupProperties) -> Html {
                     aria-labelledby={aria_labelled_by}
                 >
                     { for props.children.iter().map(|chip| {
-                        wrapper_elt_with_attributes(chip.to_html(), "li", &[("class", "pf-v5-c-chip-group__list-item", ApplyAttributeAs::Attribute)])
+                        wrapper_elt_with_attributes(chip.into(), "li", &[("class", "pf-v5-c-chip-group__list-item", ApplyAttributeAs::Attribute)])
                     })}
                 </ul>
             </div>

@@ -191,7 +191,7 @@ pub fn view(props: &GroupProperties) -> Html {
     html! (
         <ul class={classes} role="list">
             { for props.children.iter().map(|child|
-                wrapper_elt_with_attributes(child.to_html(), "li", &[("class", "pf-v5-c-alert-group__item", ApplyAttributeAs::Attribute)])
+                wrapper_elt_with_attributes(child.into(), "li", &[("class", "pf-v5-c-alert-group__item", ApplyAttributeAs::Attribute)])
             )}
         </ul>
     )
