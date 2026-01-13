@@ -1,5 +1,5 @@
 //! About modal
-use crate::prelude::{use_backdrop, use_random_id, Button, ButtonVariant, Icon};
+use crate::prelude::{Button, ButtonVariant, Icon, use_backdrop, use_random_id};
 use yew::prelude::*;
 use yew_hooks::{use_click_away, use_event_with_window};
 

@@ -1,6 +1,6 @@
 //! Hooks for handling IDs
 
-use crate::prelude::{random_id, Id};
+use crate::prelude::{Id, random_id};
 use yew::prelude::*;
 
 /// Use a random ID

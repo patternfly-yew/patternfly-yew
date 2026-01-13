@@ -1,7 +1,7 @@
 use crate::ouia;
 use crate::prelude::{
-    focus, use_on_text_change, Icon, InputState, ValidatingComponent,
-    ValidatingComponentProperties, ValidationContext,
+    Icon, InputState, ValidatingComponent, ValidatingComponentProperties, ValidationContext, focus,
+    use_on_text_change,
 };
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use yew::html::IntoPropValue;

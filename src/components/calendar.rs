@@ -7,7 +7,7 @@ use num_traits::cast::FromPrimitive;
 use std::str::FromStr;
 
 use yew::{
-    classes, function_component, html, use_callback, use_state_eq, Callback, Html, Properties,
+    Callback, Html, Properties, classes, function_component, html, use_callback, use_state_eq,
 };
 
 use super::select::SelectItemRenderer;

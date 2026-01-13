@@ -57,7 +57,14 @@ pub fn header(props: &CardHeaderProperties) -> Html {
     let is_clickable_xor_selectable = context.clickable != context.selectable;
     let has_actions = props.actions.as_ref().is_some();
     if has_actions && is_clickable_xor_selectable {
-        log::warn!("{} only cards should not contain any other actions. If you wish to include additional actions, use a clickable and selectable card", if context.clickable { "Clickable" } else { "Selectable" });
+        log::warn!(
+            "{} only cards should not contain any other actions. If you wish to include additional actions, use a clickable and selectable card",
+            if context.clickable {
+                "Clickable"
+            } else {
+                "Selectable"
+            }
+        );
     }
 
     let mut class = classes!(props.class.clone());

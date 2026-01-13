@@ -1,6 +1,6 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
-use yew::html::IntoPropValue;
 use yew::AttrValue;
+use yew::html::IntoPropValue;
 
 #[macro_export]
 macro_rules! ouia {

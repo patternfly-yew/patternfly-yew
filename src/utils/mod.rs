@@ -22,7 +22,7 @@ pub use raw::*;
 pub use styled::*;
 
 use std::fmt::{Debug, Display, Formatter};
-use yew::{html::IntoPropValue, AttrValue};
+use yew::{AttrValue, html::IntoPropValue};
 
 /// Create a random ID.
 ///

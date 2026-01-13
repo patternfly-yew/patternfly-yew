@@ -1,7 +1,7 @@
 //! Chip Group
 
 use crate::prelude::wrap::wrapper_elt_with_attributes;
-use crate::prelude::{use_prop_id, Chip};
+use crate::prelude::{Chip, use_prop_id};
 use yew::prelude::*;
 use yew::virtual_dom::AttributeOrProperty;
 

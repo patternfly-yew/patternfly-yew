@@ -1,6 +1,6 @@
 use crate::prelude::{
-    focus, use_on_text_change, AsClasses, ExtendClasses, InputState, ValidatingComponent,
-    ValidatingComponentProperties, ValidationContext,
+    AsClasses, ExtendClasses, InputState, ValidatingComponent, ValidatingComponentProperties,
+    ValidationContext, focus, use_on_text_change,
 };
 
 use std::fmt::{Display, Formatter};

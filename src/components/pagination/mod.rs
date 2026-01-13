@@ -4,7 +4,7 @@ mod simple;
 pub use simple::*;
 
 use crate::prelude::{
-    use_on_enter, AsClasses, Button, ButtonVariant, ExtendClasses, Icon, TextInput, TextInputType,
+    AsClasses, Button, ButtonVariant, ExtendClasses, Icon, TextInput, TextInputType, use_on_enter,
 };
 use yew::prelude::*;
 use yew_hooks::use_click_away;

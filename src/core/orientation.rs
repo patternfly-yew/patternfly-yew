@@ -1,6 +1,6 @@
 use crate::core::AsClasses;
 use popper_rs::state::AttributesMap;
-use yew::{classes, Classes};
+use yew::{Classes, classes};
 
 /// Definition for orientations
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]

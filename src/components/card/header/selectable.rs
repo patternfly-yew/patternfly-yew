@@ -155,7 +155,10 @@ struct ClickableInputProperties {
 fn clickable_input_action_radio(props: &ClickableInputProperties) -> Html {
     let context: CardContext = use_context().expect("Couldn't find card context");
     if context.selectable {
-        log::warn!("Using a click action for an entire tile in a selectable card doesn't work. Set `selectable` to `false` in card `{}`", context.card_id);
+        log::warn!(
+            "Using a click action for an entire tile in a selectable card doesn't work. Set `selectable` to `false` in card `{}`",
+            context.card_id
+        );
     }
     let common = get_common_props(&props.base, &context);
     html! {

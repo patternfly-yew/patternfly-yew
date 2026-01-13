@@ -1,7 +1,7 @@
 use crate::prelude::{TableEntryRenderer, TableModelEntry};
 use std::iter::Enumerate;
-use yew::virtual_dom::Key;
 use yew::UseStateHandle;
+use yew::virtual_dom::Key;
 
 #[derive(Clone)]
 pub struct UseStateTableModel<T>

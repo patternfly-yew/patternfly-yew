@@ -1,7 +1,7 @@
 use super::{StateModel, TableDataModel};
 use crate::prelude::{StateModelIter, TableModel};
-use std::collections::hash_map::Entry;
 use std::collections::HashMap;
+use std::collections::hash_map::Entry;
 use std::fmt::{Debug, Formatter};
 use std::hash::Hash;
 use std::rc::Rc;

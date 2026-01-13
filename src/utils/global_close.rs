@@ -1,6 +1,6 @@
 use std::ops::Deref;
-use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen::prelude::*;
 use web_sys::window;
 use yew::prelude::*;
 

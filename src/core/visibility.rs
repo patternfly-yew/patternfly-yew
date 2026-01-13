@@ -1,5 +1,5 @@
 use crate::prelude::AsClasses;
-use yew::{classes, Classes};
+use yew::{Classes, classes};
 
 /// Definition of visibility
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
