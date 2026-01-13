@@ -2,14 +2,14 @@
 name = "patternfly-yew"
 version = "0.6.3"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 description = "PatternFly 5 components for Yew"
 repository = "https://github.com/patternfly-yew/patternfly-yew"
 categories = ["wasm", "web-programming", "gui"]
 keywords = ["yew", "patternfly", "web", "html"]
 readme = "README.md"
-rust-version = "1.73"
+rust-version = "1.85"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
