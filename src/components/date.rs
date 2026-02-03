@@ -86,11 +86,8 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         use_effect_with(
             ((*string_value).clone(), value.clone()),
             move |(string_value, value)| {
-                let new = match NaiveDate::parse_from_str(string_value, "%Y-%m-%d") {
-                    Ok(v) => Some(v),
-                    // FIXME: should extract an "error" state from this
-                    Err(_err) => None,
-                };
+                // FIXME: should extract an "error" state from this
+                let new = NaiveDate::parse_from_str(string_value, "%Y-%m-%d").ok();
 
                 value.set(new);
                 if let Some(new) = new {

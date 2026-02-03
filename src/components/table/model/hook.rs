@@ -208,9 +208,12 @@ mod test {
         #[derive(Clone)]
         struct MockModel {}
 
-        impl TableEntryRenderer<()> for String {
+        #[derive(Clone)]
+        struct StringRenderer(String);
+
+        impl TableEntryRenderer<()> for StringRenderer {
             fn render_cell(&self, _context: CellContext<'_, ()>) -> Cell {
-                html!().into()
+                html!(&self.0).into()
             }
         }
 
@@ -220,7 +223,7 @@ mod test {
             where
                 Self: 'i;
 
-            type Item = String;
+            type Item = StringRenderer;
             type Key = usize;
 
             fn len(&self) -> usize {

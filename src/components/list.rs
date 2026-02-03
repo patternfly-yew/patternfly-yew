@@ -6,8 +6,9 @@ use yew::html::ChildrenRenderer;
 use yew::virtual_dom::VChild;
 use yew::{html::IntoPropValue, prelude::*, virtual_dom::AttrValue};
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Default, PartialEq, Eq)]
 pub enum ListType {
+    #[default]
     Basic,
     Inline,
     Ordered(ListOrder),
@@ -29,12 +30,6 @@ impl AsClasses for ListType {
             }
             _ => {}
         }
-    }
-}
-
-impl Default for ListType {
-    fn default() -> Self {
-        Self::Basic
     }
 }
 

@@ -103,7 +103,7 @@ impl PaginationState {
 
     pub fn total_pages(&self) -> Option<usize> {
         self.total
-            .map(|total| (total + self.control.per_page - 1) / self.control.per_page)
+            .map(|total| total.div_ceil(self.control.per_page))
     }
 }
 

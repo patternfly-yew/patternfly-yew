@@ -3,6 +3,7 @@
 //! **NOTE:** While it looks similar to the [`Form`](crate::prelude::Form)'s helper text, it is
 //! a different type.
 
+use std::fmt::{Display, Formatter};
 use crate::prelude::{AsClasses, ExtendClasses, Icon};
 use log::warn;
 use std::rc::Rc;
@@ -15,13 +16,14 @@ pub enum HelperTextComponent {
     Ul,
 }
 
-impl ToString for HelperTextComponent {
-    fn to_string(&self) -> String {
-        match self {
+impl Display for HelperTextComponent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let value = match self {
             Self::Div => "div",
             Self::Ul => "ul",
-        }
-        .to_string()
+        };
+
+        f.write_str(value)
     }
 }
 
@@ -170,13 +172,14 @@ pub enum HelperTextItemComponent {
     Li,
 }
 
-impl ToString for HelperTextItemComponent {
-    fn to_string(&self) -> String {
-        match self {
+impl Display for HelperTextItemComponent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let value = match self {
             Self::Div => "div",
             Self::Li => "li",
-        }
-        .to_string()
+        };
+
+        f.write_str(value)
     }
 }
 

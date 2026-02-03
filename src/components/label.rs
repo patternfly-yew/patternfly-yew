@@ -4,8 +4,9 @@ use yew::prelude::*;
 
 use strum_macros::{Display, EnumIter, EnumString};
 
-#[derive(Copy, Clone, Display, Debug, PartialEq, Eq, EnumIter, EnumString)]
+#[derive(Copy, Clone, Default, Display, Debug, PartialEq, Eq, EnumIter, EnumString)]
 pub enum Color {
+    #[default]
     Grey,
     Blue,
     Green,
@@ -14,12 +15,6 @@ pub enum Color {
     Purple,
     Cyan,
     Gold,
-}
-
-impl Default for Color {
-    fn default() -> Self {
-        Self::Grey
-    }
 }
 
 impl AsClasses for Color {

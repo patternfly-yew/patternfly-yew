@@ -132,7 +132,7 @@ pub fn chip_drag_example() -> Html {
                 e.stop_propagation();
                 drag_index.set(Some(idx));
                 if let Some(dt) = e.data_transfer() {
-                    let _ = dt.set_effect_allowed("move");
+                    dt.set_effect_allowed("move");
                 }
             })
         }
@@ -169,7 +169,7 @@ pub fn chip_drag_example() -> Html {
                 if from != to {
                     let mut new_chips = (*chips).clone();
                     let item = new_chips.remove(from);
-                    let insert_pos = if from < to { to } else { to };
+                    let insert_pos = to;
                     new_chips.insert(insert_pos, item);
                     chips.set(new_chips);
                 }

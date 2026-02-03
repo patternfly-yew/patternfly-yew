@@ -2,18 +2,13 @@ use crate::prelude::{AsClasses, FormHelperText, Icon, ValidationContext};
 use yew::{Callback, Classes};
 
 /// State of an input from validation
-#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq, PartialOrd, Ord)]
 pub enum InputState {
+    #[default]
     Default,
     Success,
     Warning,
     Error,
-}
-
-impl Default for InputState {
-    fn default() -> Self {
-        Self::Default
-    }
 }
 
 impl AsClasses for InputState {

@@ -65,7 +65,7 @@ where
     class.extend_from(&props.mode);
 
     let headers = use_memo(props.header.props.clone(), |header| {
-        collect_columns(&header)
+        collect_columns(header)
     });
 
     let content = use_memo(

@@ -15,8 +15,9 @@ impl<T> From<T> for ValidationContext<T> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub enum Validator<T, S> {
+    #[default]
     None,
     Custom(std::rc::Rc<dyn Fn(ValidationContext<T>) -> S>),
 }
@@ -51,12 +52,6 @@ impl<T, S> Validator<T, S> {
             Self::Custom(validator) => Some(validator(ctx)),
             _ => None,
         }
-    }
-}
-
-impl<T, S> Default for Validator<T, S> {
-    fn default() -> Self {
-        Self::None
     }
 }
 

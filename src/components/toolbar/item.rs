@@ -2,20 +2,15 @@ use crate::prelude::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreak
 use yew::prelude::*;
 
 /// Properties for [`ToolbarItem`]
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Clone, Default, Eq, PartialEq, Debug)]
 pub enum ToolbarItemType {
+    #[default]
     None,
     BulkSelect,
     ChipGroup,
     OverflowMenu,
     Pagination,
     SearchFilter,
-}
-
-impl Default for ToolbarItemType {
-    fn default() -> Self {
-        Self::None
-    }
 }
 
 impl AsClasses for ToolbarItemType {

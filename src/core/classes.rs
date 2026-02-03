@@ -47,9 +47,8 @@ impl AsClasses for dyn ToString {
 
 impl<T: AsClasses> AsClasses for Option<T> {
     fn extend_classes(&self, classes: &mut Classes) {
-        match self {
-            Some(a) => a.extend_classes(classes),
-            None => {}
+        if let Some(a) = self {
+            a.extend_classes(classes)
         }
     }
 }
