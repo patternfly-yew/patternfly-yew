@@ -3,9 +3,9 @@
 //! **NOTE:** While it looks similar to the [`Form`](crate::prelude::Form)'s helper text, it is
 //! a different type.
 
-use std::fmt::{Display, Formatter};
 use crate::prelude::{AsClasses, ExtendClasses, Icon};
 use log::warn;
+use std::fmt::{Display, Formatter};
 use std::rc::Rc;
 use yew::prelude::*;
 
