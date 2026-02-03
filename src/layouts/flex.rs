@@ -179,7 +179,7 @@ pub struct FlexProperties {
 /// The Flex layout contains either [`FlexItem`] children, or nested [`Flex`] layouts.
 #[function_component(Flex)]
 pub fn flex(props: &FlexProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-flex");
+    let mut classes = Classes::from("pf-v6-l-flex");
 
     classes.extend_from(&props.modifiers);
     classes.extend_from(&props.space_items);
@@ -211,7 +211,7 @@ pub struct FlexItemProperties {
 /// Defined by [`FlexItemProperties`].
 #[function_component(FlexItem)]
 pub fn flex_item(props: &FlexItemProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-flex__item");
+    let mut classes = Classes::from("pf-v6-l-flex__item");
 
     classes.extend_from(&props.modifiers);
     classes.extend_from(&props.spacer);

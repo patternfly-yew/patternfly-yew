@@ -8,7 +8,7 @@ macro_rules! ouia {
         Ouia::with_full(concat!($framework, "/", $component))
     };
     ($component:literal) => {
-        ouia!("PF5", $component)
+        ouia!("PF6", $component)
     };
 }
 

@@ -26,7 +26,7 @@ pub struct StackProperties {
 /// through component types on that.
 #[function_component(Stack)]
 pub fn stack(props: &StackProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-stack");
+    let mut classes = Classes::from("pf-v6-l-stack");
 
     if props.gutter {
         classes.push("pf-m-gutter");
@@ -54,7 +54,7 @@ pub struct StackItemProperties {
 /// Defined by [`StackItemProperties`].
 #[function_component(StackItem)]
 pub fn stack_item(props: &StackItemProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-stack__item");
+    let mut classes = Classes::from("pf-v6-l-stack__item");
 
     if props.fill {
         classes.push("pf-m-fill");

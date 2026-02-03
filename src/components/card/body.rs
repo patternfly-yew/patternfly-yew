@@ -19,7 +19,7 @@ pub struct CardBodyProperties {
 #[function_component(CardBody)]
 pub fn body(props: &CardBodyProperties) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-card__body");
+    class.push("pf-v6-c-card__body");
     if !props.filled {
         class.push("pf-m-no-fill");
     }

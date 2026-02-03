@@ -157,7 +157,7 @@ impl ValidatingComponentProperties<String> for TextAreaProperties {
 #[function_component(TextArea)]
 pub fn text_area(props: &TextAreaProperties) -> Html {
     let input_ref = props.r#ref.clone();
-    let mut classes = classes!("pf-v5-c-form-control");
+    let mut classes = classes!("pf-v6-c-form-control");
 
     classes.extend_from(&props.resize);
 
@@ -226,8 +226,8 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
                 {oninput}
             />
             if props.state != InputState::Default {
-                <div class="pf-v5-c-form-control__utilities">
-                    <div class="pf-v5-c-form-control__icon pf-m-status">
+                <div class="pf-v6-c-form-control__utilities">
+                    <div class="pf-v6-c-form-control__icon pf-m-status">
                         {props.state.icon()}
                     </div>
                 </div>

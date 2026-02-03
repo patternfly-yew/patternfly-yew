@@ -46,7 +46,7 @@ pub struct DualListSelectorPaneProps<T: DualListSelectorItemRenderer> {
 
 #[function_component(DualListSelectorPane)]
 pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T>) -> Html {
-    let mut class = classes!["pf-v5-c-dual-list-selector__pane", props.class.clone()];
+    let mut class = classes!["pf-v6-c-dual-list-selector__pane", props.class.clone()];
     if props.is_chosen {
         class.push("pf-m-chosen")
     } else {
@@ -55,9 +55,9 @@ pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T
     let title = match &props.title {
         None => html! {},
         Some(title) => html! {
-            <div class={classes!["pf-v5-c-dual-list-selector__header"]}>
-                <div class={classes!["pf-v5-c-dual-list-selector__title"]}>
-                    <div class={classes!["pf-v5-c-dual-list-selector__title-text"]}>
+            <div class={classes!["pf-v6-c-dual-list-selector__header"]}>
+                <div class={classes!["pf-v6-c-dual-list-selector__title"]}>
+                    <div class={classes!["pf-v6-c-dual-list-selector__title-text"]}>
                         { title }
                     </div>
                 </div>
@@ -67,8 +67,8 @@ pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T
     let status = match &props.status {
         None => html! {},
         Some(status) => html! {
-            <div class="pf-v5-c-dual-list-selector__status">
-                <div class="pf-v5-c-dual-list-selector__status-text" id="dual-list-selector-basic-available-pane-status">
+            <div class="pf-v6-c-dual-list-selector__status">
+                <div class="pf-v6-c-dual-list-selector__status-text" id="dual-list-selector-basic-available-pane-status">
                     { status }
                 </div>
             </div>

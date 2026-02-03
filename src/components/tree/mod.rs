@@ -60,7 +60,7 @@ where
     C: Clone + Eq + 'static,
     M: TreeTableModel<C> + PartialEq + 'static,
 {
-    let mut class = classes!("pf-v5-c-table", "pf-m-tree-view");
+    let mut class = classes!("pf-v6-c-table", "pf-m-tree-view");
 
     class.extend_from(&props.mode);
 
@@ -82,7 +82,7 @@ where
 
             { props.header.clone() }
 
-            <tbody class="pf-v5-c-table__tbody">
+            <tbody class="pf-v6-c-table__tbody">
                 { (*content).clone() }
             </tbody>
 
@@ -205,7 +205,7 @@ where
 {
     let expanded = use_state_eq(|| props.default_expansion);
 
-    let mut class = classes!("pf-v5-c-table__tr");
+    let mut class = classes!("pf-v6-c-table__tr");
 
     if *expanded {
         class.extend(classes!("pf-m-expanded"));
@@ -243,7 +243,7 @@ where
                                 })
                             };
 
-                            class.push(classes!("pf-v5-c-table__th", "pf-v5-c-table__tree-view-title-cell"));
+                            class.push(classes!("pf-v6-c-table__th", "pf-v6-c-table__tree-view-title-cell"));
                             html!(
                                 <th {class}>
                                     <MainCell has_children={!children.is_empty()} {ontoggle} expanded={*expanded}>
@@ -253,7 +253,7 @@ where
                             )
                         },
                         _ => {
-                            class.push(classes!("pf-v5-c-table__td"));
+                            class.push(classes!("pf-v6-c-table__td"));
                             html!(
                                 <td {class} role="cell" data-label={column.label.clone()}>
                                    {cell.content}
@@ -287,16 +287,16 @@ fn main_cell(props: &MainCellProperties) -> Html {
     let id_toggle = use_random_id();
     let id_label = use_random_id();
 
-    let mut button_class = classes!("pf-v5-c-button", "pf-m-plain");
+    let mut button_class = classes!("pf-v6-c-button", "pf-m-plain");
 
     if props.expanded {
         button_class.push(classes!("pf-m-expanded"));
     }
 
     html!(
-        <div class="pf-v5-c-table__tree-view-main">
+        <div class="pf-v6-c-table__tree-view-main">
             if props.has_children {
-                <span class="pf-v5-c-table__toggle">
+                <span class="pf-v6-c-table__toggle">
                     <button
                         type="button"
                         class={button_class}
@@ -306,27 +306,27 @@ fn main_cell(props: &MainCellProperties) -> Html {
                         aria-expanded={ (props.expanded).to_string() }
                         onclick={props.ontoggle.reform(|_|())}
                     >
-                        <div class="pf-v5-c-table__toggle-icon">
+                        <div class="pf-v6-c-table__toggle-icon">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                         </div>
                     </button>
                 </span>
             }
-            <div class="pf-v5-c-table__tree-view-text">
+            <div class="pf-v6-c-table__tree-view-text">
                 <span
-                    class="pf-v5-c-table__text"
+                    class="pf-v6-c-table__text"
                     id={ *id_label }
                 >
                     { props.children.clone() }
                 </span>
             </div>
             // TODO: not sure why this is needed
-            <span class="pf-v5-c-table__tree-view-details-toggle">
+            <span class="pf-v6-c-table__tree-view-details-toggle">
                 <button
-                    class="pf-v5-c-button pf-m-plain"
+                    class="pf-v6-c-button pf-m-plain"
                     type="button"
                 >
-                    <span class="pf-v5-c-table__details-toggle-icon">
+                    <span class="pf-v6-c-table__details-toggle-icon">
                         <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
                     </span>
                 </button>

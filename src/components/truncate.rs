@@ -133,9 +133,9 @@ pub struct TruncateProperties {
 /// Defined by [`TruncateProperties`].
 #[function_component(Truncate)]
 pub fn truncate(props: &TruncateProperties) -> Html {
-    let class = classes!("pf-v5-c-truncate", props.class.clone());
-    let start_class = classes!("pf-v5-c-truncate__start", props.start_class.clone());
-    let end_class = classes!("pf-v5-c-truncate__end", props.end_class.clone());
+    let class = classes!("pf-v6-c-truncate", props.class.clone());
+    let start_class = classes!("pf-v6-c-truncate__start", props.start_class.clone());
+    let end_class = classes!("pf-v6-c-truncate__end", props.end_class.clone());
 
     html!(
         <span

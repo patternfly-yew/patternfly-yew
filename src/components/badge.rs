@@ -26,7 +26,7 @@ pub struct BadgeProperties {
 /// Defined by [`BadgeProperties`].
 #[function_component(Badge)]
 pub fn badge(props: &BadgeProperties) -> Html {
-    let mut class = classes!("pf-v5-c-badge");
+    let mut class = classes!("pf-v6-c-badge");
     if props.read {
         class.push("pf-m-read");
     } else {
@@ -37,7 +37,7 @@ pub fn badge(props: &BadgeProperties) -> Html {
         <span {class}>
             { props.children.clone() }
             if !props.screen_reader_text.is_empty() {
-                <span class="pf-v5-u-screen-reader">{ props.screen_reader_text.clone() }</span>
+                <span class="pf-v6-u-screen-reader">{ props.screen_reader_text.clone() }</span>
             }
         </span>
     }

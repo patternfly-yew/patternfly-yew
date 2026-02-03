@@ -36,7 +36,7 @@ pub struct TextInputGroupProperties {
 /// This component is mainly a container, it requires one [`TextInputGroupMain`] to work properly.
 #[function_component(TextInputGroup)]
 pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
-    let mut class = classes!("pf-v5-c-text-input-group");
+    let mut class = classes!("pf-v6-c-text-input-group");
 
     class.extend(props.class.clone());
 
@@ -106,7 +106,7 @@ pub struct TextInputGroupMainProperties {
 
 #[function_component(TextInputGroupMain)]
 pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
-    let mut class = classes!("pf-v5-c-text-input-group__main");
+    let mut class = classes!("pf-v6-c-text-input-group__main");
     class.extend(props.class.clone());
 
     if props.icon.is_some() {
@@ -140,10 +140,10 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
             id={&props.id}
             style={&props.style}
         >
-            <span class="pf-v5-c-text-input-group__text">
+            <span class="pf-v6-c-text-input-group__text">
                 if let Some(hint) = &props.hint {
                     <input
-                        class="pf-v5-c-text-input-group__text-input pf-m-hint"
+                        class="pf-v6-c-text-input-group__text-input pf-m-hint"
                         type="text"
                         disabled=true
                         aria-hidden="true"
@@ -151,12 +151,12 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                     />
                 }
                 if let Some(icon) = &props.icon {
-                    <span class="pf-v5-c-text-input-group__icon">
+                    <span class="pf-v6-c-text-input-group__icon">
                         { icon.clone() }
                     </span>
                 }
                 <input
-                    class="pf-v5-c-text-input-group__text-input"
+                    class="pf-v6-c-text-input-group__text-input"
                     ref={node_ref}
                     type={&props.r#type}
                     inputmode={&props.inputmode}
@@ -181,7 +181,7 @@ pub struct TextInputGroupUtilitiesProperties {
 #[function_component(TextInputGroupUtilities)]
 pub fn text_input_group_utilities(props: &TextInputGroupUtilitiesProperties) -> Html {
     html! (
-        <div class="pf-v5-c-text-input-group__utilities">
+        <div class="pf-v6-c-text-input-group__utilities">
             { props.children.clone() }
         </div>
     )

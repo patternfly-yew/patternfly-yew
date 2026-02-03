@@ -59,7 +59,7 @@ where
 
     html!(
         <Dropdown
-            text={text.clone()}
+            text={html!{text.clone().unwrap_or_default()}}
         >
             { for props.entries.iter().map(|entry| {
                 html_nested!(

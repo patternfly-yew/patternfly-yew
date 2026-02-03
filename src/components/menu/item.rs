@@ -21,9 +21,9 @@ enum MenuItemType {
     Link { href: AttrValue, target: AttrValue },
 }
 
-#[function_component(MenuItem)]
-fn menu_item(props: &MenuItemProperties) -> Html {
-    let mut class = classes!("pf-v5-c-menu__list-item");
+#[component]
+fn MenuItem(props: &MenuItemProperties) -> Html {
+    let mut class = classes!("pf-v6-c-menu__list-item");
 
     if props.danger {
         class.push(classes!("pf-m-danger"));
@@ -35,13 +35,15 @@ fn menu_item(props: &MenuItemProperties) -> Html {
 
     let onclose = use_close_menu_callback();
 
-    let mut item_class = classes!("pf-v5-c-menu__item");
+    let mut item_class = classes!("pf-v6-c-menu__item");
     if props.selected {
         item_class.push(classes!("pf-m-selected"));
     }
 
     let element = |content: Html| match &props.r#type {
         MenuItemType::Button(callback) => {
+            let callback = callback.clone();
+
             html!(
                 <button
                     class={item_class}
@@ -84,22 +86,22 @@ fn menu_item(props: &MenuItemProperties) -> Html {
         <li {class} style={&props.style}>
             { element(html!(
                 <>
-                    <span class="pf-v5-c-menu__item-main">
+                    <span class="pf-v6-c-menu__item-main">
                         if let Some(icon) = &props.icon {
-                            <span class="pf-v5-c-menu__item-icon"> {icon.clone()} </span>
+                            <span class="pf-v6-c-menu__item-icon"> {icon.clone()} </span>
                         }
                         if props.danger {
-                            <span class="pf-v5-screen-reader">{ "Danger Item:" }</span>
+                            <span class="pf-v6-screen-reader">{ "Danger Item:" }</span>
                         }
 
-                        <span class="pf-v5-c-menu__item-text">{ props.children.clone() }</span>
+                        <span class="pf-v6-c-menu__item-text">{ props.children.clone() }</span>
 
                         if props.selected {
-                            <span class="pf-v5-c-menu__item-select-icon">{ Icon::Check }</span>
+                            <span class="pf-v6-c-menu__item-select-icon">{ Icon::Check }</span>
                         }
                     </span>
                     if let Some(description) = &props.description {
-                        <span class="pf-v5-c-menu__item-description"> {description} </span>
+                        <span class="pf-v6-c-menu__item-description"> {description} </span>
                     }
                 </>
             )) }
@@ -137,8 +139,8 @@ pub struct MenuActionProperties {
     pub class: Classes,
 }
 
-#[function_component(MenuAction)]
-pub fn menu_action(props: &MenuActionProperties) -> Html {
+#[component]
+pub fn MenuAction(props: &MenuActionProperties) -> Html {
     // we use destructing and struct initialization here to ensure we're not missing any new field
 
     let MenuActionProperties {
@@ -200,8 +202,8 @@ pub struct MenuLinkProperties {
     pub class: Classes,
 }
 
-#[function_component(MenuLink)]
-pub fn menu_link(props: &MenuLinkProperties) -> Html {
+#[component()]
+pub fn MenuLink(props: &MenuLinkProperties) -> Html {
     // we use destructing and struct initialization here to ensure we're not missing any new field
 
     let MenuLinkProperties {

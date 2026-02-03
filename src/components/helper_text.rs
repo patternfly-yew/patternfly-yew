@@ -122,7 +122,7 @@ pub struct HelperTextProperties {
 /// ```
 #[function_component(HelperText)]
 pub fn helper_text(props: &HelperTextProperties) -> Html {
-    let mut class = classes!("pf-v5-c-helper-text", props.class.clone());
+    let mut class = classes!("pf-v6-c-helper-text", props.class.clone());
     if props.hidden {
         class.push("pf-m-hidden")
     }
@@ -237,7 +237,7 @@ pub struct HelperTextItemProperties {
 /// See [`HelperText`] for sample usage
 #[function_component(HelperTextItem)]
 pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
-    let mut class = classes!("pf-v5-c-helper-text__item", props.class.clone());
+    let mut class = classes!("pf-v6-c-helper-text__item", props.class.clone());
     if props.dynamic {
         class.push(classes!("pf-m-dynamic"));
     }
@@ -253,7 +253,7 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
 
     let item_icon = icon.map(|icon| {
         html!(
-            <span class="pf-v5-c-helper-text__item-icon">
+            <span class="pf-v6-c-helper-text__item-icon">
                 { icon }
             </span>
         )
@@ -266,7 +266,7 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
             if !text.is_empty() {
                 if props.dynamic {
                     Some(html!(
-                        <span class="pf-v5-u-screen-reader">
+                        <span class="pf-v6-u-screen-reader">
                             { ": " }{ text }{ ";" }
                         </span>
                     ))
@@ -286,7 +286,7 @@ pub fn helper_text_item(props: &HelperTextItemProperties) -> Html {
     html!(
         <@{component} id={ &props.id } { class }>
             { item_icon }
-            <div class="pf-v5-c-helper-text__item-text">
+            <div class="pf-v6-c-helper-text__item-text">
                 { props.children.clone() }
                 { (*screen_reader).clone() }
             </div>

@@ -39,7 +39,7 @@ class Generator {
         break;
       case "pficon":
         icon.Style = "pf";
-        className = `pf-v5-${className}`;
+        className = `pf-v6-${className}`;
         break;
       default:
         // This means we need to adap the generator

@@ -173,7 +173,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
         id.clone().unwrap_or(OUIA.generated_id())
     });
     let input_ref = props.r#ref.clone();
-    let mut classes = classes!("pf-v5-c-form-control", props.class.clone());
+    let mut classes = classes!("pf-v6-c-form-control", props.class.clone());
 
     if props.disabled {
         classes.push("pf-m-disabled")
@@ -224,7 +224,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
 
     let icon_html = props.icon.map(|icon| {
         html!(
-           <div class="pf-v5-c-form-control__icon">
+           <div class="pf-v6-c-form-control__icon">
                 { icon }
             </div>
         )
@@ -232,7 +232,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
 
     let status_html = if props.state != InputState::Default {
         Some(html!(
-            <div class="pf-v5-c-form-control__icon pf-m-status">
+            <div class="pf-v6-c-form-control__icon pf-m-status">
                 {props.state.icon()}
             </div>
         ))
@@ -270,7 +270,7 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 { None::<VNode> }
 
             if icon_html.is_some() || status_html.is_some() {
-                <div class="pf-v5-c-form-control__utilities"> // TODO: Refactor out to component
+                <div class="pf-v6-c-form-control__utilities"> // TODO: Refactor out to component
                     { icon_html }
                     { status_html }
                 </div>

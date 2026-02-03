@@ -42,7 +42,7 @@ pub struct ToolbarGroupProperties {
 /// A group item for a toolbar
 #[function_component(ToolbarGroup)]
 pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
-    let mut class = Classes::from("pf-v5-c-toolbar__group");
+    let mut class = Classes::from("pf-v6-c-toolbar__group");
 
     class.extend_from(&props.modifiers);
     class.extend_from(&props.variant);

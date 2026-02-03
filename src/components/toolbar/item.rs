@@ -55,7 +55,7 @@ pub struct ToolbarItemProperties {
 
 #[function_component(ToolbarItem)]
 pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
-    let mut class = classes!("pf-v5-c-toolbar__item");
+    let mut class = classes!("pf-v6-c-toolbar__item");
 
     class.extend_from(&props.r#type);
     class.extend_from(&props.modifiers);
@@ -64,12 +64,12 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
     let style = props
         .width
         .iter()
-        .map(|w| format!("--pf-v5-c-toolbar__item--Width{}: {};", w.on, w.modifier))
+        .map(|w| format!("--pf-v6-c-toolbar__item--Width{}: {};", w.on, w.modifier))
         .chain(
             props
                 .min_width
                 .iter()
-                .map(|w| format!("--pf-v5-c-toolbar__item--MinWidth{}: {};", w.on, w.modifier)),
+                .map(|w| format!("--pf-v6-c-toolbar__item--MinWidth{}: {};", w.on, w.modifier)),
         )
         .collect::<String>();
 

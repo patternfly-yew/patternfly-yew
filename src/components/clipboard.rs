@@ -126,7 +126,7 @@ impl Component for Clipboard {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-v5-c-clipboard-copy");
+        let mut classes = Classes::from("pf-v6-c-clipboard-copy");
 
         if self.expanded {
             classes.push("pf-m-expanded");
@@ -144,12 +144,12 @@ impl Component for Clipboard {
                         html!{
                             <>
                             if ctx.props().code {
-                                <code name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-v5-c-clipboard-copy__text pf-m-code">{value}</code>
+                                <code name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-v6-c-clipboard-copy__text pf-m-code">{value}</code>
                             } else {
-                                <span name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-v5-c-clipboard-copy__text">{value}</span>
+                                <span name={ctx.props().name.clone()} id={ctx.props().id.clone()} class="pf-v6-c-clipboard-copy__text">{value}</span>
                             }
-                            <span class="pf-v5-c-clipboard-copy__actions">
-                                <span class="pf-v5-c-clipboard-copy__actions-item">
+                            <span class="pf-v6-c-clipboard-copy__actions">
+                                <span class="pf-v6-c-clipboard-copy__actions-item">
                                     <Tooltip text={self.message}>
                                         <Button aria_label="Copy to clipboard" variant={ButtonVariant::Plain} icon={Icon::Copy} onclick={ctx.link().callback(|_|Msg::Copy)}/>
                                     </Tooltip>
@@ -161,7 +161,7 @@ impl Component for Clipboard {
                     _ => {
                         html!{
                             <>
-                            <div class="pf-v5-c-clipboard-copy__group">
+                            <div class="pf-v6-c-clipboard-copy__group">
                                 { self.expander(ctx) }
                                 <TextInput
                                     r#ref={self.text_ref.clone()}
@@ -228,7 +228,7 @@ impl Clipboard {
                 expanded={self.expanded}
                 variant={ButtonVariant::Control}
                 onclick={onclick}>
-                <div class="pf-v5-c-clipboard-copy__toggle-icon">
+                <div class="pf-v6-c-clipboard-copy__toggle-icon">
                     { Icon::AngleRight }
                 </div>
             </Button>
@@ -245,7 +245,7 @@ impl Clipboard {
         html! {
             <div
                 ref={self.details_ref.clone()}
-                class="pf-v5-c-clipboard-copy__expandable-content"
+                class="pf-v6-c-clipboard-copy__expandable-content"
                 contenteditable={(!ctx.props().readonly).to_string()}
                 oninput={ctx.link().callback(|_|Msg::Sync)}
             >

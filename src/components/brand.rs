@@ -54,7 +54,7 @@ pub fn brand(props: &BrandProperties) -> Html {
     if props.children.is_empty() {
         html! (
             <img
-                class="pf-v5-c-brand"
+                class="pf-v6-c-brand"
                 style={&props.style}
                 src={&props.src}
                 alt={&props.alt}
@@ -63,12 +63,12 @@ pub fn brand(props: &BrandProperties) -> Html {
     } else {
         html! (
             <picture
-                class="pf-v5-c-brand pf-m-picture"
+                class="pf-v6-c-brand pf-m-picture"
                 style={&props.style}
             >
                 { for props.children.iter() }
                 <img
-                    class="pf-v5-c-brand"
+                    class="pf-v6-c-brand"
                     src={&props.src}
                     alt={&props.alt}
                 />

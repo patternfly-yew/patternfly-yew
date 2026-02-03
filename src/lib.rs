@@ -7,7 +7,7 @@
 //! that is the case, and leads to a safer, more developer-friendly solution, it might be worth
 //! doing things differently.
 //!
-//! The focus is currently on PatternFly v5.
+//! The focus is currently on PatternFly v6.
 //!
 //! ## Help
 //!

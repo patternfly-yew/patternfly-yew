@@ -226,7 +226,7 @@ impl Component for Slider {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let classes = Classes::from("pf-v5-c-slider");
+        let classes = Classes::from("pf-v6-c-slider");
         let valuestr = format!("{0:.1$}", self.value, ctx.props().label_precision);
         let valuestr = valuestr.trim_end_matches('0').to_string();
 
@@ -249,13 +249,13 @@ impl Component for Slider {
         let max = &ctx.props().max;
 
         html!(
-            <div class={classes} style={format!("--pf-v5-c-slider--value: {}%", percent)}>
-                <div class="pf-v5-c-slider__main">
-                    <div class="pf-v5-c-slider__rail" ref={self.refs.rail.clone()}>
-                        <div class="pf-v5-c-slider__rail-track"></div>
+            <div class={classes} style={format!("--pf-v6-c-slider--value: {}%", percent)}>
+                <div class="pf-v6-c-slider__main">
+                    <div class="pf-v6-c-slider__rail" ref={self.refs.rail.clone()}>
+                        <div class="pf-v6-c-slider__rail-track"></div>
                     </div>
                     if !ctx.props().hide_labels {
-                        <div class="pf-v5-c-slider__steps" aria-hidden="true">
+                        <div class="pf-v6-c-slider__steps" aria-hidden="true">
                             { self.render_step(min, ctx.props()) }
                             { for ctx.props().ticks.iter()
                                 .filter(|t| t.value>min.value && t.value<max.value)
@@ -263,7 +263,7 @@ impl Component for Slider {
                             { self.render_step(max, ctx.props()) }
                         </div>
                     }
-                    <div class="pf-v5-c-slider__thumb"
+                    <div class="pf-v6-c-slider__thumb"
                         {onmousedown}
                         {ontouchstart}
                         role="slider"
@@ -395,7 +395,7 @@ impl Slider {
     fn render_step(&self, step: &Step, props: &SliderProperties) -> Html {
         let active = step.value <= self.value;
 
-        let mut classes = classes!("pf-v5-c-slider__step");
+        let mut classes = classes!("pf-v6-c-slider__step");
         if active {
             classes.push(classes!("pf-m-active"));
         }
@@ -407,9 +407,9 @@ impl Slider {
 
         let position = Self::calc_percent(step.value, props) * 100f64;
         html!(
-            <div class={classes} style={format!("--pf-v5-c-slider__step--Left: {}%", position)}>
-                <div class="pf-v5-c-slider__step-tick"></div>
-                <div class="pf-v5-c-slider__step-label">{ label }</div>
+            <div class={classes} style={format!("--pf-v6-c-slider__step--InsetInlineStart: {}%", position)}>
+                <div class="pf-v6-c-slider__step-tick"></div>
+                <div class="pf-v6-c-slider__step-label">{ label }</div>
             </div>
         )
     }

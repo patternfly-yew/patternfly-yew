@@ -34,14 +34,14 @@ pub struct LoginProperties {
 #[function_component(Login)]
 pub fn login(props: &LoginProperties) -> Html {
     html! {
-        <div class="pf-v5-c-login">
-            <div class="pf-v5-c-login__container">
+        <div class="pf-v6-c-login">
+            <div class="pf-v6-c-login__container">
                 if let Some(header) = &props.header {
-                    <header class="pf-v5-c-login__header">{ header.clone() }</header>
+                    <header class="pf-v6-c-login__header">{ header.clone() }</header>
                 }
                 { props.children.clone() }
                 if let Some(footer) = &props.footer {
-                    <footer class="pf-v5-c-login__footer">{ footer.clone() }</footer>
+                    <footer class="pf-v6-c-login__footer">{ footer.clone() }</footer>
                 }
             </div>
         </div>
@@ -59,7 +59,7 @@ pub struct LoginMainProperties {
 
 #[function_component(LoginMain)]
 pub fn login_main(props: &LoginMainProperties) -> Html {
-    let class = classes!("pf-v5-c-login__main", props.class.clone());
+    let class = classes!("pf-v6-c-login__main", props.class.clone());
     html! {
         <main {class}>
             { props.children.clone() }
@@ -78,9 +78,9 @@ pub struct LoginMainHeaderProperties {
 #[function_component(LoginMainHeader)]
 pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
     html! {
-        <header class="pf-v5-c-login__main-header">
+        <header class="pf-v6-c-login__main-header">
             { props.title.clone() }
-            <p class="pf-v5-c-login__main-header-desc">
+            <p class="pf-v6-c-login__main-header-desc">
                 {&props.description}
             </p>
         </header>
@@ -98,7 +98,7 @@ pub struct LoginMainBodyProperties {
 
 #[function_component(LoginMainBody)]
 pub fn login_main_body(props: &LoginMainBodyProperties) -> Html {
-    let class = classes!("pf-v5-c-login__main-body", props.class.clone());
+    let class = classes!("pf-v6-c-login__main-body", props.class.clone());
     html! {
         <div {class}>
             { props.children.clone() }

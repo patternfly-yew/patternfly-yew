@@ -108,7 +108,7 @@ pub struct DrawerProperties {
 /// For more examples, see the PatternFly Yew Quickstart project.
 #[function_component(Drawer)]
 pub fn drawer(props: &DrawerProperties) -> Html {
-    let mut class = classes!("pf-v5-c-drawer");
+    let mut class = classes!("pf-v6-c-drawer");
 
     if props.expanded {
         class.extend(classes!("pf-m-expanded"));
@@ -146,14 +146,14 @@ pub struct DrawerContentProperties {
 
 #[function_component(DrawerContent)]
 pub fn drawer_content(props: &DrawerContentProperties) -> Html {
-    let content_class = classes!("pf-v5-c-drawer__content");
-    let panel_class = classes!("pf-v5-c-drawer__panel");
+    let content_class = classes!("pf-v6-c-drawer__content");
+    let panel_class = classes!("pf-v6-c-drawer__panel");
 
     let context = use_context::<DrawerContext>();
     let hidden = context.map(|context| !context.expanded).unwrap_or_default();
 
     html!(
-        <div class={classes!("pf-v5-c-drawer__main")}>
+        <div class={classes!("pf-v6-c-drawer__main")}>
             <div class={content_class}>
                 { props.children.clone() }
             </div>
@@ -172,7 +172,7 @@ pub struct DrawerContentBodyProperties {
 
 #[function_component(DrawerContentBody)]
 pub fn drawer_content_body(props: &DrawerContentBodyProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__body");
+    let class = classes!("pf-v6-c-drawer__body");
 
     html!(
         <div {class}>
@@ -189,7 +189,7 @@ pub struct DrawerPanelContentProperties {
 
 #[function_component(DrawerPanelContent)]
 pub fn drawer_panel_content(props: &DrawerPanelContentProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__body");
+    let class = classes!("pf-v6-c-drawer__body");
 
     html!(
         <div {class}>
@@ -206,7 +206,7 @@ pub struct DrawerHeadProperties {
 
 #[function_component(DrawerHead)]
 pub fn drawer_panel_content(props: &DrawerHeadProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__head");
+    let class = classes!("pf-v6-c-drawer__head");
 
     html!(
         <div {class}>
@@ -223,7 +223,7 @@ pub struct DrawerActionsProperties {
 
 #[function_component(DrawerActions)]
 pub fn drawer_actions(props: &DrawerActionsProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__actions");
+    let class = classes!("pf-v6-c-drawer__actions");
 
     html!(
         <div {class}>
@@ -239,7 +239,7 @@ pub struct DrawerCloseButtonProperties {
 
 #[function_component(DrawerCloseButton)]
 pub fn drawer_panel_content(props: &DrawerCloseButtonProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__actions");
+    let class = classes!("pf-v6-c-drawer__actions");
 
     html!(
         <div {class}>
@@ -262,7 +262,7 @@ pub struct DrawerSectionProperties {
 
 #[function_component(DrawerSection)]
 pub fn drawer_content_body(props: &DrawerSectionProperties) -> Html {
-    let class = classes!("pf-v5-c-drawer__section");
+    let class = classes!("pf-v6-c-drawer__section");
 
     html!(
         <div {class}>

@@ -71,7 +71,7 @@ pub fn header(props: &CardHeaderProperties) -> Html {
     if props.toggle_right_aligned {
         class.push("pf-m-toggle-right");
     }
-    class.push("pf-v5-c-card__header");
+    class.push("pf-v6-c-card__header");
 
     let selectable_actions = if context.clickable || context.selectable {
         props.selectable_actions.as_ref()
@@ -128,14 +128,14 @@ fn expand_toggle(props: &ExpandToggleProperties) -> Html {
         return html!();
     }
     html! {
-        <div class="pf-v5-c-card__header-toggle">
+        <div class="pf-v6-c-card__header-toggle">
             <Button
                 variant={ ButtonVariant::Plain }
                 r#type={ ButtonType::Button }
                 aria_label="Details"
                 { onclick }
             >
-                <span class="pf-v5-c-card__header-toggle-icon">
+                <span class="pf-v6-c-card__header-toggle-icon">
                     { Icon::AngleRight }
                 </span>
             </Button>

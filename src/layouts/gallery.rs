@@ -24,7 +24,7 @@ pub struct GalleryProperties {
 /// Defined by [`GalleryProperties`].
 #[function_component(Gallery)]
 pub fn gallery(props: &GalleryProperties) -> Html {
-    let mut classes = classes!("pf-v5-l-gallery");
+    let mut classes = classes!("pf-v6-l-gallery");
 
     if props.gutter {
         classes.push(classes!("pf-m-gutter"));
@@ -36,7 +36,7 @@ pub fn gallery(props: &GalleryProperties) -> Html {
             style={&props.style}
         >
         { for props.children.iter().map(|child|{
-            wrapper_div_with_attributes(child, &[("class", AttributeOrProperty::Static("pf-v5-l-gallery__item"))])
+            wrapper_div_with_attributes(child, &[("class", AttributeOrProperty::Static("pf-v6-l-gallery__item"))])
         }) }
         </div>
     )

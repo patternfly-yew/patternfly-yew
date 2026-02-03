@@ -70,27 +70,26 @@ pub fn page(props: &PageProperties) -> Html {
     };
     let onscroll = props.on_main_scroll.clone();
     html! (
-        <div class="pf-v5-c-page" id={&props.id} role="main" tabindex="-1">
-            <header class="pf-v5-c-masthead">
-                // If the sidebar is empty then the toggle button is not
-                // shown
-                if !props.sidebar.is_empty() {
-                    <span class="pf-v5-c-masthead__toggle">
-                        <Button
-                            r#type={ButtonType::Button}
-                            variant={ButtonVariant::Plain}
-                            {onclick}
-                        >
-                            <i class="fas fa-bars" aria-hidden="true" />
-                        </Button>
-                    </span>
-                }
-
-                <div class="pf-v5-c-masthead__main">
+        <div class="pf-v6-c-page" id={&props.id} role="main" tabindex="-1">
+            <header class="pf-v6-c-masthead">
+                <div class="pf-v6-c-masthead__main">
+                    // If the sidebar is empty then the toggle button is not
+                    // shown
+                    if !props.sidebar.is_empty() {
+                        <span class="pf-v6-c-masthead__toggle">
+                            <Button
+                                r#type={ButtonType::Button}
+                                variant={ButtonVariant::Plain}
+                                {onclick}
+                            >
+                                <i class="fas fa-bars" aria-hidden="true" />
+                            </Button>
+                        </span>
+                    }
                     { props.brand.clone() }
                 </div>
 
-                <div class="pf-v5-c-masthead__content"> // TODO: Should migrate props
+                <div class="pf-v6-c-masthead__content"> // TODO: Should migrate props
                     { props.nav.clone() }
                     { props.tools.clone() }
                 </div>
@@ -103,9 +102,11 @@ pub fn page(props: &PageProperties) -> Html {
                 s
             }) }
 
-            <main class="pf-v5-c-page__main" tabindex="-1" {onscroll}>
-                { props.children.clone() }
-            </main>
+            <div class="pf-v6-c-page__main-container">
+                <main class="pf-v6-c-page__main" tabindex="-1" {onscroll}>
+                    { props.children.clone() }
+                </main>
+            </div>
         </div>
     )
 }
@@ -139,14 +140,14 @@ pub fn masthead_brand(props: &MastheadBrandProperties) -> Html {
         Some(onclick) => {
             let onclick = onclick.reform(|_| ());
             html!(
-                <a class="pf-v5-c-masthead__brand" href="#" {onclick}>
+                <a class="pf-v6-c-masthead__brand" href="#" {onclick}>
                     { props.children.clone() }
                 </a>
             )
         }
         None => {
             html!(
-                <div class="pf-v5-c-masthead__brand">
+                <div class="pf-v6-c-masthead__brand">
                     { props.children.clone() }
                 </div>
             )

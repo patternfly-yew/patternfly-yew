@@ -13,8 +13,8 @@ pub enum Color {
     Orange,
     Red,
     Purple,
-    Cyan,
-    Gold,
+    Teal,
+    Yellow,
 }
 
 impl AsClasses for Color {
@@ -26,8 +26,8 @@ impl AsClasses for Color {
             Color::Orange => classes.push("pf-m-orange"),
             Color::Red => classes.push("pf-m-red"),
             Color::Purple => classes.push("pf-m-purple"),
-            Color::Cyan => classes.push("pf-m-cyan"),
-            Color::Gold => classes.push("pf-m-gold"),
+            Color::Teal => classes.push("pf-m-teal"),
+            Color::Yellow => classes.push("pf-m-yellow"),
         }
     }
 }
@@ -48,7 +48,10 @@ pub struct LabelProperties {
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
-    pub href: String,
+    pub onclick: Option<Callback<()>>,
+    /// Disables the label if it's clickable (if `onclick` is set) or removable (if `onclose` is set).
+    #[prop_or_default]
+    pub disabled: bool,
     #[prop_or_default]
     pub compact: bool,
 }
@@ -64,7 +67,7 @@ pub struct LabelProperties {
 /// Defined in [`LabelProperties`].
 #[function_component(Label)]
 pub fn label(props: &LabelProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-label");
+    let mut classes = Classes::from("pf-v6-c-label");
 
     classes.extend_from(&props.color);
 
@@ -80,11 +83,21 @@ pub fn label(props: &LabelProperties) -> Html {
         classes.push("pf-m-compact");
     }
 
+    if props.onclick.is_some() {
+        classes.push("pf-m-clickable");
+    }
+
+    if props.disabled {
+        classes.push("pf-m-disabled");
+    }
+
     let content = |content: Html| {
-        if props.href.is_empty() {
-            html! {<span class="pf-v5-c-label__content">{content}</span>}
+        if let Some(onclick) = props.onclick.clone() {
+            let onclick = Callback::from(move |_| onclick.emit(()));
+
+            html! {<button class="pf-v6-c-label__content pf-m-clickable" {onclick} disabled={props.disabled}>{content}</button>}
         } else {
-            html! {<a class="pf-v5-c-label__content" href={props.href.clone()}>{content}</a>}
+            html! {<span class="pf-v6-c-label__content">{content}</span>}
         }
     };
 
@@ -94,19 +107,19 @@ pub fn label(props: &LabelProperties) -> Html {
                 html!(
                     <>
                         if let Some(icon) = &props.icon {
-                            <span class="pf-v5-c-label__icon"> { icon.as_html() } </span>
+                            <span class="pf-v6-c-label__icon"> { icon.as_html() } </span>
                         }
-                        <span class="pf-v5-c-label__text">
+                        <span class="pf-v6-c-label__text">
                             { &props.label }
                         </span>
+                        if let Some(onclose) = &props.onclose {
+                            <span class="pf-v6-c-label__actions">
+                                <Button class={"pf-m-no-padding"} variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})} disabled={props.disabled}/>
+                            </span>
+                        }
                     </>
                 )
             )}
-            if let Some(onclose) = &props.onclose {
-                <span class="pf-v5-c-label__actions">
-                    <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.reform(|_| {})}/>
-                </span>
-            }
         </span>
     )
 }

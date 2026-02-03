@@ -140,7 +140,7 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
     html!(
         <ContextProvider<Backdropper> context={(*ctx).clone()}>
             if let Some(open) = &*open {
-                <div class="pf-v5-c-backdrop">
+                <div class="pf-v6-c-backdrop">
                     { open.content.clone() }
                 </div>
             }
@@ -151,14 +151,14 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
 
 fn body_open() {
     if let Some(body) = document().body() {
-        let classes = js_sys::Array::of1(&JsValue::from_str("pf-v5-c-backdrop__open"));
+        let classes = js_sys::Array::of1(&JsValue::from_str("pf-v6-c-backdrop__open"));
         body.class_list().add(&classes).ok();
     }
 }
 
 fn body_close() {
     if let Some(body) = document().body() {
-        let classes = js_sys::Array::of1(&JsValue::from_str("pf-v5-c-backdrop__open"));
+        let classes = js_sys::Array::of1(&JsValue::from_str("pf-v6-c-backdrop__open"));
         body.class_list().remove(&classes).ok();
     }
 }

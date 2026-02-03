@@ -4,10 +4,10 @@ mod simple;
 pub use simple::*;
 
 use crate::prelude::{
-    AsClasses, Button, ButtonVariant, ExtendClasses, Icon, TextInput, TextInputType, use_on_enter,
+    AsClasses, Button, ButtonVariant, Dropdown, ExtendClasses, Icon, MenuAction, TextInput,
+    TextInputType, use_on_enter,
 };
 use yew::prelude::*;
-use yew_hooks::use_click_away;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PaginationPosition {
@@ -20,15 +20,6 @@ impl AsClasses for PaginationPosition {
         match self {
             Self::Top => {}
             Self::Bottom => classes.push(classes!("pf-m-top")),
-        }
-    }
-}
-
-impl PaginationPosition {
-    fn toggle_icon(&self, expanded: bool) -> Icon {
-        match (self, expanded) {
-            (Self::Bottom, true) => Icon::CaretUp,
-            _ => Icon::CaretDown,
         }
     }
 }
@@ -94,15 +85,9 @@ pub enum Navigation {
 /// See the [PatternFly Quickstart](https://github.com/ctron/patternfly-yew-quickstart) for a complete example.
 #[function_component(Pagination)]
 pub fn pagination(props: &PaginationProperties) -> Html {
-    let expanded = use_state_eq(|| false);
-
-    // The pagination menu : "1-20 of nnn"
-    let mut menu_classes = classes!("pf-v5-c-options-menu");
+    // The pagination menu: "1-20 of nnn"
+    let mut menu_classes = classes!("pf-v6-c-pagination__page-menu");
     menu_classes.extend_from(&props.position);
-
-    if *expanded {
-        menu_classes.push("pf-m-expanded");
-    }
 
     // if the dataset is empty
     let empty = props
@@ -134,7 +119,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         .map(|m| format!("{}", m))
         .unwrap_or_else(|| String::from("many"));
 
-    // first entry number (one based)
+    // first entry number (one-based)
     let start = match empty {
         true => 0,
         // +1 because humans don't count from 0 :)
@@ -149,22 +134,11 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     let limit_choices = props.entries_per_page_choices.clone();
 
-    // toggle
-    let ontoggle = use_callback(expanded.clone(), |_, expanded| {
-        expanded.set(!**expanded);
-    });
-
     let node = use_node_ref();
-    {
-        let expanded = expanded.clone();
-        use_click_away(node.clone(), move |_| {
-            expanded.set(false);
-        });
-    }
 
     // page input field
 
-    // the parsed input (zero based)
+    // the parsed input (zero-based)
     let input = use_state_eq(|| 0);
     // the raw input of the page number field
     let input_text = use_state_eq(|| Some((current_page + 1).to_string()));
@@ -257,12 +231,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
 
     // The main div
     let pagination_classes = match &props.position {
-        PaginationPosition::Top => classes!("pf-v5-c-pagination"),
-        PaginationPosition::Bottom => classes!("pf-v5-c-pagination", "pf-m-bottom"),
+        PaginationPosition::Top => classes!("pf-v6-c-pagination"),
+        PaginationPosition::Bottom => classes!("pf-v6-c-pagination", "pf-m-bottom"),
     };
 
     let pagination_styles = format!(
-        "--pf-v5-c-pagination__nav-page-select--c-form-control--width-chars: {};",
+        "--pf-v6-c-pagination__nav-page-select--c-form-control--width-chars: {};",
         max_page.unwrap_or_default().to_string().len().clamp(2, 10)
     );
 
@@ -271,70 +245,45 @@ pub fn pagination(props: &PaginationProperties) -> Html {
     let unbound = props.total_entries.is_none();
 
     html! (
-
         <div
             id={&props.id}
             class={pagination_classes}
             style={[pagination_styles, props.style.to_string()].join(" ")}
             ref={node}
         >
-
             // the selector of how many entries per page to display
-            <div class="pf-v5-c-pagination__total-items">
+            <div class="pf-v6-c-pagination__total-items">
                 <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
                 <b>{ total_entries.clone() }</b>
             </div>
 
-            <div class={ menu_classes }>
-                <button
-                    class="pf-v5-c-options-menu__toggle pf-m-text pf-m-plain"
-                    type="button"
-                    aria-haspopup="listbox"
-                    aria-expanded="true"
-                    onclick={ontoggle}
-                    disabled={props.disabled}
-                >
-                    <span class="pf-v5-c-options-menu__toggle-text">
+            <Dropdown
+                text={html!(
+                    <>
                         <b>{ showing }</b>{"\u{00a0}of\u{00a0}"}
                         <b>{ total_entries }</b>
-                    </span>
-                    <div class="pf-v5-c-options-menu__toggle-icon">
-                        { props.position.toggle_icon(*expanded)}
-                    </div>
-                </button>
+                    </>
+                )}
+                disabled={props.disabled}
+            >
+                { for limit_choices.into_iter().map(|limit|  {
+                    let onlimit = onlimit.clone();
+                    let onclick = Callback::from(move |_|{
+                        log::warn!(">> Limit changed to {}", limit);
+                        onlimit.emit(limit);
+                    });
 
-            if *expanded {
-                <ul class="pf-v5-c-options-menu__menu" >
-                    { for limit_choices.into_iter().map(|limit|  {
-                        let expanded = expanded.clone();
-                        let onlimit = onlimit.clone();
-                        let onclick = Callback::from(move |_|{
-                            onlimit.emit(limit);
-                            expanded.set(false);
-                        });
-                        html!(
-                            <li>
-                                <button
-                                    class="pf-v5-c-options-menu__menu-item"
-                                    type="button"
-                                    {onclick}
-                                >
-                                    {limit} {" per page"}
-                                    if props.selected_choice == limit {
-                                        <div class="pf-v5-c-options-menu__menu-item-icon">
-                                            { Icon::Check }
-                                        </div>
-                                    }
-                                </button>
-                            </li>
-                    )})}
-                </ul>
-            }
-            </div>
+                    html_nested!(
+                        <MenuAction {onclick} selected={props.selected_choice == limit}>
+                            {limit} {" per page"} {props.selected_choice}
+                        </MenuAction>
+                    )
+                })}
+            </Dropdown>
 
             // the navigation buttons
-            <nav class="pf-v5-c-pagination__nav" aria-label="Pagination">
-                <div class="pf-v5-c-pagination__nav-control pf-m-first">
+            <nav class="pf-v6-c-pagination__nav" aria-label="Pagination">
+                <div class="pf-v6-c-pagination__nav-control pf-m-first">
                     <Button
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::First)}
@@ -344,7 +293,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                       { Icon::AngleDoubleLeft }
                     </Button>
                 </div>
-                <div class="pf-v5-c-pagination__nav-control pf-m-prev">
+                <div class="pf-v6-c-pagination__nav-control pf-m-prev">
                     <Button
                         aria_label="Go to previous page"
                         variant={ButtonVariant::Plain}
@@ -354,7 +303,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                        { Icon::AngleLeft }
                     </Button>
                 </div>
-                <div class="pf-v5-c-pagination__nav-page-select">
+                <div class="pf-v6-c-pagination__nav-page-select">
                     <TextInput
                         r#type={TextInputType::Number}
                         inputmode="number"
@@ -369,7 +318,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 }
                 </div>
 
-                <div class="pf-v5-c-pagination__nav-control pf-m-next">
+                <div class="pf-v6-c-pagination__nav-control pf-m-next">
                     <Button
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
@@ -379,7 +328,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         { Icon::AngleRight }
                     </Button>
                 </div>
-                <div class="pf-v5-c-pagination__nav-control pf-m-last">
+                <div class="pf-v6-c-pagination__nav-control pf-m-last">
                     <Button
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}

@@ -53,7 +53,7 @@ pub fn title(props: &TitleProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut class = Classes::from("pf-v5-c-title");
+    let mut class = Classes::from("pf-v6-c-title");
 
     class.extend_from(&props.size.unwrap_or(match props.level {
         Level::H1 => Size::XXLarge,

@@ -21,13 +21,13 @@ pub fn page_sidebar(props: &PageSidebarProperties) -> Html {
         false => classes!["pf-m-collapsed"],
     };
 
-    classes.push("pf-v5-c-page__sidebar");
+    classes.push("pf-v6-c-page__sidebar");
 
     html! (
         <div
             aria-hidden={(!props.open).to_string()}
             class={classes}>
-            <div class="pf-v5-c-page__sidebar-body">
+            <div class="pf-v6-c-page__sidebar-body">
                 { props.children.clone() }
             </div>
         </div>

@@ -21,8 +21,8 @@ const OUIA: Ouia = ouia!("Toolbar");
 pub enum ToolbarElementModifier {
     Hidden,
     Visible,
-    Left,
-    Right,
+    Start,
+    End,
 }
 
 impl AsClasses for ToolbarElementModifier {
@@ -30,8 +30,8 @@ impl AsClasses for ToolbarElementModifier {
         classes.push(match self {
             Self::Hidden => "pf-m-hidden",
             Self::Visible => "pf-m-visible",
-            Self::Left => "pf-m-align-left", // Only allowed as direct descendants of toolbar...
-            Self::Right => "pf-m-align-right", // ^
+            Self::Start => "pf-m-align-start", // Only allowed as direct descendants of toolbar...
+            Self::End => "pf-m-align-end",     // ^
         });
     }
 }
@@ -106,7 +106,7 @@ pub fn toolbar(props: &ToolbarProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut class = classes!("pf-v5-c-toolbar", props.class.clone());
+    let mut class = classes!("pf-v6-c-toolbar", props.class.clone());
     class.extend_from(&props.insets);
 
     if props.full_height {
@@ -139,8 +139,8 @@ pub struct ToolbarContentProperties {
 #[function_component(ToolbarContent)]
 pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
     html! (
-        <div class="pf-v5-c-toolbar__content" id={&props.id}>
-            <div class="pf-v5-c-toolbar__content-section">
+        <div class="pf-v6-c-toolbar__content" id={&props.id}>
+            <div class="pf-v6-c-toolbar__content-section">
                 { for props.children.iter() }
             </div>
         </div>

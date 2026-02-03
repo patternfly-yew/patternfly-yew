@@ -86,13 +86,13 @@ state in the process.
     <style>
         {r#"
             @media only screen and (min-width: 576px) {
-                .pf-v5-c-about-modal-box[style]  {
-                    --pf-v5-c-about-modal-box--BackgroundImage: url("https://www.patternfly.org/assets/images/pfbg_992.jpg") !important;
+                .pf-v6-c-about-modal-box[style]  {
+                    --pf-v6-c-about-modal-box--BackgroundImage: url("https://www.patternfly.org/assets/images/pfbg_992.jpg") !important;
                 }
             }
             @media only screen and (min-width: 992px) {
-                .pf-v5-c-about-modal-box[style]  {
-                    --pf-v5-c-about-modal-box--BackgroundImage: url("https://www.patternfly.org/assets/images/pfbg_992@2x.jpg") !important;
+                .pf-v6-c-about-modal-box[style]  {
+                    --pf-v6-c-about-modal-box--BackgroundImage: url("https://www.patternfly.org/assets/images/pfbg_992@2x.jpg") !important;
                 }
             }
         "#}

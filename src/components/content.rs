@@ -26,7 +26,7 @@ pub struct ContentProperties {
 pub fn content(props: &ContentProperties) -> Html {
     html! {
         <div
-            class="pf-v5-c-content"
+            class="pf-v6-c-content"
             id={&props.id}
         >
             { props.children.clone() }

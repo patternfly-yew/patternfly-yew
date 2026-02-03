@@ -66,7 +66,7 @@ pub fn control(props: &DualListSelectorControlProps) -> Html {
         button
     };
     html! {
-        <div class={classes!["pf-v5-c-dual-list-selector__controls-item", props.class.clone()]}>
+        <div class={classes!["pf-v6-c-dual-list-selector__controls-item", props.class.clone()]}>
             { inner }
         </div>
     }

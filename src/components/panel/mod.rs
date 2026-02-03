@@ -62,7 +62,7 @@ impl AsClasses for PanelVariant {
 /// ```
 #[function_component(Panel)]
 pub fn panel(props: &PanelProperties) -> Html {
-    let mut class = classes!("pf-v5-c-panel");
+    let mut class = classes!("pf-v6-c-panel");
 
     class.extend_from(&props.variant);
 
@@ -80,7 +80,7 @@ pub fn panel(props: &PanelProperties) -> Html {
 #[function_component(PanelMain)]
 pub fn panel_main(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-v5-c-panel__main">
+        <div class="pf-v6-c-panel__main">
             { props.children.clone() }
         </div>
     )
@@ -89,7 +89,7 @@ pub fn panel_main(props: &ChildrenProperties) -> Html {
 #[function_component(PanelMainBody)]
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-v5-c-panel__main-body">
+        <div class="pf-v6-c-panel__main-body">
             { props.children.clone() }
         </div>
     )
@@ -98,7 +98,7 @@ pub fn panel_main_body(props: &ChildrenProperties) -> Html {
 #[function_component(PanelHeader)]
 pub fn panel_header(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-v5-c-panel__header">
+        <div class="pf-v6-c-panel__header">
             { props.children.clone() }
         </div>
     )
@@ -107,7 +107,7 @@ pub fn panel_header(props: &ChildrenProperties) -> Html {
 #[function_component(PanelFooter)]
 pub fn panel_footer(props: &ChildrenProperties) -> Html {
     html!(
-        <div class="pf-v5-c-panel__footer">
+        <div class="pf-v6-c-panel__footer">
             { props.children.clone() }
         </div>
     )

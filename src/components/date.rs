@@ -55,12 +55,12 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
 
     let target = html! {
         <button
-            class="pf-v5-c-button pf-m-control"
+            class="pf-v6-c-button pf-m-control"
             type="button"
             aria-label="Toggle date picker"
             disabled={props.disabled}
         >
-        <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+        <i class="fas fa-calendar-alt" aria-hidden="true" style="line-height: 1.5;"></i>
         </button>
     };
 
@@ -68,12 +68,14 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         // We need to extract the body component, as we need the PopoverContext using use_context.
         // However, that only works if the call of use_context comes from a component wrapped by
         // Popover.
-        <PopoverBody> <Body
+        <PopoverBody>
+            <Body
                 date={value.unwrap_or_else(|| Local::now().date_naive())}
                 weekday_start={props.weekday_start}
                 rangestart={props.rangestart}
                 onchange={callback_change_value}
-        /> </PopoverBody>
+            />
+        </PopoverBody>
     );
 
     // short circuit the text input to the text value
@@ -108,8 +110,8 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
     );
 
     html! {
-        <div class="pf-v5-c-date-picker">
-            <div class="pf-v5-c-date-picker__input">
+        <div class="pf-v6-c-date-picker">
+            <div class="pf-v6-c-date-picker__input">
                 <InputGroup>
                     <InputGroupItem>
                         {input}

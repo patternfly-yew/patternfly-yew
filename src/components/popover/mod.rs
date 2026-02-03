@@ -154,7 +154,7 @@ pub struct PopoverPopupProperties {
 /// The actual popover content component.
 #[function_component(PopoverPopup)]
 pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
-    let mut class = classes!("pf-v5-c-popover");
+    let mut class = classes!("pf-v6-c-popover");
 
     class.extend_from(&props.orientation);
 
@@ -187,10 +187,10 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
             role="dialog"
             aria-model="true"
         >
-            <div class="pf-v5-c-popover__arrow"></div>
-            <div class="pf-v5-c-popover__content">
+            <div class="pf-v6-c-popover__arrow"></div>
+            <div class="pf-v6-c-popover__content">
                 if !props.no_close {
-                    <div class="pf-v5-c-popover__close">
+                    <div class="pf-v6-c-popover__close">
                         <Button
                             variant={ButtonVariant::Plain}
                             icon={Icon::Times}
@@ -222,21 +222,21 @@ pub fn popover_body(props: &PopoverBodyProperties) -> Html {
     html!(
         <>
             if let Some(header) = &props.header {
-                <header class="pf-v5-c-popover__header">
-                    <div class="pf-v5-c-popover__title">
-                        <h1 class="pf-v5-c-title pf-m-md">
+                <header class="pf-v6-c-popover__header">
+                    <div class="pf-v6-c-popover__title">
+                        <h1 class="pf-v6-c-title pf-m-md">
                             { header.clone() }
                         </h1>
                     </div>
                 </header>
             }
 
-            <div class="pf-v5-c-popover__body">
+            <div class="pf-v6-c-popover__body">
                 { props.children.clone() }
             </div>
 
             if let Some(footer) = &props.footer {
-                <footer class="pf-v5-c-popover__footer">
+                <footer class="pf-v6-c-popover__footer">
                     { footer.clone() }
                 </footer>
             }

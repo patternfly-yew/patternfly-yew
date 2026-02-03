@@ -48,7 +48,7 @@ where
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA_TABS.generated_id())
     });
-    let mut classes = classes!("pf-v5-c-tabs");
+    let mut classes = classes!("pf-v6-c-tabs");
 
     if props.r#box {
         classes.push("pf-m-box");
@@ -73,7 +73,7 @@ where
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <ul class="pf-v5-c-tabs__list">
+            <ul class="pf-v6-c-tabs__list">
                 { for props.children.iter() }
             </ul>
         </div>
@@ -118,13 +118,13 @@ where
     });
     let router = use_router::<T>().expect("Must be used below a Router or Nested component");
 
-    let mut classes = Classes::from("pf-v5-c-tabs__item");
+    let mut classes = Classes::from("pf-v6-c-tabs__item");
 
     if router.is_same(&props.to) {
         classes.push("pf-m-current");
     }
 
-    let mut link_classes = Classes::from("pf-v5-c-tabs__link");
+    let mut link_classes = Classes::from("pf-v6-c-tabs__link");
 
     if props.disabled {
         link_classes.push("pf-m-disabled");
@@ -138,7 +138,7 @@ where
             data-ouia-safe={props.ouia_safe}
         >
             <Link<T> element="button" class={link_classes} to={props.to.clone()}>
-                <span class="pf-v5-c-tabs__item-text"> { props.title.clone() } </span>
+                <span class="pf-v6-c-tabs__item-text"> { props.title.clone() } </span>
             </Link<T>>
         </li>
     )

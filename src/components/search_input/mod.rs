@@ -311,7 +311,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
     if let Some(onnextclick) = &props.props.onnextclick {
         if let Some(onprevclick) = &props.props.onpreviousclick {
             clicknav = html! {
-                <div class={classes!["pf-v5-c-text-input-group__group"]}>
+                <div class={classes!["pf-v6-c-text-input-group__group"]}>
                     <Button
                         variant={ButtonVariant::Plain}
                         aria_label={props.props.previous_navigation_button_aria_label.clone()}

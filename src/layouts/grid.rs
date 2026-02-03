@@ -27,7 +27,7 @@ pub struct GridProperties {
 /// through component types on that.
 #[function_component(Grid)]
 pub fn grid(props: &GridProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-grid");
+    let mut classes = Classes::from("pf-v6-l-grid");
 
     if props.gutter {
         classes.push("pf-m-gutter");
@@ -62,7 +62,7 @@ pub struct GridItemProperties {
 /// Defined by [`GridItemProperties`].
 #[function_component(GridItem)]
 pub fn grid_item(props: &GridItemProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-l-grid__item");
+    let mut classes = Classes::from("pf-v6-l-grid__item");
 
     classes.extend_from(&props.cols.mapped(|cols| format!("pf-m-{}-col", cols)));
     classes.extend_from(&props.rows.mapped(|cols| format!("pf-m-{}-row", cols)));

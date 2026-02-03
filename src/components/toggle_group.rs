@@ -21,7 +21,7 @@ pub struct ToggleGroupProperties {
 
 #[function_component(ToggleGroup)]
 pub fn toggle_group(props: &ToggleGroupProperties) -> Html {
-    let mut class = classes!(props.class.clone(), "pf-v5-c-toggle-group");
+    let mut class = classes!(props.class.clone(), "pf-v6-c-toggle-group");
     if props.compact {
         class.push("pf-m-compact");
     };
@@ -63,8 +63,8 @@ pub struct ToggleGroupItemProperties {
 
 #[function_component(ToggleGroupItem)]
 pub fn toggle_group_item(props: &ToggleGroupItemProperties) -> Html {
-    let mut class = classes!(props.class.clone(), "pf-v5-c-toggle-group__item");
-    let mut button_class = classes!("pf-v5-c-toggle-group__button");
+    let mut class = classes!(props.class.clone(), "pf-v6-c-toggle-group__item");
+    let mut button_class = classes!("pf-v6-c-toggle-group__button");
     if props.selected {
         class.push("pf-m-selected");
         button_class.push("pf-m-selected");
@@ -113,10 +113,10 @@ pub fn toggle_group_item_element(props: &ToggleGroupItemElementProperties) -> Ht
         .as_ref()
         .map(|v| match v {
             ToggleGroupItemElementVariant::Icon(children) => {
-                ("pf-v5-c-toggle-group__icon", children)
+                ("pf-v6-c-toggle-group__icon", children)
             }
             ToggleGroupItemElementVariant::Text(children) => {
-                ("pf-v5-c-toggle-group__text", children)
+                ("pf-v6-c-toggle-group__text", children)
             }
         })
         .unzip();

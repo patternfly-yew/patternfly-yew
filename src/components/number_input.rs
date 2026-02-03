@@ -62,11 +62,11 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
     props: &NumberInputProperties<T>,
 ) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-number-input");
+    class.push("pf-v6-c-number-input");
     if props.state != InputState::Default {
         class.push("pf-m-status");
     }
-    let width_style_name = "--pf-v5-c-number-input--c-form-control--width-chars";
+    let width_style_name = "--pf-v6-c-number-input--c-form-control--width-chars";
     let style = props
         .width_chars
         .map(|w| format!("{width_style_name}:{w};"));
@@ -103,7 +103,7 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
                         disabled={props.disabled || props.value <= props.min}
                         onclick={onminusclick}
                     >
-                        <span class="pf-v5-c-number-input__icon">
+                        <span class="pf-v6-c-number-input__icon">
                             {Icon::Minus}
                         </span>
                     </Button>
@@ -125,7 +125,7 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
                         disabled={props.disabled || props.value >= props.max}
                         onclick={onplusclick}
                     >
-                        <span class="pf-v5-c-number-input__icon">
+                        <span class="pf-v6-c-number-input__icon">
                             {Icon::Plus}
                         </span>
                     </Button>
@@ -145,5 +145,5 @@ struct UnitProperties {
 
 #[function_component(Unit)]
 fn unit(props: &UnitProperties) -> Html {
-    html!(<div class="pf-v5-c-number-input__unit">{props.children.clone()}</div>)
+    html!(<div class="pf-v6-c-number-input__unit">{props.children.clone()}</div>)
 }

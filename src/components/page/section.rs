@@ -37,12 +37,12 @@ pub enum PageSectionType {
 impl AsClasses for PageSectionType {
     fn extend_classes(&self, classes: &mut Classes) {
         match self {
-            Self::Default => classes.push("pf-v5-c-page__main-section"),
-            Self::Breadcrumbs => classes.push("pf-v5-c-page__main-breadcrumb"),
-            Self::Navigation => classes.push("pf-v5-c-page__main-nav"),
-            Self::SubNavigation => classes.push("pf-v5-c-page__main-subnav"),
-            Self::Tabs => classes.push("pf-v5-c-page__main-tabs"),
-            Self::Wizard => classes.push("pf-v5-c-page__main-wizard"),
+            Self::Default => classes.push("pf-v6-c-page__main-section"),
+            Self::Breadcrumbs => classes.push("pf-v6-c-page__main-breadcrumb"),
+            Self::Navigation => classes.push("pf-v6-c-page__main-nav"),
+            Self::SubNavigation => classes.push("pf-v6-c-page__main-subnav"),
+            Self::Tabs => classes.push("pf-v6-c-page__main-tabs"),
+            Self::Wizard => classes.push("pf-v6-c-page__main-wizard"),
         }
     }
 }
@@ -199,7 +199,7 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     html! (
         <section {class} id={&props.id} hidden={props.hidden} style={props.style.clone()}>
             if props.limit_width {
-                <div class="pf-v5-c-page__main-body">
+                <div class="pf-v6-c-page__main-body">
                     { props.children.clone() }
                 </div>
             } else {
@@ -223,7 +223,7 @@ pub struct PageSectionGroupProperties {
 
 #[function_component(PageSectionGroup)]
 pub fn page_section_group(props: &PageSectionGroupProperties) -> Html {
-    let mut class = Classes::from("pf-v5-c-page__main-group");
+    let mut class = Classes::from("pf-v6-c-page__main-group");
 
     class.extend_from(&props.shadow);
     class.extend_from(&props.sticky);

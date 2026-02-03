@@ -59,7 +59,7 @@ pub struct VisibleProperties {
 pub fn visible(props: &VisibleProperties) -> Html {
     let mut class = match props.visible {
         true => classes!(),
-        false => classes!("pf-v5-u-display-none"),
+        false => classes!("pf-v6-u-display-none"),
     };
 
     class.extend(&props.class);

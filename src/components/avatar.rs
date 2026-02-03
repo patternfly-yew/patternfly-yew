@@ -78,7 +78,7 @@ pub fn avatar(props: &AvatarProperties) -> Html {
         <img
             class={
                 classes!(
-                    "pf-v5-c-avatar",
+                    "pf-v6-c-avatar",
                     props.border.clone(),
                     props.size.clone(),
                     props.class.clone()

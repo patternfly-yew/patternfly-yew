@@ -55,11 +55,11 @@ impl Component for Spinner {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-v5-c-spinner");
+        let mut classes = Classes::from("pf-v6-c-spinner");
         classes.extend(ctx.props().size.as_classes());
 
         let style = if let SpinnerSize::Custom(diameter) = &ctx.props().size {
-            format!("--pf-v5-c-spinner--diameter: {};", diameter)
+            format!("--pf-v6-c-spinner--diameter: {};", diameter)
         } else {
             String::new()
         };
@@ -72,7 +72,7 @@ impl Component for Spinner {
                 aria-label={ ctx.props().aria_label.clone() }
                 { style }
             >
-                <circle class="pf-v5-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
+                <circle class="pf-v6-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
             </svg>
         )
     }

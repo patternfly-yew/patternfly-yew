@@ -42,7 +42,7 @@ pub fn nav(props: &NavProperties) -> Html {
     });
     html! {
         <nav
-            class="pf-v5-c-nav"
+            class="pf-v6-c-nav"
             aria-label="Global"
             data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
@@ -65,7 +65,7 @@ pub struct NavListProperties {
 #[function_component(NavList)]
 pub fn nav_list(props: &NavListProperties) -> Html {
     html! {
-        <ul class="pf-v5-c-nav__list" role="list">
+        <ul class="pf-v6-c-nav__list" role="list">
             { props.children.clone() }
         </ul>
     }
@@ -85,8 +85,8 @@ pub struct NavGroupProperties {
 #[function_component(NavGroup)]
 pub fn nav_group(props: &NavGroupProperties) -> Html {
     html! {
-        <section class="pf-v5-c-nav__section">
-            <h2 class="pf-v5-c-nav__section-title">{ props.title.clone() }</h2>
+        <section class="pf-v6-c-nav__section">
+            <h2 class="pf-v6-c-nav__section-title">{ props.title.clone() }</h2>
             <NavList>
                 { props.children.clone() }
             </NavList>
@@ -123,14 +123,14 @@ pub fn nav_item(props: &NavItemProperties) -> Html {
     });
     html! (
         <li
-            class="pf-v5-c-nav__item"
+            class="pf-v6-c-nav__item"
             data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
             <a
                 href="#"
-                class="pf-v5-c-nav__link"
+                class="pf-v6-c-nav__link"
                 onclick={props.onclick.reform(|_|())}
             >
                 { props.children.clone() }
@@ -154,10 +154,10 @@ pub struct NavLinkProperties {
 #[function_component(NavLink)]
 pub fn nav_link(props: &NavLinkProperties) -> Html {
     html! (
-        <li class="pf-v5-c-nav__item">
+        <li class="pf-v6-c-nav__item">
             <a
                 href={&props.href}
-                class="pf-v5-c-nav__link"
+                class="pf-v6-c-nav__link"
                 target={&props.target}
             >
                 { props.children.clone() }
@@ -260,7 +260,7 @@ impl Component for NavExpandable {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let mut classes = Classes::from("pf-v5-c-nav__item pf-m-expandable");
+        let mut classes = Classes::from("pf-v6-c-nav__item pf-m-expandable");
 
         let expanded = self.is_expanded(ctx);
 
@@ -274,19 +274,19 @@ impl Component for NavExpandable {
             <ContextProvider<Expandable> {context}>
                 <li class={classes}>
                     <button
-                        class="pf-v5-c-nav__link"
+                        class="pf-v6-c-nav__link"
                         aria-expanded={expanded.to_string()}
                         onclick={ctx.link().callback(|_|MsgExpandable::Toggle)}
                     >
                         { &ctx.props().title }
-                        <span class="pf-v5-c-nav__toggle">
-                            <span class="pf-v5-c-nav__toggle-icon">
+                        <span class="pf-v6-c-nav__toggle">
+                            <span class="pf-v6-c-nav__toggle-icon">
                                 { Icon::AngleRight }
                             </span>
                         </span>
                     </button>
 
-                    <section class="pf-v5-c-nav__subnav" hidden={!expanded}>
+                    <section class="pf-v6-c-nav__subnav" hidden={!expanded}>
                         <NavList>
                             { ctx.props().children.clone() }
                         </NavList>

@@ -57,12 +57,12 @@ pub struct MenuProperties {
     pub ouia_safe: OuiaSafe,
 }
 
-#[function_component(Menu)]
-pub fn menu(props: &MenuProperties) -> Html {
+#[component]
+pub fn Menu(props: &MenuProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut class = classes!("pf-v5-c-menu");
+    let mut class = classes!("pf-v6-c-menu");
 
     if props.scrollable {
         class.push(classes!("pf-m-scrollable"));
@@ -82,7 +82,7 @@ pub fn menu(props: &MenuProperties) -> Html {
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <div class="pf-v5-c-menu__content">
+            <div class="pf-v6-c-menu__content">
                 <MenuList>{ props.children.clone() }</MenuList>
             </div>
         </div>
@@ -94,23 +94,19 @@ pub(crate) struct MenuListProperties {
     pub(crate) children: ChildrenRenderer<MenuChildVariant>,
 }
 
-#[function_component(MenuList)]
-pub(crate) fn menu_list(props: &MenuListProperties) -> Html {
+#[component]
+pub(crate) fn MenuList(props: &MenuListProperties) -> Html {
     let r#ref = use_node_ref();
 
     {
         let r#ref = r#ref.clone();
         use_event_with_window("keydown", move |e: KeyboardEvent| {
-            if !r#ref.contains(e.target()) {
-                return;
-            }
-
             handle_key(&r#ref, e);
         });
     }
 
     html!(
-        <ul ref={r#ref} class="pf-v5-c-menu__list" role="menu">
+        <ul ref={r#ref} class="pf-v6-c-menu__list" role="menu">
             { for props.children.iter() }
         </ul>
     )
@@ -161,7 +157,7 @@ fn handle_arrows(node: &NodeRef, e: KeyboardEvent) {
         .filter_map(|node| node.dyn_into::<HtmlElement>().ok())
         .filter(|element| {
             !element.class_list().contains("pf-m-disabled")
-                && !element.class_list().contains("pf-v5-c-divider")
+                && !element.class_list().contains("pf-v6-c-divider")
         })
         .collect::<Vec<_>>();
 

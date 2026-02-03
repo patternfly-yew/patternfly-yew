@@ -97,7 +97,7 @@ pub fn alert(props: &AlertProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut classes = classes!("pf-v5-c-alert");
+    let mut classes = classes!("pf-v6-c-alert");
 
     classes.extend(props.r#type.as_classes());
 
@@ -108,7 +108,7 @@ pub fn alert(props: &AlertProperties) -> Html {
         classes.push("pf-m-plain");
     }
 
-    let mut title_classes = classes!("pf-v5-c-alert__title");
+    let mut title_classes = classes!("pf-v6-c-alert__title");
 
     if props.truncate {
         title_classes.push("pf-m-truncate");
@@ -120,7 +120,7 @@ pub fn alert(props: &AlertProperties) -> Html {
         html!()
     } else {
         html! (
-            <div class="pf-v5-c-alert__action-group">
+            <div class="pf-v6-c-alert__action-group">
                 {for props.actions.iter().map(|action|{
                     html!{
                         <Button
@@ -143,22 +143,22 @@ pub fn alert(props: &AlertProperties) -> Html {
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <div class="pf-v5-c-alert__icon">{ t.icon() }</div>
+            <div class="pf-v6-c-alert__icon">{ t.icon() }</div>
             <p class={title_classes}>
-                <span class="pf-v5-screen-reader">{ t.aria_label() }{":"}</span>
+                <span class="pf-v6-screen-reader">{ t.aria_label() }{":"}</span>
                 { &props.title }
             </p>
 
 
             if let Some(onclose) = props.onclose.as_ref() {
-                <div class="pf-v5-c-alert__action">
+                <div class="pf-v6-c-alert__action">
                     <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
                 </div>
             }
 
 
             if !props.children.is_empty() {
-                <div class="pf-v5-c-alert__description">
+                <div class="pf-v6-c-alert__description">
                     { props.children.clone() }
                 </div>
             }
@@ -182,7 +182,7 @@ pub struct GroupProperties {
 
 #[function_component(AlertGroup)]
 pub fn view(props: &GroupProperties) -> Html {
-    let mut classes = classes!("pf-v5-c-alert-group");
+    let mut classes = classes!("pf-v6-c-alert-group");
 
     if props.toast {
         classes.push(classes!("pf-m-toast"));
@@ -191,7 +191,7 @@ pub fn view(props: &GroupProperties) -> Html {
     html! (
         <ul class={classes} role="list">
             { for props.children.iter().map(|child|
-                wrapper_elt_with_attributes(child.into(), "li", &[("class", AttributeOrProperty::Static("pf-v5-c-alert-group__item"))])
+                wrapper_elt_with_attributes(child.into(), "li", &[("class", AttributeOrProperty::Static("pf-v6-c-alert-group__item"))])
             )}
         </ul>
     )

@@ -85,7 +85,7 @@ pub struct SkeletonProperties {
 /// ```
 #[function_component(Skeleton)]
 pub fn skeleton(props: &SkeletonProperties) -> Html {
-    let mut skeleton_classes = classes!("pf-v5-c-skeleton");
+    let mut skeleton_classes = classes!("pf-v6-c-skeleton");
     if let Some(val) = props.font_size {
         skeleton_classes.extend_from(&val)
     }
@@ -95,11 +95,11 @@ pub fn skeleton(props: &SkeletonProperties) -> Html {
 
     let mut skeleton_styles = vec![props.style.to_string()];
     if let Some(val) = &props.width {
-        let style = format!("--pf-v5-c-skeleton--Width: {};", val);
+        let style = format!("--pf-v6-c-skeleton--Width: {};", val);
         skeleton_styles.push(style.to_string());
     }
     if let Some(val) = &props.height {
-        let style = format!("--pf-v5-c-skeleton--Height: {};", val);
+        let style = format!("--pf-v6-c-skeleton--Height: {};", val);
         skeleton_styles.push(style.to_string());
     }
 
@@ -108,7 +108,7 @@ pub fn skeleton(props: &SkeletonProperties) -> Html {
             class={skeleton_classes}
             style={skeleton_styles.join(" ")}
         >
-            <span class={"pf-v5-u-screen-reader"}>{&props.screenreader_text}</span>
+            <span class={"pf-v6-u-screen-reader"}>{&props.screenreader_text}</span>
         </div>
     )
 }

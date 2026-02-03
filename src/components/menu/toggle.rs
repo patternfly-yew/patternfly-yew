@@ -7,7 +7,7 @@ pub struct MenuToggleProperties {
     pub r#ref: NodeRef,
 
     #[prop_or_default]
-    pub text: Option<String>,
+    pub text: Option<Html>,
 
     #[prop_or_default]
     pub icon: Option<Html>,
@@ -64,9 +64,9 @@ impl AsClasses for MenuToggleVariant {
 /// ## Properties
 ///
 /// Defined by [`MenuToggleProperties`].
-#[function_component(MenuToggle)]
-pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
-    let mut class = classes!("pf-v5-c-menu-toggle");
+#[component]
+pub fn MenuToggle(props: &MenuToggleProperties) -> Html {
+    let mut class = classes!("pf-v6-c-menu-toggle");
 
     if props.expanded {
         class.push(classes!("pf-m-expanded"));
@@ -104,17 +104,17 @@ pub fn menu_toggle(props: &MenuToggleProperties) -> Html {
                     // if we just have an icon, don't wrap it
                     { icon.clone() }
                 } else {
-                    <span class="pf-v5-c-menu-toggle__icon">{ icon.clone() }</span>
+                    <span class="pf-v6-c-menu-toggle__icon">{ icon.clone() }</span>
                 }
             }
             if let Some(text) = &props.text {
-                <span class="pf-v5-c-menu-toggle__text">{ text }</span>
+                <span class="pf-v6-c-menu-toggle__text">{ text }</span>
             }
 
             if !plain || text {
                 // if we have more than just a plain icon, add the toggle control
-                <span class="pf-v5-c-menu-toggle__controls">
-                    <span class="pf-v5-c-menu-toggle__toggle-icon">
+                <span class="pf-v6-c-menu-toggle__controls">
+                    <span class="pf-v6-c-menu-toggle__toggle-icon">
                         <i class="fas fa-caret-down" aria-hidden="true"></i>
                     </span>
                 </span>

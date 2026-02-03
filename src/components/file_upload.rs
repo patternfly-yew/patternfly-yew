@@ -21,7 +21,7 @@ pub struct FileUploadProperties {
 /// Defined in [`FileUploadProperties`].
 #[function_component(FileUpload)]
 pub fn file_upload(props: &FileUploadProperties) -> Html {
-    let mut class = classes!("pf-v5-c-file-upload");
+    let mut class = classes!("pf-v6-c-file-upload");
 
     if props.drag_over {
         class.push(classes!("pf-m-drag-hover"));
@@ -43,7 +43,7 @@ pub struct FileUploadSelectProperties {
 #[function_component(FileUploadSelect)]
 pub fn file_upload_select(props: &FileUploadSelectProperties) -> Html {
     html!(
-        <div class="pf-v5-c-file-upload__file-select">
+        <div class="pf-v6-c-file-upload__file-select">
             { props.children.clone() }
         </div>
     )
@@ -69,18 +69,18 @@ pub struct FileUploadDetailsProperties {
 #[function_component(FileUploadDetails)]
 pub fn file_upload_select(props: &FileUploadDetailsProperties) -> Html {
     html!(
-        <div class="pf-v5-c-file-upload__file-details">
+        <div class="pf-v6-c-file-upload__file-details">
             { props.children.clone() }
             if props.processing {
-                <div class="pf-v5-c-file-upload__file-details-spinner">
+                <div class="pf-v6-c-file-upload__file-details-spinner">
                     <span
-                        class="pf-v5-c-spinner pf-m-lg"
+                        class="pf-v6-c-spinner pf-m-lg"
                         role="progressbar"
                         aria-label="Loading..."
                     >
-                        <span class="pf-v5-c-spinner__clipper"></span>
-                        <span class="pf-v5-c-spinner__lead-ball"></span>
-                        <span class="pf-v5-c-spinner__tail-ball"></span>
+                        <span class="pf-v6-c-spinner__clipper"></span>
+                        <span class="pf-v6-c-spinner__lead-ball"></span>
+                        <span class="pf-v6-c-spinner__tail-ball"></span>
                     </span>
                 </div>
             }

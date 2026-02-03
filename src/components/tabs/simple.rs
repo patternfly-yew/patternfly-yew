@@ -120,7 +120,7 @@ where
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut class = classes!("pf-v5-c-tabs");
+    let mut class = classes!("pf-v6-c-tabs");
 
     if props.r#box {
         class.push(classes!("pf-m-box"));
@@ -154,7 +154,7 @@ where
                 data-ouia-safe={props.ouia_safe}
             >
                 <button
-                    class="pf-v5-c-tabs__scroll-button"
+                    class="pf-v6-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll left"
@@ -164,7 +164,7 @@ where
                 >
                     { Icon::AngleLeft }
                 </button>
-                <ul class="pf-v5-c-tabs__list">
+                <ul class="pf-v6-c-tabs__list">
                     { for props.children.iter().map(|c| {
                         let onselect = props.onselect.clone();
                         html!(
@@ -179,7 +179,7 @@ where
                     }) }
                 </ul>
                 <button
-                    class="pf-v5-c-tabs__scroll-button"
+                    class="pf-v6-c-tabs__scroll-button"
                     disabled=true
                     aria-hidden="true"
                     aria-label="Scroll right"
@@ -255,7 +255,7 @@ where
         .map(|context| context.selected == props.index)
         .unwrap_or_default();
 
-    let mut class = Classes::from("pf-v5-c-tabs__item");
+    let mut class = Classes::from("pf-v6-c-tabs__item");
 
     if current {
         class.push("pf-m-current");
@@ -276,11 +276,11 @@ where
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <button class="pf-v5-c-tabs__link" {onclick}>
+            <button class="pf-v6-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {
-                    <span class="pf-v5-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
+                    <span class="pf-v6-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
                 }
-                <span class="pf-v5-c-tabs__item-text">
+                <span class="pf-v6-c-tabs__item-text">
                     { props.children.clone() }
                 </span>
             </button>

@@ -317,7 +317,7 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
         })
     };
     html! {
-      <div class={classes!["pf-v5-c-dual-list-selector", props.class.clone()]}>
+      <div class={classes!["pf-v6-c-dual-list-selector", props.class.clone()]}>
         if !props.children.is_empty() {
             { props.children.clone() }
         } else {

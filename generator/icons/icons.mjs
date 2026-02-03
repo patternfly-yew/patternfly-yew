@@ -113,7 +113,7 @@ export const iconsData = [
       "React_name": "BellIcon",
       "Type": "Status",
       "Contextual_usage": "Represents status: default notification",
-      color: 'var(--pf-v5-global--primary-color--100)',
+      color: 'var(--pf-v6-global--primary-color--100)',
     },
     {
       "Style": "pficon",
@@ -157,7 +157,7 @@ export const iconsData = [
     "Type": ["Action","Status"],
     "Contextual_usage": "Indicates the ability to commit edited changes",
     "Extra_context": "Represents status: OK in content views such as a tables",
-    color: 'var(--pf-v5-global--success-color--100)',
+    color: 'var(--pf-v6-global--success-color--100)',
   },
   {
     "Style": "fas",
@@ -288,7 +288,7 @@ export const iconsData = [
     "React_name": "ExclamationCircleIcon",
     "Type": "Status",
     "Contextual_usage": "Represents alert status: danger, major error or critical error",
-    color: 'var(--pf-v5-global--danger-color--100)',
+    color: 'var(--pf-v6-global--danger-color--100)',
   },
   {
     "Style": "fas",
@@ -296,7 +296,7 @@ export const iconsData = [
     "React_name": "ExclamationTriangleIcon",
     "Type": "Status",
     "Contextual_usage": "Represents alert status: warning",
-    color: 'var(--pf-v5-global--warning-color--100)',
+    color: 'var(--pf-v6-global--warning-color--100)',
   },
   {
     "Style": "fas",
@@ -419,7 +419,7 @@ export const iconsData = [
     "React_name": "InfoCircleIcon",
     "Type": "Status",
     "Contextual_usage": "Represents alert status: information",
-    color: 'var(--pf-v5-global--info-color--100)',
+    color: 'var(--pf-v6-global--info-color--100)',
   },
   {
     "Style": "fas",

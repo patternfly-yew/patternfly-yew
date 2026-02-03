@@ -186,7 +186,7 @@ pub fn button(props: &ButtonProperties) -> Html {
     let node_ref = props.r#ref.as_ref().unwrap_or(&node_ref);
 
     let mut classes: Classes = classes!(
-        "pf-v5-c-button",
+        "pf-v6-c-button",
         props.class.clone(),
         props.variant.as_classes(),
         props.size.as_classes(),
@@ -205,7 +205,7 @@ pub fn button(props: &ButtonProperties) -> Html {
     let label = use_memo(
         (props.label.clone(), props.icon, props.align),
         |(label, icon, align)| {
-            let mut classes = Classes::from("pf-v5-c-button__icon");
+            let mut classes = Classes::from("pf-v6-c-button__icon");
 
             match align {
                 Align::Start => classes.push("pf-m-start"),
@@ -266,7 +266,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             data-ouia-safe={props.ouia_safe}
          >
              if props.loading {
-                 <span class="pf-v5-c-button__progress">
+                 <span class="pf-v6-c-button__progress">
                      <Spinner size={SpinnerSize::Md} />
                  </span>
              }

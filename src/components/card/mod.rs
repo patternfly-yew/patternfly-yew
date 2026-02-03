@@ -66,9 +66,6 @@ pub struct CardProperties {
     /// Use flat styling.
     #[prop_or_default]
     pub flat: bool,
-    /// Modifies the card to include rounded styling.
-    #[prop_or_default]
-    pub rounded: bool,
     /// Cause component to consume the available height of its container.
     #[prop_or_default]
     pub full_height: bool,
@@ -140,7 +137,7 @@ pub fn card(props: &CardProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let mut class = classes!("pf-v5-c-card");
+    let mut class = classes!("pf-v6-c-card");
 
     if props.size == CardSize::Compact {
         class.push("pf-m-compact");
@@ -165,9 +162,6 @@ pub fn card(props: &CardProperties) -> Html {
     }
     if props.full_height {
         class.push("pf-m-full-height");
-    }
-    if props.rounded {
-        class.push("pf-m-rounded");
     }
     if props.plain {
         class.push("pf-m-plain");

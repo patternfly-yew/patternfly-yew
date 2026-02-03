@@ -20,7 +20,7 @@ pub struct LoginMainFooterLinkProperties {
 pub fn login_main_footer_link(props: &LoginMainFooterLinkProperties) -> Html {
     let link = html! (
         <a
-            class="pf-v5-c-login__main-footer-links-item-link"
+            class="pf-v6-c-login__main-footer-links-item-link"
             href={props.href.clone()}
             onclick={props.onclick.clone()}
             target={props.target.clone()}
@@ -55,21 +55,21 @@ pub struct LoginMainFooterProperties {
 #[function_component(LoginMainFooter)]
 pub fn login_main_footer(props: &LoginMainFooterProperties) -> Html {
     html! (
-        <footer class="pf-v5-c-login__main-footer">
+        <footer class="pf-v6-c-login__main-footer">
             { props.children.clone() }
 
             if !props.links.is_empty() {
-                <ul class="pf-v5-c-login__main-footer-links">
+                <ul class="pf-v6-c-login__main-footer-links">
                 { for props.links.iter().map(|item|{
-                    html!{ <li class="pf-v5-c-login__main-footer-links-item">{item}</li> }
+                    html!{ <li class="pf-v6-c-login__main-footer-links-item">{item}</li> }
                 }) }
                 </ul>
             }
 
             if !props.band.is_empty() {
-                <div class="pf-v5-c-login__main-footer-band">
+                <div class="pf-v6-c-login__main-footer-band">
                 { for props.band.iter().map(|item|{
-                    html!{ <p class="pf-v5-c-login__main-footer-band-item">{item.clone()}</p> }
+                    html!{ <p class="pf-v6-c-login__main-footer-band-item">{item.clone()}</p> }
                 }) }
                 </div>
             }

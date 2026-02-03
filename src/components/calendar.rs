@@ -104,9 +104,9 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     );
 
     html! {
-        <div class="pf-v5-c-calendar-month">
-            <div class="pf-v5-c-calendar-month__header">
-                <div class="pf-v5-c-calendar-month__header-nav-control pf-m-prev-month">
+        <div class="pf-v6-c-calendar-month">
+            <div class="pf-v6-c-calendar-month__header">
+                <div class="pf-v6-c-calendar-month__header-nav-control pf-m-prev-month">
                     <Button
                         variant={ButtonVariant::Plain}
                         aria_label="Previous month"
@@ -117,7 +117,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                 </div>
                 <InputGroup>
                     <InputGroupItem>
-                        <div class="pf-v5-c-calendar-month__header-month">
+                        <div class="pf-v6-c-calendar-month__header-month">
                             <SimpleSelect<MonthLocal>
                                 entries={vec![
                                     MonthLocal(Month::January),
@@ -139,7 +139,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         </div>
                     </InputGroupItem>
                     <InputGroupItem>
-                        <div class="pf-v5-c-calendar-month__header-year">
+                        <div class="pf-v6-c-calendar-month__header-year">
                             <TextInput
                                 value={show_date.year().to_string()}
                                 r#type={TextInputType::Number}
@@ -149,7 +149,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         </div>
                     </InputGroupItem>
                 </InputGroup>
-                <div class="pf-v5-c-calendar-month__header-nav-control pf-m-next-month">
+                <div class="pf-v6-c-calendar-month__header-nav-control pf-m-next-month">
                     <Button
                         variant={ButtonVariant::Plain}
                         aria_label="Next month"
@@ -159,14 +159,14 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     </Button>
                 </div>
             </div>
-            <table class="pf-v5-c-calendar-month__calendar">
-                <thead class="pf-v5-c-calendar-month__days">
-                    <tr class="pf-v5-c-calendar-month__days-row">
+            <table class="pf-v6-c-calendar-month__calendar">
+                <thead class="pf-v6-c-calendar-month__days">
+                    <tr class="pf-v6-c-calendar-month__days-row">
                     {
                         weeks[0].clone().into_iter().map(|day| {
                             html!{
-                                <th class="pf-v5-c-calendar-month__day">
-                                    <span class="pf-v5-screen-reader">{weekday_name(day.weekday())}</span>
+                                <th class="pf-v6-c-calendar-month__day">
+                                    <span class="pf-v6-screen-reader">{weekday_name(day.weekday())}</span>
                                     <span aria-hidden="true">{weekday_name(day.weekday())}</span>
                                 </th>
                             }
@@ -174,12 +174,12 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     }
                     </tr>
                 </thead>
-                <tbody class="pf-v5-c-calendar-month__dates">
+                <tbody class="pf-v6-c-calendar-month__dates">
                 {
                     weeks.into_iter().map(|week| {
                         html!{
                             <>
-                            <tr class="pf-v5-c-calendar-month__dates-row">
+                            <tr class="pf-v6-c-calendar-month__dates-row">
                             {
                             week.into_iter().map(|day| {
                                 let callback_date = {
@@ -198,7 +198,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                     }
                                 };
 
-                                let mut classes = classes!("pf-v5-c-calendar-month__dates-cell");
+                                let mut classes = classes!("pf-v6-c-calendar-month__dates-cell");
 
                                 if day == *date {
                                     classes.extend(classes!("pf-m-selected"));
@@ -233,7 +233,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                     <>
                                     <td class={classes}>
                                         <Button
-                                            class="pf-v5-c-calendar-month__date"
+                                            class="pf-v6-c-calendar-month__date"
                                             r#type={ButtonType::Button}
                                             variant={if before_range {
                                                 ButtonVariant::Plain

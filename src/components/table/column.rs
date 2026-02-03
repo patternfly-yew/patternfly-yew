@@ -85,10 +85,10 @@ where
 {
     let table_header_context = use_context::<TableHeaderContext<K>>();
 
-    let mut class = classes!("pf-v5-c-table__th");
+    let mut class = classes!("pf-v6-c-table__th");
 
     if props.first_tree_column {
-        class.push(classes!("pf-v5-c-table__tree-view-title-header-cell"));
+        class.push(classes!("pf-v6-c-table__tree-view-title-header-cell"));
     }
 
     if props.center {
@@ -96,7 +96,7 @@ where
     }
 
     if props.onsort.is_some() {
-        class.push(classes!("pf-v5-c-table__sort"));
+        class.push(classes!("pf-v6-c-table__sort"));
     }
 
     class.extend_from(&props.width);
@@ -140,7 +140,7 @@ where
                     <button
                         title={label.clone()}
                         type="button"
-                        class="pf-v5-c-table__button"
+                        class="pf-v6-c-table__button"
                         onclick={
                             {
                                 // Emit sorting in context and in user callback
@@ -161,9 +161,9 @@ where
                             }
                         }
                     >
-                        <div class="pf-v5-c-table__button-content">
-                            <span class="pf-v5-c-table__text">{ label }</span>
-                            <span class="pf-v5-c-table__sort-indicator">
+                        <div class="pf-v6-c-table__button-content">
+                            <span class="pf-v6-c-table__text">{ label }</span>
+                            <span class="pf-v6-c-table__sort-indicator">
                                 {sort_by_next_status.0}
                             </span>
                         </div>

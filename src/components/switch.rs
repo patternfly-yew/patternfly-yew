@@ -51,19 +51,44 @@ pub struct SwitchProperties {
 /// Defined by [`SwitchProperties`].
 #[function_component(Switch)]
 pub fn switch(props: &SwitchProperties) -> Html {
+    let checked = use_state(|| props.checked);
+
+    use_effect_with(
+        (props.checked, checked.setter()),
+        |(checked, checked_setter)| {
+            checked_setter.set(*checked);
+        },
+    );
+
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
     let input_ref = use_node_ref();
 
     let onchange = use_callback(
-        (input_ref.clone(), props.onchange.clone()),
-        |_evt, (input_ref, onchange)| onchange.emit(input_ref.checked()),
+        (input_ref.clone(), props.onchange.clone(), checked.setter()),
+        |_evt, (input_ref, onchange, checked_setter)| {
+            checked_setter.set(input_ref.checked());
+            onchange.emit(input_ref.checked())
+        },
     );
+
+    let label = match (props.label.as_ref(), *checked) {
+        (Some(label), true) => html!(
+            <span class="pf-v6-c-switch__label">{label}</span>
+        ),
+        (Some(label), false) => {
+            let label = props.label_off.as_ref().unwrap_or(label);
+            html!(
+                <span class="pf-v6-c-switch__label">{label}</span>
+            )
+        }
+        (None, _) => html!(),
+    };
 
     html! (
         <label
-            class="pf-v5-c-switch"
+            class="pf-v6-c-switch"
             for={props.id.clone()}
             data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
@@ -71,27 +96,22 @@ pub fn switch(props: &SwitchProperties) -> Html {
         >
             <input
                 ref={input_ref.clone()}
-                class="pf-v5-c-switch__input"
+                class="pf-v6-c-switch__input"
                 type="checkbox"
                 id={props.id.clone()}
                 aria-label={props.aria_label.clone()}
-                checked={props.checked}
+                checked={*checked}
                 disabled={props.disabled}
                 {onchange}
             />
-            <span class="pf-v5-c-switch__toggle">
+            <span class="pf-v6-c-switch__toggle">
                 if props.label.is_none() {
-                    <span class="pf-v5-c-switch__toggle-icon">
+                    <span class="pf-v6-c-switch__toggle-icon">
                         { Icon::Check }
                     </span>
                 }
             </span>
-            if let Some(ref label) = props.label {
-                <>
-                    <span class="pf-v5-c-switch__label pf-m-on">{ label }</span>
-                    <span class="pf-v5-c-switch__label pf-m-off">{ props.label_off.as_ref().unwrap_or(label) }</span>
-                </>
-            }
+            {label}
         </label>
     )
 }

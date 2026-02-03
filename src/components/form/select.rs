@@ -99,7 +99,7 @@ where
     }
 
     html! (
-        <div class="pf-v5-c-form-control">
+        <div class="pf-v6-c-form-control">
             <select
                 {oninput}
                 name={&props.name}
@@ -115,8 +115,8 @@ where
                 }
                 { for props.children.iter() }
             </select>
-            <div class="pf-v5-c-form-control__utilities">
-                <div class="pf-v5-c-form-control__toggle-icon">
+            <div class="pf-v6-c-form-control__utilities">
+                <div class="pf-v6-c-form-control__toggle-icon">
                   {Icon::CaretDown}
                 </div>
             </div>

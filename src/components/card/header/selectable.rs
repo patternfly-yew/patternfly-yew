@@ -167,7 +167,7 @@ fn clickable_input_action_radio(props: &ClickableInputProperties) -> Html {
             id={common.id}
             name={common.name}
             disabled={common.disabled}
-            input_class="pf-v5-screen-reader"
+            input_class="pf-v6-screen-reader"
             input_onclick={props.onclick.clone()}
             force_label=true
         />

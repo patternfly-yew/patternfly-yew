@@ -27,7 +27,7 @@ pub struct HintProperties {
 #[function_component(Hint)]
 pub fn hint(props: &HintProperties) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-hint");
+    class.push("pf-v6-c-hint");
 
     html! (
         <div
@@ -35,7 +35,7 @@ pub fn hint(props: &HintProperties) -> Html {
             {class}
         >
             if let Some(actions) = &props.actions {
-                <div class="pf-v5-c-hint__actions">{ actions.clone() }</div>
+                <div class="pf-v6-c-hint__actions">{ actions.clone() }</div>
             }
             { props.children.clone() }
         </div>
@@ -61,7 +61,7 @@ pub struct HintTitleProperties {
 #[function_component(HintTitle)]
 pub fn hint_title(props: &HintTitleProperties) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-hint__title");
+    class.push("pf-v6-c-hint__title");
 
     html! (
         <div
@@ -92,7 +92,7 @@ pub struct HintBodyProperties {
 #[function_component(HintBody)]
 pub fn hint_body(props: &HintBodyProperties) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-hint__body");
+    class.push("pf-v6-c-hint__body");
 
     html! (
         <div
@@ -123,7 +123,7 @@ pub struct HintFooterProperties {
 #[function_component(HintFooter)]
 pub fn hint_footer(props: &HintFooterProperties) -> Html {
     let mut class = props.class.clone();
-    class.push("pf-v5-c-hint__footer");
+    class.push("pf-v6-c-hint__footer");
 
     html! (
         <div

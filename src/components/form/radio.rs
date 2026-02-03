@@ -87,11 +87,11 @@ pub fn radio(props: &RadioProperties) -> Html {
     let ouia_id = use_memo(props.ouia_id.clone(), |id| {
         id.clone().unwrap_or(OUIA.generated_id())
     });
-    let class = classes!("pf-v5-c-radio", props.class.clone());
+    let class = classes!("pf-v6-c-radio", props.class.clone());
 
     let id = use_prop_id(props.id.clone());
 
-    let mut input_class = classes!(props.input_class.clone(), "pf-v5-c-radio__input");
+    let mut input_class = classes!(props.input_class.clone(), "pf-v6-c-radio__input");
 
     if props.children.is_empty() && !props.force_label {
         input_class.extend(classes!("pf-m-standalone"));
@@ -118,7 +118,7 @@ pub fn radio(props: &RadioProperties) -> Html {
         />
     );
 
-    let mut label_class = classes!("pf-v5-c-radio__label");
+    let mut label_class = classes!("pf-v6-c-radio__label");
     if props.disabled {
         label_class.extend(classes!("pf-m-disabled"));
     }
@@ -145,13 +145,13 @@ pub fn radio(props: &RadioProperties) -> Html {
             {first} {second}
 
             if let Some(description) = &props.description {
-                <span class="pf-v5-c-radio__description">
+                <span class="pf-v6-c-radio__description">
                     { description.clone() }
                 </span>
             }
 
             if  let Some(body) = &props.body {
-                <span class="pf-v5-c-radio__body">
+                <span class="pf-v6-c-radio__body">
                     { body.clone() }
                 </span>
             }

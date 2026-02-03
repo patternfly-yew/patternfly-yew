@@ -15,9 +15,9 @@ pub struct CardTitleProperties {
 
 #[function_component(CardTitle)]
 pub fn card_title(props: &CardTitleProperties) -> Html {
-    let class = classes!(props.class.clone(), "pf-v5-c-card__title-text");
+    let class = classes!(props.class.clone(), "pf-v6-c-card__title-text");
     html! {
-        <div class={"pf-v5-c-card__title"}>
+        <div class={"pf-v6-c-card__title"}>
             <@{props.component.clone()} {class}>
                 {props.children.clone()}
             </@>

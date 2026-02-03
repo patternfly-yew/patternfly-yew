@@ -118,7 +118,7 @@ impl AsClasses for ListIconSize {
 /// ```
 #[function_component(List)]
 pub fn list(props: &ListProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-list");
+    let mut classes = Classes::from("pf-v6-c-list");
 
     classes.extend_from(&props.r#type);
     classes.extend_from(&props.icon_size);
@@ -149,13 +149,13 @@ pub struct ListItemProperties {
 pub fn list_item(props: &ListItemProperties) -> Html {
     match props.icon {
         Some(icon) => {
-            let class = classes!("pf-v5-c-list__item");
+            let class = classes!("pf-v6-c-list__item");
             html!(
                 <li {class}>
-                    <span class={classes!("pf-v5-c-list__item-icon")}>
+                    <span class={classes!("pf-v6-c-list__item-icon")}>
                         { icon }
                     </span>
-                    <span class={classes!("pf-v5-c-list__item-text")}>
+                    <span class={classes!("pf-v6-c-list__item-text")}>
                         { props.children.clone() }
                     </span>
                 </li>

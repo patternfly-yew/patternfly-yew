@@ -45,7 +45,7 @@ impl EmptyStateProperties {
 /// Define by [`EmptyStateProperties`].
 #[function_component(EmptyState)]
 pub fn empty_state(props: &EmptyStateProperties) -> Html {
-    let mut classes = Classes::from("pf-v5-c-empty-state");
+    let mut classes = Classes::from("pf-v6-c-empty-state");
 
     if props.full_height {
         classes.push("pf-m-full-height");
@@ -55,28 +55,28 @@ pub fn empty_state(props: &EmptyStateProperties) -> Html {
 
     html! (
         <div class={classes}>
-            <div class="pf-v5-c-empty-state__content">
-                <div class="pf-v5-c-empty-state__header">
+            <div class="pf-v6-c-empty-state__content">
+                <div class="pf-v6-c-empty-state__header">
                     if let Some(icon) = &props.icon {
-                        <div class="pf-v5-c-empty-state__icon">
+                        <div class="pf-v6-c-empty-state__icon">
                             { *icon }
                         </div>
                     }
                     <Title size={ props.title_size() }>{ props.title.clone() }</Title>
                 </div>
-                <div class="pf-v5-c-empty-state__body">
+                <div class="pf-v6-c-empty-state__body">
                     { props.children.clone() }
                 </div>
                 if props.primary.is_some() || !props.secondaries.is_empty() {
-                    <div class="pf-v5-c-empty-state__footer">
+                    <div class="pf-v6-c-empty-state__footer">
                         if let Some(action) = &props.primary {
-                            <div class="pf-v5-c-empty-state__actions">
+                            <div class="pf-v6-c-empty-state__actions">
                                 <Button label={action.label.clone()} variant={ButtonVariant::Primary} onclick={action.callback.reform(|_|{})}/>
                             </div>
                         }
 
                         if !props.secondaries.is_empty() {
-                            <div class="pf-v5-c-empty-state__actions">
+                            <div class="pf-v6-c-empty-state__actions">
                                 { for props.secondaries.iter().map(|action|{
                                     html!{
                                         <Button label={action.label.clone()} variant={ButtonVariant::Link} onclick={action.callback.reform(|_|{})}/>

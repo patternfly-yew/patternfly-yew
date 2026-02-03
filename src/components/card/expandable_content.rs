@@ -18,7 +18,7 @@ pub fn expandable_content(props: &CardExpandableContentProperties) -> Html {
     if !expanded {
         return html!();
     }
-    let class = classes!(props.class.clone(), "pf-v5-c-card__expandable-content");
+    let class = classes!(props.class.clone(), "pf-v6-c-card__expandable-content");
     html! {
         <div {class}>
             {props.children.clone()}
