@@ -113,7 +113,11 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
     }
 
     if props.fill_columns {
-        class.extend(classes!("pf-m-fill-columns"));
+        class.extend(classes!(
+            "pf-m-2-col",
+            "pf-m-3-col-on-lg",
+            "pf-m-fill-columns"
+        ));
     }
 
     if props.inline_grid {
