@@ -89,7 +89,7 @@ pub fn header(props: &CardHeaderProperties) -> Html {
                     has_no_offset={props.actions.as_ref().map(|a| a.has_no_offset).unwrap_or_default()}
                 >
                     if let Some(actions) = &props.actions {
-                        {actions.actions.clone()}
+                        { actions.actions.clone() }
                     }
                     if let Some(selectable_actions) = selectable_actions {
                         <CardSelectableActions class={selectable_actions.base.class.clone()}>
@@ -99,7 +99,7 @@ pub fn header(props: &CardHeaderProperties) -> Html {
                 </CardActions>
             }
             if let Some(children) = props.children.as_ref() {
-                <CardHeaderMain>{children.clone()}</CardHeaderMain>
+                <CardHeaderMain>{ children.clone() }</CardHeaderMain>
             }
             if props.toggle_right_aligned {
                 <ExpandToggle onexpand={props.onexpand.clone()} />
@@ -130,14 +130,12 @@ fn expand_toggle(props: &ExpandToggleProperties) -> Html {
     html! {
         <div class="pf-v6-c-card__header-toggle">
             <Button
-                variant={ ButtonVariant::Plain }
-                r#type={ ButtonType::Button }
+                variant={ButtonVariant::Plain}
+                r#type={ButtonType::Button}
                 aria_label="Details"
-                { onclick }
+                {onclick}
             >
-                <span class="pf-v6-c-card__header-toggle-icon">
-                    { Icon::AngleRight }
-                </span>
+                <span class="pf-v6-c-card__header-toggle-icon">{ Icon::AngleRight }</span>
             </Button>
         </div>
     }

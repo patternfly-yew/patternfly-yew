@@ -103,7 +103,7 @@ where
     class.extend_from(&props.text_modifier);
 
     match &props.label {
-        None => html! (<th></th>),
+        None => html! (<th />),
         Some(label) => {
             let th_content = if let Some(onsort) = &props.onsort {
                 let header_context = table_header_context.expect(
@@ -141,8 +141,7 @@ where
                         title={label.clone()}
                         type="button"
                         class="pf-v6-c-table__button"
-                        onclick={
-                            {
+                        onclick={{
                                 // Emit sorting in context and in user callback
                                 let onsort_context = header_context.onsort.clone();
                                 let onsort = onsort.clone();
@@ -158,13 +157,12 @@ where
                                     onsort_context.emit(sort_by.clone());
                                     onsort.emit(sort_by.clone());
                                 })
-                            }
-                        }
+                            }}
                     >
                         <div class="pf-v6-c-table__button-content">
                             <span class="pf-v6-c-table__text">{ label }</span>
                             <span class="pf-v6-c-table__sort-indicator">
-                                {sort_by_next_status.0}
+                                { sort_by_next_status.0 }
                             </span>
                         </div>
                     </button>
@@ -175,7 +173,7 @@ where
 
             html!(
                 <th title={label.clone()} {class} scope="col" role="columnheader">
-                    {th_content}
+                    { th_content }
                 </th>
             )
         }

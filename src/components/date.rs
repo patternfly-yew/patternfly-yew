@@ -60,7 +60,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
             aria-label="Toggle date picker"
             disabled={props.disabled}
         >
-        <i class="fas fa-calendar-alt" aria-hidden="true" style="line-height: 1.5;"></i>
+            <i class="fas fa-calendar-alt" aria-hidden="true" style="line-height: 1.5" />
         </button>
     };
 
@@ -113,16 +113,9 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         <div class="pf-v6-c-date-picker">
             <div class="pf-v6-c-date-picker__input">
                 <InputGroup>
+                    <InputGroupItem>{ input }</InputGroupItem>
                     <InputGroupItem>
-                        {input}
-                    </InputGroupItem>
-                    <InputGroupItem>
-                        <Popover
-                            {target} {body}
-                            no_padding=true
-                            no_close=true
-                            width_auto=true
-                        />
+                        <Popover {target} {body} no_padding=true no_close=true width_auto=true />
                     </InputGroupItem>
                 </InputGroup>
             </div>

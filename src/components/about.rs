@@ -121,7 +121,9 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             None,
             html!(
                 <div class="pf-v6-c-about-modal-box__header">
-                    <h1 class="pf-v6-c-title pf-m-4xl" id={*header_id}>{ props.product_name.clone() }</h1>
+                    <h1 class="pf-v6-c-title pf-m-4xl" id={*header_id}>
+                        { props.product_name.clone() }
+                    </h1>
                 </div>
             ),
         )
@@ -141,14 +143,15 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
             if !props.brand_image_src.is_empty() {
                 <div class="pf-v6-c-about-modal-box__brand">
                     <img
-                      class="pf-v6-c-about-modal-box__brand-image"
-                      src={props.brand_image_src.clone()}
-                      alt={props.brand_image_alt.clone()}
+                        class="pf-v6-c-about-modal-box__brand-image"
+                        src={props.brand_image_src.clone()}
+                        alt={props.brand_image_alt.clone()}
                     />
                 </div>
             }
-
-            <div class="pf-v6-c-about-modal-box__close">
+            <div
+                class="pf-v6-c-about-modal-box__close"
+            >
                 <Button
                     variant={ButtonVariant::Plain}
                     aria_label={props.close_button_aria_label.clone()}
@@ -157,13 +160,9 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
                     { Icon::Times }
                 </Button>
             </div>
-
             { header }
-
             <div class="pf-v6-c-about-modal-box__content">
-                <div class="pf-v6-c-about-modal-box__body">
-                    { props.children.clone() }
-                </div>
+                <div class="pf-v6-c-about-modal-box__body">{ props.children.clone() }</div>
                 if !props.trademark.is_empty() {
                     <p class="pf-v6-c-about-modal-box__strapline">{ props.trademark.clone() }</p>
                 }

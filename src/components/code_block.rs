@@ -53,13 +53,12 @@ pub fn code_block(props: &CodeBlockProperties) -> Html {
         <div class="pf-v6-c-code-block">
             if !props.actions.is_empty() {
                 <div class="pf-v6-c-code-block__header">
-                    <div class="pf-v6-c-code-block__actions">
-                        { for props.actions.iter() }
-                    </div>
+                    <div class="pf-v6-c-code-block__actions">{ for props.actions.iter() }</div>
                 </div>
             }
-
-            <div class="pf-v6-c-code-block__content">
+            <div
+                class="pf-v6-c-code-block__content"
+            >
                 { props.children.clone() }
             </div>
         </div>
@@ -97,9 +96,5 @@ pub struct CodeBlockActionProperties {
 /// An action of a [`CodeBlock`]
 #[function_component(CodeBlockAction)]
 pub fn code_block_action(props: &CodeBlockActionProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-code-block__actions-item">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-code-block__actions-item">{ props.children.clone() }</div>)
 }

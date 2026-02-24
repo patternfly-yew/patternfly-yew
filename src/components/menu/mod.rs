@@ -105,11 +105,7 @@ pub(crate) fn MenuList(props: &MenuListProperties) -> Html {
         });
     }
 
-    html!(
-        <ul ref={r#ref} class="pf-v6-c-menu__list" role="menu">
-            { for props.children.iter() }
-        </ul>
-    )
+    html!(<ul ref={r#ref} class="pf-v6-c-menu__list" role="menu">{ for props.children.iter() }</ul>)
 }
 
 fn focusable_element(element: &HtmlElement) -> Option<HtmlElement> {

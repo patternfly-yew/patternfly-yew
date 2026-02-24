@@ -14,11 +14,7 @@ where
     T: Into<Html>,
 {
     pub fn into_html(self) -> Html {
-        html! (
-            <span style={&self.style}>
-                { self.content.into() }
-            </span>
-        )
+        html! (<span style={&self.style}>{ self.content.into() }</span>)
     }
 }
 

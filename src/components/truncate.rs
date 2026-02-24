@@ -138,13 +138,8 @@ pub fn truncate(props: &TruncateProperties) -> Html {
     let end_class = classes!("pf-v6-c-truncate__end", props.end_class.clone());
 
     html!(
-        <span
-            {class}
-            style={props.style.clone()}
-            id={props.id.clone()}
-        >
-            {
-                match &props.content {
+        <span {class} style={props.style.clone()} id={props.id.clone()}>
+            { match &props.content {
                     TruncateContent::Default(value) => html!(
                         <span class={start_class}>{ value }</span>
                     ),
@@ -155,8 +150,7 @@ pub fn truncate(props: &TruncateProperties) -> Html {
                     TruncateContent::Start(value) => html!(<>
                         <span class={end_class}>{ &value }{ "\u{200E}" }</span>
                     </>),
-                }
-            }
+                } }
         </span>
     )
 }

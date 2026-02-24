@@ -14,7 +14,5 @@ pub struct CardHeaderMainProperties {
 pub fn actions(props: &CardHeaderMainProperties) -> Html {
     let mut class = props.class.clone();
     class.push("pf-v6-c-card__header-main");
-    html! {
-        <div {class}>{props.children.clone()}</div>
-    }
+    html! { <div {class}>{ props.children.clone() }</div> }
 }

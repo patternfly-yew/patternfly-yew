@@ -73,13 +73,5 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
         )
         .collect::<String>();
 
-    html! (
-        <div
-            id={&props.id}
-            {class}
-            {style}
-        >
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div id={&props.id} {class} {style}>{ props.children.clone() }</div>)
 }

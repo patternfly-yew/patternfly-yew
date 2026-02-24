@@ -44,11 +44,7 @@ pub fn text_input_group(props: &TextInputGroupProperties) -> Html {
         class.extend(classes!("pf-m-disabled"));
     }
 
-    html!(
-        <div {class} id={&props.id} style={&props.style}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class} id={&props.id} style={&props.style}>{ props.children.clone() }</div>)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -135,11 +131,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
     // render
 
     html!(
-        <div
-            {class}
-            id={&props.id}
-            style={&props.style}
-        >
+        <div {class} id={&props.id} style={&props.style}>
             <span class="pf-v6-c-text-input-group__text">
                 if let Some(hint) = &props.hint {
                     <input
@@ -151,9 +143,7 @@ pub fn text_input_group_main(props: &TextInputGroupMainProperties) -> Html {
                     />
                 }
                 if let Some(icon) = &props.icon {
-                    <span class="pf-v6-c-text-input-group__icon">
-                        { icon.clone() }
-                    </span>
+                    <span class="pf-v6-c-text-input-group__icon">{ icon.clone() }</span>
                 }
                 <input
                     class="pf-v6-c-text-input-group__text-input"
@@ -180,9 +170,5 @@ pub struct TextInputGroupUtilitiesProperties {
 
 #[function_component(TextInputGroupUtilities)]
 pub fn text_input_group_utilities(props: &TextInputGroupUtilitiesProperties) -> Html {
-    html! (
-        <div class="pf-v6-c-text-input-group__utilities">
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div class="pf-v6-c-text-input-group__utilities">{ props.children.clone() }</div>)
 }

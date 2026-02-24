@@ -82,9 +82,8 @@ pub fn composable_table(props: &ComposableTableProperties) -> Html {
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            {props.children.clone()}
+            { props.children.clone() }
         </table>
-
     }
 }
 
@@ -96,9 +95,7 @@ pub struct CaptionProperties {
 
 #[function_component(Caption)]
 pub fn caption(props: &CaptionProperties) -> Html {
-    html! {
-        <caption class="pf-v6-c-table__caption">{props.children.clone()}</caption>
-    }
+    html! { <caption class="pf-v6-c-table__caption">{ props.children.clone() }</caption> }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -117,11 +114,7 @@ pub fn table_body(props: &TableBodyProperties) -> Html {
     if props.expanded {
         class.push("pf-m-expanded");
     }
-    html! {
-        <tbody {class} role="rowgroup">
-            {props.children.clone()}
-        </tbody>
-    }
+    html! { <tbody {class} role="rowgroup">{ props.children.clone() }</tbody> }
 }
 
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -162,7 +155,7 @@ pub fn table_row(props: &TableRowProperties) -> Html {
     }
     html! {
         <tr class={class.clone()} role="row" onclick={props.onclick.clone()}>
-            {props.children.clone()}
+            { props.children.clone() }
         </tr>
     }
 }
@@ -178,11 +171,7 @@ pub struct ExpandableRowContentProperties {
 #[function_component(ExpandableRowContent)]
 pub fn expandable_row_content(props: &ExpandableRowContentProperties) -> Html {
     let class = classes!("pf-v6-c-table__expandable-row-content", props.class.clone());
-    html! {
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    }
+    html! { <div {class}>{ props.children.clone() }</div> }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -249,9 +238,7 @@ pub fn table_data(props: &TableDataProperties) -> Html {
                 }
                 html! {
                     <button class="pf-v6-c-table__button" {onclick}>
-                        <span class="pf-v6-c-table__text">
-                            { content }
-                        </span>
+                        <span class="pf-v6-c-table__text">{ content }</span>
                     </button>
                 }
             }
@@ -267,9 +254,7 @@ pub fn table_data(props: &TableDataProperties) -> Html {
                         {onclick}
                         aria_expanded={expandable.expanded.to_string()}
                     >
-                        <div class="pf-v6-c-table__toggle-icon">
-                            { Icon::AngleDown }
-                        </div>
+                        <div class="pf-v6-c-table__toggle-icon">{ Icon::AngleDown }</div>
                     </Button>
                 }
             }
@@ -278,8 +263,6 @@ pub fn table_data(props: &TableDataProperties) -> Html {
 
     let colspan = props.colspan.as_ref().map(|cols| cols.to_string());
     html! {
-        <td {class} role="cell" data-label={props.data_label.clone()} {colspan}>
-            { content }
-        </td>
+        <td {class} role="cell" data-label={props.data_label.clone()} {colspan}>{ content }</td>
     }
 }

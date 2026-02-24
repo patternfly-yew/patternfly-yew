@@ -73,9 +73,7 @@ where
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
-            <ul class="pf-v6-c-tabs__list">
-                { for props.children.iter() }
-            </ul>
+            <ul class="pf-v6-c-tabs__list">{ for props.children.iter() }</ul>
         </div>
     )
 }
@@ -138,7 +136,7 @@ where
             data-ouia-safe={props.ouia_safe}
         >
             <Link<T> element="button" class={link_classes} to={props.to.clone()}>
-                <span class="pf-v6-c-tabs__item-text"> { props.title.clone() } </span>
+                <span class="pf-v6-c-tabs__item-text">{ props.title.clone() }</span>
             </Link<T>>
         </li>
     )

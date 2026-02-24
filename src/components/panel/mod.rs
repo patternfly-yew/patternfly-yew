@@ -70,45 +70,25 @@ pub fn panel(props: &PanelProperties) -> Html {
         class.push(classes!("pf-m-scrollable"));
     }
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 #[function_component(PanelMain)]
 pub fn panel_main(props: &ChildrenProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-panel__main">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-panel__main">{ props.children.clone() }</div>)
 }
 
 #[function_component(PanelMainBody)]
 pub fn panel_main_body(props: &ChildrenProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-panel__main-body">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-panel__main-body">{ props.children.clone() }</div>)
 }
 
 #[function_component(PanelHeader)]
 pub fn panel_header(props: &ChildrenProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-panel__header">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-panel__header">{ props.children.clone() }</div>)
 }
 
 #[function_component(PanelFooter)]
 pub fn panel_footer(props: &ChildrenProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-panel__footer">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-panel__footer">{ props.children.clone() }</div>)
 }

@@ -16,9 +16,5 @@ pub struct CardFooterProperties {
 #[function_component(CardFooter)]
 pub fn body(props: &CardFooterProperties) -> Html {
     let class = classes!(props.class.clone(), "pf-v6-c-card__footer");
-    html! {
-        <@{props.component.clone()} {class}>
-            {props.children.clone()}
-        </@>
-    }
+    html! { <@{props.component.clone()} {class}>{ props.children.clone() }</@> }
 }

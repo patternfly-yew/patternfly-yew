@@ -213,7 +213,7 @@ where
             ouia_safe={props.ouia_safe}
         >
             if let Some(caption) = &props.caption {
-                <Caption>{caption}</Caption>
+                <Caption>{ caption }</Caption>
             }
             if let Some(header) = props.header.clone() {
                 <TableHeader<C> {expandable} ..(*header.props).clone() />
@@ -244,8 +244,8 @@ where
             })
         };
         html!(
-            <TableBody> {
-                for props.entries.iter().map(|entry| {
+            <TableBody>
+                { for props.entries.iter().map(|entry| {
                     let selected = props.row_selected.as_ref().is_some_and(|f| f.emit(entry.value.clone()));
                     let content = { render_row(props, &entry, |_| false)};
                     let onclick = if props.onrowclick.is_some() {
@@ -260,8 +260,8 @@ where
                             {content}
                         </TableRow>
                     }
-                })
-            } </TableBody>
+                }) }
+            </TableBody>
         )
     }
 }
@@ -294,7 +294,7 @@ where
             .is_full_width_details()
             .unwrap_or(props.full_width_details)
     {
-        cells.push(html! {<TableData />});
+        cells.push(html! { <TableData /> });
         cols -= 1;
     }
 
@@ -322,9 +322,7 @@ where
     }
 
     if cols > 0 {
-        cells.push(html!(
-            <TableData colspan={cols}/>
-        ));
+        cells.push(html!(<TableData colspan={cols} />));
     }
 
     let onclick = {
@@ -340,20 +338,19 @@ where
             <TableRow control_row={!expandable_columns.is_empty() && props.mode.is_expandable()}>
                 // first column, the toggle
                 if expandable_columns.is_empty() {
-                    <TableData expandable={ExpandParams {
+                    <TableData
+                        expandable={ExpandParams {
                         r#type: ExpandType::Row,
                         expanded,
                         ontoggle: onclick,
-                    }} />
+                    }}
+                    />
                 }
                 // then, the actual content
                 { render_row(props, &entry, |column| expandable_columns.contains(column)) }
             </TableRow>
-
             // the expanded row details
-            <TableRow expandable=true {expanded}>
-                { cells }
-            </TableRow>
+            <TableRow expandable=true {expanded}>{ cells }</TableRow>
         </TableBody>
     )
 }
@@ -375,8 +372,9 @@ where
         .iter()
         .flat_map(|header| header.props.children.iter());
 
-    html!(<>
-        { for cols.map(|column| {
+    html!(
+        <>
+            { for cols.map(|column| {
 
             let index = column.props.index.clone();
             let expandable = expandable(&index);
@@ -409,10 +407,10 @@ where
                     { cell.content.clone() }
                 </TableData>
             )
-        })}
-
-        <RowActions {actions} />
-    </>)
+        }) }
+            <RowActions {actions} />
+        </>
+    )
 }
 
 #[derive(PartialEq, Properties)]
@@ -422,18 +420,17 @@ struct RowActionsProperties {
 
 #[function_component(RowActions)]
 fn row_actions(props: &RowActionsProperties) -> Html {
-    html!(<>
-        if !props.actions.is_empty() {
-            <TableData action=true>
-                <Dropdown
-                    variant={MenuToggleVariant::Plain}
-                    icon={Icon::EllipsisV}
-                >
-                    { props.actions.clone() }
-                </Dropdown>
-            </TableData>
-        }
-    </>)
+    html!(
+        <>
+            if !props.actions.is_empty() {
+                <TableData action=true>
+                    <Dropdown variant={MenuToggleVariant::Plain} icon={Icon::EllipsisV}>
+                        { props.actions.clone() }
+                    </Dropdown>
+                </TableData>
+            }
+        </>
+    )
 }
 
 #[derive(Clone, Debug, PartialEq)]

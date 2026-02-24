@@ -20,7 +20,5 @@ pub fn actions(props: &CardActionsProperties) -> Html {
     if props.has_no_offset {
         class.push("pf-m-no-offset");
     }
-    html! {
-        <div {class}>{props.children.clone()}</div>
-    }
+    html! { <div {class}>{ props.children.clone() }</div> }
 }

@@ -57,9 +57,7 @@ pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T
         Some(title) => html! {
             <div class={classes!["pf-v6-c-dual-list-selector__header"]}>
                 <div class={classes!["pf-v6-c-dual-list-selector__title"]}>
-                    <div class={classes!["pf-v6-c-dual-list-selector__title-text"]}>
-                        { title }
-                    </div>
+                    <div class={classes!["pf-v6-c-dual-list-selector__title-text"]}>{ title }</div>
                 </div>
             </div>
         },
@@ -68,7 +66,10 @@ pub fn pane<T: DualListSelectorItemRenderer>(props: &DualListSelectorPaneProps<T
         None => html! {},
         Some(status) => html! {
             <div class="pf-v6-c-dual-list-selector__status">
-                <div class="pf-v6-c-dual-list-selector__status-text" id="dual-list-selector-basic-available-pane-status">
+                <div
+                    class="pf-v6-c-dual-list-selector__status-text"
+                    id="dual-list-selector-basic-available-pane-status"
+                >
                     { status }
                 </div>
             </div>

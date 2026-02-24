@@ -74,18 +74,9 @@ where
     );
 
     html!(
-        <table
-            id={&props.id}
-            {class}
-            role="treegrid"
-        >
-
+        <table id={&props.id} {class} role="treegrid">
             { props.header.clone() }
-
-            <tbody class="pf-v6-c-table__tbody">
-                { (*content).clone() }
-            </tbody>
-
+            <tbody class="pf-v6-c-table__tbody">{ (*content).clone() }</tbody>
         </table>
     )
 }
@@ -160,13 +151,11 @@ where
 {
     let size = nodes.len();
     html!(
-        {
-            for nodes.iter()
+        { for nodes.iter()
                 .enumerate()
                 .map(|(position,node) | html!(
                     <Row<C> {visibility} {size} {position} {level} node={node.clone()} headers={headers.clone()} {default_expansion}/>
-                ))
-        }
+                )) }
     )
 }
 
@@ -219,13 +208,12 @@ where
                 {class}
                 role="row"
                 tabindex="0"
-                aria-level={ props.level.to_string() }
-                aria-expanded={ (*expanded).to_string() }
-                aria-setsize={ props.size.to_string() }
-                aria-posinset={ props.position.to_string() }
+                aria-level={props.level.to_string()}
+                aria-expanded={(*expanded).to_string()}
+                aria-setsize={props.size.to_string()}
+                aria-posinset={props.position.to_string()}
                 hidden={!props.visibility.is_visible()}
             >
-
                 { for props.headers.iter().enumerate().map(|(nr, column)| {
 
                     let cell = props.node.render_cell(CellContext{column: &column.index});
@@ -262,9 +250,8 @@ where
                         },
                     }
                 }) }
-
                 // cell for the actions
-                <td></td>
+                <td />
             </tr>
             if props.visibility.nested(*expanded).is_visible() {
                 { render_nodes(props.level + 1, children, props.visibility.nested(*expanded), props.headers.clone(), props.default_expansion) }
@@ -301,33 +288,27 @@ fn main_cell(props: &MainCellProperties) -> Html {
                         type="button"
                         class={button_class}
                         aria-labelledby={format!("{} {}", *id_label, *id_toggle)}
-                        id={ *id_toggle }
+                        id={*id_toggle}
                         aria-label="Details"
-                        aria-expanded={ (props.expanded).to_string() }
+                        aria-expanded={(props.expanded).to_string()}
                         onclick={props.ontoggle.reform(|_|())}
                     >
                         <div class="pf-v6-c-table__toggle-icon">
-                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            <i class="fas fa-angle-down" aria-hidden="true" />
                         </div>
                     </button>
                 </span>
             }
-            <div class="pf-v6-c-table__tree-view-text">
-                <span
-                    class="pf-v6-c-table__text"
-                    id={ *id_label }
-                >
-                    { props.children.clone() }
-                </span>
+            <div
+                class="pf-v6-c-table__tree-view-text"
+            >
+                <span class="pf-v6-c-table__text" id={*id_label}>{ props.children.clone() }</span>
             </div>
             // TODO: not sure why this is needed
             <span class="pf-v6-c-table__tree-view-details-toggle">
-                <button
-                    class="pf-v6-c-button pf-m-plain"
-                    type="button"
-                >
+                <button class="pf-v6-c-button pf-m-plain" type="button">
                     <span class="pf-v6-c-table__details-toggle-icon">
-                        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                        <i class="fas fa-ellipsis-h" aria-hidden="true" />
                     </span>
                 </button>
             </span>

@@ -317,68 +317,64 @@ pub fn dual_list_selector<T: DualListSelectorItemRenderer>(
         })
     };
     html! {
-      <div class={classes!["pf-v6-c-dual-list-selector", props.class.clone()]}>
-        if !props.children.is_empty() {
-            { props.children.clone() }
-        } else {
-            <DualListSelectorPane<T>
-                title={props.available_options_title.clone()}
-                status={available_options_status}
-                options={state.available_options.clone()}
-                onoptionselect={
-                    let onoptionselect = onoptionselect.clone();
-                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(false)))
-                }
-                selected_options={state.available_options_selected.clone()}
-                disabled={props.disabled}
-            />
-            <DualListSelectorControlsWrapper>
-                <DualListSelectorControl
-                    tooltip={props.add_selected_tooltip.clone()}
+        <div class={classes!["pf-v6-c-dual-list-selector", props.class.clone()]}>
+            if !props.children.is_empty() {
+                { props.children.clone() }
+            } else {
+                <DualListSelectorPane<T>
+                    title={props.available_options_title.clone()}
+                    status={available_options_status}
+                    options={state.available_options.clone()}
+                    onoptionselect={let onoptionselect = onoptionselect.clone();
+                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(false)))}
+                    selected_options={state.available_options_selected.clone()}
                     disabled={props.disabled}
-                    onclick={control_option(State::add_selected)}
-                    tooltip_props={props.add_selected_tooltip_props.clone()}
-                >
-                    { Icon::AngleRight.with_style("width:1em;display:block;") }
-                </DualListSelectorControl>
-                <DualListSelectorControl
-                    tooltip={props.add_all_available_tooltip.clone()}
+                />
+                <DualListSelectorControlsWrapper>
+                    <DualListSelectorControl
+                        tooltip={props.add_selected_tooltip.clone()}
+                        disabled={props.disabled}
+                        onclick={control_option(State::add_selected)}
+                        tooltip_props={props.add_selected_tooltip_props.clone()}
+                    >
+                        { Icon::AngleRight.with_style("width:1em;display:block;") }
+                    </DualListSelectorControl>
+                    <DualListSelectorControl
+                        tooltip={props.add_all_available_tooltip.clone()}
+                        disabled={props.disabled}
+                        onclick={control_option(State::add_all_visible)}
+                        tooltip_props={props.add_all_available_tooltip_props.clone()}
+                    >
+                        { Icon::AngleDoubleRight.with_style("width:1em;display:block;") }
+                    </DualListSelectorControl>
+                    <DualListSelectorControl
+                        tooltip={props.remove_all_chosen_tooltip.clone()}
+                        disabled={props.disabled}
+                        onclick={control_option(State::remove_all_visible)}
+                        tooltip_props={props.remove_all_chosen_tooltip_props.clone()}
+                    >
+                        { Icon::AngleDoubleLeft.with_style("width:1em;display:block;") }
+                    </DualListSelectorControl>
+                    <DualListSelectorControl
+                        tooltip={props.remove_selected_tooltip.clone()}
+                        disabled={props.disabled}
+                        onclick={control_option(State::remove_selected)}
+                        tooltip_props={props.remove_selected_tooltip_props.clone()}
+                    >
+                        { Icon::AngleLeft.with_style("width:1em;display:block;") }
+                    </DualListSelectorControl>
+                </DualListSelectorControlsWrapper>
+                <DualListSelectorPane<T>
+                    is_chosen=true
+                    title={props.chosen_options_title.clone()}
+                    status={chosen_options_status}
+                    options={state.chosen_options.clone()}
+                    onoptionselect={let onoptionselect = onoptionselect.clone();
+                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(true)))}
+                    selected_options={state.chosen_options_selected.clone()}
                     disabled={props.disabled}
-                    onclick={control_option(State::add_all_visible)}
-                    tooltip_props={props.add_all_available_tooltip_props.clone()}
-                >
-                    { Icon::AngleDoubleRight.with_style("width:1em;display:block;") }
-                </DualListSelectorControl>
-                <DualListSelectorControl
-                    tooltip={props.remove_all_chosen_tooltip.clone()}
-                    disabled={props.disabled}
-                    onclick={control_option(State::remove_all_visible)}
-                    tooltip_props={props.remove_all_chosen_tooltip_props.clone()}
-                >
-                    { Icon::AngleDoubleLeft.with_style("width:1em;display:block;") }
-                </DualListSelectorControl>
-                <DualListSelectorControl
-                    tooltip={props.remove_selected_tooltip.clone()}
-                    disabled={props.disabled}
-                    onclick={control_option(State::remove_selected)}
-                    tooltip_props={props.remove_selected_tooltip_props.clone()}
-                >
-                    { Icon::AngleLeft.with_style("width:1em;display:block;") }
-                </DualListSelectorControl>
-            </DualListSelectorControlsWrapper>
-            <DualListSelectorPane<T>
-                is_chosen=true
-                title={props.chosen_options_title.clone()}
-                status={chosen_options_status}
-                options={state.chosen_options.clone()}
-                onoptionselect={
-                    let onoptionselect = onoptionselect.clone();
-                    Callback::from(move |args: OnOptionSelectArgsNoChosen| onoptionselect.emit(args.with_chosen(true)))
-                }
-                selected_options={state.chosen_options_selected.clone()}
-                disabled={props.disabled}
-            />
-        }
-      </div>
+                />
+            }
+        </div>
     }
 }

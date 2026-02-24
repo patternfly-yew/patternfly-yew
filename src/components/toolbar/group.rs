@@ -48,12 +48,5 @@ pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
     class.extend_from(&props.variant);
     class.extend(props.class.clone());
 
-    html! {
-        <div
-            id={&props.id}
-            {class}
-        >
-            { props.children.clone() }
-        </div>
-    }
+    html! { <div id={&props.id} {class}>{ props.children.clone() }</div> }
 }

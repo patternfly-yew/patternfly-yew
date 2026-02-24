@@ -43,9 +43,7 @@ impl Icon {
     pub fn with_classes(&self, mut classes: Classes) -> Html {
         self.extend_classes(&mut classes);
 
-        html! (
-            <i class={classes} aria-hidden="true"></i>
-        )
+        html! (<i class={classes} aria-hidden="true" />)
     }
 }
 

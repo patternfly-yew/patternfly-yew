@@ -18,13 +18,11 @@ pub fn section(props: &FormSectionProperties) -> Html {
 
     html! (
         <section class="pf-v6-c-form__section" role="group" aria-labelledby={(*id).clone()}>
-
             if let Some(title) = &props.title {
                 <div id={(*id).clone()} class="pf-v6-c-form__section-title" aria-hidden="true">
                     { title }
                 </div>
             }
-
             { props.children.clone() }
         </section>
     )

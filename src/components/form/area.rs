@@ -216,20 +216,15 @@ pub fn text_area(props: &TextAreaProperties) -> Html {
                 placeholder={&props.placeholder}
                 form={&props.form}
                 autocomplete={&props.autocomplete}
-
                 cols={props.cols.as_ref().map(|v|v.to_string())}
                 rows={props.rows.as_ref().map(|v|v.to_string())}
-
                 wrap={props.wrap.to_string()}
                 spellcheck={&props.spellcheck}
-
                 {oninput}
             />
             if props.state != InputState::Default {
                 <div class="pf-v6-c-form-control__utilities">
-                    <div class="pf-v6-c-form-control__icon pf-m-status">
-                        {props.state.icon()}
-                    </div>
+                    <div class="pf-v6-c-form-control__icon pf-m-status">{ props.state.icon() }</div>
                 </div>
             }
         </div>

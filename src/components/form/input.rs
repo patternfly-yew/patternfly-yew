@@ -222,20 +222,14 @@ pub fn text_input(props: &TextInputProperties) -> Html {
     );
     let oninput = use_on_text_change(input_ref.clone(), props.oninput.clone(), onchange);
 
-    let icon_html = props.icon.map(|icon| {
-        html!(
-           <div class="pf-v6-c-form-control__icon">
-                { icon }
-            </div>
-        )
-    });
+    let icon_html = props
+        .icon
+        .map(|icon| html!(<div class="pf-v6-c-form-control__icon">{ icon }</div>));
 
     let status_html = if props.state != InputState::Default {
-        Some(html!(
-            <div class="pf-v6-c-form-control__icon pf-m-status">
-                {props.state.icon()}
-            </div>
-        ))
+        Some(
+            html!(<div class="pf-v6-c-form-control__icon pf-m-status">{ props.state.icon() }</div>),
+        )
     } else {
         None
     };
@@ -266,11 +260,10 @@ pub fn text_input(props: &TextInputProperties) -> Html {
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             />
-
-                { None::<VNode> }
-
+            { None::<VNode> }
             if icon_html.is_some() || status_html.is_some() {
-                <div class="pf-v6-c-form-control__utilities"> // TODO: Refactor out to component
+                <div class="pf-v6-c-form-control__utilities">
+                    // TODO: Refactor out to component
                     { icon_html }
                     { status_html }
                 </div>

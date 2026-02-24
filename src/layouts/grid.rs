@@ -35,11 +35,7 @@ pub fn grid(props: &GridProperties) -> Html {
 
     classes.extend_from(&props.cols.mapped(|cols| format!("pf-m-all-{}-col", cols)));
 
-    html! {
-        <div class={classes}>
-            { props.children.clone() }
-        </div>
-    }
+    html! { <div class={classes}>{ props.children.clone() }</div> }
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -72,9 +68,5 @@ pub fn grid_item(props: &GridItemProperties) -> Html {
             .mapped(|cols| format!("pf-m-offset-{}-col", cols)),
     );
 
-    html! {
-            <div class={classes}>
-                { props.children.clone() }
-            </div>
-    }
+    html! { <div class={classes}>{ props.children.clone() }</div> }
 }

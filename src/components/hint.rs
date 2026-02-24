@@ -30,10 +30,7 @@ pub fn hint(props: &HintProperties) -> Html {
     class.push("pf-v6-c-hint");
 
     html! (
-        <div
-            id={props.id.clone()}
-            {class}
-        >
+        <div id={props.id.clone()} {class}>
             if let Some(actions) = &props.actions {
                 <div class="pf-v6-c-hint__actions">{ actions.clone() }</div>
             }
@@ -63,14 +60,7 @@ pub fn hint_title(props: &HintTitleProperties) -> Html {
     let mut class = props.class.clone();
     class.push("pf-v6-c-hint__title");
 
-    html! (
-        <div
-            id={props.id.clone()}
-            {class}
-        >
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div id={props.id.clone()} {class}>{ props.children.clone() }</div>)
 }
 
 /// Properties for [`HintBody`]
@@ -94,14 +84,7 @@ pub fn hint_body(props: &HintBodyProperties) -> Html {
     let mut class = props.class.clone();
     class.push("pf-v6-c-hint__body");
 
-    html! (
-        <div
-            id={props.id.clone()}
-            {class}
-        >
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div id={props.id.clone()} {class}>{ props.children.clone() }</div>)
 }
 
 /// Properties for [`HintFooter`]
@@ -125,12 +108,5 @@ pub fn hint_footer(props: &HintFooterProperties) -> Html {
     let mut class = props.class.clone();
     class.push("pf-v6-c-hint__footer");
 
-    html! (
-        <div
-            id={props.id.clone()}
-            {class}
-        >
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div id={props.id.clone()} {class}>{ props.children.clone() }</div>)
 }

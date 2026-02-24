@@ -67,7 +67,11 @@ pub fn selectable_actions_object(props: &CardSelectableActionsObjectProperties) 
             <SingleSelectActionRadio base={props.base.clone()} onchange={onchange.clone()} />
         },
         Variant::MultiSelect { onchange, checked } => html! {
-            <MultiSelectActionCheckbox base={props.base.clone()} onchange={onchange.clone()} checked={*checked} />
+            <MultiSelectActionCheckbox
+                base={props.base.clone()}
+                onchange={onchange.clone()}
+                checked={*checked}
+            />
         },
         Variant::Click { onclick } => html! {
             <ClickableInput base={props.base.clone()} onclick={onclick.clone()} />

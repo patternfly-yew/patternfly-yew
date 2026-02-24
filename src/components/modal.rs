@@ -151,25 +151,22 @@ pub fn modal(props: &ModalProperties) -> Html {
                         aria-label="Close dialog"
                         onclick={onclose.reform(|_|())}
                     >
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i class="fas fa-times" aria-hidden="true" />
                     </button>
                 </div>
             }
-
-            <header class="pf-v6-c-modal-box__header">
-                <h1
-                    class="pf-v6-c-modal-box__title"
-                    id="modal-title-modal-with-form"
-                >{ &props.title }</h1>
+            <header
+                class="pf-v6-c-modal-box__header"
+            >
+                <h1 class="pf-v6-c-modal-box__title" id="modal-title-modal-with-form">
+                    { &props.title }
+                </h1>
             </header>
-
-
             if !&props.description.is_empty() {
                 <div class="pf-v6-c-modal-box__body">
                     <p>{ &props.description }</p>
                 </div>
             }
-
             { for props.children.iter().map(|c|{
                 wrapper_div_with_attributes(c,
                     &[
@@ -177,11 +174,8 @@ pub fn modal(props: &ModalProperties) -> Html {
                         ("id", AttributeOrProperty::Static("modal-description"))
                     ])
             }) }
-
             if let Some(footer) = &props.footer {
-              <footer class="pf-v6-c-modal-box__footer">
-                  { footer.clone() }
-              </footer>
+                <footer class="pf-v6-c-modal-box__footer">{ footer.clone() }</footer>
             }
         </div>
     )

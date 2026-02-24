@@ -24,12 +24,5 @@ pub struct ContentProperties {
 /// Defined by [`ContentProperties`].
 #[function_component(Content)]
 pub fn content(props: &ContentProperties) -> Html {
-    html! {
-        <div
-            class="pf-v6-c-content"
-            id={&props.id}
-        >
-            { props.children.clone() }
-        </div>
-    }
+    html! { <div class="pf-v6-c-content" id={&props.id}>{ props.children.clone() }</div> }
 }

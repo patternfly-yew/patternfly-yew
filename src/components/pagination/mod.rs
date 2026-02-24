@@ -253,10 +253,10 @@ pub fn pagination(props: &PaginationProperties) -> Html {
         >
             // the selector of how many entries per page to display
             <div class="pf-v6-c-pagination__total-items">
-                <b>{ showing.clone() }</b> {"\u{00a0}of\u{00a0}"}
+                <b>{ showing.clone() }</b>
+                { "\u{00a0}of\u{00a0}" }
                 <b>{ total_entries.clone() }</b>
             </div>
-
             <Dropdown
                 text={html!(
                     <>
@@ -278,19 +278,18 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                             {limit} {" per page"} {props.selected_choice}
                         </MenuAction>
                     )
-                })}
+                }) }
             </Dropdown>
-
             // the navigation buttons
             <nav class="pf-v6-c-pagination__nav" aria-label="Pagination">
                 <div class="pf-v6-c-pagination__nav-control pf-m-first">
                     <Button
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::First)}
-                        disabled={ props.disabled || props.offset == 0 }
+                        disabled={props.disabled || props.offset == 0}
                         aria_label="Go to first page"
                     >
-                      { Icon::AngleDoubleLeft }
+                        { Icon::AngleDoubleLeft }
                     </Button>
                 </div>
                 <div class="pf-v6-c-pagination__nav-control pf-m-prev">
@@ -298,9 +297,9 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to previous page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Previous)}
-                        disabled={ props.disabled || props.offset == 0 }
+                        disabled={props.disabled || props.offset == 0}
                     >
-                       { Icon::AngleLeft }
+                        { Icon::AngleLeft }
                     </Button>
                 </div>
                 <div class="pf-v6-c-pagination__nav-page-select">
@@ -310,20 +309,19 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         {onchange}
                         {onkeydown}
                         {onblur}
-                        value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string()) }
-                        disabled={ props.disabled || empty }
+                        value={(*input_text).clone().unwrap_or_else(|| (current_page+1).to_string())}
+                        disabled={props.disabled || empty}
                     />
-                if let Some(max_page) = max_page {
-                    <span aria-hidden="true">{ "of "} { max_page }</span>
-                }
+                    if let Some(max_page) = max_page {
+                        <span aria-hidden="true">{ "of " }{ max_page }</span>
+                    }
                 </div>
-
                 <div class="pf-v6-c-pagination__nav-control pf-m-next">
                     <Button
                         aria_label="Go to next page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Next)}
-                        disabled={ props.disabled || is_last_page }
+                        disabled={props.disabled || is_last_page}
                     >
                         { Icon::AngleRight }
                     </Button>
@@ -333,7 +331,7 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                         aria_label="Go to last page"
                         variant={ButtonVariant::Plain}
                         onclick={onnavigation.reform(|_|Navigation::Last)}
-                        disabled={ props.disabled || unbound || is_last_page }
+                        disabled={props.disabled || unbound || is_last_page}
                     >
                         { Icon::AngleDoubleRight }
                     </Button>

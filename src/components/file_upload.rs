@@ -27,11 +27,7 @@ pub fn file_upload(props: &FileUploadProperties) -> Html {
         class.push(classes!("pf-m-drag-hover"));
     }
 
-    html! (
-        <div {class} ref={props.r#ref.clone()}>
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div {class} ref={props.r#ref.clone()}>{ props.children.clone() }</div>)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -42,11 +38,7 @@ pub struct FileUploadSelectProperties {
 
 #[function_component(FileUploadSelect)]
 pub fn file_upload_select(props: &FileUploadSelectProperties) -> Html {
-    html!(
-        <div class="pf-v6-c-file-upload__file-select">
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class="pf-v6-c-file-upload__file-select">{ props.children.clone() }</div>)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -78,9 +70,9 @@ pub fn file_upload_select(props: &FileUploadDetailsProperties) -> Html {
                         role="progressbar"
                         aria-label="Loading..."
                     >
-                        <span class="pf-v6-c-spinner__clipper"></span>
-                        <span class="pf-v6-c-spinner__lead-ball"></span>
-                        <span class="pf-v6-c-spinner__tail-ball"></span>
+                        <span class="pf-v6-c-spinner__clipper" />
+                        <span class="pf-v6-c-spinner__lead-ball" />
+                        <span class="pf-v6-c-spinner__tail-ball" />
                     </span>
                 </div>
             }

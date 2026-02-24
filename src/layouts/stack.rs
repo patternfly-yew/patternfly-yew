@@ -32,11 +32,7 @@ pub fn stack(props: &StackProperties) -> Html {
         classes.push("pf-m-gutter");
     }
 
-    html! (
-        <div class={classes}>
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div class={classes}>{ props.children.clone() }</div>)
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -60,9 +56,5 @@ pub fn stack_item(props: &StackItemProperties) -> Html {
         classes.push("pf-m-fill");
     }
 
-    html! (
-        <div class={classes}>
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div class={classes}>{ props.children.clone() }</div>)
 }

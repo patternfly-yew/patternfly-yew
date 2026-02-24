@@ -228,7 +228,7 @@ impl Component for Form {
         );
 
         html! (
-            <ContextProvider<ValidationFormContext> context={validation_context} >
+            <ContextProvider<ValidationFormContext> context={validation_context}>
                 <form
                     novalidate=true
                     class={classes}
@@ -237,21 +237,14 @@ impl Component for Form {
                     method={ctx.props().method.clone()}
                     onsubmit={ctx.props().onsubmit.clone()}
                 >
-
                     if let Some(alert) = alert {
                         <div class="pf-v6-c-form__alert">
-                            <Alert
-                                inline=true
-                                r#type={alert.r#type}
-                                title={alert.title.clone()}
-                                >
+                            <Alert inline=true r#type={alert.r#type} title={alert.title.clone()}>
                                 { alert.children.clone() }
                             </Alert>
                         </div>
                     }
-
                     { ctx.props().children.clone() }
-
                 </form>
             </ContextProvider<ValidationFormContext>>
         )
@@ -294,9 +287,7 @@ pub struct ActionGroupProperties {
 pub fn action_group(props: &ActionGroupProperties) -> Html {
     html! {
         <div class="pf-v6-c-form__group pf-m-action">
-            <div class="pf-v6-c-form__actions">
-                { for props.children.iter() }
-            </div>
+            <div class="pf-v6-c-form__actions">{ for props.children.iter() }</div>
         </div>
     }
 }

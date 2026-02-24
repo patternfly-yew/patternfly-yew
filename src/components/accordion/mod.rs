@@ -28,11 +28,7 @@ pub fn accordion(props: &AccordionProperties) -> Html {
         class.extend(classes!("pf-m-display-lg"));
     }
 
-    html!(
-        <div {class}>
-            { for props.children.iter() }
-        </div>
-    )
+    html!(<div {class}>{ for props.children.iter() }</div>)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -93,9 +89,8 @@ pub fn accordion_item(props: &AccordionItemProperties) -> Html {
                     aria-expanded={(*expanded).to_string()}
                 >
                     <span class="pf-v6-c-accordion__toggle-text">{ &props.title }</span>
-
                     <span class="pf-v6-c-accordion__toggle-icon">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        <i class="fas fa-angle-right" aria-hidden="true" />
                     </span>
                 </button>
             </dt>

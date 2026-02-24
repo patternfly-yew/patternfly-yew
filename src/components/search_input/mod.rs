@@ -216,7 +216,7 @@ pub fn search_input(props: &SearchInputProperties) -> Html {
     {
         html! {
             <InputGroup class={props.class.clone()}>
-                <InputGroupItem>{expand_toggle}</InputGroupItem>
+                <InputGroupItem>{ expand_toggle }</InputGroupItem>
             </InputGroup>
         }
     } else if props.onsearch.is_some() {
@@ -262,10 +262,7 @@ struct ExpandableInputGroupProps {
 #[function_component(ExpandableInputGroup)]
 fn expandable_input_group(props: &ExpandableInputGroupProps) -> Html {
     html! {
-        <InputGroup
-            id={&props.props.id}
-            class={props.props.class.clone()}
-        >
+        <InputGroup id={&props.props.id} class={props.props.class.clone()}>
             <InputGroupItem fill=true>
                 <InnerTextInputGroup
                     props={props.props.clone()}
@@ -273,7 +270,7 @@ fn expandable_input_group(props: &ExpandableInputGroupProps) -> Html {
                     input_ref={props.input_ref.clone()}
                 />
             </InputGroupItem>
-            <InputGroupItem plain=true>{props.expand_toggle.clone()}</InputGroupItem>
+            <InputGroupItem plain=true>{ props.expand_toggle.clone() }</InputGroupItem>
         </InputGroup>
     }
 }
@@ -302,7 +299,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
             || (props.props.onnextclick.is_some() && props.props.onpreviousclick.is_some())
             || (props.props.onclear.is_some() && props.props.expandable.is_none()));
     let badge = if let Some(results_count) = &props.props.results_count {
-        html! { <Badge read=true>{results_count.clone()}</Badge> }
+        html! { <Badge read=true>{ results_count.clone() }</Badge> }
     } else {
         html! {}
     };
@@ -318,7 +315,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                         disabled={props.props.disabled || props.props.previous_navigation_button_disabled}
                         onclick={onprevclick}
                     >
-                        {Icon::AngleUp}
+                        { Icon::AngleUp }
                     </Button>
                     <Button
                         variant={ButtonVariant::Plain}
@@ -326,7 +323,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                         disabled={props.props.disabled || props.props.next_navigation_button_disabled}
                         onclick={onnextclick.clone()}
                     >
-                        {Icon::AngleDown}
+                        { Icon::AngleDown }
                     </Button>
                 </div>
             };
@@ -350,7 +347,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                 aria_label={props.props.reset_button_label.clone()}
                 onclick={onclearinput}
             >
-                {Icon::Times}
+                { Icon::Times }
             </Button>
         };
     };
@@ -371,11 +368,7 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
                 autofocus={props.props.autofocus}
             />
             if render_utilities || props.props.utilities_displayed {
-                <TextInputGroupUtilities>
-                    {badge}
-                    {clicknav}
-                    {clearnav}
-                </TextInputGroupUtilities>
+                <TextInputGroupUtilities>{ badge }{ clicknav }{ clearnav }</TextInputGroupUtilities>
             }
         </TextInputGroup>
     }
@@ -429,7 +422,7 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
                     {onclick}
                     disabled={props.props.disabled}
                 >
-                    {Icon::ArrowRight}
+                    { Icon::ArrowRight }
                 </Button>
             </InputGroupItem>
         }
@@ -438,20 +431,17 @@ fn text_input_group_with_extra_buttons(props: &TextInputGroupWithExtraButtonsPro
     };
 
     html! (
-        <InputGroup
-            id={&props.props.id}
-            class={props.props.class.clone()}
-        >
+        <InputGroup id={&props.props.id} class={props.props.class.clone()}>
             <InputGroupItem fill=true>
                 <InnerTextInputGroup
                     props={props.props.clone()}
                     search_value={props.search_value.clone()}
                     input_ref={props.input_ref.clone()}
                 />
-                {submit_button}
+                { submit_button }
             </InputGroupItem>
             if props.props.expandable.is_some() {
-                {props.expand_toggle.clone()}
+                { props.expand_toggle.clone() }
             }
         </InputGroup>
     )

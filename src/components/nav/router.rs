@@ -46,9 +46,7 @@ where
 
     html! {
         <li class="pf-v6-c-nav__item">
-            <Link<R> to={props.to.clone()} class={classes}>
-                { props.children.clone() }
-            </Link<R>>
+            <Link<R> to={props.to.clone()} class={classes}>{ props.children.clone() }</Link<R>>
         </li>
     }
 }

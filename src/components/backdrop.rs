@@ -140,9 +140,7 @@ pub fn backdrop_viewer(props: &BackdropProperties) -> Html {
     html!(
         <ContextProvider<Backdropper> context={(*ctx).clone()}>
             if let Some(open) = &*open {
-                <div class="pf-v6-c-backdrop">
-                    { open.content.clone() }
-                </div>
+                <div class="pf-v6-c-backdrop">{ open.content.clone() }</div>
             }
             { props.children.clone() }
         </ContextProvider<Backdropper>>

@@ -83,13 +83,7 @@ pub fn popover(props: &PopoverProperties) -> Html {
 
     html!(
         <>
-            <span
-                {onclick}
-                {style}
-                ref={target_ref.clone()}
-            >
-                { props.target.clone() }
-            </span>
+            <span {onclick} {style} ref={target_ref.clone()}>{ props.target.clone() }</span>
             <PortalPopper
                 visible={*active}
                 content={content_ref.clone()}
@@ -180,14 +174,8 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
     };
 
     html! (
-        <div
-            ref={&props.r#ref}
-            {style}
-            {class}
-            role="dialog"
-            aria-model="true"
-        >
-            <div class="pf-v6-c-popover__arrow"></div>
+        <div ref={&props.r#ref} {style} {class} role="dialog" aria-model="true">
+            <div class="pf-v6-c-popover__arrow" />
             <div class="pf-v6-c-popover__content">
                 if !props.no_close {
                     <div class="pf-v6-c-popover__close">
@@ -199,9 +187,7 @@ pub fn popover_popup(props: &PopoverPopupProperties) -> Html {
                         />
                     </div>
                 }
-
                 { props.body.clone() }
-
             </div>
         </div>
     )
@@ -224,21 +210,17 @@ pub fn popover_body(props: &PopoverBodyProperties) -> Html {
             if let Some(header) = &props.header {
                 <header class="pf-v6-c-popover__header">
                     <div class="pf-v6-c-popover__title">
-                        <h1 class="pf-v6-c-title pf-m-md">
-                            { header.clone() }
-                        </h1>
+                        <h1 class="pf-v6-c-title pf-m-md">{ header.clone() }</h1>
                     </div>
                 </header>
             }
-
-            <div class="pf-v6-c-popover__body">
+            <div
+                class="pf-v6-c-popover__body"
+            >
                 { props.children.clone() }
             </div>
-
             if let Some(footer) = &props.footer {
-                <footer class="pf-v6-c-popover__footer">
-                    { footer.clone() }
-                </footer>
+                <footer class="pf-v6-c-popover__footer">{ footer.clone() }</footer>
             }
         </>
     )

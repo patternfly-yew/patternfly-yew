@@ -38,12 +38,5 @@ pub fn breadcrumb_router_item<T: Target>(props: &BreadcrumbRouterItemProperties<
         class.push("pf-m-current");
     }
 
-    html!(
-        <Link<T>
-            {class}
-            to={props.to.clone()}
-        >
-            { props.children.clone() }
-        </Link<T>>
-    )
+    html!(<Link<T> {class} to={props.to.clone()}>{ props.children.clone() }</Link<T>>)
 }

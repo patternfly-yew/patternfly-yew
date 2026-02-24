@@ -17,7 +17,9 @@ pub fn menu_group(props: &MenuGroupProperties) -> Html {
             if let Some(title) = &props.title {
                 <h1 class="pf-v6-c-menu__group-title">{ title }</h1>
             }
-            <MenuList>{ props.children.clone() }</MenuList>
+            <MenuList>
+                { props.children.clone() }
+            </MenuList>
         </section>
     )
 }

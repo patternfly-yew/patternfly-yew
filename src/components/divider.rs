@@ -62,8 +62,8 @@ pub fn divider(props: &DividerProperties) -> Html {
 
     match props.r#type {
         DividerType::Hr => html! (<hr {class} />),
-        DividerType::Li => html! (<li {class} role="separator"></li>),
-        DividerType::Div => html! (<div {class} role="separator"></div>),
+        DividerType::Li => html! (<li {class} role="separator" />),
+        DividerType::Div => html! (<div {class} role="separator" />),
     }
 }
 

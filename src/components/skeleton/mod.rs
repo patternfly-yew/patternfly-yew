@@ -104,11 +104,8 @@ pub fn skeleton(props: &SkeletonProperties) -> Html {
     }
 
     html!(
-        <div
-            class={skeleton_classes}
-            style={skeleton_styles.join(" ")}
-        >
-            <span class={"pf-v6-u-screen-reader"}>{&props.screenreader_text}</span>
+        <div class={skeleton_classes} style={skeleton_styles.join(" ")}>
+            <span class="pf-v6-u-screen-reader">{ &props.screenreader_text }</span>
         </div>
     )
 }

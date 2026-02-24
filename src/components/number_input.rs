@@ -93,7 +93,7 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
     html! {
         <div {class} {style}>
             if let Some(NumberInputUnit::Before(unit)) = &props.unit {
-                <Unit>{unit.clone()}</Unit>
+                <Unit>{ unit.clone() }</Unit>
             }
             <InputGroup>
                 <InputGroupItem>
@@ -103,9 +103,7 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
                         disabled={props.disabled || props.value <= props.min}
                         onclick={onminusclick}
                     >
-                        <span class="pf-v6-c-number-input__icon">
-                            {Icon::Minus}
-                        </span>
+                        <span class="pf-v6-c-number-input__icon">{ Icon::Minus }</span>
                     </Button>
                 </InputGroupItem>
                 <InputGroupItem>
@@ -125,14 +123,12 @@ pub fn number_input<T: PrimInt + Display + FromStr + 'static>(
                         disabled={props.disabled || props.value >= props.max}
                         onclick={onplusclick}
                     >
-                        <span class="pf-v6-c-number-input__icon">
-                            {Icon::Plus}
-                        </span>
+                        <span class="pf-v6-c-number-input__icon">{ Icon::Plus }</span>
                     </Button>
                 </InputGroupItem>
             </InputGroup>
             if let Some(NumberInputUnit::After(unit)) = &props.unit {
-                <Unit>{unit.clone()}</Unit>
+                <Unit>{ unit.clone() }</Unit>
             }
         </div>
     }
@@ -145,5 +141,5 @@ struct UnitProperties {
 
 #[function_component(Unit)]
 fn unit(props: &UnitProperties) -> Html {
-    html!(<div class="pf-v6-c-number-input__unit">{props.children.clone()}</div>)
+    html!(<div class="pf-v6-c-number-input__unit">{ props.children.clone() }</div>)
 }

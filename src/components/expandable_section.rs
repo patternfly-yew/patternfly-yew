@@ -133,9 +133,9 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
     }
 
     let content = html!(
-        <div
-            class="pf-v6-c-expandable-section__content" hidden={!expanded}
-        >{ props.children.clone() }</div>
+        <div class="pf-v6-c-expandable-section__content" hidden={!expanded}>
+            { props.children.clone() }
+        </div>
     );
 
     let truncating = props.variant == ExpandableSectionVariant::Truncate;
@@ -156,26 +156,11 @@ pub fn expandable_section(props: &ExpandableSectionProperties) -> Html {
 
     // when using the truncating variant, the toggle is below the content
     let content = match truncating {
-        false => html!(
-            <>
-                {toggle} {content}
-            </>
-        ),
-        true => html!(
-            <>
-                 {content} {toggle}
-            </>
-        ),
+        false => html!(<>{ toggle }{ content }</>),
+        true => html!(<>{ content }{ toggle }</>),
     };
 
-    html!(
-        <div
-            {class}
-            id={props.id.clone()}
-        >
-            { content }
-        </div>
-    )
+    html!(<div {class} id={props.id.clone()}>{ content }</div>)
 }
 
 /// Properties for [`ExpandableSectionToggle`]
@@ -251,11 +236,11 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
             {onclick}
         >
             if !props.no_icon {
-                <span class={toggle_icon_class}>
-                    { Icon::AngleRight }
-                </span>
+                <span class={toggle_icon_class}>{ Icon::AngleRight }</span>
             }
-            <span class="pf-v6-c-expandable-section__toggle-text">
+            <span
+                class="pf-v6-c-expandable-section__toggle-text"
+            >
                 if !props.children.is_empty() {
                     { props.children.clone() }
                 } else {
@@ -266,9 +251,7 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
     );
 
     match props.detached {
-        true => html!(
-            <div {class}>{ control }</div>
-        ),
+        true => html!(<div {class}>{ control }</div>),
         false => control,
     }
 }

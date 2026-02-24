@@ -95,9 +95,17 @@ pub fn label(props: &LabelProperties) -> Html {
         if let Some(onclick) = props.onclick.clone() {
             let onclick = Callback::from(move |_| onclick.emit(()));
 
-            html! {<button class="pf-v6-c-label__content pf-m-clickable" {onclick} disabled={props.disabled}>{content}</button>}
+            html! {
+                <button
+                    class="pf-v6-c-label__content pf-m-clickable"
+                    {onclick}
+                    disabled={props.disabled}
+                >
+                    { content }
+                </button>
+            }
         } else {
-            html! {<span class="pf-v6-c-label__content">{content}</span>}
+            html! { <span class="pf-v6-c-label__content">{ content }</span> }
         }
     };
 
@@ -119,7 +127,7 @@ pub fn label(props: &LabelProperties) -> Html {
                         }
                     </>
                 )
-            )}
+            ) }
         </span>
     )
 }

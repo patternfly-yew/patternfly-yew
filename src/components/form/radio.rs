@@ -126,12 +126,7 @@ pub fn radio(props: &RadioProperties) -> Html {
     let mut second = html!(
         <>
             if !props.children.is_empty() || props.force_label {
-                <label
-                    class={label_class}
-                    for={(*id).clone()}
-                >
-                    { props.children.clone() }
-                </label>
+                <label class={label_class} for={(*id).clone()}>{ props.children.clone() }</label>
             }
         </>
     );
@@ -142,18 +137,13 @@ pub fn radio(props: &RadioProperties) -> Html {
 
     html!(
         <div {class}>
-            {first} {second}
-
+            { first }
+            { second }
             if let Some(description) = &props.description {
-                <span class="pf-v6-c-radio__description">
-                    { description.clone() }
-                </span>
+                <span class="pf-v6-c-radio__description">{ description.clone() }</span>
             }
-
-            if  let Some(body) = &props.body {
-                <span class="pf-v6-c-radio__body">
-                    { body.clone() }
-                </span>
+            if let Some(body) = &props.body {
+                <span class="pf-v6-c-radio__body">{ body.clone() }</span>
             }
         </div>
     )

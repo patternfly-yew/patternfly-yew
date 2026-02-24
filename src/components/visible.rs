@@ -82,7 +82,7 @@ mod test {
     #[test]
     fn test_ele() {
         let element: String = "div".into();
-        let _ = html!(<Visible visible={true} {element} / >);
-        let _ = html!(<Visible visible={true} element={"div"} / >);
+        let _ = html!(<Visible visible=true {element} />);
+        let _ = html!(<Visible visible=true element="div" />);
     }
 }

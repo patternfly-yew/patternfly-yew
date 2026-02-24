@@ -54,7 +54,7 @@ pub fn wrapper<T: ItemRenderer>(props: &DualListSelectorListWrapperProps<T>) -> 
                 if !props.children.is_empty() {
                     { props.children.clone() }
                 } else {
-                    <DualListSelectorList<T>/>
+                    <DualListSelectorList<T> />
                 }
             </ContextProvider<DualListSelectorListContext<T>>>
         </div>

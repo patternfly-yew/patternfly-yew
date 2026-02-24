@@ -27,11 +27,11 @@ pub fn toggle_group(props: &ToggleGroupProperties) -> Html {
     };
     html! {
         <div {class} role="group">
-            {for props.children.iter().map(|mut item| {
+            { for props.children.iter().map(|mut item| {
                 let item_props = Rc::make_mut(&mut item.props);
                 item_props.disabled |= props.all_disabled;
                 item
-            })}
+            }) }
         </div>
     }
 }
@@ -123,7 +123,7 @@ pub fn toggle_group_item_element(props: &ToggleGroupItemElementProperties) -> Ht
     html! {
         <span {class} id="foo">
             if let Some(children) = children {
-                {(*children).clone()}
+                { (*children).clone() }
             }
         </span>
     }

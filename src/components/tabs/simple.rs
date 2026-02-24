@@ -187,7 +187,6 @@ where
                     { Icon::AngleRight }
                 </button>
             </div>
-
             if !props.detached {
                 { for props.children.iter() }
             }
@@ -278,9 +277,13 @@ where
         >
             <button class="pf-v6-c-tabs__link" {onclick}>
                 if let Some(icon) = props.icon {
-                    <span class="pf-v6-c-tabs__item-icon" aria_hidden={true.to_string()}> { icon } </span>
+                    <span class="pf-v6-c-tabs__item-icon" aria_hidden={true.to_string()}>
+                        { icon }
+                    </span>
                 }
-                <span class="pf-v6-c-tabs__item-text">
+                <span
+                    class="pf-v6-c-tabs__item-text"
+                >
                     { props.children.clone() }
                 </span>
             </button>

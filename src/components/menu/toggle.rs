@@ -94,13 +94,13 @@ pub fn MenuToggle(props: &MenuToggleProperties) -> Html {
             ref={props.r#ref.clone()}
             {class}
             type="button"
-            disabled={ props.disabled }
-            aria-expanded={ props.expanded.to_string() }
-            aria-label={ &props.aria_label }
-            onclick={ props.ontoggle.reform(|_|()) }
+            disabled={props.disabled}
+            aria-expanded={props.expanded.to_string()}
+            aria-label={&props.aria_label}
+            onclick={props.ontoggle.reform(|_|())}
         >
             if let Some(icon) = &props.icon {
-                if plain && !text{
+                if plain && !text {
                     // if we just have an icon, don't wrap it
                     { icon.clone() }
                 } else {
@@ -110,18 +110,15 @@ pub fn MenuToggle(props: &MenuToggleProperties) -> Html {
             if let Some(text) = &props.text {
                 <span class="pf-v6-c-menu-toggle__text">{ text }</span>
             }
-
             if !plain || text {
                 // if we have more than just a plain icon, add the toggle control
                 <span class="pf-v6-c-menu-toggle__controls">
                     <span class="pf-v6-c-menu-toggle__toggle-icon">
-                        <i class="fas fa-caret-down" aria-hidden="true"></i>
+                        <i class="fas fa-caret-down" aria-hidden="true" />
                     </span>
                 </span>
             }
-
             { props.children.clone() }
-
         </button>
     )
 }

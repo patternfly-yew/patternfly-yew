@@ -42,7 +42,7 @@ pub fn list<T: ItemRenderer>(props: &DualListSelectorListProps) -> Html {
                             { option.clone() }
                         </DualListSelectorListItem>
                     }
-                })}
+                }) }
             }
         </ul>
     }

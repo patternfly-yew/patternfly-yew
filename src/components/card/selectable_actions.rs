@@ -14,7 +14,5 @@ pub struct CardSelectableActionsProperties {
 pub fn actions(props: &CardSelectableActionsProperties) -> Html {
     let mut class = props.class.clone();
     class.push("pf-v6-c-card__selectable-actions");
-    html! {
-        <div {class}>{props.children.clone()}</div>
-    }
+    html! { <div {class}>{ props.children.clone() }</div> }
 }

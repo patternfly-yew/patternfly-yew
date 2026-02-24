@@ -213,11 +213,7 @@ pub fn button(props: &ButtonProperties) -> Html {
             }
 
             let icon = match icon {
-                Some(i) => html! (
-                    <span class={classes}>
-                        { *i }
-                    </span>
-                ),
+                Some(i) => html! (<span class={classes}>{ *i }</span>),
                 None => html!(),
             };
 
@@ -244,7 +240,7 @@ pub fn button(props: &ButtonProperties) -> Html {
     let tabindex: Option<AttrValue> = props.tabindex.map(|i| i.to_string().into());
 
     html! (
-         <button
+        <button
             ref={node_ref}
             id={props.id.clone()}
             class={classes}
@@ -264,16 +260,14 @@ pub fn button(props: &ButtonProperties) -> Html {
             data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
-         >
-             if props.loading {
-                 <span class="pf-v6-c-button__progress">
-                     <Spinner size={SpinnerSize::Md} />
-                 </span>
-             }
-
-             { (*label).clone() }
-             { props.children.clone() }
-
-         </button>
+        >
+            if props.loading {
+                <span class="pf-v6-c-button__progress">
+                    <Spinner size={SpinnerSize::Md} />
+                </span>
+            }
+            { (*label).clone() }
+            { props.children.clone() }
+        </button>
     )
 }

@@ -130,15 +130,7 @@ pub fn dl(props: &DescriptionListProperties) -> Html {
 
     class.extend_from(&props.columns);
 
-    html! (
-        <dl
-            id={ &props.id }
-            {class}
-            style={ props.style.clone() }
-        >
-            { props.children.clone() }
-        </dl>
-    )
+    html! (<dl id={&props.id} {class} style={props.style.clone()}>{ props.children.clone() }</dl>)
 }
 
 /// Properties for [`DescriptionGroup`]
@@ -157,14 +149,10 @@ pub fn desc_group(props: &DescriptionGroupProperties) -> Html {
     html! (
         <div class="pf-v6-c-description-list__group">
             <dt class="pf-v6-c-description-list__term">
-                <span class="pf-v6-c-description-list__text">
-                    { &props.term }
-                </span>
+                <span class="pf-v6-c-description-list__text">{ &props.term }</span>
             </dt>
             <dd class="pf-v6-c-description-list__description">
-                <div class="pf-v6-c-description-list__text">
-                    { props.children.clone() }
-                </div>
+                <div class="pf-v6-c-description-list__text">{ props.children.clone() }</div>
             </dd>
         </div>
     )

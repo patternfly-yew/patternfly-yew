@@ -76,14 +76,12 @@ pub struct AvatarProperties {
 pub fn avatar(props: &AvatarProperties) -> Html {
     html! {
         <img
-            class={
-                classes!(
+            class={classes!(
                     "pf-v6-c-avatar",
                     props.border.clone(),
                     props.size.clone(),
                     props.class.clone()
-                )
-            }
+                )}
             src={&props.src}
             alt={&props.alt}
         />

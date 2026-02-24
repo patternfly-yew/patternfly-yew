@@ -95,11 +95,5 @@ pub fn background(props: &BackgroundProperties) -> Html {
         style.push_str(additional);
     }
 
-    html!(
-        <div
-            id={props.id.clone()}
-            class="pf-v6-c-background-image"
-            {style}
-        ></div>
-    )
+    html!(<div id={props.id.clone()} class="pf-v6-c-background-image" {style} />)
 }

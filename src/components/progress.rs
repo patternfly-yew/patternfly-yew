@@ -195,7 +195,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
                 .value_text
                 .clone()
                 .unwrap_or_else(|| props.format.format(props.value));
-            Some(html!(<span class={measure_class}> { measure } </span>))
+            Some(html!(<span class={measure_class}>{ measure }</span>))
         }
     };
 
@@ -208,25 +208,17 @@ pub fn progress(props: &ProgressProperties) -> Html {
         true => None,
         false => props.variant.icon(),
     }
-    .map(|icon| {
-        html!(
-            <span class="pf-v6-c-progress__status-icon">
-                { icon }
-            </span>
-        )
-    });
+    .map(|icon| html!(<span class="pf-v6-c-progress__status-icon">{ icon }</span>));
 
     html!(
         <div {class} {id} style={props.style.clone()}>
             if let Some(description) = &props.description.0 {
-                <div
-                    class={description_class}
-                    id={desc_id.clone()}
-                >
-                    { description.clone() }
-                </div>
+                <div class={description_class} id={desc_id.clone()}>{ description.clone() }</div>
             }
-            <div class="pf-v6-c-progress__status" aria-hidden="true">
+            <div
+                class="pf-v6-c-progress__status"
+                aria-hidden="true"
+            >
                 if matches!(props.location, ProgressMeasureLocation::Default | ProgressMeasureLocation::Outside) {
                     { measure.take() }
                 }
@@ -235,9 +227,9 @@ pub fn progress(props: &ProgressProperties) -> Html {
             <div
                 class="pf-v6-c-progress__bar"
                 role="progressbar"
-                aria-valuemin={ props.range.start.to_string() }
-                aria-valuemax={ props.range.end.to_string() }
-                aria-valuenow={ props.value.to_string() }
+                aria-valuemin={props.range.start.to_string()}
+                aria-valuemax={props.range.end.to_string()}
+                aria-valuenow={props.value.to_string()}
                 aria-labelledby={desc_id}
             >
                 <div class="pf-v6-c-progress__indicator" {style}>
@@ -247,9 +239,7 @@ pub fn progress(props: &ProgressProperties) -> Html {
                 </div>
             </div>
             if let Some(helper_text) = &props.helper_text {
-                <div class="pf-v6-c-progress__helper-text">
-                    { helper_text.clone() }
-                </div>
+                <div class="pf-v6-c-progress__helper-text">{ helper_text.clone() }</div>
             }
         </div>
     )

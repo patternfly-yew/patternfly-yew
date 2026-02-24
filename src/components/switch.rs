@@ -74,14 +74,10 @@ pub fn switch(props: &SwitchProperties) -> Html {
     );
 
     let label = match (props.label.as_ref(), *checked) {
-        (Some(label), true) => html!(
-            <span class="pf-v6-c-switch__label">{label}</span>
-        ),
+        (Some(label), true) => html!(<span class="pf-v6-c-switch__label">{ label }</span>),
         (Some(label), false) => {
             let label = props.label_off.as_ref().unwrap_or(label);
-            html!(
-                <span class="pf-v6-c-switch__label">{label}</span>
-            )
+            html!(<span class="pf-v6-c-switch__label">{ label }</span>)
         }
         (None, _) => html!(),
     };
@@ -106,12 +102,10 @@ pub fn switch(props: &SwitchProperties) -> Html {
             />
             <span class="pf-v6-c-switch__toggle">
                 if props.label.is_none() {
-                    <span class="pf-v6-c-switch__toggle-icon">
-                        { Icon::Check }
-                    </span>
+                    <span class="pf-v6-c-switch__toggle-icon">{ Icon::Check }</span>
                 }
             </span>
-            {label}
+            { label }
         </label>
     )
 }

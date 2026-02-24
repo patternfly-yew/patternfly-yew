@@ -69,8 +69,8 @@ impl Component for Spinner {
                 class={classes}
                 role="progressbar"
                 viewBox="0 0 100 100"
-                aria-label={ ctx.props().aria_label.clone() }
-                { style }
+                aria-label={ctx.props().aria_label.clone()}
+                {style}
             >
                 <circle class="pf-v6-c-spinner__path" cx="50" cy="50" r="45" fill="none" />
             </svg>

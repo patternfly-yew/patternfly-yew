@@ -121,7 +121,7 @@ pub fn alert(props: &AlertProperties) -> Html {
     } else {
         html! (
             <div class="pf-v6-c-alert__action-group">
-                {for props.actions.iter().map(|action|{
+                { for props.actions.iter().map(|action|{
                     html!{
                         <Button
                             variant={ButtonVariant::InlineLink}
@@ -129,7 +129,7 @@ pub fn alert(props: &AlertProperties) -> Html {
                             onclick={action.callback.reform(|_|())}
                         />
                     }
-                })}
+                }) }
             </div>
         )
     };
@@ -145,26 +145,22 @@ pub fn alert(props: &AlertProperties) -> Html {
         >
             <div class="pf-v6-c-alert__icon">{ t.icon() }</div>
             <p class={title_classes}>
-                <span class="pf-v6-screen-reader">{ t.aria_label() }{":"}</span>
+                <span class="pf-v6-screen-reader">{ t.aria_label() }{ ":" }</span>
                 { &props.title }
             </p>
-
-
             if let Some(onclose) = props.onclose.as_ref() {
                 <div class="pf-v6-c-alert__action">
-                    <Button variant={ButtonVariant::Plain} icon={Icon::Times} onclick={onclose.clone().reform(|_|())} />
+                    <Button
+                        variant={ButtonVariant::Plain}
+                        icon={Icon::Times}
+                        onclick={onclose.clone().reform(|_|())}
+                    />
                 </div>
             }
-
-
             if !props.children.is_empty() {
-                <div class="pf-v6-c-alert__description">
-                    { props.children.clone() }
-                </div>
+                <div class="pf-v6-c-alert__description">{ props.children.clone() }</div>
             }
-
             { actions }
-
         </div>
     )
 }
@@ -192,7 +188,7 @@ pub fn view(props: &GroupProperties) -> Html {
         <ul class={classes} role="list">
             { for props.children.iter().map(|child|
                 wrapper_elt_with_attributes(child.into(), "li", &[("class", AttributeOrProperty::Static("pf-v6-c-alert-group__item"))])
-            )}
+            ) }
         </ul>
     )
 }

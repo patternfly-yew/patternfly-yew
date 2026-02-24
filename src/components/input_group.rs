@@ -50,12 +50,7 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
     }
 
     html! (
-        <div
-            {class}
-            aria-label={&props.aria_label}
-            style={&props.style}
-            id={&props.id}
-        >
+        <div {class} aria-label={&props.aria_label} style={&props.style} id={&props.id}>
             { props.children.clone() }
         </div>
     )
@@ -64,11 +59,7 @@ pub fn input_group(props: &InputGroupProperties) -> Html {
 /// Input group text, as child of [`InputGroupItem`]
 #[function_component(InputGroupText)]
 pub fn input_group_text(props: &ChildrenProperties) -> Html {
-    html!(
-        <span class={"pf-v6-c-input-group__text"}>
-            { props.children.clone() }
-        </span>
-    )
+    html!(<span class="pf-v6-c-input-group__text">{ props.children.clone() }</span>)
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -122,9 +113,5 @@ pub fn input_group_item(props: &InputGroupItemProperties) -> Html {
 
     class.extend(props.class.clone());
 
-    html!(
-        <div {class} id={&props.id} style={&props.style}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class} id={&props.id} style={&props.style}>{ props.children.clone() }</div>)
 }

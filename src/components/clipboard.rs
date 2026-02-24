@@ -179,7 +179,7 @@ impl Component for Clipboard {
                             </>
                         }
                     }
-                }}
+                } }
             </div>
         }
     }
@@ -224,13 +224,8 @@ impl Clipboard {
         let onclick = ctx.link().callback(|_| Msg::ToggleExpand);
 
         html! (
-            <Button
-                expanded={self.expanded}
-                variant={ButtonVariant::Control}
-                onclick={onclick}>
-                <div class="pf-v6-c-clipboard-copy__toggle-icon">
-                    { Icon::AngleRight }
-                </div>
+            <Button expanded={self.expanded} variant={ButtonVariant::Control} onclick={onclick}>
+                <div class="pf-v6-c-clipboard-copy__toggle-icon">{ Icon::AngleRight }</div>
             </Button>
         )
     }
@@ -249,13 +244,11 @@ impl Clipboard {
                 contenteditable={(!ctx.props().readonly).to_string()}
                 oninput={ctx.link().callback(|_|Msg::Sync)}
             >
-
                 if ctx.props().code {
                     <pre>{ value }</pre>
                 } else {
                     { value }
                 }
-
             </div>
         }
     }

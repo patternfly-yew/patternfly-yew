@@ -68,7 +68,8 @@ fn MenuItem(props: &MenuItemProperties) -> Html {
             html!(
                 <a
                     class={item_class}
-                    {href} {target}
+                    {href}
+                    {target}
                     onclick={onclose.reform(|_|())}
                     aria-disabled={props.disabled.to_string()}
                     {tabindex}

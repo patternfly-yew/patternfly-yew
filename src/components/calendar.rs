@@ -112,7 +112,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         aria_label="Previous month"
                         onclick={callback_prev}
                     >
-                    {Icon::AngleLeft.as_html()}
+                        { Icon::AngleLeft.as_html() }
                     </Button>
                 </div>
                 <InputGroup>
@@ -144,8 +144,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                                 value={show_date.year().to_string()}
                                 r#type={TextInputType::Number}
                                 onchange={callback_years}
-                            >
-                            </TextInput>
+                            />
                         </div>
                     </InputGroupItem>
                 </InputGroup>
@@ -155,28 +154,25 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                         aria_label="Next month"
                         onclick={callback_next}
                     >
-                    {Icon::AngleRight.as_html()}
+                        { Icon::AngleRight.as_html() }
                     </Button>
                 </div>
             </div>
             <table class="pf-v6-c-calendar-month__calendar">
                 <thead class="pf-v6-c-calendar-month__days">
                     <tr class="pf-v6-c-calendar-month__days-row">
-                    {
-                        weeks[0].clone().into_iter().map(|day| {
+                        { weeks[0].clone().into_iter().map(|day| {
                             html!{
                                 <th class="pf-v6-c-calendar-month__day">
                                     <span class="pf-v6-screen-reader">{weekday_name(day.weekday())}</span>
                                     <span aria-hidden="true">{weekday_name(day.weekday())}</span>
                                 </th>
                             }
-                        }).collect::<Html>()
-                    }
+                        }).collect::<Html>() }
                     </tr>
                 </thead>
                 <tbody class="pf-v6-c-calendar-month__dates">
-                {
-                    weeks.into_iter().map(|week| {
+                    { weeks.into_iter().map(|week| {
                         html!{
                             <>
                             <tr class="pf-v6-c-calendar-month__dates-row">
@@ -253,8 +249,7 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                             </tr>
                             </>
                         }
-                    }).collect::<Html>()
-                }
+                    }).collect::<Html>() }
                 </tbody>
             </table>
         </div>

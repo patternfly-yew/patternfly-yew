@@ -23,9 +23,5 @@ pub fn body(props: &CardBodyProperties) -> Html {
     if !props.filled {
         class.push("pf-m-no-fill");
     }
-    html! {
-        <@{props.component.clone()} {class}>
-            {props.children.clone()}
-        </@>
-    }
+    html! { <@{props.component.clone()} {class}>{ props.children.clone() }</@> }
 }

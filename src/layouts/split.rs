@@ -53,11 +53,7 @@ pub fn split(props: &SplitProperties) -> Html {
         classes.push("pf-m-wrap");
     }
 
-    html! (
-        <div class={classes}>
-            { for props.children.iter() }
-        </div>
-    )
+    html! (<div class={classes}>{ for props.children.iter() }</div>)
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -81,9 +77,5 @@ pub fn split_item(props: &SplitItemProperties) -> Html {
         classes.push("pf-m-fill");
     }
 
-    html!(
-        <div class={classes}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div class={classes}>{ props.children.clone() }</div>)
 }

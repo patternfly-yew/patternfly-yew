@@ -51,15 +51,13 @@ pub fn breadcrumb(props: &BreadcrumbProperties) -> Html {
     html!(
         <nav
             class="pf-v6-c-breadcrumb"
-            aria-label={"breadcrumb"}
+            aria-label="breadcrumb"
             data-ouia-component-id={(*ouia_id).clone()}
             data-ouia-component-type={props.ouia_type}
             data-ouia-safe={props.ouia_safe}
         >
             <ol class="pf-v6-c-breadcrumb__list" role="list">
-                {
-                    for props.children.iter().enumerate().map(|(n,c)|item(c, n == last))
-                }
+                { for props.children.iter().enumerate().map(|(n,c)|item(c, n == last)) }
             </ol>
         </nav>
     )
@@ -71,7 +69,7 @@ fn item(mut child: BreadcrumbItemVariant, last: bool) -> Html {
     html!(
         <li class="pf-v6-c-breadcrumb__item">
             <span class="pf-v6-c-breadcrumb__item-divider">
-                <i class="fas fa-angle-right" aria-hidden="true"></i>
+                <i class="fas fa-angle-right" aria-hidden="true" />
             </span>
             { child }
         </li>
@@ -105,13 +103,8 @@ pub fn breadcrumb_item(props: &BreadcrumbItemProperties) -> Html {
         props.children.clone()
     } else {
         html!(
-            <a
-                {class}
-                href={&props.href}
-                target={&props.target}
-                aria-current={aria_current}
-            >
-                    { props.children.clone() }
+            <a {class} href={&props.href} target={&props.target} aria-current={aria_current}>
+                { props.children.clone() }
             </a>
         )
     }

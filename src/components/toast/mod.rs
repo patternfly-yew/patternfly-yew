@@ -214,7 +214,12 @@ impl ToastViewer {
         self.alerts.push(ToastEntry {
             id,
             alert: html_nested! {
-                <Alert r#type={toast.r#type} title={toast.title} onclose={onclose} actions={toast.actions}>
+                <Alert
+                    r#type={toast.r#type}
+                    title={toast.title}
+                    onclose={onclose}
+                    actions={toast.actions}
+                >
                     { toast.body }
                 </Alert>
             },

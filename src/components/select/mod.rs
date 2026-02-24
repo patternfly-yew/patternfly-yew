@@ -58,9 +58,7 @@ where
         .or_else(|| props.placeholder.clone());
 
     html!(
-        <Dropdown
-            text={html!{text.clone().unwrap_or_default()}}
-        >
+        <Dropdown text={html!{text.clone().unwrap_or_default()}}>
             { for props.entries.iter().map(|entry| {
                 html_nested!(
                     <Raw>
@@ -100,11 +98,5 @@ where
         },
     );
 
-    html!(
-        <MenuAction
-            {onclick}
-            selected={props.selected}
-        >
-            { props.entry.label() }
-        </MenuAction>)
+    html!(<MenuAction {onclick} selected={props.selected}>{ props.entry.label() }</MenuAction>)
 }

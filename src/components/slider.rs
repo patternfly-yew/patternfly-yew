@@ -252,18 +252,19 @@ impl Component for Slider {
             <div class={classes} style={format!("--pf-v6-c-slider--value: {}%", percent)}>
                 <div class="pf-v6-c-slider__main">
                     <div class="pf-v6-c-slider__rail" ref={self.refs.rail.clone()}>
-                        <div class="pf-v6-c-slider__rail-track"></div>
+                        <div class="pf-v6-c-slider__rail-track" />
                     </div>
                     if !ctx.props().hide_labels {
                         <div class="pf-v6-c-slider__steps" aria-hidden="true">
                             { self.render_step(min, ctx.props()) }
                             { for ctx.props().ticks.iter()
                                 .filter(|t| t.value>min.value && t.value<max.value)
-                                .map(|t| self.render_step(t,ctx.props()))}
+                                .map(|t| self.render_step(t,ctx.props())) }
                             { self.render_step(max, ctx.props()) }
                         </div>
                     }
-                    <div class="pf-v6-c-slider__thumb"
+                    <div
+                        class="pf-v6-c-slider__thumb"
                         {onmousedown}
                         {ontouchstart}
                         role="slider"
@@ -272,8 +273,7 @@ impl Component for Slider {
                         aria-valuenow={valuestr}
                         aria-label="Value"
                         tabindex="0"
-                        >
-                    </div>
+                    />
                 </div>
             </div>
         )
@@ -407,8 +407,11 @@ impl Slider {
 
         let position = Self::calc_percent(step.value, props) * 100f64;
         html!(
-            <div class={classes} style={format!("--pf-v6-c-slider__step--InsetInlineStart: {}%", position)}>
-                <div class="pf-v6-c-slider__step-tick"></div>
+            <div
+                class={classes}
+                style={format!("--pf-v6-c-slider__step--InsetInlineStart: {}%", position)}
+            >
+                <div class="pf-v6-c-slider__step-tick" />
                 <div class="pf-v6-c-slider__step-label">{ label }</div>
             </div>
         )

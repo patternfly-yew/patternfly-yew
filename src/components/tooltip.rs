@@ -106,10 +106,8 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
 
     html! {
         <div ref={&props.r#ref} style={&props.style} {class} role="tooltip">
-            <div class="pf-v6-c-tooltip__arrow"></div>
-            <div class="pf-v6-c-tooltip__content">
-                { &props.text }
-            </div>
+            <div class="pf-v6-c-tooltip__arrow" />
+            <div class="pf-v6-c-tooltip__content">{ &props.text }</div>
         </div>
     }
 }

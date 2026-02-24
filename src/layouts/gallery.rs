@@ -31,11 +31,8 @@ pub fn gallery(props: &GalleryProperties) -> Html {
     }
 
     html! (
-        <div
-            class={classes}
-            style={&props.style}
-        >
-        { for props.children.iter().map(|child|{
+        <div class={classes} style={&props.style}>
+            { for props.children.iter().map(|child|{
             wrapper_div_with_attributes(child, &[("class", AttributeOrProperty::Static("pf-v6-l-gallery__item"))])
         }) }
         </div>

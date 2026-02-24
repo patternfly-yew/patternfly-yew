@@ -60,11 +60,7 @@ pub struct LoginMainProperties {
 #[function_component(LoginMain)]
 pub fn login_main(props: &LoginMainProperties) -> Html {
     let class = classes!("pf-v6-c-login__main", props.class.clone());
-    html! {
-        <main {class}>
-            { props.children.clone() }
-        </main>
-    }
+    html! { <main {class}>{ props.children.clone() }</main> }
 }
 
 /// Properties for [`LoginMainHeader`]
@@ -80,9 +76,7 @@ pub fn login_main_header(props: &LoginMainHeaderProperties) -> Html {
     html! {
         <header class="pf-v6-c-login__main-header">
             { props.title.clone() }
-            <p class="pf-v6-c-login__main-header-desc">
-                {&props.description}
-            </p>
+            <p class="pf-v6-c-login__main-header-desc">{ &props.description }</p>
         </header>
     }
 }
@@ -99,9 +93,5 @@ pub struct LoginMainBodyProperties {
 #[function_component(LoginMainBody)]
 pub fn login_main_body(props: &LoginMainBodyProperties) -> Html {
     let class = classes!("pf-v6-c-login__main-body", props.class.clone());
-    html! {
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    }
+    html! { <div {class}>{ props.children.clone() }</div> }
 }

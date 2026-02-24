@@ -17,10 +17,8 @@ pub struct CardTitleProperties {
 pub fn card_title(props: &CardTitleProperties) -> Html {
     let class = classes!(props.class.clone(), "pf-v6-c-card__title-text");
     html! {
-        <div class={"pf-v6-c-card__title"}>
-            <@{props.component.clone()} {class}>
-                {props.children.clone()}
-            </@>
+        <div class="pf-v6-c-card__title">
+            <@{props.component.clone()} {class}>{ props.children.clone() }</@>
         </div>
     }
 }

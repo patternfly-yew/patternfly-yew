@@ -57,10 +57,14 @@ impl From<&FormHelperText> for VNode {
             <div class={classes}>
                 if !text.no_icon {
                     <span class="pf-v6-c-helper-text__item-icon">
-                        { text.custom_icon.unwrap_or_else(|| text.input_state.icon() )}
+                        { text.custom_icon.unwrap_or_else(|| text.input_state.icon() ) }
                     </span>
                 }
-                <span class="pf-v6-c-helper-text__item-text"> { &text.message } </span>
+                <span
+                    class="pf-v6-c-helper-text__item-text"
+                >
+                    { &text.message }
+                </span>
             </div>
         )
     }
@@ -122,20 +126,18 @@ impl Component for FormGroup {
 
         html! (
             <div class={classes}>
-
                 if !ctx.props().label.is_empty() {
                     <div class="pf-v6-c-form__group-label">
                         <label class="pf-v6-c-form__label">
-
-                            <span class="pf-v6-c-form__label-text">{&ctx.props().label}</span>
-
+                            <span class="pf-v6-c-form__label-text">{ &ctx.props().label }</span>
                             if ctx.props().required {
-                                {" "}
-                                <span class="pf-v6-c-form__label-required" aria-hidden="true">{"*"}</span>
+                                { " " }
+                                <span class="pf-v6-c-form__label-required" aria-hidden="true">
+                                    { "*" }
+                                </span>
                             }
                         </label>
-                        {
-                            match &ctx.props().label_icon  {
+                        { match &ctx.props().label_icon  {
                                 LabelIcon::None => html!(),
                                 LabelIcon::Help(popover) => html!(
                                     <span
@@ -149,12 +151,12 @@ impl Component for FormGroup {
                                     </span>
                                 ),
                                 LabelIcon::Children(children) => children.clone(),
-                            }
-                        }
+                            } }
                     </div>
                 }
-
-                <div class="pf-v6-c-form__group-control">
+                <div
+                    class="pf-v6-c-form__group-control"
+                >
                     { ctx.props().children.clone() }
                     if let Some(text) = &ctx.props().helper_text {
                         { FormGroupHelpText(text) }
@@ -185,21 +187,15 @@ impl<'a> From<FormGroupHelpText<'a>> for VNode {
         };
 
         html!(
-            <div
-                class="pf-v6-c-form__helper-text"
-                aria-live="polite"
-            >
+            <div class="pf-v6-c-form__helper-text" aria-live="polite">
                 <div class="pf-v6-c-helper-text">
-                    <div
-                        class={classes}
-                        id="form-help-text-info-helper"
-                    >
+                    <div class={classes} id="form-help-text-info-helper">
                         if let Some(icon) = icon {
-                            <span class="pf-v6-c-helper-text__item-icon">
-                                { icon }
-                            </span>
+                            <span class="pf-v6-c-helper-text__item-icon">{ icon }</span>
                         }
-                        <span class="pf-v6-c-helper-text__item-text">
+                        <span
+                            class="pf-v6-c-helper-text__item-text"
+                        >
                             { &text.0.message }
                         </span>
                     </div>
@@ -313,7 +309,7 @@ where
                     props.set_onvalidate(onvalidate.clone());
                     props.set_input_state(self.state.as_ref().map(|s|s.state).unwrap_or_default());
                     c
-                })}
+                }) }
             </FormGroup>
         )
     }

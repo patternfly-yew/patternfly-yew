@@ -26,12 +26,7 @@ pub struct BrandSourceProperties {
 
 #[function_component(BrandSource)]
 pub fn brand_source(props: &BrandSourceProperties) -> Html {
-    html!(
-        <source
-            media={props.media.clone()}
-            srcset={&props.srcset}
-        />
-    )
+    html!(<source media={props.media.clone()} srcset={&props.srcset} />)
 }
 
 /// Brand component
@@ -52,26 +47,12 @@ pub fn brand_source(props: &BrandSourceProperties) -> Html {
 #[function_component(Brand)]
 pub fn brand(props: &BrandProperties) -> Html {
     if props.children.is_empty() {
-        html! (
-            <img
-                class="pf-v6-c-brand"
-                style={&props.style}
-                src={&props.src}
-                alt={&props.alt}
-            />
-        )
+        html! (<img class="pf-v6-c-brand" style={&props.style} src={&props.src} alt={&props.alt} />)
     } else {
         html! (
-            <picture
-                class="pf-v6-c-brand pf-m-picture"
-                style={&props.style}
-            >
+            <picture class="pf-v6-c-brand pf-m-picture" style={&props.style}>
                 { for props.children.iter() }
-                <img
-                    class="pf-v6-c-brand"
-                    src={&props.src}
-                    alt={&props.alt}
-                />
+                <img class="pf-v6-c-brand" src={&props.src} alt={&props.alt} />
             </picture>
         )
     }

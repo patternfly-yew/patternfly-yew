@@ -128,9 +128,7 @@ pub fn drawer(props: &DrawerProperties) -> Html {
 
     html!(
         <ContextProvider<DrawerContext> {context}>
-            <div {class}>
-                { props.children.clone() }
-            </div>
+            <div {class}>{ props.children.clone() }</div>
         </ContextProvider<DrawerContext>>
     )
 }
@@ -154,12 +152,8 @@ pub fn drawer_content(props: &DrawerContentProperties) -> Html {
 
     html!(
         <div class={classes!("pf-v6-c-drawer__main")}>
-            <div class={content_class}>
-                { props.children.clone() }
-            </div>
-            <div class={panel_class} {hidden}>
-                { props.panel_content.clone() }
-            </div>
+            <div class={content_class}>{ props.children.clone() }</div>
+            <div class={panel_class} {hidden}>{ props.panel_content.clone() }</div>
         </div>
     )
 }
@@ -174,11 +168,7 @@ pub struct DrawerContentBodyProperties {
 pub fn drawer_content_body(props: &DrawerContentBodyProperties) -> Html {
     let class = classes!("pf-v6-c-drawer__body");
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 #[derive(PartialEq, Properties)]
@@ -191,11 +181,7 @@ pub struct DrawerPanelContentProperties {
 pub fn drawer_panel_content(props: &DrawerPanelContentProperties) -> Html {
     let class = classes!("pf-v6-c-drawer__body");
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 #[derive(PartialEq, Properties)]
@@ -208,11 +194,7 @@ pub struct DrawerHeadProperties {
 pub fn drawer_panel_content(props: &DrawerHeadProperties) -> Html {
     let class = classes!("pf-v6-c-drawer__head");
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 #[derive(PartialEq, Properties)]
@@ -225,11 +207,7 @@ pub struct DrawerActionsProperties {
 pub fn drawer_actions(props: &DrawerActionsProperties) -> Html {
     let class = classes!("pf-v6-c-drawer__actions");
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 #[derive(PartialEq, Properties)]
@@ -264,9 +242,5 @@ pub struct DrawerSectionProperties {
 pub fn drawer_content_body(props: &DrawerSectionProperties) -> Html {
     let class = classes!("pf-v6-c-drawer__section");
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }

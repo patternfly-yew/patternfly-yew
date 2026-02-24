@@ -132,9 +132,7 @@ pub fn list(props: &ListProperties) -> Html {
         }
     };
 
-    l(html! ({
-         for props.children.clone()
-    }))
+    l(html! ({ for props.children.clone() }))
 }
 
 #[derive(PartialEq, Properties)]
@@ -152,16 +150,14 @@ pub fn list_item(props: &ListItemProperties) -> Html {
             let class = classes!("pf-v6-c-list__item");
             html!(
                 <li {class}>
-                    <span class={classes!("pf-v6-c-list__item-icon")}>
-                        { icon }
-                    </span>
+                    <span class={classes!("pf-v6-c-list__item-icon")}>{ icon }</span>
                     <span class={classes!("pf-v6-c-list__item-text")}>
                         { props.children.clone() }
                     </span>
                 </li>
             )
         }
-        None => html!( <li> { props.children.clone() } </li> ),
+        None => html!(<li>{ props.children.clone() }</li>),
     }
 }
 

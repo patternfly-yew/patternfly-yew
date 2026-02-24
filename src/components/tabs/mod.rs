@@ -34,11 +34,7 @@ pub fn tab_content_body(props: &TabContentBodyProperties) -> Html {
         class.push(classes!("pf-m-padding"));
     }
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }
 
 /// Properties for [`TabContent`]

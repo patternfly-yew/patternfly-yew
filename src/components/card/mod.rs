@@ -203,7 +203,7 @@ pub fn card(props: &CardProperties) -> Html {
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             >
-                {props.children.clone()}
+                { props.children.clone() }
             </@>
         </ContextProvider<CardContext>>
     )

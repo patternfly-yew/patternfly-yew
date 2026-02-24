@@ -121,7 +121,7 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
 
     html!(
         <>
-            <div style="display: inline;" ref={inside_ref.clone()}>
+            <div style="display: inline" ref={inside_ref.clone()}>
                 <MenuToggle
                     r#ref={target_ref.clone()}
                     text={props.text.clone()}
@@ -135,22 +135,15 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
                     {ontoggle}
                 />
                 <PortalPopper
-                            visible={*expanded}
-                            target={target_ref.clone()}
-                            content={menu_ref.clone()}
-                            {placement}
-                            {modifiers}
-                            {onstatechange}
+                    visible={*expanded}
+                    target={target_ref.clone()}
+                    content={menu_ref.clone()}
+                    {placement}
+                    {modifiers}
+                    {onstatechange}
                 >
-                    <ContextProvider<CloseMenuContext>
-                        {context}
-                    >
-                        <Menu
-                            r#ref={menu_ref}
-                            style={&(*style)}
-                        >
-                            { props.children.clone() }
-                        </Menu>
+                    <ContextProvider<CloseMenuContext> {context}>
+                        <Menu r#ref={menu_ref} style={&(*style)}>{ props.children.clone() }</Menu>
                     </ContextProvider<CloseMenuContext>>
                 </PortalPopper>
             </div>

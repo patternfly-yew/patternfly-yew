@@ -179,9 +179,9 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
         }
         html! (
             <label {class} for={(*id).clone()}>
-                {label.clone()}
+                { label.clone() }
                 if props.required {
-                    <span class="pf-v6-c-check__label-required" aria-hidden="true">{"*"}</span>
+                    <span class="pf-v6-c-check__label-required" aria-hidden="true">{ "*" }</span>
                 }
             </label>
         )
@@ -206,12 +206,12 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             />
-            {label}
+            { label }
             if let Some(description) = &props.description.0 {
-                <span class="pf-v6-c-check__description">{description.clone()}</span>
+                <span class="pf-v6-c-check__description">{ description.clone() }</span>
             }
             if let Some(body) = &props.body {
-                <span class="pf-v6-c-check__body">{body.clone()}</span>
+                <span class="pf-v6-c-check__body">{ body.clone() }</span>
             }
         </@>
     )

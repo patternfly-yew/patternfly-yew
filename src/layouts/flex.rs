@@ -145,7 +145,7 @@ pub trait ToFlexItems {
 impl ToFlexItems for Vec<Html> {
     fn into_flex_items(self) -> Vec<VChild<FlexItem>> {
         self.into_iter()
-            .map(|html| html_nested! {<FlexItem> { html }</FlexItem>})
+            .map(|html| html_nested! { <FlexItem>{ html }</FlexItem> })
             .collect()
     }
 }
@@ -185,11 +185,7 @@ pub fn flex(props: &FlexProperties) -> Html {
     classes.extend_from(&props.space_items);
     classes.extend_from(&props.spacer);
 
-    html! (
-        <div class={classes}>
-            { for props.children.iter() }
-        </div>
-    )
+    html! (<div class={classes}>{ for props.children.iter() }</div>)
 }
 
 // flex item
@@ -216,9 +212,5 @@ pub fn flex_item(props: &FlexItemProperties) -> Html {
     classes.extend_from(&props.modifiers);
     classes.extend_from(&props.spacer);
 
-    html! (
-        <div class={classes}>
-            { props.children.clone() }
-        </div>
-    )
+    html! (<div class={classes}>{ props.children.clone() }</div>)
 }
