@@ -167,8 +167,8 @@ impl IntoPropValue<PageSectionFill> for bool {
 ///   )
 /// }
 /// ```
-#[function_component(PageSection)]
-pub fn page_section(props: &PageSectionProperties) -> Html {
+#[component]
+pub fn PageSection(props: &PageSectionProperties) -> Html {
     // start with the main type
 
     let mut class = props.r#type.as_classes();
@@ -199,13 +199,11 @@ pub fn page_section(props: &PageSectionProperties) -> Html {
     html! (
         <section {class} id={&props.id} hidden={props.hidden} style={props.style.clone()}>
             if props.limit_width {
-                <div class="pf-v6-c-page__main-body">
-                    { props.children.clone() }
-                </div>
+                <div class="pf-v6-c-page__main-body">{ props.children.clone() }</div>
             } else {
                 { props.children.clone() }
             }
-         </section>
+        </section>
     )
 }
 
@@ -232,9 +230,5 @@ pub fn page_section_group(props: &PageSectionGroupProperties) -> Html {
         class.push("pf-m-overflow-scroll");
     }
 
-    html!(
-        <div {class}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div {class}>{ props.children.clone() }</div>)
 }

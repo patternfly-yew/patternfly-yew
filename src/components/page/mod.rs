@@ -58,17 +58,22 @@ pub struct PageProperties {
 /// * **Brand**: A brand logo, shown in the navigation header section.
 /// * **Children**: The actual page content, probably wrapped into [`PageSection`] components.
 ///
-#[function_component(Page)]
-pub fn page(props: &PageProperties) -> Html {
+#[component]
+pub fn Page(props: &PageProperties) -> Html {
     let open = use_state_eq(|| props.open);
 
-    let onclick = {
-        let open = open.clone();
-        Callback::from(move |_| {
-            open.set(!(*open));
-        })
-    };
+    let onclick = use_callback(open.clone(), |_, open| {
+        open.set(!(**open));
+    });
+
     let onscroll = props.on_main_scroll.clone();
+
+    let mut class = classes!["pf-v6-c-page__main-container"];
+
+    if props.full_height {
+        class.push("pf-m-fill");
+    }
+
     html! (
         <div class="pf-v6-c-page" id={&props.id} role="main" tabindex="-1">
             <header class="pf-v6-c-masthead">
@@ -88,21 +93,18 @@ pub fn page(props: &PageProperties) -> Html {
                     }
                     { props.brand.clone() }
                 </div>
-
-                <div class="pf-v6-c-masthead__content"> // TODO: Should migrate props
+                <div class="pf-v6-c-masthead__content">
+                    // TODO: Should migrate props
                     { props.nav.clone() }
                     { props.tools.clone() }
                 </div>
-
             </header>
-
             { for props.sidebar.iter().map(|mut s|{
                 let props = Rc::make_mut(&mut s.props);
                 props.open = *open;
                 s
             }) }
-
-            <div class="pf-v6-c-page__main-container">
+            <div {class}>
                 <main class="pf-v6-c-page__main" tabindex="-1" {onscroll}>
                     { props.children.clone() }
                 </main>
@@ -134,23 +136,17 @@ pub struct MastheadBrandProperties {
 ///
 /// A single [`crate::prelude::Brand`] component. The children may be wrapped in an `a` element when the `onclick`
 /// callback is set.
-#[function_component(MastheadBrand)]
-pub fn masthead_brand(props: &MastheadBrandProperties) -> Html {
+#[component]
+pub fn MastheadBrand(props: &MastheadBrandProperties) -> Html {
     match &props.onclick {
         Some(onclick) => {
             let onclick = onclick.reform(|_| ());
             html!(
-                <a class="pf-v6-c-masthead__brand" href="#" {onclick}>
-                    { props.children.clone() }
-                </a>
+                <a class="pf-v6-c-masthead__brand" href="#" {onclick}>{ props.children.clone() }</a>
             )
         }
         None => {
-            html!(
-                <div class="pf-v6-c-masthead__brand">
-                    { props.children.clone() }
-                </div>
-            )
+            html!(<div class="pf-v6-c-masthead__brand">{ props.children.clone() }</div>)
         }
     }
 }
