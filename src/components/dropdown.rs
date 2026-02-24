@@ -63,10 +63,10 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
         let expanded = expanded.clone();
         let menu_ref = menu_ref.clone();
         use_click_away(inside_ref.clone(), move |event: Event| {
-            if let Some(menu) = menu_ref.cast::<web_sys::HtmlElement>() {
-                if !menu.contains(event.target().unwrap().dyn_ref::<web_sys::Node>()) {
-                    expanded.set(false)
-                }
+            if let Some(menu) = menu_ref.cast::<web_sys::HtmlElement>()
+                && !menu.contains(event.target().unwrap().dyn_ref::<web_sys::Node>())
+            {
+                expanded.set(false)
             }
         });
     }

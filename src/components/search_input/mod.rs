@@ -305,29 +305,29 @@ fn inner_text_input_group(props: &InnerTextInputGroupProps) -> Html {
     };
 
     let mut clicknav = html! {};
-    if let Some(onnextclick) = &props.props.onnextclick {
-        if let Some(onprevclick) = &props.props.onpreviousclick {
-            clicknav = html! {
-                <div class={classes!["pf-v6-c-text-input-group__group"]}>
-                    <Button
-                        variant={ButtonVariant::Plain}
-                        aria_label={props.props.previous_navigation_button_aria_label.clone()}
-                        disabled={props.props.disabled || props.props.previous_navigation_button_disabled}
-                        onclick={onprevclick}
-                    >
-                        { Icon::AngleUp }
-                    </Button>
-                    <Button
-                        variant={ButtonVariant::Plain}
-                        aria_label={props.props.next_navigation_button_aria_label.clone()}
-                        disabled={props.props.disabled || props.props.next_navigation_button_disabled}
-                        onclick={onnextclick.clone()}
-                    >
-                        { Icon::AngleDown }
-                    </Button>
-                </div>
-            };
-        }
+    if let Some(onnextclick) = &props.props.onnextclick
+        && let Some(onprevclick) = &props.props.onpreviousclick
+    {
+        clicknav = html! {
+            <div class={classes!["pf-v6-c-text-input-group__group"]}>
+                <Button
+                    variant={ButtonVariant::Plain}
+                    aria_label={props.props.previous_navigation_button_aria_label.clone()}
+                    disabled={props.props.disabled || props.props.previous_navigation_button_disabled}
+                    onclick={onprevclick}
+                >
+                    { Icon::AngleUp }
+                </Button>
+                <Button
+                    variant={ButtonVariant::Plain}
+                    aria_label={props.props.next_navigation_button_aria_label.clone()}
+                    disabled={props.props.disabled || props.props.next_navigation_button_disabled}
+                    onclick={onnextclick.clone()}
+                >
+                    { Icon::AngleDown }
+                </Button>
+            </div>
+        };
     }
     let onclearinput = use_callback(
         (props.props.onclear.clone(), props.input_ref.clone()),

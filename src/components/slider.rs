@@ -214,10 +214,10 @@ impl Component for Slider {
     fn changed(&mut self, ctx: &Context<Self>, old_props: &Self::Properties) -> bool {
         let props = ctx.props();
         if old_props != props {
-            if old_props.value != props.value {
-                if let Some(value) = props.value {
-                    ctx.link().send_message(SliderMsg::SetValue(value));
-                }
+            if old_props.value != props.value
+                && let Some(value) = props.value
+            {
+                ctx.link().send_message(SliderMsg::SetValue(value));
             };
             true
         } else {

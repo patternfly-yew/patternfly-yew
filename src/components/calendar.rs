@@ -76,10 +76,10 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     );
 
     let callback_years = use_callback(show_date.clone(), move |new_year: String, show_date| {
-        if let Ok(y) = i32::from_str(&new_year) {
-            if let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day()) {
-                show_date.set(d)
-            }
+        if let Ok(y) = i32::from_str(&new_year)
+            && let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day())
+        {
+            show_date.set(d)
         }
     });
 
