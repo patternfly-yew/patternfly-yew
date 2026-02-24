@@ -269,13 +269,12 @@ pub fn pagination(props: &PaginationProperties) -> Html {
                 { for limit_choices.into_iter().map(|limit|  {
                     let onlimit = onlimit.clone();
                     let onclick = Callback::from(move |_|{
-                        log::warn!(">> Limit changed to {}", limit);
                         onlimit.emit(limit);
                     });
 
                     html_nested!(
                         <MenuAction {onclick} selected={props.selected_choice == limit}>
-                            {limit} {" per page"} {props.selected_choice}
+                            {limit} {" per page"}
                         </MenuAction>
                     )
                 }) }
