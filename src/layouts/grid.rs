@@ -11,6 +11,8 @@ pub struct GridProperties {
     pub gutter: bool,
     #[prop_or_default]
     pub cols: WithBreakpoints<usize>,
+    #[prop_or_default]
+    pub classes: String,
 }
 
 /// Grid layout
@@ -27,7 +29,7 @@ pub struct GridProperties {
 /// through component types on that.
 #[function_component(Grid)]
 pub fn grid(props: &GridProperties) -> Html {
-    let mut classes = Classes::from("pf-v6-l-grid");
+    let mut classes = Classes::from(format!("pf-v6-l-grid {}", props.classes));
 
     if props.gutter {
         classes.push("pf-m-gutter");
