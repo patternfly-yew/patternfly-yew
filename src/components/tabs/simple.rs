@@ -153,17 +153,19 @@ where
                 data-ouia-component-type={props.ouia_type}
                 data-ouia-safe={props.ouia_safe}
             >
-                <button
-                    class="pf-v6-c-tabs__scroll-button"
-                    disabled=true
-                    aria-hidden="true"
-                    aria-label="Scroll left"
-                    data-ouia-component-type={props.scroll_button_ouia_type}
-                    data-ouia-safe={props.scroll_button_ouia_safe}
-                    data-ouia-component-id={(*button_ouia_id).clone()}
-                >
-                    { Icon::AngleLeft }
-                </button>
+                <div class="pf-v6-c-tabs__scroll-button">
+                    <button
+                        class="pf-v6-c-button pf-m-plain"
+                        disabled=true
+                        aria-hidden="true"
+                        aria-label="Scroll left"
+                        data-ouia-component-type={props.scroll_button_ouia_type}
+                        data-ouia-safe={props.scroll_button_ouia_safe}
+                        data-ouia-component-id={(*button_ouia_id).clone()}
+                    >
+                        { Icon::AngleLeft }
+                    </button>
+                </div>
                 <ul class="pf-v6-c-tabs__list">
                     { for props.children.iter().map(|c| {
                         let onselect = props.onselect.clone();
@@ -178,14 +180,16 @@ where
                         )
                     }) }
                 </ul>
-                <button
-                    class="pf-v6-c-tabs__scroll-button"
-                    disabled=true
-                    aria-hidden="true"
-                    aria-label="Scroll right"
-                >
-                    { Icon::AngleRight }
-                </button>
+                <div class="pf-v6-c-tabs__scroll-button">
+                    <button
+                        class="pf-v6-c-button pf-m-plain"
+                        disabled=true
+                        aria-hidden="true"
+                        aria-label="Scroll right"
+                    >
+                        { Icon::AngleRight }
+                    </button>
+                </div>
             </div>
             if !props.detached {
                 { for props.children.iter() }
