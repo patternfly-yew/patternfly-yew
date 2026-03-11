@@ -40,6 +40,7 @@ pub mod pagination;
 pub mod panel;
 pub mod popover;
 pub mod progress;
+pub mod progress_stepper;
 pub mod search_input;
 pub mod select;
 pub mod simple_list;
