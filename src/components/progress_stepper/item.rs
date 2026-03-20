@@ -4,7 +4,6 @@ use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct ProgressStepperStepProperties {
-    pub title: String,
     #[prop_or_default]
     pub description: Option<String>,
     #[prop_or_default]
@@ -15,6 +14,8 @@ pub struct ProgressStepperStepProperties {
     #[prop_or_default]
     /// (header, body, footer)
     pub popover: Option<(Html, Html, Html)>,
+    #[prop_or_default]
+    pub children: Children,
 }
 
 #[component]
@@ -55,12 +56,11 @@ pub fn ProgressStepperStep(props: &ProgressStepperStepProperties) -> Html {
         .unwrap_or(html!(<i class={icon_class} aria-hidden="true" />));
 
     let title = if let Some((header, body, footer)) = props.popover.clone() {
-        let target = html! { props.title.clone() };
         let body = html_nested! { <PopoverBody {header} {footer}>{ body }</PopoverBody> };
 
-        html!(<Popover {target} {body} />)
+        html!(<Popover target={props.children.clone()} {body} />)
     } else {
-        html!(props.title.clone())
+        html!(props.children.clone())
     };
 
     let mut title_class = classes!("pf-v6-c-progress-stepper__step-title");
