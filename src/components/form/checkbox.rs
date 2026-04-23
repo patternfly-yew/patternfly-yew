@@ -194,6 +194,7 @@ pub fn checkbox(props: &CheckboxProperties) -> Html {
             <input
                 class={classes!["pf-v6-c-check__input", props.input_class.clone()]}
                 type="checkbox"
+                name={&props.name}
                 {onchange}
                 aria-invalid={props.valid.to_string()}
                 aria-label={props.aria_label.clone()}
