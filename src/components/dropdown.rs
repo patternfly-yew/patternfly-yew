@@ -1,6 +1,8 @@
 use crate::prelude::*;
 use popper_rs::prelude::{State as PopperState, *};
+use popper_rs_sys::ModifierArguments;
 use wasm_bindgen::JsCast;
+use wasm_bindgen::prelude::*;
 use yew::{html::ChildrenRenderer, prelude::*};
 use yew_hooks::prelude::*;
 
@@ -63,10 +65,10 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
         let expanded = expanded.clone();
         let menu_ref = menu_ref.clone();
         use_click_away(inside_ref.clone(), move |event: Event| {
-            if let Some(menu) = menu_ref.cast::<web_sys::HtmlElement>()
-                && !menu.contains(event.target().unwrap().dyn_ref::<web_sys::Node>())
-            {
-                expanded.set(false)
+            if let Some(menu) = menu_ref.cast::<web_sys::HtmlElement>() {
+                if !menu.contains(event.target().unwrap().dyn_ref::<web_sys::Node>()) {
+                    expanded.set(false)
+                }
             }
         });
     }
@@ -85,39 +87,42 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
 
     let style = use_state_eq(|| state.styles.popper.clone());
 
-    let width_mods = {
+    let width_mods = use_memo((), |()| {
         let style = style.clone();
         let inside_ref = inside_ref.clone();
         let state = state.clone();
         let full_width = props.full_width;
 
-        ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
-            move |_: popper_rs::sys::ModifierArguments| {
-                if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-                    let mut new_style = state
-                        .styles
-                        .popper
-                        .extend_with("z-index", "9999")
-                        .extend_with("opacity", "1")
-                        .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
+        Closure::wrap(Box::new(move |args: ModifierArguments| {
+            let s = args.instance().state();
+            if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+                let mut new_style = state
+                    .styles
+                    .popper
+                    .extend_with("z-index", "9999")
+                    .extend_with("opacity", "1")
+                    .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
 
-                    if full_width {
-                        new_style =
-                            new_style.extend_with("width", format!("{}px", elem.offset_width()));
-                    }
-
-                    style.set(new_style)
+                if full_width {
+                    new_style =
+                        new_style.extend_with("width", format!("{}px", elem.offset_width()));
                 }
-            },
-        )))
-    };
 
-    let modifiers = Vec::from([Modifier::Custom {
-        name: "widthMods".into(),
-        phase: Some("beforeWrite".into()),
-        enabled: Some(true),
-        r#fn: Some(width_mods),
-    }]);
+                style.set(new_style)
+            }
+
+            state.set(s.into());
+        }) as Box<dyn Fn(ModifierArguments)>)
+    });
+
+    let modifiers = {
+        Vec::from([Modifier::Custom {
+            name: "widthMods".into(),
+            phase: Some("beforeWrite".into()),
+            enabled: Some(true),
+            r#fn: Some(ModifierFn(width_mods)),
+        }])
+    };
 
     html!(
         <>

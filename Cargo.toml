@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.8.0"
+version = "0.8.1"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2024"
 license = "Apache-2.0"
@@ -21,6 +21,7 @@ js-sys = "0.3.64"
 log = "0.4"
 num-traits = "0.2.16"
 popper-rs = { version = "0.5.0", features = ["yew"] }
+popper-rs-sys = "0.5.0"
 serde = "1"
 serde_json = "1"
 strum = "0.28"
