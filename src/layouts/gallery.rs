@@ -1,8 +1,6 @@
 //! Gallery
 
-use crate::prelude::{
-    Breakpoint, WithBreakpoints,wrap::wrapper_div_with_attributes
-};
+use crate::prelude::{Breakpoint, WithBreakpoints, wrap::wrapper_div_with_attributes};
 use yew::prelude::*;
 use yew::virtual_dom::AttributeOrProperty;
 
@@ -16,7 +14,7 @@ pub struct GalleryProperties {
     #[prop_or_default]
     pub min_widths: WithBreakpoints<AttrValue>,
     #[prop_or_default]
-    pub max_widths: WithBreakpoints<AttrValue>
+    pub max_widths: WithBreakpoints<AttrValue>,
 }
 
 const MIN: &str = "--pf-v6-l-gallery--GridTemplateColumns--min";
@@ -31,9 +29,9 @@ const MAX: &str = "--pf-v6-l-gallery--GridTemplateColumns--max";
 /// ## Properties
 ///
 /// Defined by [`GalleryProperties`].
-/// 
+///
 /// ## Example
-/// 
+///
 /// ```rust
 /// use yew::prelude::*;
 /// use patternfly_yew::prelude::*;
@@ -68,22 +66,22 @@ pub fn gallery(props: &GalleryProperties) -> Html {
     let mut style = String::default();
     for x in props.min_widths.iter() {
         match x.on {
-            Breakpoint::None => style += &format!("{}: {};",MIN,x.modifier),
-            Breakpoint::Small => style += &format!("{}-on-sm: {};",MIN,x.modifier),
-            Breakpoint::Medium => style += &format!("{}-on-md: {};",MIN,x.modifier),
-            Breakpoint::Large => style += &format!("{}-on-lg: {};",MIN,x.modifier),
-            Breakpoint::XLarge => style += &format!("{}-on-xl: {};",MIN,x.modifier),
-            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};",MIN,x.modifier),
+            Breakpoint::None => style += &format!("{}: {};", MIN, x.modifier),
+            Breakpoint::Small => style += &format!("{}-on-sm: {};", MIN, x.modifier),
+            Breakpoint::Medium => style += &format!("{}-on-md: {};", MIN, x.modifier),
+            Breakpoint::Large => style += &format!("{}-on-lg: {};", MIN, x.modifier),
+            Breakpoint::XLarge => style += &format!("{}-on-xl: {};", MIN, x.modifier),
+            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};", MIN, x.modifier),
         };
     }
     for x in props.max_widths.iter() {
         match x.on {
-            Breakpoint::None => style += &format!("{}: {};",MAX,x.modifier),
-            Breakpoint::Small => style += &format!("{}-on-sm: {};",MAX,x.modifier),
-            Breakpoint::Medium => style += &format!("{}-on-md: {};",MAX,x.modifier),
-            Breakpoint::Large => style += &format!("{}-on-lg: {};",MAX,x.modifier),
-            Breakpoint::XLarge => style += &format!("{}-on-xl: {};",MAX,x.modifier),
-            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};",MAX,x.modifier),
+            Breakpoint::None => style += &format!("{}: {};", MAX, x.modifier),
+            Breakpoint::Small => style += &format!("{}-on-sm: {};", MAX, x.modifier),
+            Breakpoint::Medium => style += &format!("{}-on-md: {};", MAX, x.modifier),
+            Breakpoint::Large => style += &format!("{}-on-lg: {};", MAX, x.modifier),
+            Breakpoint::XLarge => style += &format!("{}-on-xl: {};", MAX, x.modifier),
+            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};", MAX, x.modifier),
         };
     }
     style += &props.style;
