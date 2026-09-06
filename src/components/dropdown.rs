@@ -85,14 +85,14 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
 
     let style = use_state_eq(|| state.styles.popper.clone());
 
-    let width_mods = {
+    let closure = {
         let style = style.clone();
         let inside_ref = inside_ref.clone();
         let state = state.clone();
         let full_width = props.full_width;
 
-        ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
-            move |_: popper_rs::sys::ModifierArguments| {
+        use_memo((), move |_| {
+            wasm_bindgen::prelude::Closure::new(move |_: popper_rs::sys::ModifierArguments| {
                 if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
                     let mut new_style = state
                         .styles
@@ -108,9 +108,11 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
 
                     style.set(new_style)
                 }
-            },
-        )))
+            })
+        })
     };
+
+    let width_mods = ModifierFn(closure);
 
     let modifiers = Vec::from([Modifier::Custom {
         name: "widthMods".into(),
