@@ -46,11 +46,14 @@ const MAX: &str = "--pf-v6-l-gallery--GridTemplateColumns--max";
 ///   let max_widths = [
 ///     AttrValue::from("200px").md(),
 ///     AttrValue::from("1fr").xl()
-///   ]
+///   ];
 ///
 ///   html!(
 ///     <Gallery gutter=true {min_widths} {max_widths} >
-///     
+///       <div>{"Gallery Item"}</div>
+///       <div>{"Gallery Item"}</div>
+///       <div>{"Gallery Item"}</div>
+///       <div>{"Gallery Item"}</div>
 ///     </Gallery>
 ///   )
 /// }
