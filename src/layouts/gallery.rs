@@ -31,6 +31,32 @@ const MAX: &str = "--pf-v6-l-gallery--GridTemplateColumns--max";
 /// ## Properties
 ///
 /// Defined by [`GalleryProperties`].
+/// 
+/// ## Example
+/// 
+/// ```rust
+/// use yew::prelude::*;
+/// use patternfly_yew::prelude::*;
+///
+/// #[function_component(Example)]
+/// fn example() -> Html {
+///   let min_widths = [
+///     AttrValue::from("100%").all(),
+///     AttrValue::from("100px").md(),
+///     AttrValue::from("300px").xl()
+///   ];
+///   let max_widths = [
+///     AttrValue::from("200px").md(),
+///     AttrValue::from("1fr").xl()
+///   ]
+///
+///   html!(
+///     <Gallery gutter=true {min_widths} {max_widths} >
+///     
+///     </Gallery>
+///   )
+/// }
+/// ```
 #[function_component(Gallery)]
 pub fn gallery(props: &GalleryProperties) -> Html {
     let mut classes = classes!("pf-v6-l-gallery");
