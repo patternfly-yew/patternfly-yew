@@ -1,5 +1,7 @@
 //! Gallery
 
+use std::fmt::Write;
+
 use crate::prelude::{Breakpoint, WithBreakpoints, wrap::wrapper_div_with_attributes};
 use yew::prelude::*;
 use yew::virtual_dom::AttributeOrProperty;
@@ -19,6 +21,19 @@ pub struct GalleryProperties {
 
 const MIN: &str = "--pf-v6-l-gallery--GridTemplateColumns--min";
 const MAX: &str = "--pf-v6-l-gallery--GridTemplateColumns--max";
+
+impl Breakpoint {
+    fn suffix(&self) -> &'static str {
+        match self {
+            Breakpoint::None => "",
+            Breakpoint::Small => "-on-sm",
+            Breakpoint::Medium => "-on-md",
+            Breakpoint::Large => "-on-lg",
+            Breakpoint::XLarge => "-on-xl",
+            Breakpoint::XXLarge => "-on-2xl",
+        }
+    }
+}
 
 /// Gallery layout
 ///
@@ -66,28 +81,13 @@ pub fn gallery(props: &GalleryProperties) -> Html {
         classes.push(classes!("pf-m-gutter"));
     }
 
-    let mut style = String::default();
-    for x in props.min_widths.iter() {
-        match x.on {
-            Breakpoint::None => style += &format!("{}: {};", MIN, x.modifier),
-            Breakpoint::Small => style += &format!("{}-on-sm: {};", MIN, x.modifier),
-            Breakpoint::Medium => style += &format!("{}-on-md: {};", MIN, x.modifier),
-            Breakpoint::Large => style += &format!("{}-on-lg: {};", MIN, x.modifier),
-            Breakpoint::XLarge => style += &format!("{}-on-xl: {};", MIN, x.modifier),
-            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};", MIN, x.modifier),
-        };
+    let mut style = String::new();
+    for (property, widths) in [(MIN, &props.min_widths), (MAX, &props.max_widths)] {
+        for x in widths.iter() {
+            let _ = write!(style, "{property}{}: {};", x.on.suffix(), x.modifier);
+        }
     }
-    for x in props.max_widths.iter() {
-        match x.on {
-            Breakpoint::None => style += &format!("{}: {};", MAX, x.modifier),
-            Breakpoint::Small => style += &format!("{}-on-sm: {};", MAX, x.modifier),
-            Breakpoint::Medium => style += &format!("{}-on-md: {};", MAX, x.modifier),
-            Breakpoint::Large => style += &format!("{}-on-lg: {};", MAX, x.modifier),
-            Breakpoint::XLarge => style += &format!("{}-on-xl: {};", MAX, x.modifier),
-            Breakpoint::XXLarge => style += &format!("{}-on-2xl: {};", MAX, x.modifier),
-        };
-    }
-    style += &props.style;
+    style.push_str(&props.style);
 
     html! (
         <div class={classes} style={style}>
