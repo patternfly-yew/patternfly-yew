@@ -1,4 +1,6 @@
-use crate::prelude::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::prelude::{
+    AsClasses, ExtendClasses, ToolbarAlignment, ToolbarElementModifier, WithBreakpoints,
+};
 use yew::prelude::*;
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -34,6 +36,14 @@ pub struct ToolbarGroupProperties {
     #[prop_or_default]
     pub variant: GroupVariant,
 
+    /// Cross-axis alignment of this element within its parent
+    #[prop_or_default]
+    pub align_self: Option<ToolbarAlignment>,
+
+    /// Cross-axis alignment of the children of this element
+    #[prop_or_default]
+    pub align_items: Option<ToolbarAlignment>,
+
     /// Additional classes
     #[prop_or_default]
     pub class: Classes,
@@ -46,6 +56,12 @@ pub fn toolbar_group(props: &ToolbarGroupProperties) -> Html {
 
     class.extend_from(&props.modifiers);
     class.extend_from(&props.variant);
+    if let Some(align_self) = props.align_self {
+        class.push(align_self.align_self_class());
+    }
+    if let Some(align_items) = props.align_items {
+        class.push(align_items.align_items_class());
+    }
     class.extend(props.class.clone());
 
     html! { <div id={&props.id} {class}>{ props.children.clone() }</div> }

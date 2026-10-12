@@ -36,6 +36,43 @@ impl AsClasses for ToolbarElementModifier {
     }
 }
 
+/// Cross-axis alignment of toolbar elements.
+///
+/// Used by the `align_items` and `align_self` properties of [`ToolbarContent`], [`ToolbarGroup`],
+/// and [`ToolbarItem`].
+#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+pub enum ToolbarAlignment {
+    Start,
+    Center,
+    End,
+    Baseline,
+    Stretch,
+}
+
+impl ToolbarAlignment {
+    /// The `pf-m-align-items-*` modifier class
+    pub fn align_items_class(&self) -> &'static str {
+        match self {
+            Self::Start => "pf-m-align-items-start",
+            Self::Center => "pf-m-align-items-center",
+            Self::End => "pf-m-align-items-end",
+            Self::Baseline => "pf-m-align-items-baseline",
+            Self::Stretch => "pf-m-align-items-stretch",
+        }
+    }
+
+    /// The `pf-m-align-self-*` modifier class
+    pub fn align_self_class(&self) -> &'static str {
+        match self {
+            Self::Start => "pf-m-align-self-start",
+            Self::Center => "pf-m-align-self-center",
+            Self::End => "pf-m-align-self-end",
+            Self::Baseline => "pf-m-align-self-baseline",
+            Self::Stretch => "pf-m-align-self-stretch",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ToolbarInset {
     None,
@@ -134,13 +171,22 @@ pub struct ToolbarContentProperties {
 
     #[prop_or_default]
     pub id: AttrValue,
+
+    /// Cross-axis alignment of the items in the content section
+    #[prop_or_default]
+    pub align_items: Option<ToolbarAlignment>,
 }
 
 #[function_component(ToolbarContent)]
 pub fn toolbar_content(props: &ToolbarContentProperties) -> Html {
+    let mut section_class = classes!("pf-v6-c-toolbar__content-section");
+    if let Some(align_items) = props.align_items {
+        section_class.push(align_items.align_items_class());
+    }
+
     html! (
         <div class="pf-v6-c-toolbar__content" id={&props.id}>
-            <div class="pf-v6-c-toolbar__content-section">{ for props.children.iter() }</div>
+            <div class={section_class}>{ for props.children.iter() }</div>
         </div>
     )
 }

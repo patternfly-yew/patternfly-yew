@@ -1,4 +1,6 @@
-use crate::prelude::{AsClasses, ExtendClasses, ToolbarElementModifier, WithBreakpoints};
+use crate::prelude::{
+    AsClasses, ExtendClasses, ToolbarAlignment, ToolbarElementModifier, WithBreakpoints,
+};
 use yew::prelude::*;
 
 /// Properties for [`ToolbarItem`]
@@ -40,6 +42,14 @@ pub struct ToolbarItemProperties {
     #[prop_or_default]
     pub r#type: ToolbarItemType,
 
+    /// Cross-axis alignment of this element within its parent
+    #[prop_or_default]
+    pub align_self: Option<ToolbarAlignment>,
+
+    /// Cross-axis alignment of the children of this element
+    #[prop_or_default]
+    pub align_items: Option<ToolbarAlignment>,
+
     /// Control the width of the item
     #[prop_or_default]
     pub width: WithBreakpoints<String>,
@@ -59,6 +69,12 @@ pub fn toolbar_item(props: &ToolbarItemProperties) -> Html {
 
     class.extend_from(&props.r#type);
     class.extend_from(&props.modifiers);
+    if let Some(align_self) = props.align_self {
+        class.push(align_self.align_self_class());
+    }
+    if let Some(align_items) = props.align_items {
+        class.push(align_items.align_items_class());
+    }
     class.extend(props.class.clone());
 
     let style = props
