@@ -1,5 +1,5 @@
 //! Expandable section
-use crate::prelude::{AsClasses, ExtendClasses, Icon};
+use crate::prelude::{AsClasses, Button, ButtonVariant, ExtendClasses, Icon};
 use yew::prelude::*;
 
 /// Properties for [`ExpandableSection`]
@@ -228,26 +228,30 @@ pub fn expandable_section_toggle(props: &ExpandableSectionToggleProperties) -> H
     let mut toggle_icon_class = classes!("pf-v6-c-expandable-section__toggle-icon");
     toggle_icon_class.extend_from(&props.direction);
 
+    // the truncate variant uses an inline link, without an icon
+    let (variant, icon) = match props.no_icon {
+        true => (ButtonVariant::InlineLink, None),
+        false => (
+            ButtonVariant::Link,
+            Some(html!(<span class={toggle_icon_class}>{ Icon::AngleDown }</span>)),
+        ),
+    };
+
     let control = html!(
-        <button
-            type="button"
-            class="pf-v6-c-expandable-section__toggle"
-            aria-expanded={props.expanded.to_string()}
-            {onclick}
-        >
-            if !props.no_icon {
-                <span class={toggle_icon_class}>{ Icon::AngleRight }</span>
-            }
-            <span
-                class="pf-v6-c-expandable-section__toggle-text"
+        <div class="pf-v6-c-expandable-section__toggle">
+            <Button
+                {variant}
+                {icon}
+                aria_expanded={AttrValue::from(props.expanded.to_string())}
+                {onclick}
             >
                 if !props.children.is_empty() {
                     { props.children.clone() }
                 } else {
                     { if props.expanded { &props.toggle_text_expanded } else { &props.toggle_text_hidden } }
                 }
-            </span>
-        </button>
+            </Button>
+        </div>
     );
 
     match props.detached {

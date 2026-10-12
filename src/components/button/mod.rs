@@ -1,7 +1,7 @@
 //! Button
 
 use crate::ouia;
-use crate::prelude::{AsClasses, Icon, Spinner, SpinnerSize};
+use crate::prelude::{AsClasses, Spinner, SpinnerSize};
 use crate::utils::{Ouia, OuiaComponentType, OuiaSafe};
 use web_sys::HtmlElement;
 use yew::html::IntoPropValue;
@@ -107,7 +107,7 @@ pub struct ButtonProperties {
     #[prop_or_default]
     pub variant: ButtonVariant,
     #[prop_or_default]
-    pub icon: Option<Icon>,
+    pub icon: Option<Html>,
     #[prop_or_default]
     pub align: Align,
 
@@ -202,29 +202,39 @@ pub fn button(props: &ButtonProperties) -> Html {
         classes.push("pf-m-progress pf-m-in-progress")
     }
 
-    let label = use_memo(
-        (props.label.clone(), props.icon, props.align),
-        |(label, icon, align)| {
+    let has_text = !props.label.is_empty() || props.children != Html::default();
+
+    let icon = match &props.icon {
+        Some(icon) => {
             let mut classes = Classes::from("pf-v6-c-button__icon");
 
-            match align {
-                Align::Start => classes.push("pf-m-start"),
-                Align::End => classes.push("pf-m-end"),
+            // only align the icon if there is text to align it to
+            if has_text {
+                match props.align {
+                    Align::Start => classes.push("pf-m-start"),
+                    Align::End => classes.push("pf-m-end"),
+                }
             }
 
-            let icon = match icon {
-                Some(i) => html! (<span class={classes}>{ *i }</span>),
-                None => html!(),
-            };
+            html!(<span class={classes}>{ icon.clone() }</span>)
+        }
+        None => html!(),
+    };
 
-            let label = html!(label);
+    let text = match has_text {
+        true => html!(
+            <span class="pf-v6-c-button__text">
+                { &props.label }
+                { props.children.clone() }
+            </span>
+        ),
+        false => html!(),
+    };
 
-            match align {
-                Align::Start => vec![icon, label],
-                Align::End => vec![label, icon],
-            }
-        },
-    );
+    let content = match props.align {
+        Align::Start => html!(<>{ icon }{ text }</>),
+        Align::End => html!(<>{ text }{ icon }</>),
+    };
 
     let onclick = {
         let onclick = props.onclick.clone();
@@ -266,8 +276,7 @@ pub fn button(props: &ButtonProperties) -> Html {
                     <Spinner size={SpinnerSize::Md} />
                 </span>
             }
-            { (*label).clone() }
-            { props.children.clone() }
+            { content }
         </button>
     )
 }
