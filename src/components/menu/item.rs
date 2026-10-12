@@ -10,6 +10,7 @@ struct MenuItemProperties {
     pub disabled: bool,
     pub selected: bool,
     pub r#type: MenuItemType,
+    pub close_on_select: bool,
     pub description: Option<String>,
     pub style: Option<AttrValue>,
     pub class: Classes,
@@ -43,6 +44,7 @@ fn MenuItem(props: &MenuItemProperties) -> Html {
     let element = |content: Html| match &props.r#type {
         MenuItemType::Button(callback) => {
             let callback = callback.clone();
+            let close_on_select = props.close_on_select;
 
             html!(
                 <button
@@ -52,7 +54,9 @@ fn MenuItem(props: &MenuItemProperties) -> Html {
                     tabindex="-1"
                     disabled={props.disabled}
                     onclick={callback.reform(move |_| {
-                        onclose.emit(());
+                        if close_on_select {
+                            onclose.emit(());
+                        }
                     })}
                 >
                     { content }
@@ -65,12 +69,14 @@ fn MenuItem(props: &MenuItemProperties) -> Html {
                 false => None,
             };
 
+            let onclick = props.close_on_select.then(|| onclose.reform(|_| ()));
+
             html!(
                 <a
                     class={item_class}
                     {href}
                     {target}
-                    onclick={onclose.reform(|_|())}
+                    {onclick}
                     aria-disabled={props.disabled.to_string()}
                     {tabindex}
                     role="menuitem"
@@ -133,6 +139,10 @@ pub struct MenuActionProperties {
     #[prop_or_default]
     pub selected: bool,
 
+    /// Close the surrounding menu (e.g. a dropdown) when the item is selected.
+    #[prop_or(true)]
+    pub close_on_select: bool,
+
     #[prop_or_default]
     pub style: Option<AttrValue>,
 
@@ -152,6 +162,7 @@ pub fn MenuAction(props: &MenuActionProperties) -> Html {
         onclick,
         description,
         selected,
+        close_on_select,
         style,
         class,
     } = props.clone();
@@ -162,6 +173,7 @@ pub fn MenuAction(props: &MenuActionProperties) -> Html {
         danger,
         disabled,
         r#type: MenuItemType::Button(onclick),
+        close_on_select,
         description,
         selected,
         style,
@@ -196,6 +208,10 @@ pub struct MenuLinkProperties {
     #[prop_or_default]
     pub selected: bool,
 
+    /// Close the surrounding menu (e.g. a dropdown) when the item is selected.
+    #[prop_or(true)]
+    pub close_on_select: bool,
+
     #[prop_or_default]
     pub style: Option<AttrValue>,
 
@@ -216,6 +232,7 @@ pub fn MenuLink(props: &MenuLinkProperties) -> Html {
         target,
         description,
         selected,
+        close_on_select,
         style,
         class,
     } = props.clone();
@@ -226,6 +243,7 @@ pub fn MenuLink(props: &MenuLinkProperties) -> Html {
         danger,
         disabled,
         r#type: MenuItemType::Link { href, target },
+        close_on_select,
         description,
         selected,
         style,

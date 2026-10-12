@@ -5,6 +5,7 @@ use yew::prelude::*;
 #[derive(Clone, PartialEq)]
 pub enum MenuChild {
     Action(Rc<<MenuAction as BaseComponent>::Properties>),
+    Checkbox(Rc<<MenuCheckbox as BaseComponent>::Properties>),
     Link(Rc<<MenuLink as BaseComponent>::Properties>),
     Divider(Rc<<ListDivider as BaseComponent>::Properties>),
     Group(Rc<<MenuGroup as BaseComponent>::Properties>),
@@ -27,6 +28,12 @@ impl From<MenuActionProperties> for MenuChild {
 impl From<MenuLinkProperties> for MenuChild {
     fn from(props: MenuLinkProperties) -> Self {
         MenuChild::Link(Rc::new(props))
+    }
+}
+
+impl From<MenuCheckboxProperties> for MenuChild {
+    fn from(props: MenuCheckboxProperties) -> Self {
+        MenuChild::Checkbox(Rc::new(props))
     }
 }
 

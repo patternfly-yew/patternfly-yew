@@ -26,6 +26,7 @@ impl From<MenuChildVariant> for Html {
     fn from(value: MenuChildVariant) -> Self {
         match value.props {
             MenuChild::Action(props) => VComp::new::<MenuAction>(props, None).into(),
+            MenuChild::Checkbox(props) => VComp::new::<MenuCheckbox>(props, None).into(),
             MenuChild::Link(props) => VComp::new::<MenuLink>(props, None).into(),
             MenuChild::Group(props) => VComp::new::<MenuGroup>(props, None).into(),
             MenuChild::Loading(props) => VComp::new::<MenuLoading>(props, None).into(),

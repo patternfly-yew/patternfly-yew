@@ -1,4 +1,5 @@
 //! Menu components
+mod checkbox;
 mod child;
 mod context;
 mod group;
@@ -7,6 +8,7 @@ mod loading;
 mod toggle;
 mod variant;
 
+pub use checkbox::*;
 pub use child::*;
 pub use context::*;
 pub use group::*;
