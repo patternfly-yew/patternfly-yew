@@ -7,6 +7,7 @@ pub mod avatar;
 pub mod backdrop;
 pub mod background;
 pub mod badge;
+pub mod banner;
 pub mod brand;
 pub mod breadcrumb;
 pub mod button;
