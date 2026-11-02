@@ -220,7 +220,10 @@ impl Component for NavExpandable {
             }
             MsgExpandable::ChildState(id, state) => match state {
                 true => {
-                    self.active.insert(id);
+                    // a newly active child drops a manual toggle, so the section follows it again
+                    if self.active.insert(id) {
+                        self.expanded = None;
+                    }
                 }
                 false => {
                     self.active.remove(&id);
