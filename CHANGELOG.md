@@ -21,6 +21,3 @@
   supports all v6 colors/statuses, sticky and pill styling. Supply
   `screen_reader_text` for status banners and use children for icons and layouts.
 - Tooltip supports optional rich `content`, keyboard focus, and positioning.
-
-Run `trunk serve examples/alerts.html` for the Alert and Banner showcase,
-including a router action, live updates, and left/center/right banner content.
