@@ -105,7 +105,7 @@ pub fn about_modal(props: &AboutModalProperties) -> Html {
     } else {
         Some(format!(
             "--pf-v6-c-about-modal-box--BackgroundImage: url({});",
-            &props.background_image_src
+            props.background_image_src
         ))
     };
 

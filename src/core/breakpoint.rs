@@ -404,7 +404,6 @@ where
 #[cfg(test)]
 mod test {
     use crate::prelude::{AsClasses, WithBreakpoints};
-    use yew::prelude::*;
 
     use super::*;
 
