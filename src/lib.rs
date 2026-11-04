@@ -31,3 +31,33 @@ pub mod utils;
 pub mod validation;
 
 pub mod prelude;
+
+#[cfg(test)]
+mod test {
+    use yew::prelude::*;
+
+    #[derive(PartialEq, Properties)]
+    struct RenderProperties {
+        content: Html,
+    }
+
+    #[function_component(Render)]
+    fn render(props: &RenderProperties) -> Html {
+        props.content.clone()
+    }
+
+    pub fn render_html(content: impl FnOnce() -> Html + Send + 'static) -> String {
+        let (tx, rx) = std::sync::mpsc::channel();
+        let runtime = yew::platform::Runtime::default();
+        runtime.spawn_pinned(move || async move {
+            let html = yew::LocalServerRenderer::<Render>::with_props(RenderProperties {
+                content: content(),
+            })
+            .hydratable(false)
+            .render()
+            .await;
+            tx.send(html).unwrap();
+        });
+        rx.recv_timeout(std::time::Duration::from_secs(10)).unwrap()
+    }
+}

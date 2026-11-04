@@ -74,3 +74,10 @@ localization = ["dep:sys-locale", "chrono/unstable-locales"]
 #yew-nested-router = { git = "https://github.com/ctron/yew-nested-router", rev = "9bfba658e85d035fc45989290d3cc1b67c3f12a5" }
 #popper-rs = { git = "https://github.com/ctron/popper-rs", rev = "460da6799da78bf5034ab090abd28e47ea76d001" }
 #yew-hooks = { git = "https://github.com/ctron/yew-hooks", rev = "0ba4f5c5f331650b1608ad830dfac0ef63700e8d" }
+
+[dev-dependencies]
+yew = { version = "0.23", features = ["ssr", "csr"] }
+
+[[example]]
+name = "alerts"
+required-features = ["yew-nested-router"]

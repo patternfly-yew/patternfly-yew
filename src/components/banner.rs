@@ -67,7 +67,7 @@ pub struct BannerProperties {
     pub sticky: bool,
     #[prop_or_default]
     pub pill: bool,
-    /// Additional status text for screen readers. Omit for decorative banners.
+    /// Required when `status` is supplied. Omit for decorative banners.
     #[prop_or_default]
     pub screen_reader_text: AttrValue,
 }
@@ -114,7 +114,7 @@ fn render_banner(props: &BannerProperties) -> Html {
     html! {
         <div {class}>
             if !props.screen_reader_text.is_empty() {
-                <span class="pf-v6-u-screen-reader">{props.screen_reader_text.clone()}</span>
+                <span class="pf-v6-screen-reader">{props.screen_reader_text.clone()}</span>
             }
             {props.children.clone()}
         </div>
@@ -141,7 +141,7 @@ mod tests {
             html! {
                 <div class={classes!("pf-v6-c-banner", "pf-m-warning", "pf-m-sticky", "pf-m-pill", "custom")}>
                     if true {
-                    <span class="pf-v6-u-screen-reader">{"Warning: "}</span>
+                    <span class="pf-v6-screen-reader">{"Warning: "}</span>
                 }
                     {"Maintenance"}
                 </div>
@@ -171,5 +171,49 @@ mod tests {
                 <div class={classes!("pf-v6-c-banner")}>if false { <span /> }{"Maintenance"}</div>
             }
         );
+    }
+
+    #[test]
+    fn every_color_and_status_renders_v6_classes() {
+        use crate::test::render_html;
+        for color in [
+            BannerColor::Red,
+            BannerColor::OrangeRed,
+            BannerColor::Orange,
+            BannerColor::Yellow,
+            BannerColor::Green,
+            BannerColor::Teal,
+            BannerColor::Blue,
+            BannerColor::Purple,
+        ] {
+            let output = render_html(move || html!(<Banner {color}>{"Environment"}</Banner>));
+            assert!(output.contains(color.class()));
+            assert!(output.contains("pf-v6-c-banner"));
+        }
+        for status in [
+            BannerStatus::Success,
+            BannerStatus::Warning,
+            BannerStatus::Danger,
+            BannerStatus::Info,
+            BannerStatus::Custom,
+        ] {
+            let output = render_html(move || {
+                html! {
+                    <Banner {status} color={BannerColor::Red} screen_reader_text="Localized status" sticky=true pill=true>
+                        {"Message"}
+                    </Banner>
+                }
+            });
+            for expected in [
+                status.class(),
+                "pf-v6-screen-reader",
+                "Localized status",
+                "pf-m-sticky",
+                "pf-m-pill",
+            ] {
+                assert!(output.contains(expected), "Missing {expected}: {output}");
+            }
+            assert!(!output.contains("pf-m-red"));
+        }
     }
 }
