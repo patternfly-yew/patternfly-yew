@@ -1,5 +1,6 @@
 use crate::prelude::{
-    CalendarView, InputGroup, InputGroupItem, Popover, PopoverBody, PopoverContext, TextInput,
+    CalendarView, HelperText, HelperTextItem, HelperTextItemVariant, InputGroup, InputGroupItem,
+    InputState, Popover, PopoverBody, PopoverContext, TextInput,
 };
 use chrono::{Local, NaiveDate, Weekday};
 use yew::prelude::*;
@@ -32,6 +33,10 @@ pub struct DatePickerProperties {
 ///
 /// See: <https://www.patternfly.org/components/date-and-time/date-picker>
 ///
+/// Invalid non-empty input is marked as an error. Empty input is valid.
+/// Only valid user selections emit `onchange`; clearing does not emit a date.
+/// Changes to `value` reset the displayed input.
+///
 /// ## Properties
 ///
 /// Defined by [`DatePickerProperties`].
@@ -41,11 +46,25 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
     let string_value =
         use_state_eq(|| props.value.map(|date| date.to_string()).unwrap_or_default());
 
+    let error_id = use_memo((), |_| {
+        format!("date-picker-error-{}", uuid::Uuid::new_v4())
+    });
+    let parsed = parse_date(&string_value);
+    let invalid = parsed.is_err();
+
+    {
+        let value = value.clone();
+        let string_value = string_value.clone();
+        use_effect_with(props.value, move |date| {
+            value.set(*date);
+            string_value.set(date.map(|date| date.to_string()).unwrap_or_default());
+        });
+    }
+
     let callback_change_value = {
-        let onchange = props.onchange.clone();
         use_callback(
-            (value.clone(), string_value.clone()),
-            move |new_date: NaiveDate, (value, string_value)| {
+            (value.clone(), string_value.clone(), props.onchange.clone()),
+            |new_date: NaiveDate, (value, string_value, onchange)| {
                 value.set(Some(new_date));
                 string_value.set(new_date.to_string());
                 onchange.emit(new_date);
@@ -78,31 +97,24 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         </PopoverBody>
     );
 
-    // short circuit the text input to the text value
-    let input_change = use_callback(string_value.clone(), |value, string_value| {
-        string_value.set(value);
-    });
-    // when the text value changes, try updating the date value
-    {
-        let onchange = props.onchange.clone();
-        use_effect_with(
-            ((*string_value).clone(), value.clone()),
-            move |(string_value, value)| {
-                // FIXME: should extract an "error" state from this
-                let new = NaiveDate::parse_from_str(string_value, "%Y-%m-%d").ok();
-
-                value.set(new);
-                if let Some(new) = new {
-                    onchange.emit(new);
-                }
-            },
-        );
-    }
+    let input_change = use_callback(
+        (value.clone(), string_value.clone(), props.onchange.clone()),
+        |text: String, (value, string_value, onchange)| {
+            let date = parse_date(&text).ok().flatten();
+            string_value.set(text);
+            value.set(date);
+            if let Some(date) = date {
+                onchange.emit(date);
+            }
+        },
+    );
 
     // The text input
     let input = html! (
         <TextInput
             onchange={input_change}
+            state={if invalid { InputState::Error } else { InputState::Default }}
+            aria_describedby={invalid.then(|| (*error_id).clone())}
             disabled={props.disabled}
             value={(*string_value).clone()}
             placeholder={props.placeholder.clone()}
@@ -119,7 +131,22 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
                     </InputGroupItem>
                 </InputGroup>
             </div>
+            <HelperText id={(*error_id).clone()} live_region=true>
+                { for invalid.then(|| html_nested! {
+                    <HelperTextItem variant={HelperTextItemVariant::Error}>
+                        {"Enter a valid date in YYYY-MM-DD format."}
+                    </HelperTextItem>
+                }) }
+            </HelperText>
         </div>
+    }
+}
+
+fn parse_date(text: &str) -> Result<Option<NaiveDate>, chrono::ParseError> {
+    if text.is_empty() {
+        Ok(None)
+    } else {
+        NaiveDate::parse_from_str(text, "%Y-%m-%d").map(Some)
     }
 }
 
@@ -153,4 +180,32 @@ fn body(props: &BodyProperties) -> Html {
             {onchange}
         />
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_valid_dates_and_empty_input() {
+        assert_eq!(
+            parse_date("2024-02-29"),
+            Ok(NaiveDate::from_ymd_opt(2024, 2, 29))
+        );
+        assert_eq!(parse_date(""), Ok(None));
+    }
+
+    #[test]
+    fn rejects_invalid_dates_and_incomplete_input() {
+        for text in [
+            "2023-02-29",
+            "2024-04-31",
+            "2024-13-01",
+            "2024-02-",
+            "invalid",
+            " ",
+        ] {
+            assert!(parse_date(text).is_err(), "{text}");
+        }
+    }
 }
