@@ -57,6 +57,7 @@ pub use crate::components::switch::*;
 pub use crate::components::table::*;
 pub use crate::components::tabs::*;
 pub use crate::components::text_input_group::*;
+pub use crate::components::timestamp::*;
 pub use crate::components::title::*;
 pub use crate::components::toast::*;
 pub use crate::components::toggle_group::*;
