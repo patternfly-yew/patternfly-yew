@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added the `Hero` component, with light/dark background images and gradients,
+  configurable body width, and the (beta) glass variant.
+- Avatar supports colorful avatars with `color` and `initials`.
 - Alert titles now render as `h4` headings by default, replacing `p`. Use
   `title_level` to select the heading level appropriate for your page.
 - Alert titles accept rich `Html`; existing String values in Yew properties
