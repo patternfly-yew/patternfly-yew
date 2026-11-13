@@ -27,6 +27,7 @@ pub mod expandable_section;
 pub mod file_upload;
 pub mod form;
 pub mod helper_text;
+pub mod hero;
 pub mod hint;
 pub mod input_group;
 pub mod label;
