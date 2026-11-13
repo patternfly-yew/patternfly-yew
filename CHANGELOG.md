@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added the `Timestamp` component, with date/time formats, custom
+  `Intl.DateTimeFormat` options, UTC display, and default or custom tooltips.
 - Added the `Hero` component, with light/dark background images and gradients,
   configurable body width, and the (beta) glass variant.
 - Avatar supports colorful avatars with `color` and `initials`.

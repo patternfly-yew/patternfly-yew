@@ -53,6 +53,7 @@ pub mod switch;
 pub mod table;
 pub mod tabs;
 pub mod text_input_group;
+pub mod timestamp;
 pub mod title;
 pub mod toast;
 pub mod toggle_group;
