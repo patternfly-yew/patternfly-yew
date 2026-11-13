@@ -223,10 +223,7 @@ pub fn button(props: &ButtonProperties) -> Html {
 
     let text = match has_text {
         true => html!(
-            <span class="pf-v6-c-button__text">
-                { &props.label }
-                { props.children.clone() }
-            </span>
+            <span class="pf-v6-c-button__text">{ &props.label }{ props.children.clone() }</span>
         ),
         false => html!(),
     };

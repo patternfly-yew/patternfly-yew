@@ -58,11 +58,7 @@ pub fn layout_level(props: &LayoutLevelProperties) -> Html {
         classes.push("pf-m-gutter");
     }
 
-    html!(
-        <div id={props.id.clone()} class={classes}>
-            { props.children.clone() }
-        </div>
-    )
+    html!(<div id={props.id.clone()} class={classes}>{ props.children.clone() }</div>)
 }
 
 #[derive(Clone, PartialEq, Properties)]

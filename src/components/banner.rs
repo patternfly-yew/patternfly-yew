@@ -114,9 +114,9 @@ fn render_banner(props: &BannerProperties) -> Html {
     html! {
         <div {class}>
             if !props.screen_reader_text.is_empty() {
-                <span class="pf-v6-screen-reader">{props.screen_reader_text.clone()}</span>
+                <span class="pf-v6-screen-reader">{ props.screen_reader_text.clone() }</span>
             }
-            {props.children.clone()}
+            { props.children.clone() }
         </div>
     }
 }
@@ -186,7 +186,7 @@ mod tests {
             BannerColor::Blue,
             BannerColor::Purple,
         ] {
-            let output = render_html(move || html!(<Banner {color}>{"Environment"}</Banner>));
+            let output = render_html(move || html!(<Banner {color}>{ "Environment" }</Banner>));
             assert!(output.contains(color.class()));
             assert!(output.contains("pf-v6-c-banner"));
         }
@@ -199,8 +199,14 @@ mod tests {
         ] {
             let output = render_html(move || {
                 html! {
-                    <Banner {status} color={BannerColor::Red} screen_reader_text="Localized status" sticky=true pill=true>
-                        {"Message"}
+                    <Banner
+                        {status}
+                        color={BannerColor::Red}
+                        screen_reader_text="Localized status"
+                        sticky=true
+                        pill=true
+                    >
+                        { "Message" }
                     </Banner>
                 }
             });

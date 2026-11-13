@@ -170,11 +170,14 @@ fn render_alert(
     };
     let truncated = props.truncate || props.truncate_title > 0;
     let title = html! {
-        <@{element} id={title_id.clone()} class={title_classes}
+        <@{element}
+            id={title_id.clone()}
+            class={title_classes}
             style={truncated.then(|| format!("--pf-v6-c-alert__title--max-lines: {}", props.truncate_title.max(1)))}
-            tabindex={truncated.then_some("0")}>
-            <span class="pf-v6-screen-reader">{variant_label}{": "}</span>
-            {props.title.clone()}
+            tabindex={truncated.then_some("0")}
+        >
+            <span class="pf-v6-screen-reader">{ variant_label }{ ": " }</span>
+            { props.title.clone() }
         </@>
     };
 
@@ -192,7 +195,7 @@ fn render_alert(
                         />
                     }
                 }) }
-                {props.action_links.clone()}
+                { props.action_links.clone() }
             </div>
         )
     };
@@ -209,20 +212,36 @@ fn render_alert(
         >
             if props.expandable {
                 <div class="pf-v6-c-alert__toggle">
-                    <Button variant={ButtonVariant::Plain} onclick={ontoggle}
+                    <Button
+                        variant={ButtonVariant::Plain}
+                        onclick={ontoggle}
                         aria_label={props.toggle_aria_label.clone().unwrap_or_else(|| format!("{variant_label} details").into())}
-                        aria_expanded={expanded.to_string()}>
-                        <span class="pf-v6-c-alert__toggle-icon">{Icon::AngleRight}</span>
+                        aria_expanded={expanded.to_string()}
+                    >
+                        <span class="pf-v6-c-alert__toggle-icon">{ Icon::AngleRight }</span>
                     </Button>
                 </div>
             }
-            <div class="pf-v6-c-alert__icon" aria-hidden="true">{props.custom_icon.clone().unwrap_or_else(|| t.icon().into())}</div>
+            <div
+                class="pf-v6-c-alert__icon"
+                aria-hidden="true"
+            >
+                { props.custom_icon.clone().unwrap_or_else(|| t.icon().into()) }
+            </div>
             if truncated {
-                <Tooltip attach_to_child=true content={props.title.clone()} position={props.tooltip_position}>{title}</Tooltip>
-            } else { {title} }
+                <Tooltip
+                    attach_to_child=true
+                    content={props.title.clone()}
+                    position={props.tooltip_position}
+                >
+                    { title }
+                </Tooltip>
+            } else {
+                { title }
+            }
             if let Some(onclose) = props.onclose.as_ref() {
                 <div class="pf-v6-c-alert__action">
-                    <span id={close_id.clone()} class="pf-v6-screen-reader">{"Close"}</span>
+                    <span id={close_id.clone()} class="pf-v6-screen-reader">{ "Close" }</span>
                     <Button
                         variant={ButtonVariant::Plain}
                         icon={Icon::Times}
@@ -261,7 +280,12 @@ pub fn view(props: &GroupProperties) -> Html {
     }
 
     html! (
-        <ul class={classes} role="list" aria-live={props.live_region.then_some("polite")} aria-atomic={props.live_region.then_some("false")}>
+        <ul
+            class={classes}
+            role="list"
+            aria-live={props.live_region.then_some("polite")}
+            aria-atomic={props.live_region.then_some("false")}
+        >
             { for props.children.iter().map(|child|
                 wrapper_elt_with_attributes(child.into(), "li", &[("class", AttributeOrProperty::Static("pf-v6-c-alert-group__item"))])
             ) }
@@ -283,7 +307,11 @@ pub struct AlertActionLinkProperties {
 #[function_component(AlertActionLink)]
 pub fn action_link(props: &AlertActionLinkProperties) -> Html {
     if let Some(href) = &props.href {
-        html!(<a href={href.clone()} class="pf-v6-c-button pf-m-link pf-m-inline">{props.children.clone()}</a>)
+        html!(
+            <a href={href.clone()} class="pf-v6-c-button pf-m-link pf-m-inline">
+                { props.children.clone() }
+            </a>
+        )
     } else {
         props.children.clone()
     }
@@ -298,11 +326,16 @@ mod tests {
     fn default_and_live_markup_preserve_string_titles_and_actions() {
         let output = render_html(|| {
             html! {
-                <Alert title={String::from("Processing")} inline=true plain=true live_region=true
+                <Alert
+                    title={String::from("Processing")}
+                    inline=true
+                    plain=true
+                    live_region=true
                     onclose={Callback::noop()}
                     actions={vec![Action { label: "Retry".into(), callback: Callback::noop() }]}
-                    action_links={html!(<AlertActionLink href="/status">{"View status"}</AlertActionLink>)}>
-                    {"Details"}
+                    action_links={html!(<AlertActionLink href="/status">{"View status"}</AlertActionLink>)}
+                >
+                    { "Details" }
                 </Alert>
             }
         });
@@ -369,7 +402,9 @@ mod tests {
         for live_region in [false, true] {
             let output = render_html(move || {
                 html! {
-                    <AlertGroup {live_region} toast=true><Alert title="New notification" /></AlertGroup>
+                    <AlertGroup {live_region} toast=true>
+                        <Alert title="New notification" />
+                    </AlertGroup>
                 }
             });
             assert!(output.contains("<ul"));
@@ -385,7 +420,9 @@ mod tests {
     fn arbitrary_action_children_are_not_wrapped_in_a_button() {
         let output = render_html(|| {
             html! {
-                <AlertActionLink><a href="/router-target">{"Router link"}</a></AlertActionLink>
+                <AlertActionLink>
+                    <a href="/router-target">{ "Router link" }</a>
+                </AlertActionLink>
             }
         });
         assert_eq!(output, "<a href=\"/router-target\">Router link</a>");
@@ -396,7 +433,11 @@ mod tests {
         for lines in [0, 3] {
             let output = render_html(move || {
                 html! {
-                    <Alert title={html!(<em>{"Long title"}</em>)} truncate={lines == 0} truncate_title={lines} />
+                    <Alert
+                        title={html!(<em>{"Long title"}</em>)}
+                        truncate={lines == 0}
+                        truncate_title={lines}
+                    />
                 }
             });
             assert!(output.contains("pf-m-truncate"));
