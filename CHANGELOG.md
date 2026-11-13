@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added the Level layout as `LayoutLevel` and `LevelItem`, with optional gutter.
 - Added the `Timestamp` component, with date/time formats, custom
   `Intl.DateTimeFormat` options, UTC display, and default or custom tooltips.
 - Added the `Hero` component, with light/dark background images and gradients,
