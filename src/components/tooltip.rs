@@ -80,12 +80,23 @@ pub fn tooltip(props: &TooltipProperties) -> Html {
         )));
         tag.add_attribute("aria-describedby", tooltip_id.clone());
     } else {
-        trigger = html!(<span {onmouseenter} {onmouseleave} {onfocusin} {onfocusout} {onkeydown} ref={target_ref.clone()}>{trigger}</span>);
+        trigger = html!(
+            <span
+                {onmouseenter}
+                {onmouseleave}
+                {onfocusin}
+                {onfocusout}
+                {onkeydown}
+                ref={target_ref.clone()}
+            >
+                { trigger }
+            </span>
+        );
     }
 
     html! (
         <>
-            {trigger}
+            { trigger }
             <PortalPopper
                 visible={*hovered || *focused}
                 content={content_ref.clone()}
@@ -165,7 +176,9 @@ pub fn tooltip_popup(props: &TooltipPopupProperties) -> Html {
     html! {
         <div id={props.id.clone()} ref={&props.r#ref} style={&props.style} {class} role="tooltip">
             <div class="pf-v6-c-tooltip__arrow" />
-            <div class="pf-v6-c-tooltip__content">{ props.content.clone().unwrap_or_else(|| props.text.clone().into()) }</div>
+            <div class="pf-v6-c-tooltip__content">
+                { props.content.clone().unwrap_or_else(|| props.text.clone().into()) }
+            </div>
         </div>
     }
 }

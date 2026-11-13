@@ -105,7 +105,7 @@ pub fn MenuCheckbox(props: &MenuCheckboxProperties) -> Html {
                     <span class="pf-v6-c-menu__item-text">{ props.children.clone() }</span>
                 </span>
                 if let Some(description) = &props.description {
-                    <span class="pf-v6-c-menu__item-description"> {description} </span>
+                    <span class="pf-v6-c-menu__item-description">{ description }</span>
                 }
             </label>
         </li>

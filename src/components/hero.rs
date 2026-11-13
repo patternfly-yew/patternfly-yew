@@ -152,9 +152,7 @@ pub fn hero(props: &HeroProperties) -> Html {
 
     html!(
         <div id={props.id.clone()} {class} {style}>
-            <div class="pf-v6-c-hero__body">
-                { props.children.clone() }
-            </div>
+            <div class="pf-v6-c-hero__body">{ props.children.clone() }</div>
         </div>
     )
 }
