@@ -4,6 +4,8 @@ pub use crate::icon::*;
 pub use crate::utils::*;
 pub use crate::validation::*;
 
+#[cfg(feature = "charts")]
+pub use crate::charts::*;
 pub use crate::components::about::*;
 pub use crate::components::accordion::*;
 pub use crate::components::alert::*;

@@ -66,6 +66,9 @@ tree = []
 icons-far = []
 icons-fab = []
 
+# Enable the PatternFly charts (based on Victory), in the `charts` module
+charts = ["serde/derive", "web-sys/Element"]
+
 # Enables localization of the names of the months and days of the week
 localization = ["dep:sys-locale", "chrono/unstable-locales"]
 
