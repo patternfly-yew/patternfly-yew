@@ -23,6 +23,8 @@
 #![recursion_limit = "1024"]
 mod icon;
 
+#[cfg(feature = "charts")]
+pub mod charts;
 pub mod components;
 pub mod core;
 pub mod hooks;

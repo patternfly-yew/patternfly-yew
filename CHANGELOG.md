@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added the `charts` feature, enabling the `charts` module with the PatternFly
+  charts (built on Victory): `Chart`, `ChartArea`, `ChartAxis`, `ChartBar`,
+  `ChartBoxPlot`, `ChartBullet`, `ChartDonut`, `ChartDonutThreshold`,
+  `ChartDonutUtilization`, `ChartGroup`, `ChartLegend`, `ChartLine`, `ChartPie`,
+  `ChartScatter`, `ChartStack`, `ChartThreshold`, with tooltips and containers.
 - Added the Level layout as `LayoutLevel` and `LevelItem`, with optional gutter.
 - Added the `Timestamp` component, with date/time formats, custom
   `Intl.DateTimeFormat` options, UTC display, and default or custom tooltips.
