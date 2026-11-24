@@ -53,3 +53,14 @@ jobs:
       - name: Check all features
         run: |
           cargo check-all-features -- --target wasm32-unknown-unknown
+
+      - name: Install Wasm test runner
+        run: |
+          version=$(cargo metadata --format-version=1 | jq -r '.packages[] | select(.name == "wasm-bindgen") | .version')
+          cargo binstall -y wasm-bindgen-cli --version "$version"
+
+      - name: Test Wasm with Node.js
+        env:
+          CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER: wasm-bindgen-test-runner
+          TZ: Pacific/Honolulu
+        run: cargo test --all-features --target wasm32-unknown-unknown --lib

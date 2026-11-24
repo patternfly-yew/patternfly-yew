@@ -1,6 +1,6 @@
 [package]
 name = "patternfly-yew"
-version = "0.8.8"
+version = "0.9.0"
 authors = ["Jens Reimann <jreimann@redhat.com>"]
 edition = "2024"
 license = "Apache-2.0"
@@ -12,11 +12,11 @@ readme = "README.md"
 rust-version = "1.90"
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = ["wasmbind", "clock"] }
 gloo-events = "0.3.0"
 gloo-timers = "0.4.0"
 gloo-utils = "0.3.0"
 implicit-clone = "0.6"
+jiff = { version = "1", default-features = false, features = ["std", "js"] }
 js-sys = "0.3.64"
 log = "0.4"
 num-traits = "0.2.16"
@@ -28,13 +28,6 @@ strum_macros = "0.28"
 uuid = { version = "1", features = ["v4", "js"] }
 wasm-bindgen = "0.2.89"
 wasm-bindgen-futures = "0.4.39"
-web-tools = { version = "0.4.0", features = ["yew"] }
-yew = "0.23"
-yew-hooks = "0.6.4"
-yew-more-hooks = { version = "0.5.0", features = ["breakpoint"] }
-
-yew-nested-router = { version = "0.9.0", optional = true }
-
 web-sys = { version = "0.3.66", features = [
     "HtmlCollection",
     "Node",
@@ -50,7 +43,15 @@ web-sys = { version = "0.3.66", features = [
     "TouchEvent",
     "TouchList",
 ] }
-sys-locale = { version = "0.3.1", features = ["js"], optional = true }
+web-tools = { version = "0.4.0", features = ["yew"] }
+yew = "0.23"
+yew-hooks = "0.6.4"
+yew-more-hooks = { version = "0.5.0", features = ["breakpoint"] }
+yew-nested-router = { version = "0.9.0", optional = true }
+
+# Native local-date discovery; browsers use JavaScript without bundling tzdb.
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+jiff = { version = "1", default-features = false, features = ["tz-system", "tzdb-zoneinfo", "tzdb-concatenated", "tzdb-bundle-platform"] }
 
 
 [features]
@@ -66,8 +67,8 @@ tree = []
 icons-far = []
 icons-fab = []
 
-# Enables localization of the names of the months and days of the week
-localization = ["dep:sys-locale", "chrono/unstable-locales"]
+# Localize month and weekday names using the browser locale (English on native targets).
+localization = []
 
 [patch.crates-io]
 #yew-nested-router = { path = "../yew-nested-router" }
@@ -77,3 +78,6 @@ localization = ["dep:sys-locale", "chrono/unstable-locales"]
 
 [dev-dependencies]
 yew = { version = "0.23", features = ["ssr"] }
+
+[target.'cfg(target_family = "wasm")'.dev-dependencies]
+wasm-bindgen-test = "0.3"

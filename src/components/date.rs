@@ -1,8 +1,9 @@
+use super::calendar::today;
 use crate::prelude::{
     CalendarView, HelperText, HelperTextItem, HelperTextItemVariant, InputGroup, InputGroupItem,
     InputState, Popover, PopoverBody, PopoverContext, TextInput,
 };
-use chrono::{Local, NaiveDate, Weekday};
+use jiff::civil::{Date, Weekday};
 use yew::prelude::*;
 
 /// Properties for [`DatePicker`].
@@ -13,17 +14,17 @@ pub struct DatePickerProperties {
     pub disabled: bool,
     /// The change callback
     #[prop_or_default]
-    pub onchange: Callback<NaiveDate>,
+    pub onchange: Callback<Date>,
     /// The placeholder string
     #[prop_or(String::from("YYYY-MM-DD"))]
     pub placeholder: String,
     #[prop_or_default]
-    pub rangestart: Option<NaiveDate>,
+    pub rangestart: Option<Date>,
     /// The currently selected value
     #[prop_or_default]
-    pub value: Option<NaiveDate>,
+    pub value: Option<Date>,
     /// The day to start the week with
-    #[prop_or(Weekday::Mon)]
+    #[prop_or(Weekday::Monday)]
     pub weekday_start: Weekday,
 }
 
@@ -64,7 +65,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
     let callback_change_value = {
         use_callback(
             (value.clone(), string_value.clone(), props.onchange.clone()),
-            |new_date: NaiveDate, (value, string_value, onchange)| {
+            |new_date: Date, (value, string_value, onchange)| {
                 value.set(Some(new_date));
                 string_value.set(new_date.to_string());
                 onchange.emit(new_date);
@@ -89,7 +90,7 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
         // Popover.
         <PopoverBody>
             <Body
-                date={value.unwrap_or_else(|| Local::now().date_naive())}
+                date={value.unwrap_or_else(today)}
                 weekday_start={props.weekday_start}
                 rangestart={props.rangestart}
                 onchange={callback_change_value}
@@ -142,21 +143,22 @@ pub fn date_picker(props: &DatePickerProperties) -> Html {
     }
 }
 
-fn parse_date(text: &str) -> Result<Option<NaiveDate>, chrono::ParseError> {
+fn parse_date(text: &str) -> Result<Option<Date>, jiff::Error> {
     if text.is_empty() {
         Ok(None)
     } else {
-        NaiveDate::parse_from_str(text, "%Y-%m-%d").map(Some)
+        // Jiff displays BCE years with a sign and six digits (e.g. -000001).
+        Date::strptime("%6Y-%m-%d", text).map(Some)
     }
 }
 
 /// the body component, using the popover context
 #[derive(PartialEq, Properties)]
 struct BodyProperties {
-    date: NaiveDate,
+    date: Date,
     weekday_start: Weekday,
-    rangestart: Option<NaiveDate>,
-    onchange: Callback<NaiveDate>,
+    rangestart: Option<Date>,
+    onchange: Callback<Date>,
 }
 
 #[function_component(Body)]
@@ -186,22 +188,39 @@ fn body(props: &BodyProperties) -> Html {
 mod tests {
     use super::*;
 
-    #[test]
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
     fn parses_valid_dates_and_empty_input() {
         assert_eq!(
-            parse_date("2024-02-29"),
-            Ok(NaiveDate::from_ymd_opt(2024, 2, 29))
+            parse_date("2024-02-29").unwrap(),
+            Some(Date::new(2024, 2, 29).unwrap())
         );
-        assert_eq!(parse_date(""), Ok(None));
+        assert_eq!(parse_date("").unwrap(), None);
     }
 
-    #[test]
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
+    fn parses_displayed_dates_across_the_supported_range() {
+        for date in [
+            Date::MIN,
+            Date::MAX,
+            Date::new(0, 1, 1).unwrap(),
+            Date::new(-1, 12, 31).unwrap(),
+        ] {
+            assert_eq!(parse_date(&date.to_string()).unwrap(), Some(date));
+        }
+    }
+
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
     fn rejects_invalid_dates_and_incomplete_input() {
         for text in [
             "2023-02-29",
             "2024-04-31",
             "2024-13-01",
             "2024-02-",
+            "2024-02-29T12:00:00Z",
+            "2024-02-29 trailing",
             "invalid",
             " ",
         ] {
