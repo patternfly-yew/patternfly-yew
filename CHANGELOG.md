@@ -1,6 +1,25 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 (unreleased)
+
+### Breaking changes
+
+- Replaced `chrono` with Jiff 1.x. `CalendarMonthProperties` and
+  `DatePickerProperties` now use `jiff::civil::Date` and `jiff::civil::Weekday`,
+  including date callbacks. Use `Date::new(year, month, day)?` instead of
+  `NaiveDate::from_ymd_opt(...)`, and `Weekday::Monday` instead of `Weekday::Mon`.
+- `TimestampProperties::date` now accepts `Option<jiff::Timestamp>` instead of
+  `Option<chrono::DateTime<chrono::Utc>>`. Parse RFC 3339 strings with
+  `"2024-02-29T12:00:00Z".parse::<jiff::Timestamp>()?`, or use
+  `jiff::Timestamp::now()` for the current instant.
+- Dates are limited to Jiff's supported years (-9999 through 9999).
+- The `localization` feature now uses the browser's locale and `Intl` Gregorian
+  month/weekday formatting. Native rendering uses English labels. Removed
+  `sys-locale`; browser builds do not bundle a time-zone database.
+- Toast expiration now uses a monotonic clock. Newly added shorter timeouts are
+  scheduled promptly, and long delays are capped and rescheduled safely.
+
+### Other changes
 
 - Added the Level layout as `LayoutLevel` and `LevelItem`, with optional gutter.
 - Added the `Timestamp` component, with date/time formats, custom

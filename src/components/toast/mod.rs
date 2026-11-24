@@ -1,8 +1,8 @@
 //! Toast notifications
 use crate::prelude::{Action, Alert, AlertGroup, AlertType};
-use chrono::{DateTime, Utc};
 use core::cmp::Reverse;
 use gloo_timers::callback::Timeout;
+use jiff::Timestamp;
 use std::fmt::Display;
 use std::{collections::BinaryHeap, time::Duration};
 use yew::{prelude::*, virtual_dom::VChild};
@@ -123,7 +123,7 @@ pub struct Props {
 pub struct ToastEntry {
     id: usize,
     alert: VChild<Alert>,
-    timeout: Option<DateTime<Utc>>,
+    timeout: Option<Timestamp>,
 }
 
 /// A component to view toast alerts.
@@ -136,7 +136,7 @@ pub struct ToastViewer {
     counter: usize,
 
     task: Option<Timeout>,
-    timeouts: BinaryHeap<Reverse<DateTime<Utc>>>,
+    timeouts: BinaryHeap<Reverse<Timestamp>>,
 }
 
 pub enum ToastViewerMsg {
@@ -185,8 +185,8 @@ impl Component for ToastViewer {
 }
 
 impl ToastViewer {
-    fn now() -> DateTime<Utc> {
-        Utc::now()
+    fn now() -> Timestamp {
+        Timestamp::now()
     }
 
     fn perform(&mut self, ctx: &Context<Self>, action: ToastAction) -> bool {
@@ -200,13 +200,12 @@ impl ToastViewer {
         let now = Self::now();
         let timeout = toast
             .timeout
-            .and_then(|timeout| chrono::Duration::from_std(timeout).ok())
-            .map(|timeout| now + timeout);
+            .and_then(|timeout| now.checked_add(timeout).ok());
 
         let id = self.counter;
         self.counter += 1;
 
-        let onclose = match toast.timeout {
+        let onclose = match timeout {
             None => Some(ctx.link().callback(move |_| ToastViewerMsg::Close(id))),
             Some(_) => None,
         };
@@ -231,9 +230,10 @@ impl ToastViewer {
         }
     }
 
-    fn schedule_cleanup(&mut self, ctx: &Context<Self>, timeout: DateTime<Utc>) {
+    fn schedule_cleanup(&mut self, ctx: &Context<Self>, timeout: Timestamp) {
         log::debug!("Schedule cleanup: {:?}", timeout);
 
+        self.task = None;
         self.timeouts.push(Reverse(timeout));
         self.trigger_next_cleanup(ctx);
     }
@@ -244,22 +244,12 @@ impl ToastViewer {
             return;
         }
 
-        // We poll timeouts from the heap until we find one that is in the future, or we run
-        // out of candidates.
-        while let Some(next) = self.timeouts.pop() {
-            let timeout = next.0;
-            log::debug!("Next timeout: {:?}", timeout);
-            let duration = timeout - Self::now();
-            let duration = duration.to_std();
-            log::debug!("Duration: {:?}", duration);
-            if let Ok(duration) = duration {
-                let link = ctx.link().clone();
-                self.task = Some(Timeout::new(duration.as_millis() as u32, move || {
-                    link.send_message(ToastViewerMsg::Cleanup);
-                }));
-                log::debug!("Scheduled cleanup: {:?}", duration);
-                break;
-            }
+        if let Some(duration) = next_cleanup_delay(&self.timeouts, Self::now()) {
+            let link = ctx.link().clone();
+            self.task = Some(Timeout::new(timeout_millis(duration), move || {
+                link.send_message(ToastViewerMsg::Cleanup);
+            }));
+            log::debug!("Scheduled cleanup: {:?}", duration);
         }
     }
 
@@ -271,6 +261,7 @@ impl ToastViewer {
         let now = Self::now();
 
         self.task = None;
+        self.timeouts.retain(|Reverse(deadline)| *deadline > now);
         self.trigger_next_cleanup(ctx);
 
         self.retain_alert(|alert| {
@@ -296,4 +287,56 @@ impl ToastViewer {
 #[hook]
 pub fn use_toaster() -> Option<Toaster> {
     use_context()
+}
+
+// Keep pending deadlines in the heap so a new, earlier toast can reschedule the
+// timer, and capped long waits can be scheduled again after the timer fires.
+fn next_cleanup_delay(
+    timeouts: &BinaryHeap<Reverse<Timestamp>>,
+    now: Timestamp,
+) -> Option<Duration> {
+    timeouts.peek().map(|Reverse(deadline)| {
+        Duration::try_from(deadline.duration_since(now)).unwrap_or(Duration::ZERO)
+    })
+}
+
+// JavaScript timers accept a signed 32-bit delay. Longer waits are rescheduled.
+fn timeout_millis(duration: Duration) -> u32 {
+    duration.as_millis().min(i32::MAX as u128) as u32
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
+    fn reschedules_earlier_deadlines_including_immediate_expiration() {
+        let now = ToastViewer::now();
+        let mut timeouts = BinaryHeap::new();
+        timeouts.push(Reverse(now + Duration::from_secs(10)));
+        assert_eq!(
+            next_cleanup_delay(&timeouts, now),
+            Some(Duration::from_secs(10))
+        );
+        timeouts.push(Reverse(now + Duration::from_secs(1)));
+        assert_eq!(
+            next_cleanup_delay(&timeouts, now),
+            Some(Duration::from_secs(1))
+        );
+        assert_eq!(
+            next_cleanup_delay(&timeouts, now + Duration::from_secs(2)),
+            Some(Duration::ZERO)
+        );
+        timeouts.retain(|Reverse(deadline)| *deadline > now + Duration::from_secs(2));
+        assert_eq!(
+            next_cleanup_delay(&timeouts, now + Duration::from_secs(2)),
+            Some(Duration::from_secs(8))
+        );
+        timeouts.clear();
+        assert_eq!(next_cleanup_delay(&timeouts, now), None);
+        assert_eq!(timeout_millis(Duration::ZERO), 0);
+        assert_eq!(timeout_millis(Duration::from_millis(1500)), 1500);
+        assert_eq!(timeout_millis(Duration::MAX), i32::MAX as u32);
+    }
 }

@@ -2,8 +2,10 @@ use crate::prelude::{
     Button, ButtonType, ButtonVariant, Icon, InputGroup, InputGroupItem, SimpleSelect, TextInput,
     TextInputType,
 };
-use chrono::{Datelike, Days, Local, Month, Months, NaiveDate, Weekday};
-use num_traits::cast::FromPrimitive;
+use jiff::{
+    ToSpan,
+    civil::{Date, Weekday},
+};
 use std::str::FromStr;
 
 use yew::{
@@ -14,13 +16,13 @@ use super::select::SelectItemRenderer;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct CalendarMonthProperties {
-    #[prop_or(Local::now().date_naive())]
-    pub date: NaiveDate,
+    #[prop_or(today())]
+    pub date: Date,
     #[prop_or_default]
-    pub onchange: Callback<NaiveDate>,
+    pub onchange: Callback<Date>,
     #[prop_or_default]
-    pub rangestart: Option<NaiveDate>,
-    #[prop_or(Weekday::Mon)]
+    pub rangestart: Option<Date>,
+    #[prop_or(Weekday::Monday)]
     pub weekday_start: Weekday,
 }
 
@@ -28,26 +30,36 @@ pub struct CalendarMonthProperties {
 // and last day of week, even if they aren't in the same month.
 //
 // The month is set by `date` and the first day of the week by `weekday_start`.
-fn build_calendar(date: NaiveDate, weekday_start: Weekday) -> Vec<Vec<NaiveDate>> {
-    const ONE_DAY: Days = Days::new(1);
-    let mut ret: Vec<Vec<NaiveDate>> = Vec::new();
-    // first day of the week. It's initialized first at the first day of the month
-    let mut first_day = date.with_day(1).unwrap();
-    let mut day = first_day.week(weekday_start).first_day();
-    let mut week: Vec<NaiveDate>;
+fn build_calendar(date: Date, weekday_start: Weekday) -> Vec<Vec<Option<Date>>> {
+    let first = date.first_of_month();
+    let leading = (first.weekday().to_monday_zero_offset() - weekday_start.to_monday_zero_offset())
+        .rem_euclid(7) as i64;
+    let cells = (leading + i64::from(date.days_in_month()) + 6) / 7 * 7;
+    (0..cells / 7)
+        .map(|week| {
+            (0..7)
+                .map(|day| first.checked_add((week * 7 + day - leading).days()).ok())
+                .collect()
+        })
+        .collect()
+}
 
-    while first_day.month() == date.month() {
-        week = Vec::new();
-        while first_day.week(weekday_start).days().contains(&day) {
-            week.push(day);
-            day = day + ONE_DAY;
-        }
-
-        first_day = first_day.week(weekday_start).last_day() + ONE_DAY;
-        ret.push(week);
+/// Today's civil date in the local environment, without shipping a browser tzdb.
+pub(super) fn today() -> Date {
+    #[cfg(target_family = "wasm")]
+    {
+        let now = js_sys::Date::new_0();
+        Date::new(
+            now.get_full_year() as i16,
+            (now.get_month() + 1) as i8,
+            now.get_date() as i8,
+        )
+        .expect("current browser date is in Jiff's supported range")
     }
-
-    ret
+    #[cfg(not(target_family = "wasm"))]
+    {
+        jiff::ZonedDateTime::now().date()
+    }
 }
 
 #[function_component(CalendarView)]
@@ -58,50 +70,34 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     let show_date = use_state_eq(|| props.date);
     // an array which contains the week of the selected date
     let weeks = build_calendar(*show_date, props.weekday_start);
-    // the month of the selected date, used for selector
-    let month = use_state_eq(|| Month::from_u32(props.date.month()).unwrap());
-
     let callback_month_select = use_callback(
-        (show_date.clone(), month.clone()),
-        move |new_month: MonthLocal, (show_date, month)| {
-            if let Some(d) = NaiveDate::from_ymd_opt(
-                show_date.year(),
-                new_month.0.number_from_month(),
-                show_date.day(),
-            ) {
+        show_date.clone(),
+        move |new_month: MonthLocal, show_date| {
+            if let Ok(d) = Date::new(show_date.year(), new_month.0, show_date.day()) {
                 show_date.set(d);
-                month.set(new_month.0);
             }
         },
     );
 
     let callback_years = use_callback(show_date.clone(), move |new_year: String, show_date| {
-        if let Ok(y) = i32::from_str(&new_year)
-            && let Some(d) = NaiveDate::from_ymd_opt(y, show_date.month(), show_date.day())
+        if let Ok(y) = i16::from_str(&new_year)
+            && let Ok(d) = Date::new(y, show_date.month(), show_date.day())
         {
             show_date.set(d)
         }
     });
 
-    let callback_prev = use_callback(
-        (show_date.clone(), month.clone()),
-        move |_, (show_date, month)| {
-            if let Some(d) = show_date.checked_sub_months(Months::new(1)) {
-                show_date.set(d);
-                month.set(month.pred());
-            }
-        },
-    );
+    let callback_prev = use_callback(show_date.clone(), move |_, show_date| {
+        if let Ok(d) = show_date.checked_sub(1.month()) {
+            show_date.set(d);
+        }
+    });
 
-    let callback_next = use_callback(
-        (show_date.clone(), month.clone()),
-        move |_, (show_date, month)| {
-            if let Some(d) = show_date.checked_add_months(Months::new(1)) {
-                show_date.set(d);
-                month.set(month.succ());
-            }
-        },
-    );
+    let callback_next = use_callback(show_date.clone(), move |_, show_date| {
+        if let Ok(d) = show_date.checked_add(1.month()) {
+            show_date.set(d);
+        }
+    });
 
     html! {
         <div class="pf-v6-c-calendar-month">
@@ -119,21 +115,8 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                     <InputGroupItem>
                         <div class="pf-v6-c-calendar-month__header-month">
                             <SimpleSelect<MonthLocal>
-                                entries={vec![
-                                    MonthLocal(Month::January),
-                                    MonthLocal(Month::February),
-                                    MonthLocal(Month::March),
-                                    MonthLocal(Month::April),
-                                    MonthLocal(Month::May),
-                                    MonthLocal(Month::June),
-                                    MonthLocal(Month::July),
-                                    MonthLocal(Month::August),
-                                    MonthLocal(Month::September),
-                                    MonthLocal(Month::October),
-                                    MonthLocal(Month::November),
-                                    MonthLocal(Month::December)
-                                ]}
-                                selected={MonthLocal(*month)}
+                                entries={(1..=12).map(MonthLocal).collect::<Vec<_>>()}
+                                selected={MonthLocal(show_date.month())}
                                 onselect={callback_month_select}
                             />
                         </div>
@@ -161,11 +144,12 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
             <table class="pf-v6-c-calendar-month__calendar">
                 <thead class="pf-v6-c-calendar-month__days">
                     <tr class="pf-v6-c-calendar-month__days-row">
-                        { weeks[0].clone().into_iter().map(|day| {
+                        { (0..7).map(|offset| {
+                            let weekday = Weekday::from_monday_zero_offset((props.weekday_start.to_monday_zero_offset() + offset) % 7).unwrap();
                             html!{
                                 <th class="pf-v6-c-calendar-month__day">
-                                    <span class="pf-v6-screen-reader">{weekday_name(day.weekday())}</span>
-                                    <span aria-hidden="true">{weekday_name(day.weekday())}</span>
+                                    <span class="pf-v6-screen-reader">{weekday_name(weekday)}</span>
+                                    <span aria-hidden="true">{weekday_name(weekday)}</span>
                                 </th>
                             }
                         }).collect::<Html>() }
@@ -178,17 +162,18 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
                             <tr class="pf-v6-c-calendar-month__dates-row">
                             {
                             week.into_iter().map(|day| {
+                                let Some(day) = day else {
+                                    return html! { <td class="pf-v6-c-calendar-month__dates-cell" /> };
+                                };
                                 let callback_date = {
                                     let date = date.clone();
-                                    let month = month.clone();
                                     let show_date = show_date.clone();
                                     let onchange = props.onchange.clone();
-                                    move |day: NaiveDate| {
+                                    move |day: Date| {
                                         Callback::from(move |_| {
-                                            let new = NaiveDate::from_ymd_opt(day.year(), day.month(), day.day()).unwrap();
+                                            let new = day;
                                             date.set(new);
                                             show_date.set(new);
-                                            month.set(Month::from_u32(day.month()).unwrap());
                                             onchange.emit(new);
                                         })
                                     }
@@ -256,92 +241,118 @@ pub fn calendar(props: &CalendarMonthProperties) -> Html {
     }
 }
 
-/// A wrapper around [`chrono::Month`] to extend it
+/// A month number (1–12) rendered as a localized name.
 #[derive(Clone, PartialEq, Eq)]
-struct MonthLocal(Month);
+struct MonthLocal(i8);
 
 impl SelectItemRenderer for MonthLocal {
     type Item = String;
 
-    #[cfg(feature = "localization")]
     fn label(&self) -> Self::Item {
-        self.0.localized_name()
-    }
-
-    #[cfg(not(feature = "localization"))]
-    fn label(&self) -> Self::Item {
-        self.0.name().to_string()
+        let date = Date::new(2024, self.0, 1).unwrap();
+        calendar_label(date, "month", "long", "%B")
     }
 }
 
-#[cfg(feature = "localization")]
-trait Localized {
-    fn localized_name(&self) -> String;
-}
-
-#[cfg(feature = "localization")]
-impl Localized for Month {
-    /// Convert to text in the current system language
-    fn localized_name(&self) -> String {
-        // Build a dummy NaiveDate with month whose name I'm interested in
-        let date = NaiveDate::from_ymd_opt(2024, self.number_from_month(), 1).unwrap();
-
-        // Get a localized full month name
-        date.format_localized("%B", current_locale()).to_string()
-    }
-}
-
-#[cfg(feature = "localization")]
 fn weekday_name(weekday: Weekday) -> String {
-    localized_weekday_name(weekday)
+    let date = Date::new(2024, 1, 1)
+        .unwrap()
+        .checked_add(i64::from(weekday.to_monday_zero_offset()).days())
+        .unwrap();
+    calendar_label(date, "weekday", "short", "%a")
 }
 
-#[cfg(not(feature = "localization"))]
-fn weekday_name(weekday: Weekday) -> String {
-    weekday.to_string()
+fn calendar_label(date: Date, field: &str, width: &str, fallback: &str) -> String {
+    #[cfg(all(feature = "localization", target_family = "wasm"))]
+    if let Some(label) =
+        browser_calendar_label(date, field, width, &wasm_bindgen::JsValue::UNDEFINED)
+    {
+        return label;
+    }
+    let _ = (field, width);
+    date.strftime(fallback).to_string()
 }
 
-#[cfg(feature = "localization")]
-fn localized_weekday_name(weekday: Weekday) -> String {
-    // Get today NaiveDateTime
-    let today = chrono::Local::now().naive_local();
+#[cfg(all(feature = "localization", target_family = "wasm"))]
+fn browser_calendar_label(
+    date: Date,
+    field: &str,
+    width: &str,
+    locale: &wasm_bindgen::JsValue,
+) -> Option<String> {
+    use wasm_bindgen::{JsCast, JsValue};
 
-    // Calculate the distance in days between today and the next 'weekday'
-    let days_until_weekday = (7 + weekday.num_days_from_monday() as i64
-        - today.weekday().num_days_from_monday() as i64)
-        % 7;
-
-    // Calculate the date of the next 'weekday'
-    let one_day = today + chrono::Duration::days(days_until_weekday);
-
-    // Get a localized 'weekday' short name
-    one_day
-        .date()
-        .format_localized("%a", current_locale())
-        .to_string()
+    // Use a fixed UTC date so DST and the local offset cannot change the label.
+    let js_date = js_sys::Date::new(&JsValue::from_str(&format!("{date}T00:00:00Z")));
+    let options = js_sys::Object::new();
+    let set =
+        |key: &str, value: &str| js_sys::Reflect::set(&options, &key.into(), &value.into()).ok();
+    set(field, width);
+    set("timeZone", "UTC");
+    set("calendar", "gregory");
+    js_sys::Reflect::get(&js_date, &"toLocaleDateString".into())
+        .ok()
+        .and_then(|f| f.dyn_into::<js_sys::Function>().ok())
+        .and_then(|f| f.call2(&js_date, locale, &options).ok())
+        .and_then(|label| label.as_string())
 }
 
-#[cfg(feature = "localization")]
-static CURRENT_LOCALE_CELL: std::sync::OnceLock<chrono::Locale> = std::sync::OnceLock::new();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[cfg(feature = "localization")]
-fn current_locale() -> chrono::Locale {
-    CURRENT_LOCALE_CELL
-        .get_or_init(|| {
-            // Get the current system locale text representation
-            let current_locale = sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"));
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
+    fn calendar_includes_adjacent_dates_and_leap_day() {
+        let weeks = build_calendar(Date::new(2024, 2, 15).unwrap(), Weekday::Monday);
+        assert_eq!(weeks.len(), 5);
+        assert!(weeks.iter().all(|week| week.len() == 7));
+        assert_eq!(weeks[0][0], Some(Date::new(2024, 1, 29).unwrap()));
+        assert_eq!(weeks[4][3], Some(Date::new(2024, 2, 29).unwrap()));
+        assert_eq!(weeks[4][6], Some(Date::new(2024, 3, 3).unwrap()));
 
-            // Convert the locale representation to snake case
-            let current_locale_snake_case = current_locale
-                .as_str()
-                .split('.')
-                .next()
-                .map(|s| s.replace('-', "_"))
-                .unwrap_or("en_US".to_string());
+        let weeks = build_calendar(Date::new(2023, 2, 15).unwrap(), Weekday::Sunday);
+        assert_eq!(weeks[0][0], Some(Date::new(2023, 1, 29).unwrap()));
+        assert_eq!(weeks[4][2], Some(Date::new(2023, 2, 28).unwrap()));
+        assert_eq!(weeks[4][3], Some(Date::new(2023, 3, 1).unwrap()));
+    }
 
-            // Build the chono::Locale from locale text represantation
-            chrono::Locale::try_from(current_locale_snake_case.as_str())
-                .unwrap_or(chrono::Locale::POSIX)
-        })
-        .to_owned()
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
+    fn calendar_handles_year_boundaries_and_date_limits() {
+        for date in [Date::MIN, Date::MAX, Date::new(2024, 12, 31).unwrap()] {
+            for offset in 0..7 {
+                let start = Weekday::from_monday_zero_offset(offset).unwrap();
+                let weeks = build_calendar(date, start);
+                assert!(weeks.iter().all(|week| week.len() == 7));
+                let days: Vec<_> = weeks.iter().flatten().flatten().copied().collect();
+                assert!(days.contains(&date));
+                assert_eq!(
+                    days.iter()
+                        .filter(|day| day.month() == date.month())
+                        .count(),
+                    date.days_in_month() as usize
+                );
+                assert!(
+                    days.windows(2)
+                        .all(|pair| pair[0].tomorrow().unwrap() == pair[1])
+                );
+            }
+        }
+    }
+
+    #[cfg(all(feature = "localization", target_family = "wasm"))]
+    #[wasm_bindgen_test::wasm_bindgen_test]
+    fn localizes_calendar_labels_without_shifting_the_day() {
+        let date = Date::new(2024, 1, 1).unwrap(); // Monday
+        let locale = wasm_bindgen::JsValue::from_str("fr-FR");
+        assert_eq!(
+            browser_calendar_label(date, "month", "long", &locale).as_deref(),
+            Some("janvier")
+        );
+        assert_eq!(
+            browser_calendar_label(date, "weekday", "short", &locale).as_deref(),
+            Some("lun.")
+        );
+    }
 }

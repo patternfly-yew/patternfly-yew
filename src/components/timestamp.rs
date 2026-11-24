@@ -1,7 +1,7 @@
 //! Timestamp
 
 use crate::prelude::{Tooltip, TooltipPosition};
-use chrono::{DateTime, SecondsFormat, Utc};
+use jiff::fmt::temporal::DateTimePrinter;
 use wasm_bindgen::{JsCast, JsValue};
 use yew::prelude::*;
 
@@ -64,7 +64,7 @@ pub struct TimestampProperties {
 
     /// The date to display, also used for the `datetime` attribute. Defaults to "now".
     #[prop_or_default]
-    pub date: Option<DateTime<Utc>>,
+    pub date: Option<jiff::Timestamp>,
 
     /// Date format of the timestamp and the default tooltip.
     #[prop_or_default]
@@ -138,8 +138,8 @@ pub struct TimestampProperties {
 /// ```
 #[function_component(Timestamp)]
 pub fn timestamp(props: &TimestampProperties) -> Html {
-    let date = props.date.unwrap_or_else(Utc::now);
-    let datetime = date.to_rfc3339_opts(SecondsFormat::Millis, true);
+    let date = props.date.unwrap_or_else(jiff::Timestamp::now);
+    let datetime = datetime_attribute(date);
 
     let content = if props.children != Html::default() {
         props.children.clone()
@@ -208,7 +208,7 @@ pub fn timestamp(props: &TimestampProperties) -> Html {
 
 /// Format a date using the browser's `Date.prototype.toLocaleString`.
 fn format_date(
-    date: &DateTime<Utc>,
+    date: &jiff::Timestamp,
     props: &TimestampProperties,
     utc: bool,
     date_format: Option<TimestampFormat>,
@@ -247,14 +247,79 @@ fn format_date(
         .map(JsValue::from_str)
         .unwrap_or(JsValue::UNDEFINED);
 
-    let js_date = js_sys::Date::new(&JsValue::from_f64(date.timestamp_millis() as f64));
+    let js_date = js_sys::Date::new(&JsValue::from_f64(javascript_millis(*date)));
 
     js_sys::Reflect::get(&js_date, &JsValue::from_str("toLocaleString"))
         .ok()
         .and_then(|f| f.dyn_into::<js_sys::Function>().ok())
         .and_then(|f| f.call2(&js_date, &locale, &options).ok())
         .and_then(|s| s.as_string())
-        .unwrap_or_else(|| date.to_rfc2822())
+        .unwrap_or_else(|| date.strftime("%a, %d %b %Y %T +0000").to_string())
         // narrow no-break spaces (e.g. before "PM") don't render well everywhere
         .replace('\u{202f}', " ")
+}
+
+/// Keep the HTML datetime at millisecond precision, matching JavaScript Date.
+fn datetime_attribute(date: jiff::Timestamp) -> String {
+    DateTimePrinter::new()
+        .precision(Some(3))
+        .timestamp_to_string(&date)
+}
+
+// Chrono floored submillisecond instants before the epoch; preserve that behavior.
+fn javascript_millis(date: jiff::Timestamp) -> f64 {
+    date.as_nanosecond().div_euclid(1_000_000) as f64
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[cfg_attr(target_family = "wasm", wasm_bindgen_test::wasm_bindgen_test)]
+    #[cfg_attr(not(target_family = "wasm"), test)]
+    fn preserves_utc_milliseconds_including_before_the_epoch() {
+        for (input, expected, millis) in [
+            (
+                "2024-02-29T12:34:56.123456789Z",
+                "2024-02-29T12:34:56.123Z",
+                1709210096123.0,
+            ),
+            ("1970-01-01T00:00:00Z", "1970-01-01T00:00:00.000Z", 0.0),
+            (
+                "1969-12-31T23:59:59.999999999Z",
+                "1969-12-31T23:59:59.999Z",
+                -1.0,
+            ),
+            (
+                "2024-03-01T01:00:00+02:00",
+                "2024-02-29T23:00:00.000Z",
+                1709247600000.0,
+            ),
+        ] {
+            let date = input.parse().unwrap();
+            assert_eq!(datetime_attribute(date), expected);
+            assert_eq!(javascript_millis(date), millis);
+        }
+    }
+
+    #[cfg(target_family = "wasm")]
+    #[wasm_bindgen_test::wasm_bindgen_test]
+    fn formats_jiff_timestamps_with_the_browser_and_falls_back_on_invalid_options() {
+        let date = "2024-02-29T23:00:00Z".parse().unwrap();
+        let mut props = yew::props!(TimestampProperties {
+            locale: "en-GB",
+            date_format: TimestampFormat::Short,
+            time_format: TimestampFormat::Short,
+            is_12_hour: false,
+        });
+        assert_eq!(
+            format_date(&date, &props, true, props.date_format, props.time_format),
+            "29/02/2024, 23:00"
+        );
+        props.custom_format = Some(vec![("timeZone".into(), "invalid/timezone".into())]);
+        assert_eq!(
+            format_date(&date, &props, false, None, None),
+            "Thu, 29 Feb 2024 23:00:00 +0000"
+        );
+    }
 }
