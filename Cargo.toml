@@ -42,6 +42,10 @@ web-sys = { version = "0.3.66", features = [
     "Touch",
     "TouchEvent",
     "TouchList",
+    "Window",
+    "ScrollToOptions",
+    "ScrollBehavior",
+    "EventTarget",
 ] }
 web-tools = { version = "0.4.0", features = ["yew"] }
 yew = "0.23"
