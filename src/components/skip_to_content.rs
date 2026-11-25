@@ -49,6 +49,7 @@ pub struct SkipToContentProperties {
 /// ```
 #[function_component(SkipToContent)]
 pub fn skip_to_content(props: &SkipToContentProperties) -> Html {
+    let (node_ref, href) = crate::utils::use_document_href(&props.href);
     let mut class = classes!("pf-v6-c-skip-to-content");
     class.extend(props.class.clone());
 
@@ -61,8 +62,9 @@ pub fn skip_to_content(props: &SkipToContentProperties) -> Html {
     html! {
         <div {class}>
             <a
+                ref={node_ref}
                 class="pf-v6-c-button pf-m-primary"
-                href={props.href.clone()}
+                {href}
                 onclick={props.onclick.clone()}
             >
                 <span class="pf-v6-c-button__text">{ text }</span>
