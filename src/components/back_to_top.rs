@@ -1,9 +1,7 @@
 //! Back to top
 
-use crate::prelude::Icon;
-use wasm_bindgen::JsCast;
-use wasm_bindgen::prelude::*;
-use web_sys::window;
+use crate::prelude::{Align, Button, ButtonVariant, Icon};
+use gloo_events::{EventListener, EventListenerOptions};
 use yew::prelude::*;
 
 /// Properties for [`BackToTop`].
@@ -38,6 +36,9 @@ pub struct BackToTopProperties {
 /// > A **back to top** button appears as a sticky button on the lower right of the
 /// > page after the user scrolls down. Clicking it scrolls back to the top.
 ///
+/// Inside a [`crate::prelude::Page`], this scrolls the page main element.
+/// Otherwise, it scrolls the document.
+///
 /// See: <https://www.patternfly.org/components/back-to-top>
 ///
 /// ## Properties
@@ -57,52 +58,33 @@ pub struct BackToTopProperties {
 /// ```
 #[function_component(BackToTop)]
 pub fn back_to_top(props: &BackToTopProperties) -> Html {
-    let visible = use_state(|| props.always_visible);
-    let threshold = props.scroll_threshold;
+    let node_ref = use_node_ref();
+    let visible = use_state_eq(|| props.always_visible);
 
-    // Set up scroll listener
     {
         let visible = visible.clone();
-        let always_visible = props.always_visible;
-
+        let node_ref = node_ref.clone();
         use_effect_with(
-            (always_visible, threshold),
+            (props.always_visible, props.scroll_threshold),
             move |(always_visible, threshold)| {
-                if *always_visible {
+                let listener = if *always_visible {
                     visible.set(true);
-                    return Box::new(|| {}) as Box<dyn FnOnce()>;
-                }
-
-                let Some(win) = window() else {
-                    return Box::new(|| {}) as Box<dyn FnOnce()>;
+                    None
+                } else {
+                    scroll_container(&node_ref).and_then(|target| {
+                        let win = target.owner_document()?.default_view()?;
+                        let threshold = *threshold;
+                        visible.set(f64::from(target.scroll_top()) > threshold);
+                        // Element scroll events do not bubble; capture also observes Page scrolling.
+                        Some(EventListener::new_with_options(
+                            &win,
+                            "scroll",
+                            EventListenerOptions::run_in_capture_phase(),
+                            move |_| visible.set(f64::from(target.scroll_top()) > threshold),
+                        ))
+                    })
                 };
-
-                let toggle = {
-                    let visible = visible.clone();
-                    let threshold = *threshold;
-                    let win = win.clone();
-                    move || {
-                        let scroll_y = win.scroll_y().unwrap_or(0.0);
-                        visible.set(scroll_y > threshold);
-                    }
-                };
-
-                // Initial check
-                toggle();
-
-                let cb = Closure::wrap(Box::new(toggle) as Box<dyn FnMut()>);
-                if let Some(cb_ref) = cb.as_ref().dyn_ref() {
-                    win.add_event_listener_with_callback("scroll", cb_ref).ok();
-                }
-
-                Box::new(move || {
-                    if let Some(win) = window() {
-                        if let Some(cb_ref) = cb.as_ref().dyn_ref() {
-                            win.remove_event_listener_with_callback("scroll", cb_ref)
-                                .ok();
-                        }
-                    }
-                }) as Box<dyn FnOnce()>
+                move || drop(listener)
             },
         );
     }
@@ -120,26 +102,37 @@ pub fn back_to_top(props: &BackToTopProperties) -> Html {
 
     let onclick = {
         let user_onclick = props.onclick.clone();
+        let node_ref = node_ref.clone();
         Callback::from(move |evt: MouseEvent| {
             // Scroll to top smoothly
-            if let Some(win) = window() {
+            if let Some(target) = scroll_container(&node_ref) {
                 let options = web_sys::ScrollToOptions::new();
                 options.set_top(0.0);
                 options.set_behavior(web_sys::ScrollBehavior::Smooth);
-                win.scroll_to_with_scroll_to_options(&options);
+                target.scroll_to_with_scroll_to_options(&options);
             }
             user_onclick.emit(evt);
         })
     };
 
     html! {
-        <div {class} {onclick}>
-            <button class="pf-v6-c-button pf-m-primary" type="button">
-                <span class="pf-v6-c-button__text">{ title }</span>
-                <span class="pf-v6-c-button__icon pf-m-end">
-                    { Icon::AngleUp }
-                </span>
-            </button>
+        <div ref={node_ref} {class} style="position: fixed;">
+            <Button
+                variant={ButtonVariant::Primary}
+                {onclick}
+                icon={Icon::AngleUp.as_html()}
+                align={Align::End}
+            >
+                { title }
+            </Button>
         </div>
     }
+}
+
+fn scroll_container(node_ref: &NodeRef) -> Option<web_sys::Element> {
+    let node = node_ref.cast::<web_sys::Element>()?;
+    node.closest(".pf-v6-c-page__main")
+        .ok()
+        .flatten()
+        .or_else(|| node.owner_document()?.scrolling_element())
 }

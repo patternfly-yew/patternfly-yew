@@ -43,6 +43,8 @@ web-sys = { version = "0.3.66", features = [
     "TouchEvent",
     "TouchList",
     "Window",
+    "Document",
+    "CssStyleDeclaration",
     "ScrollToOptions",
     "ScrollBehavior",
     "EventTarget",
